@@ -1,0 +1,343 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
+
+<?php $this->load->view('header'); ?>
+<?php 
+   $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+   if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+        $coleccion_id_operaciones = array();
+   }   
+
+ 	if (!isset($retorno)) {
+      	$retorno ="";
+    }
+
+  $fecha_hoy = date('j-m-Y');
+     $id_almacen=$this->session->userdata('id_almacen');
+?>	
+<div class="container margenes">
+<div class="panel panel-primary">
+<div class="panel-heading">Generar Pedidos</div>
+<div class="panel-body">				
+<div class="row">
+	<div class="col-xs-12 col-sm-6 col-md-2">
+		<fieldset disabled>
+		<div class="form-group">
+			<label for="fecha">Fecha</label>
+			<div>
+				<input value="<?php echo $fecha_hoy; ?>"  type="text" class="form-control" id="fecha" name="fecha" placeholder="Fecha">
+			</div>
+		</div>
+		</fieldset>	
+	</div>
+	<div class="col-xs-12 col-sm-6 col-md-2">
+		<fieldset disabled>
+			<div class="form-group">
+				<label for="movimiento">No. Movimiento</label>
+				<div>
+					<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+				</div>
+			</div>
+		</fieldset>			
+	</div>
+
+
+
+		   <div class="col-xs-12 col-sm-6 col-md-3">
+
+				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
+
+					
+					    <div class="form-group">
+							<label for="id_almacen_generar_pedido">Almacén</label>
+							<div >
+							    <!--Los administradores o con permisos de entrada 
+							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
+							    	que no sean almacenista 
+							    	ENTONCES lista editable -->
+							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(23, $coleccion_id_operaciones)) )  && ( $this->session->userdata( 'id_perfil' ) != 2  ) ){ ?>
+									 <fieldset class="disabled_almacen">				
+								<?php } else { ?>	
+									 <fieldset class="disabled_almacen" disabled>
+								<?php } ?>	
+											<select name="id_almacen_generar_pedido" id="id_almacen_generar_pedido" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<option value="0">Todos</option>
+													<?php foreach ( $almacenes as $almacen ){ ?>
+															<?php 
+															   
+																
+																if  (($almacen->id_almacen==$id_almacen) )
+																 {$seleccionado='selected';} else {$seleccionado='';}
+
+																
+															?>
+																<option value="<?php echo $almacen->id_almacen; ?>" <?php echo $seleccionado; ?> ><?php echo $almacen->almacen; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+								    </fieldset>
+
+							</div>
+						</div>	
+					
+
+		   </div>	
+	
+</div>
+
+<div class="row">					
+	<div class="container">	
+
+
+<!--  -->
+
+				<div class="row">
+		                  <div class="col-xs-12 col-sm-6 col-md-3">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>
+			                          <select class="form-control" name="producto_pedido" id="producto_pedido" dependencia="composicion_pedido" nombre="una composición"  style="font-size:12px;">
+
+			                            <option value="">Seleccione un producto</option>
+			                            <?php if($productos){ ?>
+			                              <?php foreach($productos as $producto){ ?>
+			                                <option value="<?php echo htmlspecialchars($producto->descripcion); ?>"><?php echo htmlspecialchars($producto->descripcion); ?></option>
+			                              <?php } ?>
+			                            <?php } ?>
+			                          </select>
+		                     </div>
+		                  </div>
+
+
+		                  <div class="col-xs-12 col-sm-6 col-md-3">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Composición</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="composicion_pedido" id="composicion_pedido" dependencia="ancho_pedido" nombre="un ancho" style="padding-right:0px;font-size:12px;">
+			                            <option value="0">Seleccione una composición</option>
+			                          </select>
+		                     </div>
+		                  </div>		                  
+
+
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Ancho</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="ancho_pedido" id="ancho_pedido"  dependencia="color_pedido" nombre="un color" style="padding-right:0px; font-size:12px;">
+			                            <option value="0">Seleccione un ancho</option>
+			                          </select>
+		                     </div>
+		                  </div>
+
+
+		                  
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Color</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un ANCHO." name="color_pedido" id="color_pedido"  dependencia="proveedor_pedido" nombre="un proveedor" style="padding-right:0px; font-size:12px;">
+			                            <option value="0">Seleccione un color</option>
+			                          </select>
+		                     </div>
+		                  </div>
+		                  
+		                  
+
+
+
+
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcioon" class="col-sm-12 col-md-12">Proveedor</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="proveedor_pedido" id="proveedor_pedido" dependencia="" nombre="" style="padding-right:0px; font-size:10px;">
+			                            <option value="0">Seleccione un proveedor</option>
+			                          </select>
+		                     </div>
+		                  </div>
+
+		        </div>     
+
+
+<!--  -->	
+		<div class="table-responsive">
+
+		<div class="notif-bot-pedidos"></div>
+		<section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<table id="pedido_entrada" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th style="width:20%;">Código</th>
+					<th style="width:10%;">Producto</th>
+					<th style="width:10%;">Imagen</th>
+					<th style="width:10%;">Color</th>
+					<th style="width:5%;">Cantidad</th>
+					<th style="width:5%;">Ancho</th>
+					<th style="width:5%;">Num. Mov.</th>			
+					<th style="width:10%;">Proveedor</th>
+					<th style="width:5%;">Lote</th>
+					<th style="width:5%;">No. de Partida</th>
+					<th style="width:10%;">Agregar</th>
+					<th style="width:5%;">Almacén</th>
+
+
+				</tr>
+			</thead>
+			</table>
+		</section>
+		</div>			
+	</div>
+</div>
+
+				<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="pieza"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="metro"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="kg" ></span>				
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias Totales</b>			
+					</div>									
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_pieza"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_metro"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_kg" ></span>				
+					</div>	
+				</div>
+
+
+
+<div class="row">					
+	<div class="col-md-12">		
+		
+		<h4>Productos del Pedido</h4>	
+		<hr style="padding: 0px; margin: 15px;"/>					
+		<div class="table-responsive">
+			<section>
+				<table id="pedido_salida" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+
+							<th style="width:20%;">Código</th>
+							<th style="width:10%;">Producto</th>
+							<th style="width:10%;">Imagen</th>
+							<th style="width:10%;">Color</th>
+							<th style="width:5%;">Cantidad</th>
+							<th style="width:5%;">Ancho</th>
+							<th style="width:5%;">Num. Mov.</th>			
+							<th style="width:10%;">Proveedor</th>
+							<th style="width:5%;">Lote</th>
+							<th style="width:5%;">No. de Partida</th>
+							<th style="width:10%;">Quitar</th>
+							<th style="width:5%;">Almacén</th>						
+
+							
+						</tr>
+					</thead>
+				</table>
+			</section>
+		</div>
+	</div>
+</div>
+
+
+				<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="pieza2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="metro2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="kg2" ></span>				
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias Totales</b>			
+					</div>									
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_pieza2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_metro2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_kg2" ></span>				
+					</div>	
+				</div>
+
+
+<br>
+
+	<div class="row">
+		<div class="col-sm-4 col-md-4">
+		</div>
+		<div class="col-sm-4 col-md-4 marginbuttom">
+			<a href="<?php echo base_url(); ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
+		</div>
+
+			<div class="col-sm-4 col-md-4">
+				<button id="conf_pedido" type="button" class="btn btn-success btn-block">
+					Confirmación de pedidos
+				</button>
+			</div>
+
+	</div>
+
+</div>
+</div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="myModaldashboard" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:300px; !important; margin-top:50px !important">
+        <div class="modal-content" style="width:100% !important;"></div>
+    </div>
+</div>	
+
+<?php $this->load->view( 'footer' ); ?>
