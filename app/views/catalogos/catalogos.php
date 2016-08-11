@@ -98,7 +98,12 @@
 				
 				<?php } ?>		
 
-				<?php if ( ( $perfil == 1 ) || (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones)) ) { ?>
+				
+
+
+
+				<?php if ( ( $perfil == 1 ) && ($this->session->userdata('especial') ==1 ) ) { ?>
+
 				
 					<div class="row">
 						<div class="col-md-3"></div>
@@ -108,7 +113,56 @@
 						<div class="col-md-3"></div>
 					</div>				
 				
+				
+				
+					<div class="row">
+						<div class="col-md-3"></div>
+							<div class="col-md-6">
+								<a href="<?php echo base_url(); ?>tipos_facturas" type="button" class="btn btn-primary btn-lg btn-block">Tipos de Facturas</a>
+							</div>
+						<div class="col-md-3"></div>
+					</div>				
+				
+				
+
+				
+					<div class="row">
+						<div class="col-md-3"></div>
+							<div class="col-md-6">
+								<a href="<?php echo base_url(); ?>tipos_pedidos" type="button" class="btn btn-primary btn-lg btn-block">Tipos de pedidos</a>
+							</div>
+						<div class="col-md-3"></div>
+					</div>				
+				
+				
+
+				
+					<div class="row">
+						<div class="col-md-3"></div>
+							<div class="col-md-6">
+								<a href="<?php echo base_url(); ?>tipos_ventas" type="button" class="btn btn-primary btn-lg btn-block">Tipos de ventas</a>
+							</div>
+						<div class="col-md-3"></div>
+					</div>				
+				
+					
+				
+					<div class="row">
+						<div class="col-md-3"></div>
+							<div class="col-md-6">
+								<a href="<?php echo base_url(); ?>configuraciones" type="button" class="btn btn-primary btn-lg btn-block">Configuraciones</a>
+							</div>
+						<div class="col-md-3"></div>
+					</div>				
+				
 				<?php } ?>		
+
+
+
+
+
+
+
 
 
 				<?php if ( ( $perfil == 1 ) || (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones)) ) { ?>

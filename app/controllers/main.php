@@ -73,7 +73,8 @@ class Main extends CI_Controller {
 							$this->session->set_userdata('id_almacen', $login_element->id_almacen);
 							$this->session->set_userdata('coleccion_id_operaciones', $login_element->coleccion_id_operaciones);
 							$this->session->set_userdata('nombre_completo', $login_element->nombre.' '.$login_element->apellidos);
-							$this->session->set_userdata('modulo', 'home');							
+							$this->session->set_userdata('modulo', 'home');				
+							$this->session->set_userdata('especial', $login_element->especial);			
 						}
 					echo TRUE;
 				} else {

@@ -166,7 +166,7 @@ $route['validacion_edicion_ancho']     = 'catalogos/validacion_edicion_ancho';
 $route['eliminar_ancho/(:any)/(:any)'] = 'catalogos/eliminar_ancho/$1/$2';
 $route['validar_eliminar_ancho']    	 = 'catalogos/validar_eliminar_ancho';
 
-//almacen de tela
+//almacen
 $route['almacenes']					     = 'catalogos/listado_almacenes';
 
 $route['nuevo_almacen']                  = 'catalogos/nuevo_almacen';
@@ -178,6 +178,56 @@ $route['validacion_edicion_almacen']     = 'catalogos/validacion_edicion_almacen
 $route['eliminar_almacen/(:any)/(:any)'] = 'catalogos/eliminar_almacen/$1/$2';
 $route['validar_eliminar_almacen']    	 = 'catalogos/validar_eliminar_almacen';
 
+//configuracion
+$route['configuraciones']					     = 'catalogos/listado_configuraciones';
+
+$route['nuevo_configuracion']                  = 'catalogos/nuevo_configuracion';
+$route['validar_nuevo_configuracion']          = 'catalogos/validar_nuevo_configuracion';
+
+$route['editar_configuracion/(:any)']			 = 'catalogos/editar_configuracion/$1';
+$route['validacion_edicion_configuracion']     = 'catalogos/validacion_edicion_configuracion';
+
+$route['eliminar_configuracion/(:any)/(:any)'] = 'catalogos/eliminar_configuracion/$1/$2';
+$route['validar_eliminar_configuracion']    	 = 'catalogos/validar_eliminar_configuracion';
+
+
+//tipo_factura
+$route['tipos_facturas']					     = 'catalogos/listado_tipos_facturas';
+
+$route['nuevo_tipo_factura']                  = 'catalogos/nuevo_tipo_factura';
+$route['validar_nuevo_tipo_factura']          = 'catalogos/validar_nuevo_tipo_factura';
+
+$route['editar_tipo_factura/(:any)']			 = 'catalogos/editar_tipo_factura/$1';
+$route['validacion_edicion_tipo_factura']     = 'catalogos/validacion_edicion_tipo_factura';
+
+$route['eliminar_tipo_factura/(:any)/(:any)'] = 'catalogos/eliminar_tipo_factura/$1/$2';
+$route['validar_eliminar_tipo_factura']    	 = 'catalogos/validar_eliminar_tipo_factura';
+
+
+//tipo_pedido 
+$route['tipos_pedidos']					     = 'catalogos/listado_tipos_pedidos';
+
+$route['nuevo_tipo_pedido']                  = 'catalogos/nuevo_tipo_pedido';
+$route['validar_nuevo_tipo_pedido']          = 'catalogos/validar_nuevo_tipo_pedido';
+
+$route['editar_tipo_pedido/(:any)']			 = 'catalogos/editar_tipo_pedido/$1';
+$route['validacion_edicion_tipo_pedido']     = 'catalogos/validacion_edicion_tipo_pedido';
+
+$route['eliminar_tipo_pedido/(:any)/(:any)'] = 'catalogos/eliminar_tipo_pedido/$1/$2';
+$route['validar_eliminar_tipo_pedido']    	 = 'catalogos/validar_eliminar_tipo_pedido';
+
+
+//tipo_venta de tela
+$route['tipos_ventas']					     = 'catalogos/listado_tipos_ventas';
+
+$route['nuevo_tipo_venta']                  = 'catalogos/nuevo_tipo_venta';
+$route['validar_nuevo_tipo_venta']          = 'catalogos/validar_nuevo_tipo_venta';
+
+$route['editar_tipo_venta/(:any)']			 = 'catalogos/editar_tipo_venta/$1';
+$route['validacion_edicion_tipo_venta']     = 'catalogos/validacion_edicion_tipo_venta';
+
+$route['eliminar_tipo_venta/(:any)/(:any)'] = 'catalogos/eliminar_tipo_venta/$1/$2';
+$route['validar_eliminar_tipo_venta']    	 = 'catalogos/validar_eliminar_tipo_venta';
 
 //cargador
 $route['cargadores']					     = 'catalogos/listado_cargadores';

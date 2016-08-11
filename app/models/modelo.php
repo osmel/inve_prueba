@@ -112,6 +112,7 @@
             $this->db->select($this->usuarios.'.coleccion_id_operaciones');         
             $this->db->select($this->usuarios.'.id_cliente');         
             $this->db->select($this->usuarios.'.sala');         
+            $this->db->select($this->usuarios.'.especial');      
             $this->db->select($this->usuarios.'.id_almacen');         
 
                 

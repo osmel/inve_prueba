@@ -43,6 +43,11 @@
       $this->historico_registros_salidas    = $this->db->dbprefix('historico_registros_salidas');
 
       $this->almacenes                         = $this->db->dbprefix('catalogo_almacenes');
+      $this->configuraciones                         = $this->db->dbprefix('catalogo_configuraciones');
+
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
+      $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
+      $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 		
     }
 
@@ -2623,6 +2628,126 @@
             else return FALSE;
         }   
 
+
+ //-----------configuraciones------------------
+
+        public function total_configuraciones(){
+           $this->db->from($this->configuraciones);
+           $configuraciones = $this->db->get();            
+           return $configuraciones->num_rows();
+        }
+
+        public function listado_configuraciones($limit=-1, $offset=-1){
+
+          $this->db->select('c.id, c.configuracion');
+          $this->db->from($this->configuraciones.' as c');
+          
+          if ($limit!=-1) {
+              $this->db->limit($limit, $offset); 
+          } 
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
+
+
+
+      public function buscador_configuraciones($data){
+            $this->db->select( 'id' );
+            $this->db->select("configuracion", FALSE);  
+            $this->db->from($this->configuraciones);
+            $this->db->like("configuracion" ,$data['key'],FALSE);
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array("value"=>$row->configuracion,
+                                       "key"=>$row->id
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
+    
+    //checar si el configuracion ya existe
+    public function check_existente_configuracion($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->configuraciones);
+            $this->db->where('configuracion',$data['configuracion']);  
+            $login = $this->db->get();
+            if ($login->num_rows() > 0)
+                return true;
+            else
+                return false;
+            $login->free_result();
+    } 
+
+
+
+     public function coger_configuracion( $data ){
+              
+            $this->db->select("c.id, c.configuracion");         
+            $this->db->from($this->configuraciones.' As c');
+            $this->db->where('c.id',$data['id']);
+            $result = $this->db->get(  );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
+      //crear
+        public function anadir_configuracion( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+          $this->db->set( 'configuracion', $data['configuracion'] );  
+
+            $this->db->insert($this->configuraciones );
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }          
+
+
+        //editar
+        public function editar_configuracion( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+
+          $this->db->set( 'configuracion', $data['configuracion'] );  
+          $this->db->where('id', $data['id'] );
+          $this->db->update($this->configuraciones );
+            if ($this->db->affected_rows() > 0) {
+                return TRUE;
+            }  else
+                 return FALSE;
+                $result->free_result();
+        }   
+
+
+        //eliminar configuracion
+        public function eliminar_configuracion( $data ){
+            $this->db->delete( $this->configuraciones, array( 'id' => $data['id'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }   
+
+
  //-----------anchos------------------
 
         public function total_anchos(){
@@ -2740,6 +2865,367 @@
             if ( $this->db->affected_rows() > 0 ) return TRUE;
             else return FALSE;
         }   
+
+
+
+
+
+ //-----------tipos_facturas------------------
+
+        public function total_tipos_facturas(){
+           $this->db->from($this->tipos_facturas);
+           $tipos_facturas = $this->db->get();            
+           return $tipos_facturas->num_rows();
+        }
+
+        public function listado_tipos_facturas($limit=-1, $offset=-1){
+
+          $this->db->select('c.id, c.tipo_factura');
+          $this->db->from($this->tipos_facturas.' as c');
+          
+          if ($limit!=-1) {
+              $this->db->limit($limit, $offset); 
+          } 
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
+
+
+
+      public function buscador_tipos_facturas($data){
+            $this->db->select( 'id' );
+            $this->db->select("tipo_factura", FALSE);  
+            $this->db->from($this->tipos_facturas);
+            $this->db->like("tipo_factura" ,$data['key'],FALSE);
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array("value"=>$row->tipo_factura,
+                                       "key"=>$row->id
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
+    
+    //checar si el tipo_factura ya existe
+    public function check_existente_tipo_factura($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->tipos_facturas);
+            $this->db->where('tipo_factura',$data['tipo_factura']);  
+            $login = $this->db->get();
+            if ($login->num_rows() > 0)
+                return true;
+            else
+                return false;
+            $login->free_result();
+    } 
+
+
+
+     public function coger_tipo_factura( $data ){
+              
+            $this->db->select("c.id, c.tipo_factura");         
+            $this->db->from($this->tipos_facturas.' As c');
+            $this->db->where('c.id',$data['id']);
+            $result = $this->db->get(  );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
+      //crear
+        public function anadir_tipo_factura( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+          $this->db->set( 'tipo_factura', $data['tipo_factura'] );  
+
+            $this->db->insert($this->tipos_facturas );
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }          
+
+
+        //editar
+        public function editar_tipo_factura( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+
+          $this->db->set( 'tipo_factura', $data['tipo_factura'] );  
+          $this->db->where('id', $data['id'] );
+          $this->db->update($this->tipos_facturas );
+            if ($this->db->affected_rows() > 0) {
+                return TRUE;
+            }  else
+                 return FALSE;
+                $result->free_result();
+        }   
+
+
+        //eliminar tipo_factura
+        public function eliminar_tipo_factura( $data ){
+            $this->db->delete( $this->tipos_facturas, array( 'id' => $data['id'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }   
+
+
+ //-----------tipos_pedidos------------------
+
+        public function total_tipos_pedidos(){
+           $this->db->from($this->tipos_pedidos);
+           $tipos_pedidos = $this->db->get();            
+           return $tipos_pedidos->num_rows();
+        }
+
+        public function listado_tipos_pedidos($limit=-1, $offset=-1){
+
+          $this->db->select('c.id, c.tipo_pedido');
+          $this->db->from($this->tipos_pedidos.' as c');
+          
+          if ($limit!=-1) {
+              $this->db->limit($limit, $offset); 
+          } 
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
+
+
+
+      public function buscador_tipos_pedidos($data){
+            $this->db->select( 'id' );
+            $this->db->select("tipo_pedido", FALSE);  
+            $this->db->from($this->tipos_pedidos);
+            $this->db->like("tipo_pedido" ,$data['key'],FALSE);
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array("value"=>$row->tipo_pedido,
+                                       "key"=>$row->id
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
+    
+    //checar si el tipo_pedido ya existe
+    public function check_existente_tipo_pedido($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->tipos_pedidos);
+            $this->db->where('tipo_pedido',$data['tipo_pedido']);  
+            $login = $this->db->get();
+            if ($login->num_rows() > 0)
+                return true;
+            else
+                return false;
+            $login->free_result();
+    } 
+
+
+
+     public function coger_tipo_pedido( $data ){
+              
+            $this->db->select("c.id, c.tipo_pedido");         
+            $this->db->from($this->tipos_pedidos.' As c');
+            $this->db->where('c.id',$data['id']);
+            $result = $this->db->get(  );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
+      //crear
+        public function anadir_tipo_pedido( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+          $this->db->set( 'tipo_pedido', $data['tipo_pedido'] );  
+
+            $this->db->insert($this->tipos_pedidos );
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }          
+
+
+        //editar
+        public function editar_tipo_pedido( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+
+          $this->db->set( 'tipo_pedido', $data['tipo_pedido'] );  
+          $this->db->where('id', $data['id'] );
+          $this->db->update($this->tipos_pedidos );
+            if ($this->db->affected_rows() > 0) {
+                return TRUE;
+            }  else
+                 return FALSE;
+                $result->free_result();
+        }   
+
+
+        //eliminar tipo_pedido
+        public function eliminar_tipo_pedido( $data ){
+            $this->db->delete( $this->tipos_pedidos, array( 'id' => $data['id'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }   
+
+
+
+ //-----------tipos_ventas------------------
+
+        public function total_tipos_ventas(){
+           $this->db->from($this->tipos_ventas);
+           $tipos_ventas = $this->db->get();            
+           return $tipos_ventas->num_rows();
+        }
+
+        public function listado_tipos_ventas($limit=-1, $offset=-1){
+
+          $this->db->select('c.id, c.tipo_venta');
+          $this->db->from($this->tipos_ventas.' as c');
+          
+          if ($limit!=-1) {
+              $this->db->limit($limit, $offset); 
+          } 
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
+
+
+
+      public function buscador_tipos_ventas($data){
+            $this->db->select( 'id' );
+            $this->db->select("tipo_venta", FALSE);  
+            $this->db->from($this->tipos_ventas);
+            $this->db->like("tipo_venta" ,$data['key'],FALSE);
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array("value"=>$row->tipo_venta,
+                                       "key"=>$row->id
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
+    
+    //checar si el tipo_venta ya existe
+    public function check_existente_tipo_venta($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->tipos_ventas);
+            $this->db->where('tipo_venta',$data['tipo_venta']);  
+            $login = $this->db->get();
+            if ($login->num_rows() > 0)
+                return true;
+            else
+                return false;
+            $login->free_result();
+    } 
+
+
+
+     public function coger_tipo_venta( $data ){
+              
+            $this->db->select("c.id, c.tipo_venta");         
+            $this->db->from($this->tipos_ventas.' As c');
+            $this->db->where('c.id',$data['id']);
+            $result = $this->db->get(  );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
+      //crear
+        public function anadir_tipo_venta( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+          $this->db->set( 'tipo_venta', $data['tipo_venta'] );  
+
+            $this->db->insert($this->tipos_ventas );
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }          
+
+
+        //editar
+        public function editar_tipo_venta( $data ){
+
+          $id_session = $this->session->userdata('id');
+          $this->db->set( 'id_usuario',  $id_session );
+
+          $this->db->set( 'tipo_venta', $data['tipo_venta'] );  
+          $this->db->where('id', $data['id'] );
+          $this->db->update($this->tipos_ventas );
+            if ($this->db->affected_rows() > 0) {
+                return TRUE;
+            }  else
+                 return FALSE;
+                $result->free_result();
+        }   
+
+
+        //eliminar tipo_venta
+        public function eliminar_tipo_venta( $data ){
+            $this->db->delete( $this->tipos_ventas, array( 'id' => $data['id'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }                           
 
       //-----------operaciones------------------
 
