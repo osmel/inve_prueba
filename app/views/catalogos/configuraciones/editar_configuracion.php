@@ -21,6 +21,8 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">Datos de configuracion</div>
 			<div class="panel-body">
+				
+
 				<div class="col-sm-6 col-md-6">
 					<div class="form-group">
 						<label for="configuracion" class="col-sm-3 col-md-2 control-label">configuracion</label>
@@ -34,7 +36,49 @@
 						</div>
 					</div>
 
+					<div class="form-group">
+						<label for="valor" class="col-sm-3 col-md-2 control-label">valor</label>
+						<div class="col-sm-9 col-md-10">
+							<?php 
+								$nomb_nom='';
+								if (isset($configuracion->valor )) 
+								 {	$nomb_nom = $configuracion->valor ;}
+							?>
+							<input value="<?php echo  set_value('valor',$nomb_nom); ?>" type="text" class="form-control" name="valor" placeholder="valor">
+						</div>
+					</div>					
+
 				</div>
+
+
+				<div class="col-sm-6 col-md-6">
+					<div class="form-group">
+						<label for="id_actividad" class="col-sm-12 col-md-12">Activo</label>
+						<div class="col-sm-12 col-md-12">
+							<div class="checkbox">
+
+										  <label for="activo" class="ttip" title="Activo">
+
+												<?php		
+												   if ($configuracion->activo==1) {$marca='checked';} else {$marca='';}
+												?>
+												
+													<input type="checkbox" value="1" name="activo" <?php echo $marca; ?>>
+													activo
+	
+										 </label>		
+									   
+
+							</div>		
+									
+						</div>
+					</div>		
+				</div>	
+
+
+
+
+
 			</div>
 		</div>
 		

@@ -38,6 +38,9 @@
       $this->historico_registros_entradas        = $this->db->dbprefix('historico_registros_entradas');
 
       $this->almacenes                 = $this->db->dbprefix('catalogo_almacenes');
+      $this->catalogo_configuraciones  = $this->db->dbprefix('catalogo_configuraciones');
+
+      
 
      
 
@@ -51,7 +54,7 @@
           $id_session = $this->session->userdata('id');
           
           $this->db->distinct();          
-          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen');
+          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.iva');
           $this->db->select('p.nombre');
           
           $this->db->from($this->registros_temporales.' as m');
@@ -242,6 +245,9 @@
               $this->db->set( 'movimiento', $data['movimiento']);  
               $this->db->set( 'factura', $data['factura']   );  
               $this->db->set( 'id_almacen', $data['id_almacen']   );  
+              $this->db->set( 'id_factura', $data['id_factura']   );  
+              $this->db->set( 'iva', $data['iva']   );  
+
 
 
               $this->db->set( 'id_descripcion', $data['id_descripcion']);  
@@ -352,7 +358,17 @@
                         $columna = 'm.num_partida';
                      break;                     
 
-                   
+
+                   case '10':
+                        $columna = 'm.precio';
+                     break;      
+
+
+                   case '11':
+                   case '12':
+                        $columna = 'm.precio, m.iva';
+                     break;      
+
                    default:
                          $columna = 'm.id_lote, m.id_descripcion';
                      break;
@@ -375,6 +391,11 @@
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
           $this->db->select('m.peso_real');
+          $this->db->select('m.precio, m.iva');
+
+           $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
+           $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);
+
 
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -441,6 +462,10 @@
                                       10=>$row->metros,
                                       11=>$row->kilogramos,  
                                       12=>$row->peso_real,  
+                                      13=>$row->precio, 
+                                      14=>$row->iva, 
+                                      15=>$row->sum_iva, 
+                                      16=>$row->sum_total, 
                                                                           
                                     );
                    }
@@ -453,6 +478,12 @@
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos ), "peso"=>floatval( self::totales_campos_salida($where_total)->peso )),  
+                          "totales_importe"            =>  array(
+                                "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                                "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                                "total"=>floatval( self::totales_importes($where_total)->total ),
+                                ),  
+
                       ));
                     
               }   
@@ -464,6 +495,13 @@
                   "aaData" => array(),
                    "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos ), "peso"=>floatval( self::totales_campos_salida($where_total)->peso )),  
 
+                          "totales_importe"            =>  array(
+                                "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                                "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                                "total"=>floatval( self::totales_importes($where_total)->total ),
+                                ),  
+
+
                   );
                   $array[]="";
                   return json_encode($output);
@@ -473,6 +511,27 @@
 
               $result->free_result();           
       }  
+
+
+
+public function totales_importes($where){
+
+           $this->db->select("SUM(precio) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+   
+          $this->db->from($this->registros_temporales.' as m');
+          $this->db->where($where);
+
+          $result = $this->db->get();
+      
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();              
+
+    }  
 
 
 
@@ -749,7 +808,7 @@
           $fecha_hoy = date('Y-m-d H:i:s');  
              
           //aqui lista todos los datos que fueron entrados por un usuario especifico   
-          $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen');
+          $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen,id_factura,iva');
           $this->db->select('id_medida, cantidad_um, peso_real, cantidad_royo, ancho, precio, codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('id_cargador, id_usuario, fecha_mac, id_operacion');
           $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
@@ -812,7 +871,7 @@
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -863,7 +922,7 @@
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion,m.id_almacen');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion,m.id_almacen, m.id_factura,m.iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');

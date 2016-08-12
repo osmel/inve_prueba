@@ -33,31 +33,33 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading">Listado de proveedores</div>
 			<div class="panel-body">
-			<div class="col-md-12">
-				<div class="table-responsive">
+				<div class="col-md-12">
+					<div class="table-responsive">
 
 
-					<section>
-						<table id="tabla_cat_proveedores" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
-							<thead>
-								<tr>
-									<th class="text-center cursora" width="15%">Código</th>
-									<th class="text-center cursora" width="20%">Proveedor </th>
-									<th class="text-center cursora" width="15%">Teléfono</th>
-									<th class="text-center cursora" width="15%">Actividad comercial </th>
-									<th class="text-center " width="5%"><strong>Editar</strong></th>
-									<th class="text-center " width="5%"><strong>Eliminar</strong></th>
+						<section>
+							<table id="tabla_cat_proveedores" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th class="text-center cursora" width="15%">Código</th>
+										<th class="text-center cursora" width="20%">Proveedor </th>
+										<th class="text-center cursora" width="15%">Teléfono</th>
+										<th class="text-center cursora" width="15%">Actividad comercial </th>
+										<th class="text-center " width="5%"><strong>Días de Créditos</strong></th>
+										<th class="text-center " width="5%"><strong>Editar</strong></th>
+										<th class="text-center " width="5%"><strong>Eliminar</strong></th>
 
-								</tr>
-							</thead>
-						</table>
-					</section>
+										<!-- Este campo es válido, sólo para proveedor-->
+									</tr>
+								</thead>
+							</table>
+						</section>
 
-			</div>
+					</div>
 
+				</div>
 			</div>
 		</div>
-	</div>
 		
 		<div class="row">
 

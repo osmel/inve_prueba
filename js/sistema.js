@@ -2037,7 +2037,7 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
 		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Detalles','Cancelar','Prorrogar','Almacén']; 
 		var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Detalles','Almacén'];
 
-		var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida', 'Quitar']; 
+		var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
 
         var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
         var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
@@ -6669,6 +6669,21 @@ jQuery('#tabla_productos').dataTable( {
 		}	
 
 
+	    if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+		}	
+
+
+
+
 
 			if (settings.json.recordsTotal==0) {
 				jQuery("#disa_reportes").attr('disabled', true);					
@@ -6681,6 +6696,8 @@ jQuery('#tabla_productos').dataTable( {
 
 
 	"footerCallback": function( tfoot, data, start, end, display ) {
+		console.log(data);
+
 	   var api = this.api(), data;
 			var intVal = function ( i ) {
 				return typeof i === 'string' ?
@@ -6711,6 +6728,35 @@ jQuery('#tabla_productos').dataTable( {
 						return intVal(a) + intVal(b);
 					} );
 
+				//importe
+				
+				total_subtotal = api
+					.column( 13)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 15)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+				
+				total_total = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+					
+
+
 				total_pieza = (end-start);	
 
 			        
@@ -6719,12 +6765,23 @@ jQuery('#tabla_productos').dataTable( {
 			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
 			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
 
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total_total, 2, '.', ','));
+
+
 		} else 	{
 
 			        jQuery('#pieza').html('Total de piezas: 0');
 			        jQuery('#peso').html('Total de peso real: 0.00');
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');	
 
 		}	
     },	
@@ -6763,10 +6820,30 @@ jQuery('#tabla_productos').dataTable( {
 	                "targets": [9]
 	            },
 
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[13];	
+	                },
+	                "targets": [10]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return (row[13]*row[14])/100;	
+	                },
+	                "targets": [11]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						
+
+
+						return number_format((parseFloat(row[13])+parseFloat((row[13]*row[14])/100)), 2, '.', ',');	
+	                },
+	                "targets": [12]
+	            },	            	
 
     			{ 
 	                "render": function ( data, type, row ) {
-
 						texto='<td>';
 						    texto+='<a href="eliminar_prod_temporal/'+(row[0])+'/'+jQuery.base64.encode(row[1])+'" '; 
 									texto+='class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-target="#modalMessage"> ';
@@ -6776,11 +6853,11 @@ jQuery('#tabla_productos').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": [10]
+	                "targets": [13]
 	            },
     			{ 
 	                 "visible": false,
-	                "targets": [0,11,12]
+	                "targets": [0,14,15,16] //11,12
 	            }
 
 	],	
@@ -6852,7 +6929,7 @@ jQuery('#tabla_productos').dataTable( {
 					
 					jQuery('#tabla_productos').dataTable().fnDraw();
 
-					//desabilito proveedor y factura
+					//desabilito proveedor, factura y tipo_factura
 					jQuery("fieldset.disabledme").attr('disabled', true);
 
 					//vuelve a los valores por defecto, producto, color, composicion y calidad

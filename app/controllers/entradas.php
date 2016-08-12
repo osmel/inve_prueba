@@ -35,9 +35,8 @@ class Entradas extends CI_Controller {
 		       	$data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
 		       	$data['productos']   = $this->catalogo->listado_productos_unico_activo();
     	        $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+    	        $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 
-				//print_r($data['val_proveedor']);
-				//die;
 
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -112,6 +111,14 @@ class Entradas extends CI_Controller {
           $data['movimiento']   = $this->input->post('movimiento');
           $data['factura']   = $this->input->post('factura');
           $data['id_almacen']   = $this->input->post('id_almacen');
+          $data['id_factura']   = $this->input->post('id_factura');
+
+          if ($data['id_factura'] ==1) {
+	         $data['iva'] = $this->catalogo->remision_iva(2)->valor;
+          } else {
+          	$data['iva'] = 0;
+          }
+
 
 
           $data['id_descripcion']   = $this->input->post('prod_entrada');

@@ -133,6 +133,107 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////////
+	jQuery('#tabla_cat_configuraciones').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_cat_configuraciones",
+	         		"type": "POST",
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return row[1];
+		                },
+		                "targets": [0] //,2,3,4
+		            },
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return row[3];
+		                },
+		                "targets": [1] //,2,3,4
+		            },
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return row[2];
+		                },
+		                "targets": [2] //,2,3,4
+		            },	             
+
+		            {
+		                "render": function ( data, type, row ) {
+
+						texto='<td>';
+							texto+='<a href="editar_configuracion/'+(row[0])+'" type="button"'; 
+							texto+=' class="btn btn-warning btn-sm btn-block" >';
+								texto+=' <span class="glyphicon glyphicon-edit"></span>';
+							texto+=' </a>';
+						texto+='</td>';
+
+
+							return texto;	
+		                },
+		                "targets": 3
+		            },
+
+		            
+		            {
+		                "render": function ( data, type, row ) {
+
+	   							texto='	<fieldset disabled> <td>';								
+									texto+=' <a href="#"'; 
+									texto+=' class="btn btn-danger btn-sm btn-block">';
+									texto+=' <span class="glyphicon glyphicon-remove"></span>';
+									texto+=' </a>';
+								texto+=' </td></fieldset>';	
+
+							return texto;	
+		                },
+		                "targets": 4
+		            },
+
+	            
+		           
+		            
+		        ],
+	});	
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +304,15 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 		                		return row[4];
 		                },
 		                "targets": [3] //,2,3,4
-		            },		            	    
+		            },		            	   
+
+		            {
+		                "render": function ( data, type, row ) {
+
+						   return row[6];	
+		                },
+		                 "targets": 4
+		            },			             
 
 		            {
 		                "render": function ( data, type, row ) {
@@ -218,7 +327,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 							return texto;	
 		                },
-		                "targets": 4
+		                "targets": 5
 		            },
 
 		            
@@ -246,8 +355,10 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 							return texto;	
 		                },
-		                "targets": 5
+		                "targets": 6
 		            },
+
+	            
 		           
 		            
 		        ],

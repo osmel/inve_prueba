@@ -148,6 +148,52 @@ echo form_open('validar_agregar_producto', $attr);
 							</div>
 					</div>		
 
+
+
+
+					<!--Tipos de factura -->
+					<div class="col-xs-12 col-sm-6 col-md-3">
+					    
+							<label for="id_factura" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<div class="col-sm-9 col-md-12">
+							    <!--Los administradores o con permisos de entrada 
+							    	Y que no este inhabilitado y 
+							    	que no sean facturaista 
+							    	ENTONCES lista editable -->
+
+								<?php if ($val_proveedor) { ?>
+									<fieldset class="disabledme" disabled>							
+								<?php } else { ?>
+									<fieldset class="disabledme">						
+								<?php } ?>
+
+											<select name="id_factura" id="id_factura" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $facturas as $factura ){ ?>
+															<?php 
+																if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
+																	 if ($factura->id==$val_proveedor->id_factura) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+																}
+															?>
+																<option value="<?php echo $factura->id; ?>" <?php echo $seleccionado; ?> ><?php echo $factura->tipo_factura; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+								    </fieldset>
+
+							</div>
+					</div>		
+
+
+
+				
+				
+
+
 	</div>
 
 
@@ -286,7 +332,7 @@ echo form_open('validar_agregar_producto', $attr);
 						</div>	
 
 						<div class="col-xs-12 col-sm-6 col-md-2">
-							<fieldset disabled>
+							<fieldset > <!--disabled-->
 								<div class="form-group">
 									<label for="precio" class="col-sm-12 col-md-12">Precio</label>
 									<div class="col-sm-12 col-md-12">
@@ -458,6 +504,47 @@ echo form_open('validar_agregar_producto', $attr);
 				</div>
 
 
+			<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-2">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="subtotal"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="iva"></span>			
+					</div>				
+					<div class="col-sm-3 col-md-2">	
+						<span id="total"></span>			
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-2">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes Totales</b>			
+					</div>									
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_subtotal"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_iva"></span>			
+					</div>					
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_total"></span>			
+					</div>	
+
+				</div>
 
 
 			<br>

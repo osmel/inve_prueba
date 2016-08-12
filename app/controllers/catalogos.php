@@ -117,6 +117,13 @@ class Catalogos extends CI_Controller {
   } 
 
 
+ public function procesando_cat_configuraciones(){
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_configuraciones($data);
+    echo $busqueda;
+  } 
+
+
  function referencia(){
     
     $data['ref'] = $this->catalogo->proveedores_en_uso1();
@@ -2551,6 +2558,7 @@ function validacion_edicion_operacion(){
 
           $data['codigo']                   = $this->input->post('codigo');
           $data['nombre']                   = $this->input->post('nombre');
+          $data['dias_ctas_pagar']                = $this->input->post('dias_ctas_pagar');
           $data['telefono']                 = $this->input->post('telefono');
           $data['direccion']                = $this->input->post('direccion');
           $data['coleccion_id_actividad']   = json_encode($this->input->post('coleccion_id_actividad'));
@@ -2639,6 +2647,7 @@ function validacion_edicion_proveedor(){
           $data['codigo_ant']    = $this->input->post('codigo_ant');  
           $data['codigo']                   = $this->input->post('codigo');
           $data['nombre']                   = $this->input->post('nombre');
+          $data['dias_ctas_pagar']                = $this->input->post('dias_ctas_pagar');
           $data['telefono']                 = $this->input->post('telefono');
           $data['direccion']                = $this->input->post('direccion');
           $data['coleccion_id_actividad']   = json_encode($this->input->post('coleccion_id_actividad'));
@@ -3976,6 +3985,9 @@ function validacion_edicion_almacen(){
       $this->form_validation->set_rules('configuracion', 'configuracion', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
       if ($this->form_validation->run() === TRUE){
           $data['configuracion']   = $this->input->post('configuracion');
+          $data['valor']         = $this->input->post('valor');
+          $data['activo']         = $this->input->post('activo');
+
           $data         =   $this->security->xss_clean($data);  
           $guardar            = $this->catalogo->anadir_configuracion( $data );
           if ( $guardar !== FALSE ){
@@ -4040,6 +4052,9 @@ function validacion_edicion_configuracion(){
       if ($this->form_validation->run() === TRUE){
             $data['id']           = $this->input->post('id');
           $data['configuracion']         = $this->input->post('configuracion');
+          $data['valor']         = $this->input->post('valor');
+          $data['activo']         = $this->input->post('activo');
+
           $data               = $this->security->xss_clean($data);  
           $guardar            = $this->catalogo->editar_configuracion( $data );
 

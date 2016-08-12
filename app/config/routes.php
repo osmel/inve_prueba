@@ -189,7 +189,7 @@ $route['validacion_edicion_configuracion']     = 'catalogos/validacion_edicion_c
 
 $route['eliminar_configuracion/(:any)/(:any)'] = 'catalogos/eliminar_configuracion/$1/$2';
 $route['validar_eliminar_configuracion']    	 = 'catalogos/validar_eliminar_configuracion';
-
+$route['procesando_cat_configuraciones']    = 'catalogos/procesando_cat_configuraciones';
 
 //tipo_factura
 $route['tipos_facturas']					     = 'catalogos/listado_tipos_facturas';
@@ -577,6 +577,10 @@ $route['procesando_cat_proveedores']    = 'catalogos/procesando_cat_proveedores'
 
 $route['cargar_dependencia_catalogo']   = 'catalogos/cargar_dependencia_catalogo';
 $route['marcando_activo']    			= 'catalogos/marcando_activo';
+
+
+
+
 
 /*  
 

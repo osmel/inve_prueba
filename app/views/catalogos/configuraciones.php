@@ -19,52 +19,55 @@
 			<div class="panel-heading">Listado de configuraciones</div>
 			<div class="panel-body">
 			<div class="col-md-12">
-				<div class="table-responsive">
-				<table class="table table-striped table-bordered table-responsive tabla_ordenadas" >
-					<thead>	
-						<tr>
-							<th class="text-center cursora" width="70%">Configuración   <i class="glyphicon glyphicon-sort"></i></th>
-							<th class="text-center " width="5%"><strong>Editar</strong></th>
-							<th class="text-center " width="5%"><strong>Eliminar</strong></th>
 
-						</tr>
-					</thead>		
-					<?php if ( isset($configuraciones) && !empty($configuraciones  ) ): ?>
-						<?php foreach( $configuraciones   as $configuracion   ): ?>
-							<tr>
-								
-								<td class="text-center"><?php echo $configuracion->configuracion  ; ?></td>
-								 <td>
-									<a href="<?php echo base_url(); ?>editar_configuracion/<?php echo $configuracion->id; ?>" type="button" 
-									class="btn btn-warning btn-sm btn-block" >
-										<span class="glyphicon glyphicon-edit"></span>
-									</a>
-								</td>
-								<td>
-									<!--
-									<a href="<?php echo base_url(); ?>eliminar_configuracion/<?php echo $configuracion->id; ?>/<?php echo base64_encode($configuracion->configuracion  ) ; ?>"  
-										class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-target="#modalMessage">
-										<span class="glyphicon glyphicon-remove"></span>
-										
-									</a> -->
 
-										<fieldset disabled="">
-											  <a href="#" class="btn btn-danger btn-sm btn-block"> 
-											  		<span class="glyphicon glyphicon-remove"></span> 
-											  </a> 
-										</fieldset>
 
-								</td>						
-							</tr>
-						<?php endforeach; ?>
-					<?php else : ?>
-							<tr>
-								<td colspan="5">No existen configuraciones  </td>
-							</tr>
-					<?php endif; ?>						
 
-				</table>
-			</div>
+
+
+				
+					<div class="table-responsive">
+
+
+						<section>
+							<table id="tabla_cat_configuraciones" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<thead>
+									<tr>
+										<th class="text-center cursora" width="15%">Configuración</th>
+										<th class="text-center cursora" width="20%">valor</th>
+										<th class="text-center cursora" width="20%">Activo</th>
+										<th class="text-center " width="5%"><strong>Editar</strong></th>
+										<th class="text-center " width="5%"><strong>Eliminar</strong></th>
+									</tr>
+								</thead>
+							</table>
+						</section>
+
+					</div>
+
+
+
+
+
+
+				
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 			</div>
 		</div>

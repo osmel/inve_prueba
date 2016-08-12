@@ -126,6 +126,9 @@
                    case '3':
                         $columna = 'p.coleccion_id_actividad';
                      break;
+                   case '4':
+                        $columna = 'p.dias_ctas_pagar';
+                     break;
 
                    default:
                         $columna = 'p.id';
@@ -183,7 +186,9 @@
           $this->db->select("( CASE WHEN ( LOCATE('2', p.coleccion_id_actividad) >0)  THEN 'Cliente' else '' END ) AS p2",FALSE);
           $this->db->select("( CASE WHEN ( LOCATE('3', p.coleccion_id_actividad) >0)  THEN 'Empresa Relacionada' else '' END ) AS p3",FALSE);
 
+          $this->db->select("p.dias_ctas_pagar");
 
+          
 
           $this->db->from($this->proveedores.' as p');
          // $this->db->join($this->actividad_comercial.' As a', 'a.id =  mid(p.coleccion_id_actividad,LOCATE(a.id, p.coleccion_id_actividad),1)');
@@ -265,8 +270,8 @@
                                       2=>$row->nombre,
                                       3=>$row->telefono,
                                       4=>$row->p1.'<br/>'.$row->p2.'<br/>'.$row->p3,      
-                                          
                                       5=>$desabilitar,
+                                      6=>$row->dias_ctas_pagar,
                                     );
                       }
 
@@ -554,6 +559,8 @@
 
       } 
 
+       
+
 ////////////////////
         public function total_cat_cargadores(){
               $id_session = $this->session->userdata('id');
@@ -817,6 +824,154 @@
 
       }  
       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public function buscador_cat_configuraciones($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==1) { //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'desc';
+           } 
+
+
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'c.configuracion';
+                     break;
+                   case '1':
+                        $columna = 'c.valor';
+                     break;
+
+                   case '2':
+                        $columna = 'c.activo';
+                     break;
+
+                   default:
+                        $columna = 'c.id';
+                     break;
+                 }                 
+
+                                      
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          
+          $this->db->select('c.id, c.configuracion,c.valor,c.activo');
+
+          $this->db->from($this->configuraciones.' as c');
+          
+          //filtro de busqueda
+       
+          $where = '(
+
+                      (
+                        ( c.id LIKE  "%'.$cadena.'%" ) OR (c.configuracion LIKE  "%'.$cadena.'%")
+                        OR (c.activo LIKE  "%'.$cadena.'%") OR (c.valor LIKE  "%'.$cadena.'%")
+                        
+                       )
+            )';   
+
+
+
+  
+          $this->db->where($where);
+    
+          //ordenacion
+          $this->db->order_by($columna, $order); 
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+                  foreach ($result->result() as $row) {
+                               $dato[]= array(
+                                      0=>$row->id,
+                                      1=>$row->configuracion,
+                                      2=>$row->activo,
+                                      3=>$row->valor,
+                                    );
+                      }
+
+
+
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => intval( self::total_cat_configuraciones() ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato 
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      } 
+
+
+  public function total_cat_configuraciones(){
+              $id_session = $this->session->userdata('id');
+
+              $this->db->from($this->configuraciones.' as c');
+
+              $cant = $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }     
+
+
+
+
+
 
 ///////////
 
@@ -2639,7 +2794,7 @@
 
         public function listado_configuraciones($limit=-1, $offset=-1){
 
-          $this->db->select('c.id, c.configuracion');
+          $this->db->select('c.id, c.configuracion,c.activo,c.valor');
           $this->db->from($this->configuraciones.' as c');
           
           if ($limit!=-1) {
@@ -2695,7 +2850,7 @@
 
      public function coger_configuracion( $data ){
               
-            $this->db->select("c.id, c.configuracion");         
+            $this->db->select("c.id, c.configuracion,c.activo,c.valor");         
             $this->db->from($this->configuraciones.' As c');
             $this->db->where('c.id',$data['id']);
             $result = $this->db->get(  );
@@ -2712,6 +2867,9 @@
           $id_session = $this->session->userdata('id');
           $this->db->set( 'id_usuario',  $id_session );
           $this->db->set( 'configuracion', $data['configuracion'] );  
+          $this->db->set( 'activo', $data['activo'] );  
+          $this->db->set( 'valor', $data['valor'] );  
+
 
             $this->db->insert($this->configuraciones );
             if ($this->db->affected_rows() > 0){
@@ -2728,8 +2886,11 @@
 
           $id_session = $this->session->userdata('id');
           $this->db->set( 'id_usuario',  $id_session );
-
           $this->db->set( 'configuracion', $data['configuracion'] );  
+          $this->db->set( 'activo', $data['activo'] );  
+          $this->db->set( 'valor', $data['valor'] );  
+
+
           $this->db->where('id', $data['id'] );
           $this->db->update($this->configuraciones );
             if ($this->db->affected_rows() > 0) {
@@ -2878,10 +3039,40 @@
            return $tipos_facturas->num_rows();
         }
 
+
+        //para saber si esta activa o no la remision y valor de IVA
+        public function remision_iva($id){
+         
+              $this->db->select('a.activo,a.valor');
+              $this->db->from($this->configuraciones .' as a');
+              $this->db->where('a.id',$id);  
+              
+              $result = $this->db->get();
+
+                if ( $result->num_rows() > 0 )
+                   return $result->row();
+                else
+                   return False;
+                $result->free_result();
+            
+
+        } 
+
+
         public function listado_tipos_facturas($limit=-1, $offset=-1){
+          
+
+          $desabilitar= self::remision_iva(1);
+
+          if ($desabilitar->activo==0) {
+            $where = '( c.si_remision <> 1 ) ';
+            $this->db->where($where);
+          }
+
 
           $this->db->select('c.id, c.tipo_factura');
           $this->db->from($this->tipos_facturas.' as c');
+         
           
           if ($limit!=-1) {
               $this->db->limit($limit, $offset); 
@@ -3642,7 +3833,7 @@
 
 
      public function coger_proveedor( $data ){
-          $this->db->select('p.id, p.uid, p.codigo, p.nombre,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 
+          $this->db->select('p.id, p.uid, p.codigo, p.nombre,p.dias_ctas_pagar,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 
           $this->db->from($this->proveedores.' as p');
 
             $this->db->where('p.codigo',$data['codigo']);
@@ -3666,7 +3857,8 @@
           //$this->db->set( 'id', $data['id'] ); // autoincrementable
           //$this->db->set( 'uid', $data['uid'] );  
           $this->db->set( 'codigo', $data['codigo'] );  
-          $this->db->set( 'nombre', $data['nombre'] );            
+          $this->db->set( 'nombre', $data['nombre'] ); 
+          $this->db->set( 'dias_ctas_pagar', $data['dias_ctas_pagar'] ); 
           $this->db->set( 'direccion', $data['direccion'] );  
           $this->db->set( 'telefono', $data['telefono'] );  
           $this->db->set( 'coleccion_id_actividad', $data['coleccion_id_actividad'] );  
@@ -3691,6 +3883,7 @@
           //$this->db->set( 'uid', $data['uid'] );  
           $this->db->set( 'codigo', $data['codigo'] );  
           $this->db->set( 'nombre', $data['nombre'] );            
+          $this->db->set( 'dias_ctas_pagar', $data['dias_ctas_pagar'] ); 
           $this->db->set( 'direccion', $data['direccion'] );  
           $this->db->set( 'telefono', $data['telefono'] );  
           $this->db->set( 'coleccion_id_actividad', $data['coleccion_id_actividad'] );  

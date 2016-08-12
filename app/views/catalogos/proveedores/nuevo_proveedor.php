@@ -39,6 +39,14 @@
 
 
 					<div class="form-group">
+						<label for="dias_ctas_pagar" class="col-sm-12 col-md-12">Días de Créditos</label>
+						<div class="col-sm-12 col-md-12">
+							<input type="text" class="form-control" id="dias_ctas_pagar" name="dias_ctas_pagar" placeholder="Días de Créditos">
+							<span>Este campo es válido, sólo para proveedor</span>
+						</div>
+					</div>
+
+					<div class="form-group">
 						<label for="telefono" class="col-sm-12 col-md-12">Teléfono empresa</label>
 						<div class="col-sm-12 col-md-12">
 							<input type="text" class="form-control" id="telefono" name="telefono" placeholder="teléfono">

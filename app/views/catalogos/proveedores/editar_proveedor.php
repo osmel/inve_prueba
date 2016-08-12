@@ -56,6 +56,21 @@
 							<input value="<?php echo  set_value('nombre',$nomb_nom); ?>" type="text" class="form-control" id="nombre" name="nombre" placeholder="nombre">
 						</div>
 					</div>
+
+
+					<div class="form-group">
+						<label for="dias_ctas_pagar" class="col-sm-12 col-md-12">Días de Créditos</label>
+						<div class="col-sm-12 col-md-12">
+						
+							<?php 
+								$nomb_nom='';
+								if (isset($proveedor->dias_ctas_pagar)) 
+								 {	$nomb_nom = $proveedor->dias_ctas_pagar;}
+							?>
+							<input value="<?php echo  set_value('dias_ctas_pagar',$nomb_nom); ?>" type="text" class="form-control" id="dias_ctas_pagar" name="dias_ctas_pagar" placeholder="Días de Créditos">							
+							<span>Este campo es válido, sólo para proveedor</span>
+						</div>
+					</div>
 					
 
 					<div class="form-group">
