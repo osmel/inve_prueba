@@ -47,6 +47,64 @@
 					</div>
 
 
+
+
+
+
+
+
+
+
+				<div class="col-xs-12 col-sm-6 col-md-2">
+					    
+							<label for="id_tipo_pedido_inicio" class="col-sm-3 col-md-12">Tipo de pedido</label>
+							<div class="col-sm-9 col-md-12">
+
+											<select name="id_tipo_pedido_inicio" id="id_tipo_pedido_inicio" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $pedidos as $pedido ){ ?>
+																<option value="<?php echo $pedido->id; ?>" ><?php echo $pedido->tipo_pedido; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+
+							</div>
+					</div>		
+
+
+
+					<!--Tipos de factura -->
+					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" >
+					    
+							<label for="id_tipo_factura_inicio" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<div class="col-sm-9 col-md-12">
+
+											<select name="id_tipo_factura_inicio" id="id_tipo_factura_inicio" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $facturas as $factura ){ ?>
+																<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+
+							</div>
+					</div>		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			</div>
 
 

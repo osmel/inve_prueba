@@ -85,10 +85,17 @@ class Salidas extends CI_Controller {
 		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
 		       //valor del cliente, cargador, factura, 
 		       $data['val_proveedor']  = $this->modelo_salida->valores_movimientos_temporal();
+		       //print_r($data['val_proveedor']);
+		       //die;
 		       $data['productos'] = $this->catalogo->listado_productos_unico();
 		       $data['colores'] = $this->catalogo->listado_colores_unico();
 		       $data['destinos'] = $this->catalogo->lista_destino();
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+
+     		   $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+
 		       
 
 		      switch ($id_perfil) {    
@@ -194,6 +201,9 @@ class Salidas extends CI_Controller {
 				 		$data['id_movimiento'] = $this->input->post('movimiento');
 				 		$data['id_destino'] = $this->input->post('id_destino');
 				 		$data['id_almacen'] = $this->input->post('id_almacen');
+
+				 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+				 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 				 		
 
 				 		
@@ -235,11 +245,16 @@ class Salidas extends CI_Controller {
 	    } else {
 	 		
 	 		$data['id'] = $this->input->post('identificador');
+			$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+			$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+			
 
 				$this->modelo_salida->enviar_prod_entrada( $data );
 					  
 			$actualizar = $this->modelo_salida->quitar_prod_salidas($data );
 			$dato['total'] = $this->modelo_salida->total_registros_salida();
+		
+				 		
 
 		
 			if ( $actualizar !== FALSE ){

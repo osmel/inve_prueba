@@ -882,6 +882,12 @@ public function totales_importes($where){
 
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
 
+          $this->db->select('(m.precio) as sum_precio');           
+          $this->db->select("(m.precio*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio)+(((m.precio*m.iva))/100) as sum_total", FALSE);
+
+
+          
           
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');

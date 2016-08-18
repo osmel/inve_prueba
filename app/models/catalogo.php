@@ -3062,7 +3062,7 @@
         public function listado_tipos_facturas($limit=-1, $offset=-1){
           
 
-          $desabilitar= self::remision_iva(1);
+          $desabilitar= self::remision_iva(1); //remision
 
           if ($desabilitar->activo==0) {
             $where = '( c.si_remision <> 1 ) ';
@@ -3086,6 +3086,8 @@
             $result->free_result();
         }        
 
+
+      
 
 
       public function buscador_tipos_facturas($data){
@@ -3188,10 +3190,20 @@
            return $tipos_pedidos->num_rows();
         }
 
-        public function listado_tipos_pedidos($limit=-1, $offset=-1){
+      public function listado_tipos_pedidos($limit=-1, $offset=-1){
+          
+
+          $desabilitar= self::remision_iva(3); //surtido
+
+          if ($desabilitar->activo==0) {
+            $where = '( c.si_remision <> 1 ) ';
+            $this->db->where($where);
+          }
+
 
           $this->db->select('c.id, c.tipo_pedido');
           $this->db->from($this->tipos_pedidos.' as c');
+         
           
           if ($limit!=-1) {
               $this->db->limit($limit, $offset); 
@@ -3203,7 +3215,7 @@
             else
                return False;
             $result->free_result();
-        }        
+        }      
 
 
 

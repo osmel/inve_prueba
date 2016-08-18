@@ -1900,20 +1900,27 @@
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->distinct();                    
-          $this->db->select('m.movimiento,m.id_empresa,p.nombre, m.factura, m.id_operacion,m.devolucion');
-		      $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
-          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
-		  
-        $this->db->select('a.almacen'); 
+          //$this->db->distinct();                    
+ 
+          $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+          $this->db->select("MAX(m.devolucion) devolucion",false);
+          $this->db->select("MAX( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+          
+          $this->db->select('sum(m.precio) as sum_precio');           
+          $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
+
+
+          
+
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
-          //$this->db->where('m.id_usuario',$id_session);
-          //$this->db->where('m.id_operacion',$data['id_operacion']);
-
-          //AND ( m.devolucion = 0 )
           $where = '(
                       (
                          ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
@@ -1922,7 +1929,10 @@
             )';   
 
 
+
           $this->db->where($where);          
+
+          $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
 
           $this->db->order_by('m.movimiento', 'desc'); 
 

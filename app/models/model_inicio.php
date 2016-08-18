@@ -1432,6 +1432,10 @@ precio_nodisp
                 $this->db->where('id_usuario_apartado', $id_session );
                 $this->db->where('id_apartado', 1 );
 
+                $this->db->set( 'id_tipo_factura', $data['id_tipo_factura']);
+                $this->db->set( 'id_tipo_pedido', $data['id_tipo_pedido']);
+
+
                 $this->db->update($this->registros );
 
 
@@ -1459,6 +1463,9 @@ precio_nodisp
               $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               $this->db->select("sum(m.precio) as 'precio'");
+
+              $this->db->select("'".$data["tipo_pedido"]."' as tipo_pedido", FALSE);
+              $this->db->select("'".$data["tipo_factura"]."' as tipo_factura", FALSE);
               
              
               $this->db->from($this->registros.' as m');

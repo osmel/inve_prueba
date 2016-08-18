@@ -82,6 +82,14 @@
 									<?php } ?>	
 									<span><b>Total Peso real: </b> <?php echo $totales->peso_real; ?></span><br>
 									<p><span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span></p><br>
+
+									<p><span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span></p><br>
+
+									<p><span><b>IVA: </b><?php echo number_format($totales->sum_iva, 2, '.', ','); ?></span></p><br>
+									<p><span><b>Total: </b><?php echo number_format($totales->sum_total, 2, '.', ','); ?></span></p><br>
+
+
+
 							</td>
 						</tr>
 				</tfooter>			

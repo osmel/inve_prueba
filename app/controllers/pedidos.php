@@ -80,8 +80,13 @@ class Pedidos extends CI_Controller {
 		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(4);
 		       //valor del cliente, cargador, factura, 
 		       $data['val_proveedor']  = $this->modelo_pedido->valores_movimientos_temporal();
+
 		       $data['productos'] = $this->modelo_pedido->listado_productos_unico();
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+		       $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+		       
+		       
 
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -453,6 +458,10 @@ function agregar_prod_pedido(){
 	    } else {
 	 		$data['id'] = $this->input->post('identificador');
 	 		$data['id_movimiento'] = $this->input->post('movimiento');
+
+	 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+	 		 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+	 		
 
 			$actualizar = $this->modelo_pedido->actualizar_pedido($data);
 			$dato['exito']  = true;

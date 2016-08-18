@@ -29,6 +29,11 @@
 							<th class="text-center cursora" width="45%">Proveedor  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" width="10%">Fecha  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" width="10%">Factura  <i class="glyphicon glyphicon-sort"></i></th>
+							
+							<th class="text-center cursora" width="10%">Subtotal  <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" width="10%">IVA  <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" width="10%">Total  <i class="glyphicon glyphicon-sort"></i></th>
+
 							<th class="text-center " width="20%"><strong>Detalles</strong></th>
 						</tr>
 					</thead>		
@@ -41,6 +46,12 @@
 								<td class="text-center"><?php echo $entrada->nombre ; ?></td>
 								<td class="text-center"><?php echo $entrada->fecha ; ?></td>
 								<td class="text-center"><?php echo $entrada->factura ; ?></td>
+
+								<td class="text-center"><?php echo number_format($entrada->sum_precio, 2, '.', ','); ?></td>
+								<td class="text-center"><?php echo number_format($entrada->sum_iva, 2, '.', ','); ?></td>
+								<td class="text-center"><?php echo number_format($entrada->sum_total, 2, '.', ','); ?></td>
+
+
 								 <td>
 									<a style="  padding: 1px 0px 1px 0px;" href="<?php echo base_url(); ?>procesar_entradas/<?php echo base64_encode($entrada->movimiento); ?>/<?php echo base64_encode($entrada->devolucion); ?>/<?php echo base64_encode($otro_retorno); ?>" 
 									type="button" class="btn btn-success btn-block">

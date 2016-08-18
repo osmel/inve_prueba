@@ -10,6 +10,14 @@
 
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 						<th width="70%">
+									
+									<span><b>Tipo de Pedido: </b> <?php echo $totales->tipo_pedido; ?></span><br>
+
+									<?php  if ($totales->tipo_factura!="no") { ?>	
+										<span><b>Tipo de factura: </b> <?php echo $totales->tipo_factura; ?></span><br>
+									<?php } ?>		
+
+
 							<span><b>Cliente: </b> <?php echo $descripcion;  ?>  <br/><b>Nro.</b> <?php echo $consecutivo;  ?></span> <br/>
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
 							<p style="font-size: 10px;"><b >Apartados Informe</b></p>

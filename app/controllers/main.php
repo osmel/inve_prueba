@@ -6,7 +6,6 @@ class Main extends CI_Controller {
 		parent::__construct();
 		$this->load->model('model_pedido', 'modelo_pedido');
 		$this->load->model('modelo', 'modelo'); 
-		
 		$this->load->model('model_inicio', 'modelo_inicio');
 		
 		$this->load->model('model_dashboard', 'modelo_dashboard');
@@ -710,7 +709,13 @@ $id_almacen= $data['id_almacen'];
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
-		      		$data['consecutivo']  = $this->catalogo->listado_consecutivo(16);
+		      $data['consecutivo']  = $this->catalogo->listado_consecutivo(16);
+	          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+	          $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+
+
+
+
 			      switch ($id_perfil) {    
 			        case 3:
 						       $data['val_proveedor']  = $this->modelo_inicio->valores_movimientos_temporal();
@@ -816,6 +821,12 @@ $id_almacen= $data['id_almacen'];
 
 				  $datos['exito'] =false;
 		 		if  ($data['id_cliente'])  {
+
+		 					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+		 					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
+		 					$data['tipo_pedido'] = $this->input->post('tipo_pedido');
+		 					$data['tipo_factura'] = $this->input->post('tipo_factura');
 
 
 		 					$datos['consecutivo']  = ($this->catalogo->listado_consecutivo(16)->consecutivo)+1;

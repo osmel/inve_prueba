@@ -74,6 +74,10 @@ echo form_open('pdfs/generar', $attr,$hidden );
 								<th class="text-center cursora" style="width:7%">Ancho <i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:7%">Peso Real <i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:14%">Proveedor<i class="glyphicon glyphicon-sort"></i></th>
+
+								<th class="text-center cursora" width="10%">Subtotal  <i class="glyphicon glyphicon-sort"></i></th>
+								<th class="text-center cursora" width="10%">IVA  <i class="glyphicon glyphicon-sort"></i></th>
+								<th class="text-center cursora" width="10%">Total  <i class="glyphicon glyphicon-sort"></i></th>								
 								<th class="text-center cursora" style="width:7%">Lote<i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:8%">No. de Partida<i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:14%">Comentario<i class="glyphicon glyphicon-sort"></i></th>
@@ -95,6 +99,10 @@ echo form_open('pdfs/generar', $attr,$hidden );
 									<td class="text-center"><?php echo $movimiento->ancho; ?> cm</td>
 									<td class="text-center"><?php echo $movimiento->peso_real; ?> kgs</td>
 									<td class="text-center"><?php echo $movimiento->nombre; ?></td>
+									<td class="text-center"><?php echo number_format($movimiento->sum_precio, 2, '.', ','); ?></td>
+									<td class="text-center"><?php echo number_format($movimiento->sum_iva, 2, '.', ','); ?></td>
+									<td class="text-center"><?php echo number_format($movimiento->sum_total, 2, '.', ','); ?></td>
+
 									<td class="text-center"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
 									<td class="text-center"><?php echo $movimiento->num_partida; ?></td>
 									<td class="text-center"><?php echo $movimiento->comentario; ?></td>

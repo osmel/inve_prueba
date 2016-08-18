@@ -148,6 +148,8 @@
           $inicio = $data['start'];
           $largo = $data['length'];
 
+           $id_tipo_factura = $data['id_tipo_factura'];
+           $id_tipo_pedido = $data['id_tipo_pedido'];
 
                 $producto_filtro = addslashes($data['producto_filtro']); 
                 $color_filtro = $data['color_filtro']; 
@@ -245,6 +247,13 @@
         } 
                            
 
+         //este no hace falta en pedido porq no se filtra
+          if ($id_tipo_factura!=0) {
+              $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' ) ';  
+              //$id_tipo_facturaid = '';
+          } else {
+              $id_tipo_facturaid = '';
+          } 
 
         
           $where = '(
@@ -254,7 +263,7 @@
                           (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) )
                         )  AND ( m.estatus_salida = "0" ) AND (m.id_almacen = '.$data['id_almacen'].' )  '.$donde.'
 
-                      ) 
+                      )'.$id_tipo_facturaid.' 
                        AND
 
                       (
@@ -273,7 +282,7 @@
                           ( ( us.id_cliente = '.$data['id_cliente'].' )  AND  ( (m.id_apartado = 3)  or ( m.id_apartado = 6 ) ) ) OR
                           (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) )
                         )  AND ( m.estatus_salida = "0" ) AND (m.id_almacen = '.$data['id_almacen'].' )
-
+                        '.$id_tipo_facturaid.'
                        )';
           $this->db->where($where);
 
@@ -704,6 +713,13 @@
              $this->db->select('id_apartado, id_usuario_apartado, id_cliente_apartado, fecha_apartado');
 
              $this->db->select('"'.$data['id_destino'].'" AS id_destino',false); 
+
+             $this->db->select('id_factura');
+             $this->db->select('"'.$data['id_tipo_factura'].'" AS id_tipo_factura',false); 
+             $this->db->select('"'.$data['id_tipo_pedido'].'" AS id_tipo_pedido',false); 
+
+
+             
             
 
 
@@ -749,7 +765,10 @@
 
             $this->db->set( 'precio_anterior', 'precio', FALSE  );
             $this->db->set( 'precio', 'precio_cambio', FALSE  );
-            
+
+            $this->db->set( 'id_tipo_factura', 0, FALSE  );
+            $this->db->set( 'id_tipo_pedido', 0, FALSE  );
+
             $this->db->set('id_usuario_salida', '""', FALSE  );
             $this->db->set('estatus_salida', '0', FALSE  );
             $this->db->where('id',$objeto->id_entrada);
@@ -1070,6 +1089,7 @@ public function valores_movimientos_temporal(){
           $this->db->distinct();          
           $this->db->select('m.id, m.id_cliente, m.id_cargador, m.factura,m.id_destino, m.id_almacen');
           $this->db->select('p.nombre, ca.nombre cargador');
+           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura, m.id_tipo_factura');
           
           $this->db->from($this->registros_salidas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');

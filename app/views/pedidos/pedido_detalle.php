@@ -67,6 +67,9 @@
 
 				</div>		
 
+				<div class="col-sm-1 col-md-1"> 
+					<div style="margin-right: 15px;float:left;background-color:#f2dede;width:15px;height:15px;"></div>
+				</div>Serán traspasados
 
 
 	<hr/>

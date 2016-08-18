@@ -253,6 +253,112 @@
 
 
 
+
+
+
+	<!--Tipos de pedidos -->
+				<div class="col-xs-12 col-sm-6 col-md-2">
+					    
+							<label for="id_tipo_pedido_salida" class="col-sm-3 col-md-12">Tipo de pedido</label>
+							<div class="col-sm-9 col-md-12">
+							    <!--Los administradores o con permisos de entrada 
+							    	Y que no este inhabilitado y 
+							    	que no sean pedidoista 
+							    	ENTONCES lista editable -->
+
+								<?php if ($val_proveedor) { ?>
+									<fieldset class="disabledme" disabled>							
+								<?php } else { ?>
+									<fieldset class="disabledme">						
+								<?php } ?>
+
+											<select name="id_tipo_pedido_salida" id="id_tipo_pedido_salida" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $pedidos as $pedido ){ ?>
+															<?php 
+																if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados pedido
+																	 if ($pedido->id==$val_proveedor->id_tipo_pedido) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+																}
+															?>
+																<option value="<?php echo $pedido->id; ?>" <?php echo $seleccionado; ?> ><?php echo $pedido->tipo_pedido; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+								    </fieldset>
+
+							</div>
+					</div>		
+
+
+
+					
+
+					<?php
+					$mostrando ="display:block";
+					 if (($val_proveedor) && ($val_proveedor->id_tipo_pedido==2)) { 
+
+								$mostrando ="display:none";
+							}
+						?>
+
+
+
+					<!--Tipos de factura -->
+					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" style="<?php echo $mostrando; ?>";>
+					    
+							<label for="id_tipo_factura_salida" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<div class="col-sm-9 col-md-12">
+							    <!--Los administradores o con permisos de entrada 
+							    	Y que no este inhabilitado y 
+							    	que no sean facturaista 
+							    	ENTONCES lista editable -->
+
+								<?php if ($val_proveedor) { ?>
+									<fieldset class="disabledme" disabled>							
+								<?php } else { ?>
+									<fieldset class="disabledme">						
+								<?php } ?>
+
+											<select name="id_tipo_factura_salida" id="id_tipo_factura_salida" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $facturas as $factura ){ ?>
+															<?php 
+																if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
+																	 if ($factura->id==$val_proveedor->id_tipo_factura) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+																}
+															?>
+																<option value="<?php echo $factura->id; ?>" <?php echo $seleccionado; ?> ><?php echo $factura->tipo_factura; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+								    </fieldset>
+
+							</div>
+					</div>		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <br/><br/>
 
 	<div class="col-md-12">	
