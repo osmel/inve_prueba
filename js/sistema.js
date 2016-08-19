@@ -2031,7 +2031,7 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
 
     	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
     	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
-    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'Lote','No. de Partida','Almacén'];
+    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
 		
 		var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén'];
 		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén' ]; 
@@ -5557,30 +5557,50 @@ jQuery('#pedido_completo_detalle').dataTable( {
 				jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);	
 			}
 			
-
-			
-
-
-
-
 		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
 		    jQuery('#etiq_hora').val(  settings.json.datos.mi_hora);
 
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado+' '+settings.json.datos.tipo_pedido  );
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 			
+
+		    //jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+
+		    if (settings.json.datos.tipo_factura!=null) {
+		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
+		    }else {
+		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido);	
+		    }
+
+
 		}	
 		
 	    return pre
-	},    
+	}, 
+
+	"rowCallback": function( row, data ) {
+					    
+		    //aqui lo esta comparando con id_factura_original=13
+		    //( data[10] != 0) -->para caso tipo_pedido=surtido
+		    if (( data[13] != data[10]) && ( data[10] != 0)  ) {
+		      jQuery('td', row).addClass( "danger" );
+		    }
+
+	 },		   
 
    "columnDefs": [
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8],
-	            }
+	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	            },
+
+
+    			{ 
+	                 "visible": false,
+	                "targets": [9,10,11,13],
+	            }		            
 
 	],	
 
@@ -5725,12 +5745,14 @@ jQuery('#tabla_pedido_completado').dataTable( {
 
 jQuery('body').on('click','#incluir_pedido', function (e) {
 	 
+	 
      num_mov = jQuery("#num_mov").val();  //3; //
  	 jQuery.ajax({
 		        url : '/incluir_pedido',
 		        data : { 
 		        	num_mov: num_mov,
-		        id_almacen:jQuery('#id_almacen_pedido').val()	
+		        id_almacen:jQuery('#id_almacen_pedido').val(),	
+		        id_tipo_factura:jQuery('#id_tipo_factura').val()
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -5751,6 +5773,7 @@ jQuery('body').on('click','#incluir_pedido', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
+									        	jQuery('#pedido_detalle').dataTable().fnDraw();
 									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'incluir_pedido');
 												return false;		
 									        }
@@ -5833,6 +5856,7 @@ jQuery('#pedido_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 			
+		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
 
 		    if (settings.json.datos.tipo_factura!=null) {
 		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		

@@ -64,8 +64,26 @@
        public function quitar_apartados( $data ){
             $id_almacen= $data['id_almacen'];
 
+
+                $porciento_aplicar = 16;                 
+                
+                /*
+                $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
+                $this->db->set( 'incluir', 0);
+                $this->db->set( 'id_factura', 'id_factura_original', false);
+                $this->db->set( 'id_factura_original', 0, false);
+                */
+
+
+
             $sql= 'UPDATE '.$this->registros.' as m JOIN '.$this->usuarios.' As u  ON u.id = m.id_usuario_apartado'.
-              ' SET m.id_apartado = 0, m.id_usuario_apartado ="", m.id_cliente_apartado=0 ';
+              ' SET m.id_apartado = 0, m.id_usuario_apartado ="", m.id_cliente_apartado=0,
+              m.id_prorroga=0,m.fecha_apartado="",m.fecha_vencimiento="",m.id_tipo_pedido=0,m.id_tipo_factura=0,
+              m.iva= ((m.id_factura_original = 1)*'.$porciento_aplicar.'),
+              m.incluir =0, m.id_factura = m.id_factura_original,
+              m.id_factura_original =0
+              ';
+
 
             if ($id_almacen!=0) {
                     $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
@@ -830,7 +848,17 @@
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
 
           $this->db->select('id_almacen');
+
+
+          $this->db->select('id_tipo_pedido,id_tipo_factura,iva, id_factura, id_factura_original');
+
+          $this->db->select('0 incluir',false);
+
           
+   
+
+
+
          
 
           $this->db->from($this->registros);

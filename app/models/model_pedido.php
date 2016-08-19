@@ -1771,9 +1771,11 @@
                                       
                                                                         
                                     );
+                            
                             $tipo_pedido=$row->tipo_pedido;
                             $tipo_factura=$row->tipo_factura; 
 
+                            $id_tipo_factura=$row->id_tipo_factura;   
 
                       }
                       return json_encode ( array(
@@ -1784,7 +1786,10 @@
                         "datos"            =>  array("num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                             
                             "tipo_pedido"=>$tipo_pedido,
-                            "tipo_factura"=>$tipo_factura,  
+                            "tipo_factura"=>$tipo_factura, 
+                            "id_tipo_factura"=>$id_tipo_factura, 
+
+
 
 
                          ),
@@ -1916,13 +1921,25 @@
          ',False);  
 
           $this->db->select("a.almacen");
+          
+          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, ,m.id_tipo_pedido");
+          $this->db->select("tp.tipo_pedido");          
+          $this->db->select("tf.tipo_factura");  
+          $this->db->select("tff.tipo_factura t_factura");  
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
           //filtro de busqueda
 
           if ($id_almacen!=0) {
@@ -1996,8 +2013,16 @@
                                       6=>$row->id_lote.'-'.$row->consecutivo,         
                                       7=>$row->num_partida,
                                       8=>$row->almacen,
+                                      
+                                      9=>$row->id_factura,
+                                      10=>$row->id_tipo_factura,
+                                      11=>$row->id_tipo_pedido,
+                                      12=>$row->t_factura,  
+                                      13=>$row->id_factura_original                                    
                                                                    
                                     );
+                              $tipo_pedido=$row->tipo_pedido;
+                              $tipo_factura=$row->tipo_factura; 
                       }
 
                       return json_encode ( array(
@@ -2005,7 +2030,11 @@
                         "recordsTotal"    => intval( self::total_completo_especifico($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
-                        "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora ),
+                        "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
+                          "tipo_pedido"=>$tipo_pedido,
+                          "tipo_factura"=>$tipo_factura,  
+
+                         ),
                       ));
                     
               }   
@@ -2338,6 +2367,62 @@
         }   
 
 
+
+                //cambiar estatus de unidad
+        public function traspaso_pedido( $data ){
+                
+                $id_almacen= $data['id_almacen'];
+                
+                if ($data['id_tipo_factura']==1){
+                    $porciento_aplicar =16;  
+                } else {
+                     $porciento_aplicar = 0;  
+                }
+                
+                $this->db->set( 'id_factura_original', 'id_factura', false);
+                $this->db->set( 'id_factura', 'id_tipo_factura', false);
+                //$this->db->set( 'precio', '( (('.$porciento_aplicar.'*precio)/100) + precio)', FALSE );
+                //$this->db->set( 'iva', '('.$porciento_aplicar.')', false);
+                
+                
+                if ($data['id_tipo_factura']==1){
+                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
+                }
+                
+
+
+                $this->db->set( 'incluir', 1);
+
+
+                //$this->db->set( 'id_prorroga', '(1 XOR id_prorroga)', FALSE );
+
+
+                
+                if ($id_almacen!=0) {
+                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
+                } else {
+                    $id_almacenid = '';
+                } 
+
+                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
+
+                $where = '(
+                          (
+                            (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
+                          )'.$id_almacenid.$cond_traspaso.' 
+
+                      )';   
+
+                $this->db->where($where);
+                $this->db->update($this->registros );
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;
+
+        }   
+
+
                     //cambiar estatus de unidad
         public function incluir_pedido( $data ){
                 
@@ -2367,6 +2452,56 @@
         }   
 
 
+        public function cancelar_traspaso_pedido_detalle( $data ){
+//WYzO193001190820161208_9
+//LXaX1600011908201612817_10
+
+                $id_almacen= $data['id_almacen'];
+               
+                $porciento_aplicar = 16;                 
+                
+                
+                /*$this->db->set( 'precio', 
+                      '(precio-
+                            (
+                                ( 
+                                    ( (id_factura_original = 2)*'.$porciento_aplicar.')*
+                                        ((precio*100)/(100+'.$porciento_aplicar.'))
+                                )/100
+                            )
+                        )', FALSE );
+                */
+
+                $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
+                $this->db->set( 'incluir', 0);
+                $this->db->set( 'id_factura', 'id_factura_original', false);
+                $this->db->set( 'id_factura_original', 0, false);
+
+                $cond_traspaso = ' AND ( ( id_factura_original <>  0 ) AND ( incluir =  1 ) )';  
+
+                if ($id_almacen!=0) {
+                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
+                } else {
+                    $id_almacenid = '';
+                } 
+
+                $where = '(
+                          (
+                            (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
+                          )'.$id_almacenid.$cond_traspaso.' 
+
+                      )';   
+
+                $this->db->where($where);                
+
+                $this->db->update($this->registros );
+
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;                
+
+          }      
 
         //cambiar estatus de pedidos
         public function cancelar_pedido_detalle( $data ){
@@ -2375,9 +2510,10 @@
                 $fecha_hoy = date('Y-m-d H:i:s');  
 
                 $id_almacen= $data['id_almacen'];
+
                 
-                $this->db->set( 'precio_anterior', 'precio', FALSE  );
-                $this->db->set( 'precio', 'precio_cambio', FALSE  );
+               // $this->db->set( 'precio_anterior', 'precio', FALSE  );
+               // $this->db->set( 'precio', 'precio_cambio', FALSE  );
 
                 $this->db->set( 'fecha_vencimiento', '' ); 
                 $this->db->set( 'id_prorroga', 0);
@@ -2385,6 +2521,9 @@
                 $this->db->set( 'id_cliente_apartado', 0 );
                 $this->db->set( 'id_apartado', 0);
                 $this->db->set( 'id_usuario_apartado', '');
+                $this->db->set( 'id_tipo_pedido', 0, false);
+                $this->db->set( 'id_tipo_factura', 0, false);
+
 
 
                 if ($id_almacen!=0) {
