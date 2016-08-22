@@ -82,6 +82,13 @@
 								<button  id="ver_filtro" type="button" class="btn btn-success btn-block ttip" title="Mostrar u ocultar filtros.">Filtros</button>
 					</div>
 
+					<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>listado_traspaso" type="button" class="btn btn-info btn-block ttip" title="Ver listado de traspasos.">
+							Hist. Traspasos
+						</a>
+					</div>
+
 
 				</div>
 

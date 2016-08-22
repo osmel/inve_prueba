@@ -492,7 +492,7 @@ $route['pdf_apartado/(:any)']   	= 'pdfs/pdf_apartado/$1';
 $route['pdf_historico/(:any)']    	= 'pdfs/pdf_historico/$1';
 
 
-$route['pro_salida/(:any)/(:any)/(:any)']    			= 'salidas/pro_salida/$1/$2/$3';
+$route['pro_salida/(:any)/(:any)/(:any)/(:any)/(:any)']    			= 'salidas/pro_salida/$1/$2/$3/$4/$5';
 
 ///////////////////////////////////DEVOLUCIONES//////////////////////////////////////////////
 
@@ -547,6 +547,14 @@ $route['listado_salidas']    = 'reportes/listado_salidas';
 $route['listado_devolucion']    = 'reportes/listado_devolucion';
 
 $route['exportar_reporte']    = 'reportes/exportar_reporte';
+
+
+
+/////////////////////////////////////////////Listado de todas las reportes
+$route['listado_traspaso']						= 'traspaso/listado_traspaso';
+
+$route['procesando_general_traspaso']			= 'traspaso/procesando_general_traspaso';
+
 
 
 

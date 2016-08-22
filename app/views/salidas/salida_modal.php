@@ -34,4 +34,10 @@
 	<input type="hidden" id="valor" name="valor" value="<?php echo $valor; ?>">
 	<input type="hidden" id="id_cliente" name="id_cliente" value="<?php echo $id_cliente; ?>">
 	<input type="hidden" id="id_almacen" name="id_almacen" value="<?php echo $id_almacen; ?>">
+
+	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="<?php echo $id_tipo_pedido; ?>">
+	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">
+
+	
+	
 <?php echo form_close(); ?>

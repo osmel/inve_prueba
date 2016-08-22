@@ -60,7 +60,6 @@
 							</div>
 						</div>									
 
-
 				</div>	
 
 				<div class="col-sm-1 col-md-1"> 

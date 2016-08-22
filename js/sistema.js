@@ -4955,6 +4955,10 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	id_destino = jQuery("#id_destino").val();
 	id_almacen = jQuery('#id_almacen').val();
 
+	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+
 	 var url = 'confirmar_salida_sino';
 
 	    var arreglo_peso = [];
@@ -4977,6 +4981,8 @@ jQuery('body').on('click','#proc_salida', function (e) {
 		        	arreglo_peso:arreglo_peso,
 		        	id_destino:id_destino,
 		        	id_almacen:id_almacen,
+		        	id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura
 		        },
 		        dataType : 'json',
 		        success : function(data) {	
@@ -5009,7 +5015,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 
 												valor= jQuery.base64.encode(data.valor);
 
-												var url = "pro_salida/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen);
+												var url = "pro_salida/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
 											
 												jQuery('#modalMessage').modal({
 													  show:'true',
@@ -5579,15 +5585,12 @@ jQuery('#pedido_completo_detalle').dataTable( {
 	}, 
 
 	"rowCallback": function( row, data ) {
-					    
 		    //aqui lo esta comparando con id_factura_original=13
 		    //( data[10] != 0) -->para caso tipo_pedido=surtido
-		    if (( data[13] != data[10]) && ( data[10] != 0)  ) {
+		    if (( data[13] != data[10]) && ( data[13] != 0)  ) {
 		      jQuery('td', row).addClass( "danger" );
 		    }
-
 	 },		   
-
    "columnDefs": [
     			{ 
 	                "render": function ( data, type, row ) {

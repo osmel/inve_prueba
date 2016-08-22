@@ -61,50 +61,82 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-       public function quitar_apartados( $data ){
+
+    //solo para quitar traspaso a los que no se incluyeron a la salida
+    public function traspaso_quitar_apartados($data) {
             $id_almacen= $data['id_almacen'];
+                 $porciento_aplicar = 16;    
+
+            $sql= 'UPDATE '.$this->registros.' as m JOIN '.$this->usuarios.' As u  ON u.id = m.id_usuario_apartado'.
+              ' SET 
+                  m.id_tipo_pedido=0,m.id_tipo_factura=0,
+                  m.iva= ((m.id_factura_original = 1)*'.$porciento_aplicar.'),
+                  m.incluir =0, m.id_factura = m.id_factura_original,
+                  m.id_factura_original =0
+              ';
+
+              $cond_traspaso = ' AND ( ( m.id_factura_original <>  0 ) AND ( m.incluir =  1 ) )';  
+              
+              //$cond_traspaso = ' AND ( ( m.id_tipo_factura =  0 ) OR ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) )'; 
+
+              //$cond_filtro_tipo = ' AND ( ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) )'; 
+
+              $cond_filtro_tipo = ' AND ( 
+                ( ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) AND ( m.id_tipo_pedido =  '.$data['id_tipo_pedido'].' ) )
+                )';  
 
 
-                $porciento_aplicar = 16;                 
-                
-                /*
-                $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
-                $this->db->set( 'incluir', 0);
-                $this->db->set( 'id_factura', 'id_factura_original', false);
-                $this->db->set( 'id_factura_original', 0, false);
-                */
+              if ($id_almacen!=0) {
+                      $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+                  } else {
+                      $id_almacenid = '';
+              }             
+
+              $where = ' where (
+                            (
+                              (( m.id_apartado = 6 ) or ( m.id_apartado = 3 ) ) AND ( u.id_cliente = '.$data['id_cliente'].' )
+                              
+                            )'.$id_almacenid.$cond_traspaso.$cond_filtro_tipo.'  
+
+                        )';   
+
+          $consulta = $this->db->query($sql.$where);
+          return TRUE;
+    }      
 
 
+      public function quitar_apartados( $data ){
+            $id_almacen= $data['id_almacen'];
 
             $sql= 'UPDATE '.$this->registros.' as m JOIN '.$this->usuarios.' As u  ON u.id = m.id_usuario_apartado'.
               ' SET m.id_apartado = 0, m.id_usuario_apartado ="", m.id_cliente_apartado=0,
-              m.id_prorroga=0,m.fecha_apartado="",m.fecha_vencimiento="",m.id_tipo_pedido=0,m.id_tipo_factura=0,
-              m.iva= ((m.id_factura_original = 1)*'.$porciento_aplicar.'),
-              m.incluir =0, m.id_factura = m.id_factura_original,
-              m.id_factura_original =0
-              ';
+              m.id_prorroga=0,m.fecha_apartado="",m.fecha_vencimiento="",m.id_tipo_pedido=0,m.id_tipo_factura=0';
+
+              if ($id_almacen!=0) {
+                      $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+                  } else {
+                      $id_almacenid = '';
+              }             
+
+              //$cond_filtro_tipo =  ' AND ( ( m.id_tipo_factura =  0 ) OR ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) )'; 
+
+              $cond_filtro_tipo = ' AND ( ( ( m.id_tipo_factura =  0 ) AND ( m.id_tipo_pedido =  0 ) ) OR 
+                ( ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) AND ( m.id_tipo_pedido =  '.$data['id_tipo_pedido'].' ) )
+                )';  
 
 
-            if ($id_almacen!=0) {
-                    $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
-                } else {
-                    $id_almacenid = '';
-            }             
+              $where = ' where (
+                            (
+                              (( m.id_apartado = 6 ) or ( m.id_apartado = 3 ) ) AND ( u.id_cliente = '.$data['id_cliente'].' )
+                              
+                            )'.$id_almacenid.$cond_filtro_tipo.'  
 
-            $where = ' where (
-                          (
-                            (( m.id_apartado = 6 ) or ( m.id_apartado = 3 ) ) AND ( u.id_cliente = '.$data['id_cliente'].' )
-                            
-                          )'.$id_almacenid.'  
+                        )';   
 
-                      )';   
-  //AND ( m.estatus_salida = "0" ) 
+          $consulta = $this->db->query($sql.$where);
+          return TRUE;
 
-              $consulta = $this->db->query($sql.$where);
-
-           return TRUE;
-            
-       }
+      }
 
 
       public function cantidad_apartados($data){
@@ -120,11 +152,17 @@
                     $id_almacenid = '';
                 } 
 
+                //$cond_traspaso = ' AND ( ( m.id_factura_original <>  0 ) AND ( m.incluir =  1 ) )';  
+
+                $cond_traspaso = ' AND ( ( ( m.id_tipo_factura =  0 ) AND ( m.id_tipo_pedido =  0 ) ) OR 
+                ( ( m.id_tipo_factura =  '.$data['id_tipo_factura'].' ) AND ( m.id_tipo_pedido =  '.$data['id_tipo_pedido'].' ) )
+                )';  
+
                 $where = '(
                           (
                             (( m.id_apartado = 6 ) or ( m.id_apartado = 3 ) ) AND ( u.id_cliente = '.$data['id_cliente'].' )
                             AND ( m.estatus_salida = "0" )
-                          )'.$id_almacenid.' 
+                          )'.$id_almacenid.$cond_traspaso.' 
 
                       )';   
 
@@ -267,10 +305,11 @@
 
          //este no hace falta en pedido porq no se filtra
           if ($id_tipo_factura!=0) {
-              $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' ) ';  
+              $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' )  AND ( m.id_tipo_pedido  <>2  ) ';  
               //$id_tipo_facturaid = '';
           } else {
-              $id_tipo_facturaid = '';
+              //$id_tipo_facturaid = '';
+              $id_tipo_facturaid = ' AND (( m.id_tipo_pedido  =0  ) OR ( m.id_tipo_pedido  =2  ) )';  
           } 
 
         
@@ -725,17 +764,19 @@
 
              $this->db->select('id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, num_partida');
              $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, cantidad_royo, ancho');
-             $this->db->select('precio, codigo, comentario, id_estatus, id_lote, consecutivo');
+             $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
              $this->db->select('fecha_entrada,estatus_salida,consecutivo_venta');
 
              $this->db->select('id_apartado, id_usuario_apartado, id_cliente_apartado, fecha_apartado');
 
              $this->db->select('"'.$data['id_destino'].'" AS id_destino',false); 
 
-             $this->db->select('id_factura');
+             
              $this->db->select('"'.$data['id_tipo_factura'].'" AS id_tipo_factura',false); 
              $this->db->select('"'.$data['id_tipo_pedido'].'" AS id_tipo_pedido',false); 
 
+             //id_tipo_pedido,id_tipo_factura, 
+             $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
 
              
             
@@ -781,11 +822,8 @@
             $result = $this->db->get();
             $objeto = $result->row();
 
-            $this->db->set( 'precio_anterior', 'precio', FALSE  );
-            $this->db->set( 'precio', 'precio_cambio', FALSE  );
-
-            $this->db->set( 'id_tipo_factura', 0, FALSE  );
-            $this->db->set( 'id_tipo_pedido', 0, FALSE  );
+            //$this->db->set( 'precio_anterior', 'precio', FALSE  );
+            //$this->db->set( 'precio', 'precio_cambio', FALSE  );
 
             $this->db->set('id_usuario_salida', '""', FALSE  );
             $this->db->set('estatus_salida', '0', FALSE  );
@@ -841,7 +879,7 @@
            
           //registros de entradas
           $this->db->select('id id_entrada, fecha_entrada,  fecha_salida, movimiento, id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad,devolucion, num_partida');
-          $this->db->select('referencia, id_medida, cantidad_um, cantidad_royo, ancho, precio, codigo, comentario, id_estatus, id_lote, consecutivo');
+          $this->db->select('referencia, id_medida, cantidad_um, cantidad_royo, ancho,  codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('id_cargador, id_usuario, id_usuario_salida, fecha_mac, id_operacion, estatus_salida');
 
           $this->db->select('id_apartado,id_usuario_apartado, id_cliente_apartado,fecha_apartado');
@@ -850,15 +888,9 @@
           $this->db->select('id_almacen');
 
 
-          $this->db->select('id_tipo_pedido,id_tipo_factura,iva, id_factura, id_factura_original');
+          $this->db->select('precio, iva, id_pedido, id_factura, id_tipo_pedido,id_tipo_factura, id_factura_original,incluir');
 
-          $this->db->select('0 incluir',false);
-
-          
-   
-
-
-
+          //$this->db->select('0 incluir',false);
          
 
           $this->db->from($this->registros);
@@ -868,8 +900,6 @@
 
           $result = $this->db->get();
 
-          
-
           $objeto = $result->result();
           //copiar a tabla "historico_registros_entradas"
           
@@ -878,12 +908,9 @@
               $this->db->insert($this->historico_registros_entradas, $value); 
             }
           */
-       
 
           //eliminar los registros en "registros_entradas"
           $this->db->delete($this->registros, array('id_usuario'=>$id_session,'estatus_salida'=>'1')); 
-
-
 
           //actualizar a registros_salidas el "mov_salida" al consecutivo q le toque
           $this->db->set('mov_salida', $consecutivo, FALSE  );
@@ -895,7 +922,7 @@
 
           //registros de salidas    
           $this->db->select('m.id id_salida, m.id_entrada, m.mov_salida, m.fecha_entrada, m.fecha_salida, m.movimiento, m.id_empresa, m.id_cliente, m.factura, m.factura_salida,m.devolucion, m.num_partida');
-          $this->db->select('m.id_descripcion, m.id_color, m.id_composicion, m.id_calidad, m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo');
+          $this->db->select('m.id_descripcion, m.id_color, m.id_composicion, m.id_calidad, m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,  m.codigo');
           $this->db->select('m.comentario, m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.id_usuario_salida, m.fecha_mac, m.id_operacion, m.estatus_salida');
           
           $this->db->select('ca.nombre cargador, p.nombre cliente');
@@ -912,6 +939,9 @@
           $this->db->select('m.id_destino,de.nombre destino');
           $this->db->select('m.id_almacen');
           $this->db->select('m.consecutivo_venta');
+        
+          $this->db->select('m.precio, m.iva, m.id_pedido, m.id_factura, m.id_tipo_pedido,m.id_tipo_factura, m.id_factura_original,m.incluir');
+
 
           $this->db->from($this->registros_salidas.' As m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');

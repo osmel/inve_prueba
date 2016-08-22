@@ -1,6 +1,89 @@
 jQuery(document).ready(function($) {
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////TRASPASO///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	var arr_general_traspaso = ['Traspaso', 'Proceso', 'Motivo', 'Fecha', 'Número', 'Almacén', 'Responsable','Detalle'];
+
+	jQuery('#tabla_general_traspaso').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_general_traspaso",
+	         		"type": "POST",
+	         		
+	    },   
+
+
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return row[1];
+		                },
+		                "targets": [0] //,2,3,4
+		            },
+
+			    
+
+		            {
+		                "render": function ( data, type, row ) {
+
+						texto='<td>';
+							texto+='<a href="editar_calidad/'+(row[0])+'" type="button"'; 
+							texto+=' class="btn btn-warning btn-sm btn-block" >';
+								texto+=' <span class="glyphicon glyphicon-edit"></span>';
+							texto+=' </a>';
+						texto+='</td>';
+
+
+							return texto;	
+		                },
+		                "targets": 1
+		            },
+		            
+		        ],
+		"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+			var arreglo =arr_general_traspaso;
+			for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
+		    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+		    	}
+		},
+
+				        
+	});	
+
 
 
 

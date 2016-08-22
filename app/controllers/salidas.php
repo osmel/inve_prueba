@@ -353,6 +353,8 @@ class Salidas extends CI_Controller {
 				
 					$data['id_almacen'] = $this->input->post('id_almacen');
 
+					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 			 		if (($existe) and ($this->form_validation->run() === TRUE) and ($data['id_cliente']) and ($data['id_cargador']) ) {
 			 					//verificar si los apartados estan siendo totales o parciales
 			 				  $dato['valor'] = $this->modelo_salida->cantidad_apartados($data);
@@ -374,7 +376,7 @@ class Salidas extends CI_Controller {
 	}
 
 
-	public function pro_salida($valor,$id_cliente,$id_almacen){
+	public function pro_salida($valor,$id_cliente,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
 
 		  if ( $this->session->userdata('session') !== TRUE ) {
 		      redirect('');
@@ -388,6 +390,9 @@ class Salidas extends CI_Controller {
 		       $data['valor'] 				= base64_decode($valor);
 		       $data['id_cliente'] 			= $id_cliente;
 		       $data['id_almacen'] 				= base64_decode($id_almacen);
+
+		       $data['id_tipo_pedido'] 				= base64_decode($id_tipo_pedido);
+		       $data['id_tipo_factura'] 				= base64_decode($id_tipo_factura);
 
 		      switch ($id_perfil) {    
 		        case 1:
@@ -431,7 +436,11 @@ public function validar_confirmar_salida_sino(){
 		        $data['movimientos']  		= $this->modelo_salida->listado_movimientos_registros($data); //1013
 		        $data['id_almacen'] 		= $this->input->post('id_almacen');
 
+				$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');		        
+
 		       if (($data['valor']==1) || ($data['valor']==2) ) {
+		       		$this->modelo_salida->traspaso_quitar_apartados($data);
 					$this->modelo_salida->quitar_apartados($data);		       		
 		       }
 		       //$this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); $this->db->select('m.id_destino,de.nombre destino');
