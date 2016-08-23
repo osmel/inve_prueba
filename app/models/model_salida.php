@@ -39,6 +39,7 @@
       
       $this->historico_registros_entradas = $this->db->dbprefix('historico_registros_entradas');
       $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
+      $this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
       
       $this->composiciones     = $this->db->dbprefix('catalogo_composicion');
       $this->calidades                 = $this->db->dbprefix('catalogo_calidad');
@@ -958,14 +959,33 @@
           $objeto = $result->result();
           //copiar a tabla "historico_registros_salidas"
           $dato = array();
+          $consecutivo_traspaso = self::consecutivo_operacion(26);
+          $traspaso=0;
           foreach ($objeto as $key => $value) {
             $this->db->insert($this->historico_registros_salidas, $value); 
+
+            if ($value->incluir==1) {
+              $traspaso=1;
+              $value_traspaso = $value;
+              $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
+              $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
+            }
+
+            //$this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
             $dato['num_movimiento'] = $value->mov_salida;
             $dato['cargador'] = $value->cargador;
             $dato['cliente'] = $value->cliente;
 
           }
-
+          
+          if ($traspaso==1) {
+              //actualizar (consecutivo de traspaso)
+              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+              $this->db->set( 'id_usuario', $id_session );
+              $this->db->where('id',26);
+              $this->db->update($this->operaciones);          
+          }
+              
           //actualizar (consecutivo) en tabla "operacion"   == "salida"
           $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
           $this->db->set( 'id_usuario', $id_session );

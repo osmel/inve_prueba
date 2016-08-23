@@ -4760,6 +4760,8 @@ jQuery('#tabla_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 
+		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+
  			if (settings.json.datos.tipo_factura!=null) {
 		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
 		    }else {
@@ -4860,6 +4862,7 @@ jQuery('body').on('click','#incluir_salida', function (e) {
 		        	id_cliente: id_cliente,
 		        	id_almacen:jQuery('#id_almacen_pedido').val(),
 		     consecutivo_venta:jQuery('#consecutivo_venta').val(),
+		     id_tipo_factura:jQuery('#id_tipo_factura').val(),
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -4882,6 +4885,7 @@ jQuery('body').on('click','#incluir_salida', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
+									        	jQuery('#tabla_detalle').dataTable().fnDraw();
 									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'incluir_salida');
 												return false;
 									        }

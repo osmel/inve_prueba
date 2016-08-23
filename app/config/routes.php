@@ -554,7 +554,9 @@ $route['exportar_reporte']    = 'reportes/exportar_reporte';
 $route['listado_traspaso']						= 'traspaso/listado_traspaso';
 
 $route['procesando_general_traspaso']			= 'traspaso/procesando_general_traspaso';
+$route['procesando_traspaso_historico']			= 'traspaso/procesando_traspaso_historico';
 
+$route['traspaso_detalle/(:any)']			= 'traspaso/traspaso_detalle/$1';
 
 
 

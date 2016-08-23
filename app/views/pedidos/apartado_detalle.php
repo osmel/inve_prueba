@@ -16,6 +16,7 @@
 <div class="container margenes">
 	<div class="panel panel-primary">
 			<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">
+			<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
 
 			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?></div>
 			<div class="panel-body">

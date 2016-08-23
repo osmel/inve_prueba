@@ -1554,6 +1554,8 @@
                                     );
                             $tipo_pedido=$row->tipo_pedido;
                             $tipo_factura=$row->tipo_factura; 
+                            $id_tipo_factura=$row->id_tipo_factura; 
+                            
                       }
 
                       return json_encode ( array(
@@ -1562,7 +1564,8 @@
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                          "datos"            =>  array("usuario"=>$mi_usuario, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "comprador"=>$mi_comprador, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora, "tipo_pedido"=>$tipo_pedido,
-                            "tipo_factura"=>$tipo_factura
+                            "tipo_factura"=>$tipo_factura,
+                              "id_tipo_factura"=>$id_tipo_factura,
                              ),
                       ));
               }   
@@ -2023,6 +2026,7 @@
                                     );
                               $tipo_pedido=$row->tipo_pedido;
                               $tipo_factura=$row->tipo_factura; 
+
                       }
 
                       return json_encode ( array(
@@ -2033,6 +2037,7 @@
                         "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                           "tipo_pedido"=>$tipo_pedido,
                           "tipo_factura"=>$tipo_factura,  
+
 
                          ),
                       ));
@@ -2295,6 +2300,40 @@
         }    
         
 
+        public function cancelar_traspaso_apartado_detalle( $data ){
+                $id_almacen= $data['id_almacen'];
+                $porciento_aplicar = 16;                 
+                
+                $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
+                $this->db->set( 'incluir', 0);
+                $this->db->set( 'id_factura', 'id_factura_original', false);
+                $this->db->set( 'id_factura_original', 0, false);
+
+               // $cond_traspaso = ' AND ( ( id_factura_original <>  0 ) AND ( incluir =  1 ) )';  
+                
+
+                $this->db->where('id_factura_original!=',0,FALSE);
+                $this->db->where('incluir',1);
+                if ($id_almacen!=0) {
+                    $this->db->where('id_almacen',$data['id_almacen']);
+                } else {
+                    //no porque se eliminaran "todos"
+                }                 
+                $this->db->where('id_usuario_apartado',$data['id_usuario']);
+                $this->db->where('id_cliente_apartado',$data['id_cliente']);
+                $this->db->where('id_apartado', 2 );
+                $this->db->where('consecutivo_venta',$data['consecutivo_venta']);
+
+
+                $this->db->update($this->registros );
+
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;                
+
+          }            
+
         //cambiar estatus de unidad
         public function cancelar_apartados_detalle( $data ){
               
@@ -2302,8 +2341,8 @@
                 $fecha_hoy = date('Y-m-d H:i:s'); 
                 $id_almacen= $data['id_almacen']; 
 
-                $this->db->set( 'precio_anterior', 'precio', FALSE  );
-                $this->db->set( 'precio', 'precio_cambio', FALSE  );
+              //  $this->db->set( 'precio_anterior', 'precio', FALSE  );
+               // $this->db->set( 'precio', 'precio_cambio', FALSE  );
 
                 $this->db->set( 'fecha_vencimiento', '' ); 
                 $this->db->set( 'id_prorroga', 0);
@@ -2313,6 +2352,8 @@
                 $this->db->set( 'id_apartado', 0);
                 $this->db->set( 'id_usuario_apartado', '');
                 $this->db->set( 'consecutivo_venta', 0);
+                $this->db->set( 'id_tipo_pedido', 0, false);
+                $this->db->set( 'id_tipo_factura', 0, false);
 
                if ($id_almacen!=0) {
                     $this->db->where('id_almacen',$data['id_almacen']);
@@ -2337,6 +2378,67 @@
         }   
 
 
+
+
+
+
+
+   public function traspaso_apartado( $data ){
+                
+                $id_almacen= $data['id_almacen'];
+                
+                if ($data['id_tipo_factura']==1){
+                    $porciento_aplicar =16;  
+                } else {
+                     $porciento_aplicar = 0;  
+                }
+                
+                $this->db->set( 'id_factura_original', 'id_factura', false);
+                $this->db->set( 'id_factura', 'id_tipo_factura', false);
+                //$this->db->set( 'precio', '( (('.$porciento_aplicar.'*precio)/100) + precio)', FALSE );
+                //$this->db->set( 'iva', '('.$porciento_aplicar.')', false);
+                
+                
+                if ($data['id_tipo_factura']==1){
+                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
+                }
+                
+
+
+                $this->db->set( 'incluir', 1);
+
+
+                //$this->db->set( 'id_prorroga', '(1 XOR id_prorroga)', FALSE );
+
+
+                
+                if ($id_almacen!=0) {
+                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
+                } else {
+                    $id_almacenid = '';
+                } 
+
+                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
+
+                $where = '(
+                          (
+                            (( id_apartado = 2 ) or ( id_apartado = 3 ) ) AND ( id_cliente_apartado = "'.$data['id_cliente'].'" ) AND ( id_usuario_apartado = "'.$data['id_usuario'].'" ) AND ( consecutivo_venta = '.$data['consecutivo_venta'].' )
+                         )'.$id_almacenid.$cond_traspaso.' 
+                )';    
+
+                $this->db->where($where);
+                $this->db->update($this->registros );
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;
+
+        }   
+
+        /*
+SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`, `id_tipo_pedido`, `id_tipo_factura`, `id_factura_original`, `incluir` FROM `inven_registros_entradas` WHERE id_tipo_pedido<>0
+
+        */
 
             //cambiar estatus de unidad
         public function incluir_apartado( $data ){
@@ -2365,6 +2467,9 @@
 
         
         }   
+
+
+
 
 
 

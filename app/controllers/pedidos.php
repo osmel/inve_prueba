@@ -675,12 +675,14 @@ function agregar_prod_pedido(){
 	}
 
 
+
 	function validar_eliminar_apartado_detalle(){
 		$data['id_usuario'] = $this->input->post('id_usuario');
 		$data['id_cliente'] = $this->input->post('id_cliente');
 		$data['id_almacen'] = $this->input->post('id_almacen');
 		$data['consecutivo_venta'] = $this->input->post('consecutivo_venta');
 
+		$this->modelo_pedido->cancelar_traspaso_apartado_detalle($data);
 
 		$cancelar = $this->modelo_pedido->cancelar_apartados_detalle($data);
 		if ( $cancelar !== FALSE ){
@@ -691,6 +693,7 @@ function agregar_prod_pedido(){
 	}	
 
 
+	    	
 
 //////////////////////////Incluir apartado a la salida///////////////////////////////////
 
@@ -706,12 +709,21 @@ function agregar_prod_pedido(){
 	    	$data['consecutivo_venta'] = $this->input->post('consecutivo_venta');
 	    	$data['id_apartado'] = 3;
 
+	    	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
 	    	$actualizar = $this->modelo_pedido->incluir_apartado($data);
+
+	    	
+
+	    	if ($data['id_tipo_factura']!=0) {
+	    		$this->modelo_pedido->traspaso_apartado($data);
+	    	}
 
 	    	echo  json_encode($actualizar);
 
 		}	
    }
+
 
 
 	function excluir_apartado(){

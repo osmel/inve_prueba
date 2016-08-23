@@ -16,6 +16,96 @@ class Traspaso extends CI_Controller {
   }
 
 //////////////////Listado de traspaso///////////////////////////
+  public function listado_traspaso(){
+
+      if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+         $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           
+          switch ($id_perfil) {    
+            case 1:          
+                        $this->load->view( 'traspaso/listado_traspaso',$data );
+              break;
+            case 2:
+            case 3:
+                  if  (in_array(4, $coleccion_id_operaciones))  {                 
+                            $this->load->view( 'traspaso/listado_traspaso',$data );
+                 }   
+              break;
+
+
+            default:  
+              redirect('');
+              break;
+          }
+        }
+        else{ 
+          redirect('');
+        }     
+  } 
+
+
+
+
+  public function traspaso_detalle($consecutivo_traspaso){
+        if($this->session->userdata('session') === TRUE ){
+              
+              $id_perfil=$this->session->userdata('id_perfil');
+
+              $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+              if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                    $coleccion_id_operaciones = array();
+               }   
+               
+            /*
+
+                     //no. movimiento $data
+                  $data['mov_salida'] = base64_decode($mov_salida);
+                  $data['id_apartado'] = base64_decode($id_apartado);
+                  $data['id_almacen'] = base64_decode($id_almacen);
+
+                  $data['id']=$data['id_almacen'];
+                  if ($data['id']==0){
+                    $data['almacen'] = 'Todos'; 
+                  } else {
+                    $data['almacen'] = $this->catalogo->coger_almacen($data)->almacen;
+                  }
+
+            */
+
+            $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);       
+           
+              switch ($id_perfil) {    
+                case 1:          
+                           $this->load->view('traspaso/traspaso_detalle',$data);
+                  break;
+                case 2:
+                case 3:
+                      if  (in_array(10, $coleccion_id_operaciones))  {            
+                          $this->load->view('traspaso/traspaso_detalle',$data);
+                      } else {
+                        redirect('');
+                      }   
+                  break;
+                default:  
+                  redirect('');
+                  break;
+              } //fin del case
+        }
+        else{ 
+          redirect('');
+        }     
+  }
+
+
+
+
+
 
   //1ra Regilla PARA "Pedidos de vendedores"
   public function procesando_general_traspaso(){
@@ -24,6 +114,11 @@ class Traspaso extends CI_Controller {
     echo $busqueda;
   } 
 
+  public function procesando_traspaso_historico(){
+    $data=$_POST;
+    $busqueda = $this->model_traspaso->buscador_traspaso_historico($data);
+    echo $busqueda;
+  } 
 
 /////////////////validaciones/////////////////////////////////////////  
 
