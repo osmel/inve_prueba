@@ -1442,6 +1442,14 @@
 
 
           //(CONCAT("Reales:",count(m.referencia)) LIKE  "%'.$cadena.'%")  OR  no se puede
+
+
+         if ($estatus=="cero") {
+            $activo  = ' and ( p.activo =  0 ) ';  
+          } else {
+            $activo ='';
+          }
+
           $where = '(
                       
                       (
@@ -1450,7 +1458,7 @@
                         (co.composicion LIKE  "%'.$cadena.'%")  OR
                         ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                         ( p.precio LIKE  "%'.$cadena.'%" ) 
-                       )
+                       )'.$activo.'
 
             ) ' ; 
 
@@ -1754,6 +1762,12 @@
           $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
+          if ($estatus=="cero") {
+            $activo  = ' and ( p.activo =  0 ) ';  
+          } else {
+            $activo ='';
+          }
+          
           $where = '(
                       
                       (
@@ -1762,7 +1776,7 @@
                         (co.composicion LIKE  "%'.$cadena.'%")  OR
                         ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                         ( p.precio LIKE  "%'.$cadena.'%" ) 
-                       )
+                       )'.$activo.'
 
             ) ' ; 
 

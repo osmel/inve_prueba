@@ -1432,6 +1432,11 @@ class Exportar_model extends CI_Model
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
+          if ($estatus=="cero") {
+            $activo  = ' and ( p.activo =  0 ) ';  
+          } else {
+            $activo ='';
+          }
           
           $where = '(
                       
@@ -1441,7 +1446,7 @@ class Exportar_model extends CI_Model
                         (co.composicion LIKE  "%'.$cadena.'%")  OR
                         ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                         ( p.precio LIKE  "%'.$cadena.'%" ) 
-                       )
+                       )'.$activo.'
 
             ) ' ; 
 
