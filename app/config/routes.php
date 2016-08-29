@@ -556,7 +556,13 @@ $route['listado_traspaso']						= 'traspaso/listado_traspaso';
 $route['procesando_general_traspaso']			= 'traspaso/procesando_general_traspaso';
 $route['procesando_traspaso_historico']			= 'traspaso/procesando_traspaso_historico';
 
-$route['traspaso_detalle/(:any)']			= 'traspaso/traspaso_detalle/$1';
+$route['traspaso_detalle/(:any)']				= 'traspaso/traspaso_detalle/$1';
+$route['traspaso_historico_detalle']			= 'traspaso/traspaso_historico_detalle';
+
+$route['procesando_traspaso_general_detalle']				= 'traspaso/procesando_traspaso_general_detalle';
+
+$route['traspaso_general_detalle/(:any)/(:any)/(:any)']	= 'traspaso/traspaso_general_detalle/$1/$2/$3';
+
 
 
 

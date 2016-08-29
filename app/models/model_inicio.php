@@ -287,6 +287,9 @@
                 $this->db->set( 'id_apartado', 0);
                 $this->db->set( 'id_usuario_apartado', '');
 
+                $this->db->set( 'consecutivo_venta', 0);
+                
+
                 $this->db->where('id', $data['id'] );
 
                 $this->db->update($this->registros );

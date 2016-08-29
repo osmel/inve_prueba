@@ -5,7 +5,9 @@ jQuery(document).ready(function($) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////TRASPASO///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Detalle']; //
+var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Detalle']; //
+var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
+
 
 jQuery('#id_almacen_traspaso').change(function(e) {
 	comienzo=true; //para indicar que start comience en 0;
@@ -133,6 +135,101 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 
 
 
+jQuery('#traspaso_historico_detalle').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/traspaso_historico_detalle",
+         		"type": "POST",
+         		 "data": function ( d ) {
+         		 	d.consecutivo_traspaso = jQuery("#consecutivo_traspaso").val();
+    			 } 
+
+     },   
+
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		    
+	    if (settings.json.datos) {
+			
+			
+			jQuery('#etiq_consecutivo_traspaso').val( settings.json.datos.consecutivo_traspaso);
+			jQuery('#etiq_proceso').val( settings.json.datos.proceso);
+			jQuery('#etiq_traspaso').val( settings.json.datos.traspaso);
+		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
+		    
+		    jQuery('#etiq_responsable').val( settings.json.datos.responsable);
+		    jQuery('#etiq_dependencia').val( settings.json.datos.dependencia);
+		    jQuery('#etiq_almacen').val( settings.json.datos.almacen);
+		    
+		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
+
+			if (settings.json.datos.tipo_apartado=="Vendedor") {
+				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_vendedor').text("Vendedor");
+				
+			} else {
+				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_vendedor').text("Num. Mov");
+			}
+				
+
+
+		}	
+		
+	    return pre
+	}, 
+	
+   "columnDefs": [
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	            },
+
+
+    			{ 
+	                 "visible": false,
+	                "targets": [9,10,11,13],
+	            }		            
+
+	],	
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =arr_traspaso_historico_detalle;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
 
 
 jQuery('#tabla_general_traspaso').dataTable( {
@@ -201,7 +298,7 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="pedido_completado_detalle/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'/'+jQuery.base64.encode(row[8])+'" ';  //+jQuery.base64.encode(row[6])+'" '; 
+    					 texto='<td><a href="traspaso_general_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
 						 	texto+=' class="btn btn-success btn-block">';
 						 	texto+=' Detalles';
 						 texto+='</a></td>';
@@ -213,7 +310,7 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            },
     			{ 
 	                 "visible": false,
-	                "targets": [1]
+	                "targets": [1,10]
 	            }	            
 	],	
 
@@ -221,6 +318,103 @@ jQuery('#tabla_general_traspaso').dataTable( {
 		var arreglo =arr_general_traspaso;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
+jQuery('#traspaso_general_detalle').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_traspaso_general_detalle",
+         		"type": "POST",
+         		 "data": function ( d ) {
+         		 		d.id_almacen = jQuery('#id_almacen_traspaso').val();	
+         		 		d.num_movimiento = jQuery("#num_movimiento").val();  //numero_mov del pedido
+     				   d.id_apartado = jQuery("#id_apartado").val();  //numero_mov del pedido
+    			 } 
+
+     },   
+
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		    
+	    if (settings.json.datos) {
+			
+			
+			jQuery('#etiq_consecutivo_traspaso').val( settings.json.datos.consecutivo_traspaso);
+			jQuery('#etiq_proceso').val( settings.json.datos.proceso);
+			jQuery('#etiq_traspaso').val( settings.json.datos.traspaso);
+		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
+		    
+		    jQuery('#etiq_responsable').val( settings.json.datos.responsable);
+		    jQuery('#etiq_dependencia').val( settings.json.datos.dependencia);
+		    jQuery('#etiq_almacen').val( settings.json.datos.almacen);
+		    
+		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
+
+			if (settings.json.datos.tipo_apartado=="Vendedor") {
+				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_vendedor').text("Vendedor");
+				
+			} else {
+				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_vendedor').text("Num. Mov");
+			}
+				
+
+
+		}	
+		
+	    return pre
+	}, 
+	
+   "columnDefs": [
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	            },
+
+
+    			{ 
+	                 "visible": false,
+	                "targets": [9,10,11,13],
+	            }		            
+
+	],	
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =arr_traspaso_historico_detalle;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+
 	    	}
 	},	
 

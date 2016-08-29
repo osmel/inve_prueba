@@ -2199,6 +2199,7 @@
             $this->db->set( 'id_cliente_apartado', 0);
             $this->db->set( 'id_tipo_factura', 0);
             $this->db->set( 'id_tipo_pedido', 0);
+            $this->db->set( 'consecutivo_venta', 0);
 
             $this->db->where('id',$data['id']);
             $this->db->update($this->registros);
@@ -2354,6 +2355,7 @@
                 $this->db->set( 'consecutivo_venta', 0);
                 $this->db->set( 'id_tipo_pedido', 0, false);
                 $this->db->set( 'id_tipo_factura', 0, false);
+                $this->db->set( 'consecutivo_venta', 0);
 
                if ($id_almacen!=0) {
                     $this->db->where('id_almacen',$data['id_almacen']);
@@ -2581,6 +2583,7 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 $this->db->set( 'incluir', 0);
                 $this->db->set( 'id_factura', 'id_factura_original', false);
                 $this->db->set( 'id_factura_original', 0, false);
+                $this->db->set( 'consecutivo_venta', 0);
 
                 $cond_traspaso = ' AND ( ( id_factura_original <>  0 ) AND ( incluir =  1 ) )';  
 
@@ -2628,6 +2631,7 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 $this->db->set( 'id_usuario_apartado', '');
                 $this->db->set( 'id_tipo_pedido', 0, false);
                 $this->db->set( 'id_tipo_factura', 0, false);
+                $this->db->set( 'consecutivo_venta', 0);
 
 
 

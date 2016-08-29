@@ -3,7 +3,9 @@
 <div class="container margenes">
 
 
-<input type="hidden" id="consecutivo_traspaso" name="consecutivo_traspaso" value="<?php echo $consecutivo_traspaso; ?>">
+<input type="hidden" id="num_movimiento" name="num_movimiento" value="<?php echo $num_movimiento; ?>">
+<input type="hidden" id="id_apartado" name="id_apartado" value="<?php echo $id_apartado; ?>">
+<input type="hidden" id="id_almacen_traspaso" name="id_almacen_traspaso" value="<?php echo $id_almacen; ?>">
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">Detalles de traspaso</div>
@@ -89,7 +91,7 @@
 						
 						<div class="table-responsive">
 							<section>
-								<table id="traspaso_historico_detalle" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
+								<table id="traspaso_general_detalle" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
 								</table>
 							</section>
 						</div>		
