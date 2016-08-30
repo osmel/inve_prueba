@@ -15,6 +15,166 @@ class Traspaso extends CI_Controller {
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
 
+
+public function modulo_traspaso(){
+
+
+
+     if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+           
+           //no. movimiento
+           $data['consecutivo']  = $this->catalogo->listado_consecutivo(26);
+           //valor del cliente, cargador, factura, 
+           $data['val_proveedor']  = $this->modelo_salida->valores_movimientos_temporal();
+           //print_r($data['val_proveedor']);
+           //die;
+           $data['productos'] = $this->catalogo->listado_productos_unico();
+           $data['colores'] = $this->catalogo->listado_colores_unico();
+           $data['destinos'] = $this->catalogo->lista_destino();
+           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+
+           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+           $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+
+           
+
+          switch ($id_perfil) {    
+            case 1:          
+                        $this->load->view( 'traspaso/modulo_traspaso',$data );
+              break;
+            case 2:
+            case 3:
+                  if  (in_array(26, $coleccion_id_operaciones))  {                 
+                            $this->load->view( 'traspaso/modulo_traspaso',$data );
+                 }   
+              break;
+
+
+            default:  
+              redirect('');
+              break;
+          }
+        }
+        else{ 
+          redirect('');
+        }   
+
+
+}  
+
+
+  public function procesando_entrada_traspaso(){
+      $data=$_POST;
+      $busqueda = $this->model_traspaso->buscador_entrada($data);
+      echo $busqueda;
+  }
+
+
+
+  public function procesando_salida_traspaso(){
+      $data=$_POST;
+      $busqueda = $this->model_traspaso->buscador_salida($data);
+      echo $busqueda;
+  }
+
+
+  function agregar_prod_salida_traspaso(){
+
+      if ($this->session->userdata('session') !== TRUE) {
+        redirect('');
+      } else {
+
+
+     $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+     $this->form_validation->set_rules( 'comentario', 'comentario', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+
+
+      if ( ($this->form_validation->run() === TRUE)  ) {
+
+            $data['id'] = $this->input->post('identificador');
+            $data['id_almacen'] = $this->input->post('id_almacen');
+            $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
+            /*
+            $data['factura'] = $this->input->post('factura');
+            $data['id_movimiento'] = $this->input->post('movimiento');
+            $data['id_destino'] = $this->input->post('id_destino');
+            */
+           
+            $this->model_traspaso->establecer_productos_traspasado($data);  
+              
+            $actualizar = true;
+            if ( $actualizar !== FALSE ){
+              echo TRUE;
+            } else {
+              echo '<span class="error">No se ha podido añadir el producto</span>';
+            }
+  
+      } else {      
+        
+             echo validation_errors('<span class="error">','</span>');
+
+          }     
+
+
+
+
+
+    } 
+   }
+
+
+  //quitar_prod_salida
+  
+
+  function quitar_prod_salida_traspaso(){
+
+      if ($this->session->userdata('session') !== TRUE) {
+        redirect('');
+      } else {
+
+
+     //$this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+     //$this->form_validation->set_rules( 'comentario', 'comentario', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+
+
+      if ( true  ) {
+
+            $data['id'] = $this->input->post('identificador');
+            $data['id_almacen'] = $this->input->post('id_almacen');
+            $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
+           
+            $this->model_traspaso->quitar_productos_traspasado($data);  
+              
+            $actualizar = true;
+            if ( $actualizar !== FALSE ){
+              echo TRUE;
+            } else {
+              echo '<span class="error">No se ha podido añadir el producto</span>';
+            }
+  
+      } else {      
+        
+             echo validation_errors('<span class="error">','</span>');
+
+          }     
+
+
+
+
+
+    } 
+   }
+
+
 //////////////////Listado de traspaso///////////////////////////
   public function listado_traspaso(){
 
@@ -168,6 +328,125 @@ class Traspaso extends CI_Controller {
     $busqueda = $this->model_traspaso->buscador_traspaso_historico($data);
     echo $busqueda;
   } 
+
+
+
+
+
+ public function imprimir_detalle_general_traspaso($num_movimiento,$id_apartado,$id_almacen) {
+
+        $data['num_movimiento'] = base64_decode($num_movimiento);
+           $data['id_apartado'] = base64_decode($id_apartado);
+            $data['id_almacen'] = base64_decode($id_almacen);
+
+         set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M');         
+       
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('freemono', '', 14, '', true);
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+        
+          $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_general_detalle($data);        
+          $html = $this->load->view('pdfs/traspasos/detalles_generales', $data, true);
+
+
+// Imprimimos el texto con writeHTMLCell()
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+ 
+// ---------------------------------------------------------
+// Cerrar el documento PDF y preparamos la salida
+// Este método tiene varias opciones, consulte la documentación para más información.
+        $nombre_archivo = utf8_decode("traspaso_".$data['num_movimiento'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+}    
+
+
+
+
+
+ public function imprimir_detalle_historico_traspaso($consecutivo_traspaso) {
+
+        $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M');         
+       
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('freemono', '', 14, '', true);
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+        
+          $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_historico_detalle($data);        
+          $html = $this->load->view('pdfs/traspasos/detalles_historicos', $data, true);
+
+
+// Imprimimos el texto con writeHTMLCell()
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+ 
+// ---------------------------------------------------------
+// Cerrar el documento PDF y preparamos la salida
+// Este método tiene varias opciones, consulte la documentación para más información.
+        $nombre_archivo = utf8_decode("traspaso_".$data['consecutivo_traspaso'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+}    
+
+
+
+
+
 
 /////////////////validaciones/////////////////////////////////////////  
 

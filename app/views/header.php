@@ -23,16 +23,18 @@
 							</a>
 						</div>
 						
-							<!-- <a href="<?php echo base_url(); ?>pedidos">
-								<div class="logo_no col-md-12"></div><span class="notispan">Notificaciones</span>
-							</a> -->
-						
 						<div class="col-md-6 col-lg-6 col-sm-6 col-xs-9">
 							<div class="header-titulo text-right">Sistema de Control de Inventario</div>
 							<div class="text-right" style="color:#104A5A !important"> Bienvenid@: <a href="<?php echo base_url(); ?>actualizar_perfil" style="#104A5A"><?php echo $this->session->userdata( 'nombre_completo' ); ?></a>
-						</div>
-					</div>
+						    </div>
+					   </div>
+					   	 
+							<div class="col-md-offset-11" id="bar_salir">
+								<a title="" href="<?php echo base_url(); ?>salir" class="ttip color-blanco">Salir <i class="glyphicon glyphicon-log-out"></i></a>
+							</div>
+
 				</div>
+
 				<?php $this->load->view( 'navbar' ); ?>
 			</div>
 			<div class="barra-verde"></div>

@@ -1333,6 +1333,7 @@ var comenzar = false;
          		 	   	 d.draw =0;
          		 	   	
          		 	   }
+         		 	   comienzo = false;
          		 	   
          		 	   d.comenzar = comenzar;
          		 	   comenzar = false;

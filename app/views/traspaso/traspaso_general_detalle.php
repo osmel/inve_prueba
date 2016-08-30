@@ -103,10 +103,12 @@
 
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href=""  
+									<a href="<?php echo base_url(); ?>imprimir_detalle_general_traspaso/<?php echo base64_encode($num_movimiento); ?>/<?php echo base64_encode($id_apartado); ?>/<?php echo base64_encode($id_almacen); ?>"  
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 									</a>
 								</div>
+
+
 
 								<div class="col-sm-3 col-md-3">
 									<a href="<?php echo base_url(); ?>listado_traspaso" type="button" class="btn btn-danger btn-block">Regresar</a>

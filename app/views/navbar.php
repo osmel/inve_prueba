@@ -93,6 +93,13 @@
 						</li>
 					<?php } ?>	
 
+					 <?php if ( ( $perfil == 1 ) || (in_array(26, $coleccion_id_operaciones)) ) { ?>
+						<li id="bar_catalogos">
+							<a title="Todos los catálogos del sistema." href="<?php echo base_url(); ?>traspasos" class="ttip color-blanco">Traspasos</a> 
+						</li>
+					<?php } ?>					
+
+
 
 					 <?php if ( ( $perfil == 1 ) || (in_array(8, $coleccion_id_operaciones)) 
 					 		|| (in_array(11, $coleccion_id_operaciones)) || (in_array(12, $coleccion_id_operaciones)) 
@@ -115,9 +122,7 @@
 						</li>
 					 <?php } ?>						
 
-						<li id="bar_salir">
-							<a title="" href="<?php echo base_url(); ?>salir" class="ttip color-blanco">Salir <i class="glyphicon glyphicon-log-out"></i></a>
-						</li>
+						
 					</ul>
 				</div>
 	 <?php } ?>
