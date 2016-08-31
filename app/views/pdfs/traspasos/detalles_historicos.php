@@ -28,7 +28,7 @@
 		                                  $motivos = $movimientos[0]->tipo_pedido.' <b>Nro.</b>'.$num.' Salida Nro.<b>'.$movimientos[0]->mov_salida.'</b>';
 		                              } else {
 		                                  $proceso = "manual";
-		                                  $motivos = "comentario";
+		                                  $motivos = $movimientos[0]->comentario_traspaso;
 		                              }  		                              
 		                            ?>  
 		                            <span><b>Motivos: </b> <?php echo $motivos; ?></span><br>

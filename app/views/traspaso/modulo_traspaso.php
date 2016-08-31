@@ -74,6 +74,7 @@
 						</div>
 					</fieldset>	
 				</div>
+
 			</div>
 
 			<div class="row">
@@ -139,7 +140,7 @@
 														<?php foreach ( $facturas as $factura ){ ?>
 																<?php 
 																	if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
-																		 if ($factura->id==$val_proveedor->id_tipo_factura) {
+																		 if ($factura->id==$val_proveedor->id_factura) {
 																				$seleccionado='selected';
 																			} else {
 																				$seleccionado='';
@@ -165,13 +166,25 @@
 					<!--<label for="comentario" class="col-sm-4 col-md-4">Especificaciones</label>-->
 					<label for="factura">Comentarios</label>
 					<div class="col-sm-4 col-md-12">
-						<?php 
-							$nomb_nom='';
-							if (isset($producto->comentario)) 
-							 {	$nomb_nom = $producto->comentario;}
-						?>	
 
-						<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
+						<?php if ($val_proveedor) { ?>
+							<fieldset class="disabledme" disabled>							
+						<?php } else { ?>
+							<fieldset class="disabledme">						
+						<?php } ?>					
+									<?php 
+
+										$nomb_nom='';
+											if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
+												if (isset($val_proveedor->comentario)) 
+												 {	$nomb_nom = $val_proveedor->comentario;}
+											}
+
+										
+									?>	
+
+									<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
+							  </fieldset>		
 					</div>
 				</div>						
 		</div>	
@@ -334,7 +347,7 @@
 		</div>
 
 			<div class="col-sm-4 col-md-4">
-				<button id="proc_salida" type="button"  class="btn btn-success btn-block">
+				<button id="proc_traspaso" type="button"  class="btn btn-success btn-block">
 					<span class="">Procesar Traspaso</span>
 				</button>
 			</div>

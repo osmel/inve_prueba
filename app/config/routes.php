@@ -557,13 +557,18 @@ $route['procesando_entrada_traspaso']			= 'traspaso/procesando_entrada_traspaso'
 $route['procesando_salida_traspaso']			= 'traspaso/procesando_salida_traspaso';
 
 
+
 $route['listado_traspaso']						= 'traspaso/listado_traspaso';
 $route['procesando_general_traspaso']			= 'traspaso/procesando_general_traspaso';
 $route['procesando_traspaso_historico']			= 'traspaso/procesando_traspaso_historico';
 $route['traspaso_detalle/(:any)']				= 'traspaso/traspaso_detalle/$1';
 $route['traspaso_historico_detalle']			= 'traspaso/traspaso_historico_detalle';
-$route['procesando_traspaso_general_detalle']				= 'traspaso/procesando_traspaso_general_detalle';
-$route['traspaso_general_detalle/(:any)/(:any)/(:any)']	= 'traspaso/traspaso_general_detalle/$1/$2/$3';
+$route['procesando_traspaso_general_detalle']					= 'traspaso/procesando_traspaso_general_detalle';
+$route['procesando_traspaso_general_detalle_manual']					= 'traspaso/procesando_traspaso_general_detalle_manual';
+
+$route['traspaso_general_detalle/(:any)/(:any)/(:any)']			= 'traspaso/traspaso_general_detalle/$1/$2/$3';
+
+$route['traspaso_general_detalle_manual/(:any)/(:any)']	= 'traspaso/traspaso_general_detalle_manual/$1/$2';
 
 $route['imprimir_detalle_general_traspaso/(:any)/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso/$1/$2/$3';
 
@@ -571,6 +576,9 @@ $route['imprimir_detalle_historico_traspaso/(:any)']	= 'traspaso/imprimir_detall
 
 $route['agregar_prod_salida_traspaso']			= 'traspaso/agregar_prod_salida_traspaso';
 $route['quitar_prod_salida_traspaso']			= 'traspaso/quitar_prod_salida_traspaso';
+
+$route['imprimir_detalle_traspaso_post']			= 'traspaso/imprimir_detalle_traspaso_post';
+$route['procesando_traspaso_definitivo']			= 'traspaso/procesando_traspaso_definitivo';
 
 
 

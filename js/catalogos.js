@@ -177,14 +177,13 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 
 jQuery('table').on('click','.agregar_traspaso', function (e) {
 	jQuery(this).attr('disabled', true);		
-	
-	
 
 	comentario = jQuery("#comentario").val();
-
 	factura = jQuery("#factura").val();
-	movimiento = jQuery("#movimiento").val();
 	id_almacen = jQuery("#id_almacen_modulo").val();
+
+	movimiento = jQuery("#movimiento").val();
+	
 	id_tipo_factura = jQuery("#id_tipo_factura_traspaso").val();
 	//d.id_tipo_factura_inversa 
     id_destino= (jQuery("#id_tipo_factura_traspaso").val()==2) ? 1: 2;
@@ -410,15 +409,15 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 		        	id_tipo_factura: id_tipo_factura,
 		        },
 		        type : 'POST',
-		       // dataType : 'json',
+		        dataType : 'json',
 		        success : function(data) {	
-						if(data != true){
+						if(data.exito != true){
 							//alert('sad');
 								spinner.stop();
 								jQuery('#foo').css('display','none');
 								jQuery('#messages').css('display','block');
 								jQuery('#messages').addClass('alert-danger');
-								jQuery('#messages').html(data);
+								jQuery('#messages').html(data.error);
 								jQuery('html,body').animate({
 									'scrollTop': jQuery('#messages').offset().top
 								}, 1000);
@@ -429,14 +428,14 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 							
 							spinner.stop();
 							jQuery('#foo').css('display','none');
-						    jQuery('#messages').css('display','none');
-							
+						    jQuery('#messages').css('display','none');						
 
 							if(data.total == 0){
 								jQuery("fieldset.disabledme").attr('disabled', false);
 							}	
 							jQuery('#tabla_salida_traspaso').dataTable().fnDraw();
 							jQuery('#tabla_entrada_traspaso').dataTable().fnDraw();
+							
 
 							/*
 								jQuery.ajax({
@@ -457,8 +456,199 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 		        }
 	});		
 	jQuery(this).attr('disabled', false);				        
+	
 
 });
+
+
+jQuery('body').on('click','#proc_traspaso', function (e) {
+	/*
+	id_tipo_pedido = jQuery("#id_tipo_pedido_inicio").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_inicio").val();
+
+	tipo_pedido = jQuery("#id_tipo_pedido_inicio option:selected").text();
+	tipo_factura = (id_tipo_pedido==2) ? "no":jQuery("#id_tipo_factura_inicio option:selected").text();
+
+
+	proveedor=jQuery('.buscar_proveedor').typeahead("val");
+	*/
+
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
+
+	jQuery.ajax({
+		        url : 'procesando_traspaso_definitivo',
+		        /*
+		        data : { 
+		        	id_cliente: proveedor,
+		        	id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura,
+		        	tipo_pedido  :tipo_pedido,
+		        	tipo_factura :tipo_factura,
+
+		        },
+		        */
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(datos) {	
+		        
+						if(datos.exito != true){
+								
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(datos);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+						
+						    abrir('POST', 'imprimir_detalle_traspaso_post', {
+						    			datos: JSON.stringify(datos),
+						    }, '_blank' );							
+						    
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+							window.location.href = '/';
+
+								/*
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(data) {	
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'conf_apartado');
+									        	window.location.href = '/';
+									        }
+								});		*/								
+					
+							 return false;
+							
+						}
+		        }
+	});		
+
+			        
+});
+
+
+abrir = function(verb, url, data, target) {
+  var form = document.createElement("form");
+  form.action = url;
+  form.method = verb;
+  form.target = target || "_self";
+  if (data) {
+    for (var key in data) {
+      var input = document.createElement("textarea");
+      input.name = key;
+      input.value = typeof data[key] === "object" ? JSON.stringify(data[key]) : data[key];
+      form.appendChild(input);
+    }
+  }
+  form.style.display = 'none';
+  document.body.appendChild(form);
+  form.submit();
+};
+
+
+jQuery('body').on('click','#proc_traspaso11111', function (e) {
+
+	//comentario = jQuery("#comentario").val();
+	//factura = jQuery("#factura").val();
+	id_almacen = jQuery("#id_almacen_modulo").val();
+
+	//movimiento = jQuery("#movimiento").val();
+	
+	id_tipo_factura = jQuery("#id_tipo_factura_traspaso").val();
+	//d.id_tipo_factura_inversa 
+    id_destino= (jQuery("#id_tipo_factura_traspaso").val()==2) ? 1: 2;
+	//id del producto
+	identificador = (jQuery(this).attr('identificador'));
+
+
+	 var url = 'confirmar_salida_sino';
+
+	    var arreglo_peso = [];
+	    var arreglo = {};
+
+	   jQuery("#tabla_salida tbody tr td input.peso_real").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo['peso_real'] = jQuery(this).val();
+	   		arreglo_peso.push( arreglo);
+	   });
+
+	
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	id_cliente: id_cliente,
+		        	id_cargador: id_cargador,
+		        	factura: factura,
+		        	arreglo_peso:arreglo_peso,
+		        	id_destino:id_destino,
+		        	id_almacen:id_almacen,
+		        	id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('#messages').append(data.errores);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+
+
+
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+
+												valor= jQuery.base64.encode(data.valor);
+
+												var url = "pro_salida/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
+											
+												jQuery('#modalMessage').modal({
+													  show:'true',
+													remote:url,
+												}); 									        	
+									        }
+								});	
+
+
+						}
+		        }
+
+		        
+	});						        
+});
+
+
 
 //////////////////////////////////////////////////////////////////
 
@@ -708,11 +898,15 @@ jQuery('#tabla_general_traspaso').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						if (row[1]!=0) {
-							return row[1];		 //row[0]+'<b> - </b>'+
-						} else {
-							return row[0];	
-						}
+						if (row[11]!=0) {
+							return row[14];		
+						} else {	
+							if (row[1]!=0) {
+								return row[1];		 //row[0]+'<b> - </b>'+
+							} else {
+								return row[0];	
+							}
+						}	
 						
 	                },
 	                "targets": [0]
@@ -725,7 +919,12 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            },
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[5]+' <br/><b>Nro.</b>'+row[6];										
+	                	if (row[11]!=0) {
+							return row[12];	
+						} else {
+							return row[5]+' <br/><b>Nro.</b>'+row[6];										
+						}
+						
 	                },
 	                "targets": [5]
 	            },   	            
@@ -753,10 +952,18 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="traspaso_general_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
-						 	texto+=' class="btn btn-success btn-block">';
-						 	texto+=' Detalles';
-						 texto+='</a></td>';
+    					 if (row[11]!=0) {
+	    					 texto='<td><a href="traspaso_general_detalle_manual/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
+							 	texto+=' class="btn btn-success btn-block">';
+							 	texto+=' Detalles';
+							 texto+='</a></td>';
+						 } else {
+	    					 texto='<td><a href="traspaso_general_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
+							 	texto+=' class="btn btn-success btn-block">';
+							 	texto+=' Detalles';
+							 texto+='</a></td>';						 	
+
+						 }	 
 
 
 						return texto;	
@@ -765,7 +972,7 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            },
     			{ 
 	                 "visible": false,
-	                "targets": [1,10]
+	                "targets": [1,10,11,12,13,14,15]
 	            }	            
 	],	
 
@@ -898,6 +1105,101 @@ jQuery('#traspaso_general_detalle').dataTable( {
 	},
 });	
 
+
+jQuery('#traspaso_general_detalle_manual').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_traspaso_general_detalle_manual",
+         		"type": "POST",
+         		 "data": function ( d ) {
+         		 		d.id_almacen = jQuery('#id_almacen_traspaso').val();	
+     				    d.id_usuario = jQuery("#id_usuario").val();  //numero_mov del pedido
+    			 } 
+
+     },   
+
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		    
+	    if (settings.json.datos) {
+			
+			
+			
+			jQuery('#etiq_proceso').val( settings.json.datos.proceso);
+			jQuery('#etiq_traspaso').val( settings.json.datos.traspaso);
+		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
+		    
+		    jQuery('#etiq_responsable').val( settings.json.datos.responsable);
+		    jQuery('#etiq_dependencia').val( settings.json.datos.dependencia);
+		    jQuery('#etiq_almacen').val( settings.json.datos.almacen);
+		    
+		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
+
+			if (settings.json.datos.tipo_apartado=="Vendedor") {
+				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_vendedor').text("Vendedor");
+				
+			} else {
+				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_vendedor').text("Num. Mov");
+			}
+				
+
+
+		}	
+		
+	    return pre
+	}, 
+	
+   "columnDefs": [
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	            },
+
+
+    			{ 
+	                 "visible": false,
+	                "targets": [9,10,11,13],
+	            }		            
+
+	],	
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =arr_traspaso_historico_detalle;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
