@@ -155,10 +155,19 @@ class Pedidos extends CI_Controller {
 ////////////////////////regilla  que estan en "http://inventarios.dev.com/pedidos"//////////////////////////
 
 		public function conteo_tienda(){
-			$where_total = '( m.id_apartado = 2 ) or ( m.id_apartado = 3 ) ';
+
+
+          if ($this->session->userdata('id_almacen') != 0) {
+              $id_almacenid = ' AND ( m.id_almacen =  '.$this->session->userdata('id_almacen').' ) ';  
+          } else {
+              $id_almacenid = '';
+          } 
+
+
+			$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid;
 			$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
 
-			$where_total = '( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ';
+			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid;
 			$dato['tienda'] = (string)$this->modelo_pedido->total_pedidos_pendientes($where_total);  
 			echo  json_encode($dato);
 		}	

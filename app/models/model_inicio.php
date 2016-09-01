@@ -408,8 +408,8 @@
 
                       (
                          
-                        ( ( m.id_usuario_apartado = "'.$id_session.'" )  AND  (m.id_apartado = 1) ) OR (m.id_apartado = 0)
-                      ) 
+                        ( ( m.id_usuario_apartado = "'.$id_session.'" )  AND  (m.id_apartado = 1) ) OR (m.id_apartado = 0) 
+                      ) AND ( m.proceso_traspaso = 0 )
                         AND                     
                       (
                         ( pr.grupo = "'.$grupo.'")  AND   ( m.id_color = '.$id_color.')  AND   (estatus_salida  = "0")   

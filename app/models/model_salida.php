@@ -319,7 +319,7 @@
                         (
                           ( ( us.id_cliente = '.$data['id_cliente'].' )  AND  ( (m.id_apartado = 3)  or ( m.id_apartado = 6 ) ) ) OR
                           (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) )
-                        )  AND ( m.estatus_salida = "0" ) AND (m.id_almacen = '.$data['id_almacen'].' )  '.$donde.'
+                        )  AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" ) AND (m.id_almacen = '.$data['id_almacen'].' )  '.$donde.'
 
                       )'.$id_tipo_facturaid.' 
                        AND

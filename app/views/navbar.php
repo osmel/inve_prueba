@@ -13,12 +13,18 @@
 	  		} 	
 
 
+		  	  if ($this->session->userdata('id_almacen') != 0) {
+	              $id_almacenid = ' AND ( m.id_almacen =  '.$this->session->userdata('id_almacen').' ) ';  
+	          } else {
+	              $id_almacenid = '';
+	          } 
 
 
-			$where_total = '( m.id_apartado = 2 ) or ( m.id_apartado = 3 ) ';
+
+			$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid;
 			$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
 
-			$where_total = '( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ';
+			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid;
 			$dato['tienda'] = (string)$this->modelo_pedido->total_pedidos_pendientes($where_total);  
 			
 			$conteos =  '<span title="Pedidos Vendedores." class="ttip">'.$dato['vendedor'].'</span><span> - </span><span title="Pedidos Tiendas." class="ttip">'.$dato['tienda'].'</span>';
@@ -94,7 +100,7 @@
 					<?php } ?>	
 
 					 <?php if ( ( $perfil == 1 ) || (in_array(26, $coleccion_id_operaciones)) ) { ?>
-						<li id="bar_catalogos">
+						<li id="bar_traspasos">
 							<a title="Todos los catálogos del sistema." href="<?php echo base_url(); ?>traspasos" class="ttip color-blanco">Traspasos</a> 
 						</li>
 					<?php } ?>					

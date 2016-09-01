@@ -318,7 +318,7 @@
           $where = '(
                       (
                          
-                         (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) AND ( m.estatus_salida = "0" ) )
+                         (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) AND ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 ) )
                       )'.$id_almacenid.$id_tipo_facturaid.' 
                        AND
 

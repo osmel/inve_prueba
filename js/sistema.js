@@ -58,6 +58,7 @@ jQuery("#id_perfil").on('change', function(e) {
 		        dataType : 'json',
 		        success : function(midata) {
 
+
 		        		
 		        		
 						jQuery(".navbar-nav > li" ).each(function( index ) {
@@ -2723,7 +2724,7 @@ jQuery('#tabla_reporte').dataTable( {
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11]
+	                "targets": [9,10,11,15]
 	            }
 	],
 /*
@@ -2740,6 +2741,11 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 	    if ( data[11] == "morado" ) {
 	      jQuery('td', row).addClass( "success" );
 	    }
+
+	    if ( data[15] == 1 ) {
+	      jQuery('td', row).addClass( "warning" );
+	    }
+
 
 
 	  },		
@@ -3448,6 +3454,10 @@ jQuery('#tabla_home').dataTable( {
 	    }
 
 
+	    if ( data[17] == 1 ) {
+	      jQuery('td', row).addClass( "warning" );
+	    }
+
 	  },	   
 
  "footerCallback": function( tfoot, data, start, end, display ) {
@@ -3527,7 +3537,7 @@ jQuery('#tabla_home').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,13,15]
+	                "targets": [10,11,13,15,17]
 	            }
 
 	            ],

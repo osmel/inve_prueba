@@ -64,7 +64,7 @@ conf_devolucion
 
 
 
-    if  ( (hash_url=="/pedidos")  ) {
+    if  ( (hash_url=="/pedidos")  ) {  //estos son los que tienen el pedido del conteo
         $('#tabla_apartado').dataTable().fnDraw();
         $('#tabla_pedido').dataTable().fnDraw();
 
@@ -166,6 +166,18 @@ conf_devolucion
                      caja_notificacion = '.notif-bot-pedidos';
                   break;     
 
+              case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+               case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
+
+
+
               case "quitar":
                      mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
                      caja_notificacion = '.notif-bot-pedidos';
@@ -246,7 +258,7 @@ conf_devolucion
     }    
 
 
-    if  ( (hash_url=="/generar_pedidos")  ) {
+    if  ( (hash_url=="/generar_pedidos")  ) { //pedido
         $('#pedido_entrada').dataTable().fnDraw();
         //$('#pedido_salida').dataTable().fnDraw();
 
@@ -275,7 +287,17 @@ conf_devolucion
               case "agregar":
                      mensaje_notif=  "Producto(s) apartado(s) pendiente(s) de incluir en salida.";
                      caja_notificacion = '.notif-bot-pedidos';
-                  break;     
+                  break;  
+             
+             case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                          
+
+             case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
 
               case "quitar":
                      mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
@@ -356,7 +378,18 @@ conf_devolucion
               case "agregar":
                      mensaje_notif=  "Producto(s) apartado(s) pendiente(s) de incluir en salida.";
                      caja_notificacion = '.notif-bot-pedidos';
-                  break;     
+                  break;   
+            
+              case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;            
+              
+              case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
+
 
               case "quitar":
                      mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
@@ -440,9 +473,11 @@ conf_devolucion
 
 
     //home 
-    if  ( (hash_url=="/")  ) {
+    if  ( (hash_url=="/")  ) { //home
         $('#tabla_home').dataTable().fnDraw();
         $('#tabla_inicio').dataTable().fnDraw();
+        $('#tabla_producto_color').dataTable().fnDraw();
+        
 
           switch(data.tipo) {
               case "conf_apartado":
@@ -470,6 +505,17 @@ conf_devolucion
                      mensaje_notif=  "Producto(s) apartado(s) pendiente(s) de incluir en salida.";
                      caja_notificacion = '.notif-bot-pedidos';
                   break;     
+    
+              case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;      
+              
+              case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
+
 
               case "quitar":
                      mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
@@ -548,6 +594,106 @@ conf_devolucion
                   mensaje_notif=  "notificación";
           }        
     }    
+
+
+
+
+    if  ( (hash_url=="/traspasos")  ) { //pedido
+        $('#tabla_entrada_traspaso').dataTable().fnDraw();
+        //$('#pedido_salida').dataTable().fnDraw();
+
+          switch(data.tipo) {
+              case "conf_apartado":
+                     mensaje_notif=  "Nuevo pedido de vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+              case "conf_pedido":
+                     mensaje_notif=  "Nuevo pedido de tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+              case "form_apartado":
+                     mensaje_notif=  "Se eliminó apartado de vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+
+              case "form_pedido":
+                     mensaje_notif=  "Se eliminó apartado de tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break; 
+
+
+             //salida    
+              case "agregar":
+                     mensaje_notif=  "Producto(s) apartado(s) pendiente(s) de incluir en salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;  
+             
+             case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;           
+              
+              case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
+
+
+              case "quitar":
+                     mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+              case "proc_salida":
+                     mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;   
+
+              //generar_pedido
+              case "agregar_pedido":
+                     mensaje_notif=  "Producto apartado. Para realizar un pedido, procese y confirme apartado.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;  
+
+              case "quitar_pedido":
+                     mensaje_notif=  "Producto desapartado por tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                      
+      
+             //apartado de vendedores en el home de vendedor
+              case "apartar":
+                     mensaje_notif=  "Producto apartado. No se ha procesado el pedido.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                                        
+
+
+              case "noapartar":
+                     mensaje_notif=  "Producto desapartado por vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                                        
+
+              //entrada de datos    
+              case "conf_entrada":
+                     mensaje_notif=  "Entrada de productos, actualizando inventario. Espere por favor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+               //Devolución de datos   
+              case "conf_devolucion":
+                     mensaje_notif=  "Devolución de productos, actualizando inventario. Espere por favor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+
+
+              default:
+                  mensaje_notif=  "notificación";
+          }
+
+    }    
+
+
 
 
     //mensaje de notificacion

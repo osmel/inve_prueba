@@ -233,7 +233,7 @@ jQuery('table').on('click','.agregar_traspaso', function (e) {
 							jQuery('#tabla_salida_traspaso').dataTable().fnDraw();
 							jQuery('#tabla_entrada_traspaso').dataTable().fnDraw();
 
-							/*
+							
 								jQuery.ajax({
 									        url : 'conteo_tienda',
 									        data : { 
@@ -242,13 +242,11 @@ jQuery('table').on('click','.agregar_traspaso', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
-									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'agregar');
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'agregar_traspaso');
 									        	return false;	
 									        }
 								});	
-							*/	
-								//alert('2');	
-							//return false;
+								
 						}
 		        }
 	});		
@@ -437,7 +435,7 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 							jQuery('#tabla_entrada_traspaso').dataTable().fnDraw();
 							
 
-							/*
+							
 								jQuery.ajax({
 									        url : 'conteo_tienda',
 									        data : { 
@@ -446,11 +444,11 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
-									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar');
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar_traspaso');
 									     		return false;
 									        }
 								});	
-							*/	
+							
 
 						}
 		        }
@@ -462,32 +460,12 @@ jQuery('table').on('click','.quitar_traspaso', function (e) {
 
 
 jQuery('body').on('click','#proc_traspaso', function (e) {
-	/*
-	id_tipo_pedido = jQuery("#id_tipo_pedido_inicio").val();
-	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_inicio").val();
-
-	tipo_pedido = jQuery("#id_tipo_pedido_inicio option:selected").text();
-	tipo_factura = (id_tipo_pedido==2) ? "no":jQuery("#id_tipo_factura_inicio option:selected").text();
-
-
-	proveedor=jQuery('.buscar_proveedor').typeahead("val");
-	*/
 
 		jQuery('#foo').css('display','block');
 		var spinner = new Spinner(opts).spin(target);
 
 	jQuery.ajax({
 		        url : 'procesando_traspaso_definitivo',
-		        /*
-		        data : { 
-		        	id_cliente: proveedor,
-		        	id_tipo_pedido:id_tipo_pedido,
-		        	id_tipo_factura:id_tipo_factura,
-		        	tipo_pedido  :tipo_pedido,
-		        	tipo_factura :tipo_factura,
-
-		        },
-		        */
 		        type : 'POST',
 		        dataType : 'json',
 		        success : function(datos) {	
@@ -513,7 +491,7 @@ jQuery('body').on('click','#proc_traspaso', function (e) {
 							jQuery('#foo').css('display','none');
 							window.location.href = '/';
 
-								/*
+								
 								jQuery.ajax({
 									        url : 'conteo_tienda',
 									        data : { 
@@ -522,10 +500,10 @@ jQuery('body').on('click','#proc_traspaso', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
-									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'conf_apartado');
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar_traspaso');
 									        	window.location.href = '/';
 									        }
-								});		*/								
+								});									
 					
 							 return false;
 							

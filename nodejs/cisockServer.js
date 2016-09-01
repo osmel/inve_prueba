@@ -26,9 +26,9 @@ var pool    =    mysql.createPool({
         //este debe correr cuando el usuario
         //realmente se loguee
           socket.on('joinRoom', function(sessionId){
-            var parsedRes, team, isAdmin;
+            var parsedRes, team, isAdmin,team_almacen;
 
-            console.log(sessionId);
+            //console.log(sessionId);
 
             // Use the redis client to get all session data for the user
             rClient.get('sessions:'+sessionId, function(err,res){
@@ -41,7 +41,8 @@ var pool    =    mysql.createPool({
               //console.log(res);
               parsedRes = JSON.parse(res);
               team = parsedRes.sala; //id_perfil //parsedRes.teamId;
-              //console.log(parsedRes.sala);
+              team_almacen = parsedRes.id_almacen; //id_perfil //parsedRes.teamId;
+              //console.log(parsedRes);
               if (team==1){
                 isAdmin = true;
               }
@@ -72,16 +73,33 @@ var pool    =    mysql.createPool({
 
          socket.on('newPost', function (post,sessionId,tipo) {   // 'newPost', 'mensaje', 1
           
-             var parsedRes, team, isAdmin;
+             var parsedRes, team, isAdmin, team_almacen;
 
               rClient.get('sessions:'+sessionId, function(err,res){
                   
                   parsedRes = JSON.parse(res);
                    team = parsedRes.sala; //id_perfil //parsedRes.teamId;
                 
-                  //Se transmite el mensaje al equipo del remitente
+                   team_almacen = parsedRes.id_almacen;
+
                   var broadcastData = {message: post, team: team,tipo: tipo};
-                  socket.broadcast.to(team.toString()).emit('broadcastNewPost',broadcastData);
+                  //socket.broadcast.to(team.toString()).emit('broadcastNewPost',broadcastData);
+                   
+                   if (team_almacen == 0) {
+                        for (var i = 0; i <= 5; i++) {  //5almacenes 
+                            socket.broadcast.to((team+i).toString()).emit('broadcastNewPost',broadcastData);
+                        }
+                   } else {
+                      socket.broadcast.to(team.toString()).emit('broadcastNewPost',broadcastData);   
+                      socket.broadcast.to((team-team_almacen).toString()).emit('broadcastNewPost',broadcastData);
+                   }
+
+                   //console.log(team) ;
+                   //console.log(team_almacen) ;
+                   //console.log(team-team_almacen) ;
+                  //Se transmite el mensaje al equipo del remitente
+
+
 
                   // Se transmite el mensaje a todos los administradores
                   broadcastData.team = 'admin';

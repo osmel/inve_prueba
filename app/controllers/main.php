@@ -68,7 +68,8 @@ class Main extends CI_Controller {
 							$this->session->set_userdata('id_perfil', $login_element->id_perfil);
 							$this->session->set_userdata('perfil', $login_element->perfil);
 							$this->session->set_userdata('operacion', $login_element->operacion);
-							$this->session->set_userdata('sala', $login_element->sala);
+							//$this->session->set_userdata('sala', $login_element->sala);
+							$this->session->set_userdata('sala', $login_element->sala+$login_element->id_almacen);
 							$this->session->set_userdata('id_almacen', $login_element->id_almacen);
 							$this->session->set_userdata('coleccion_id_operaciones', $login_element->coleccion_id_operaciones);
 							$this->session->set_userdata('nombre_completo', $login_element->nombre.' '.$login_element->apellidos);
@@ -92,6 +93,7 @@ class Main extends CI_Controller {
 			case '/pedidos':
 			case '/devolucion':
 			case '/salidas':
+			case '/traspasos':
 			case '/generar_pedidos':
 			case '/editar_inventario':
 			case '/reportes':
@@ -601,23 +603,7 @@ class Main extends CI_Controller {
 			case 'apartado':
 				$busqueda = $this->modelo_dashboard->buscador_entrada_home($data); //13 1246
 			   break;
-			   //AND (m.id_almacen = '.$data['id_almacen'].' )  '
-			   /*
-$id_almacen= $data['id_almacen'];
-          if ($id_almacen!=0) {
-            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-            $id_almacenid = '';
-          }
-
-        if ($id_almacen!=0) {
-            $donde .= ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
-        } else {
-            $donde .= '';
-        }  
-          
-
-			   */
+			  
 			case 'devolucion':
 				$busqueda = $this->modelo_dashboard->buscador_devolucion_home($data); //12 445
 			   break;

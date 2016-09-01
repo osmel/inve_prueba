@@ -255,7 +255,7 @@
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color, p.nombre');
           $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
 
@@ -448,6 +448,8 @@
                                       12=>$row->factura,
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
+                                      15=>$row->proceso_traspaso,
+
                                     );                    
                       }
 
@@ -682,7 +684,7 @@
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color, p.nombre');
           $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
 
@@ -901,6 +903,8 @@
                                       12=>$row->factura,
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
+                                      15=>$row->proceso_traspaso
+
                                       
 
                                     );                    
@@ -1095,7 +1099,7 @@
           $this->db->select('m.id, m.mov_salida,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color , p.nombre');
           $this->db->select('m.cliente, m.cargador');
           
@@ -1267,6 +1271,8 @@
                                       12=>$row->factura,
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
+                                      15=>$row->proceso_traspaso
+
                                       
                                     );                    
                       }
@@ -1415,7 +1421,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
-           $this->db->select('p.referencia, p.comentario');
+           $this->db->select('p.referencia, p.comentario,m.proceso_traspaso');
           $this->db->select('p.descripcion, p.minimo, p.imagen, p.precio');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
           $this->db->select("co.composicion", FALSE);  
@@ -1581,6 +1587,9 @@
                                       12=>"--",
                                       13=>"--", 
                                       14=>$row->almacen,
+                                      15=>$row->proceso_traspaso,
+
+
 
                                     );                    
 
@@ -1720,7 +1729,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
-           $this->db->select('p.referencia, p.comentario');
+           $this->db->select('p.referencia, p.comentario,m.proceso_traspaso');
           $this->db->select('p.descripcion, p.minimo, p.imagen, p.precio');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
           $this->db->select("co.composicion", FALSE);  
@@ -1837,6 +1846,8 @@
                                       12=>"--",
                                       13=>"--",
                                       14=>$row->almacen,
+                                      15=>$row->proceso_traspaso,
+
                                     );                    
 
                       }
