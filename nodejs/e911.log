@@ -1,0 +1,15 @@
+
+events.js:72
+        throw er; // Unhandled 'error' event
+              ^
+Error: listen EADDRINUSE
+    at errnoException (net.js:905:11)
+    at Server._listen2 (net.js:1043:14)
+    at listen (net.js:1065:10)
+    at Server.listen (net.js:1139:5)
+    at Server.listen.Server.attach (/var/www/html/inventarios/nodejs/node_modules/socket.io/lib/index.js:214:9)
+    at new Server (/var/www/html/inventarios/nodejs/node_modules/socket.io/lib/index.js:51:17)
+    at Function.Server (/var/www/html/inventarios/nodejs/node_modules/socket.io/lib/index.js:39:41)
+    at Object.<anonymous> (/var/www/html/inventarios/nodejs/cisockServer.js:1:98)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)

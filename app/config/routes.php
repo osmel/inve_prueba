@@ -571,6 +571,9 @@ $route['traspaso_general_detalle/(:any)/(:any)/(:any)']			= 'traspaso/traspaso_g
 $route['traspaso_general_detalle_manual/(:any)/(:any)']	= 'traspaso/traspaso_general_detalle_manual/$1/$2';
 
 $route['imprimir_detalle_general_traspaso/(:any)/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso/$1/$2/$3';
+$route['imprimir_detalle_general_traspaso_manual/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso_manual/$1/$2';
+
+
 
 $route['imprimir_detalle_historico_traspaso/(:any)']	= 'traspaso/imprimir_detalle_historico_traspaso/$1';
 
