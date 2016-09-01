@@ -2031,9 +2031,9 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
     	
     	//hasta aqui reporte
 
-    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
-    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
-    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
+    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
+    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
+    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 		
 		var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén'];
 		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén' ]; 
@@ -4782,34 +4782,19 @@ jQuery('#tabla_detalle').dataTable( {
 		}	
 	    return pre
 	},    
-/*
-   "columnDefs": [
-    			{ 
-	                "render": function ( data, type, row ) {
-						return data;	
-	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9],
-	            }
-
-	],	
-
-	
-
-*/
-
 
    "columnDefs": [
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,10,14],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12],
+	                "targets": [11,12,13],
 	            }	            
 
 	],	
@@ -5611,13 +5596,14 @@ jQuery('#pedido_completo_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	                //"targets": [0,1,2,3,4,5,6,7,8,12],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11,13],
+	                "targets": [10,11,12,14],
 	            }		            
 
 	],	
@@ -5896,13 +5882,13 @@ jQuery('#pedido_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,10,14],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12],
+	                "targets": [11,12,13],
 	            }	            
 
 	],	

@@ -214,6 +214,8 @@ class Pedidos extends CI_Controller {
 		$busqueda = $this->modelo_pedido->buscador_pedido_especifico($data);
 		echo $busqueda;
 	}
+
+	//14=>$row->iva,
 	
 
     //"Regilla detalle" de la 3ra PARA "Histórico de Pedidos"

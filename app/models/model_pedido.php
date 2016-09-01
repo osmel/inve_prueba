@@ -1441,7 +1441,7 @@
           $this->db->select('p.nombre comprador ');  
           $this->db->select('pr.nombre cliente ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -1543,13 +1543,15 @@
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
-                                      7=>$row->id_lote.'-'.$row->consecutivo,       
-                                      8=>$row->num_partida,
-                                      9=>$row->almacen,
-                                      10=>$row->id_factura,
-                                      11=>$row->id_tipo_factura,
-                                      12=>$row->id_tipo_pedido,
-                                      13=>$row->t_factura,                                      
+                                      7=>$row->iva,                                  
+                                      8=>$row->id_lote.'-'.$row->consecutivo,       
+                                      9=>$row->num_partida,
+                                      10=>$row->almacen,
+                                      11=>$row->id_factura,
+                                      12=>$row->id_tipo_factura,
+                                      13=>$row->id_tipo_pedido,
+                                      14=>$row->t_factura,    
+                                      
                                                                      
                                     );
                             $tipo_pedido=$row->tipo_pedido;
@@ -1654,7 +1656,7 @@
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('pr.nombre dependencia ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -1762,13 +1764,15 @@
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
-                                      7=>$row->id_lote.'-'.$row->consecutivo,    
-                                      8=>$row->num_partida,
-                                      9=>$row->almacen,
-                                      10=>$row->id_factura,
-                                      11=>$row->id_tipo_factura,
-                                      12=>$row->id_tipo_pedido,
-                                      13=>$row->t_factura,
+                                      7=>$row->iva,
+                                      8=>$row->id_lote.'-'.$row->consecutivo,    
+                                      9=>$row->num_partida,
+                                      10=>$row->almacen,
+                                      11=>$row->id_factura,
+                                      12=>$row->id_tipo_factura,
+                                      13=>$row->id_tipo_pedido,
+                                      14=>$row->t_factura,
+                                      
                                       
                                                                         
                                       
@@ -1888,7 +1892,7 @@
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado, m.consecutivo');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.iva, m.fecha_apartado, m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -2013,15 +2017,17 @@
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
                                       5=>$row->precio,
-                                      6=>$row->id_lote.'-'.$row->consecutivo,         
-                                      7=>$row->num_partida,
-                                      8=>$row->almacen,
+                                      6=>$row->iva,
+                                      7=>$row->id_lote.'-'.$row->consecutivo,         
+                                      8=>$row->num_partida,
+                                      9=>$row->almacen,
                                       
-                                      9=>$row->id_factura,
-                                      10=>$row->id_tipo_factura,
-                                      11=>$row->id_tipo_pedido,
-                                      12=>$row->t_factura,  
-                                      13=>$row->id_factura_original                                    
+                                      10=>$row->id_factura,
+                                      11=>$row->id_tipo_factura,
+                                      12=>$row->id_tipo_pedido,
+                                      13=>$row->t_factura,  
+                                      14=>$row->id_factura_original,                                    
+
                                                                    
                                     );
                               $tipo_pedido=$row->tipo_pedido;
