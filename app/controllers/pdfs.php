@@ -437,6 +437,9 @@ public function impresion_etiquetas1($codigo) {
 
         $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
 
+        $dato['id'] = 4;
+        $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
+        //print_r($data['configuracion']);
 
         switch ($data['id_generar']) { //m.consecutivo m.cantidad_um
             case 1:

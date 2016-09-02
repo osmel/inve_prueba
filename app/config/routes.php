@@ -552,6 +552,8 @@ $route['exportar_reporte']    = 'reportes/exportar_reporte';
 
 /////////////////////////////////////////////Listado de todas las reportes
 $route['traspasos']								= 'traspaso/modulo_traspaso';
+$route['borrardatos']								= 'traspaso/borrardatos';
+
 
 $route['procesando_entrada_traspaso']			= 'traspaso/procesando_entrada_traspaso';
 $route['procesando_salida_traspaso']			= 'traspaso/procesando_salida_traspaso';

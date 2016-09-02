@@ -26,7 +26,7 @@ var target = document.getElementById('foo');
 ////////////////////////////////////////////////TRASPASO///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Detalle']; //
-var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'Lote','No. de Partida','Almacén','Tipo factura'];
+var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 
 
@@ -106,6 +106,7 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 
 	"footerCallback": function( tfoot, data, start, end, display ) {
 	   var api = this.api(), data;
+	   
 			var intVal = function ( i ) {
 				return typeof i === 'string' ?
 					i.replace(/[\$,]/g, '')*1 :
@@ -116,17 +117,23 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 		if  (data.length>0) {   
 				
 				total_metro = api
-					.column( 11 )
+					.column( 13 )
 					.data()
 					.reduce( function (a, b) {
+						console.log(a);
+						console.log(b);						
 						return intVal(a) + intVal(b);
 					} );
+				
 				total_kilogramo = api
-					.column( 12)
+					.column( 14 )
 					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
+					.reduce( function (c, d) {
+						//console.log(c);
+						//console.log(d);
+						return intVal(c) + intVal(d);
 					} );
+
 				total_pieza = (end-start);	
 
 			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
@@ -534,99 +541,6 @@ abrir = function(verb, url, data, target) {
 };
 
 
-jQuery('body').on('click','#proc_traspaso11111', function (e) {
-
-	//comentario = jQuery("#comentario").val();
-	//factura = jQuery("#factura").val();
-	id_almacen = jQuery("#id_almacen_modulo").val();
-
-	//movimiento = jQuery("#movimiento").val();
-	
-	id_tipo_factura = jQuery("#id_tipo_factura_traspaso").val();
-	//d.id_tipo_factura_inversa 
-    id_destino= (jQuery("#id_tipo_factura_traspaso").val()==2) ? 1: 2;
-	//id del producto
-	identificador = (jQuery(this).attr('identificador'));
-
-
-	 var url = 'confirmar_salida_sino';
-
-	    var arreglo_peso = [];
-	    var arreglo = {};
-
-	   jQuery("#tabla_salida tbody tr td input.peso_real").each(function(e) {
-	   		arreglo = {};
-	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
-	   		arreglo['peso_real'] = jQuery(this).val();
-	   		arreglo_peso.push( arreglo);
-	   });
-
-	
-	jQuery('#foo').css('display','block');
-	var spinner = new Spinner(opts).spin(target);
-
-	jQuery.ajax({
-		        url : url,
-		        type : 'POST',
-		       	data : { 
-		        	id_cliente: id_cliente,
-		        	id_cargador: id_cargador,
-		        	factura: factura,
-		        	arreglo_peso:arreglo_peso,
-		        	id_destino:id_destino,
-		        	id_almacen:id_almacen,
-		        	id_tipo_pedido:id_tipo_pedido,
-		        	id_tipo_factura:id_tipo_factura
-		        },
-		        dataType : 'json',
-		        success : function(data) {	
-						if(data.exito != true){
-								spinner.stop();
-								jQuery('#foo').css('display','none');
-								jQuery('#messages').css('display','block');
-								jQuery('#messages').addClass('alert-danger');
-								jQuery('#messages').html(data.error);
-								jQuery('#messages').append(data.errores);
-								jQuery('html,body').animate({
-									'scrollTop': jQuery('#messages').offset().top
-								}, 1000);
-						}else{
-
-							spinner.stop();
-							jQuery('#foo').css('display','none');
-
-
-
-								jQuery.ajax({
-									        url : 'conteo_tienda',
-									        data : { 
-									        	tipo: 'tienda',
-									        },
-									        type : 'POST',
-									        dataType : 'json',
-									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
-
-												valor= jQuery.base64.encode(data.valor);
-
-												var url = "pro_salida/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
-											
-												jQuery('#modalMessage').modal({
-													  show:'true',
-													remote:url,
-												}); 									        	
-									        }
-								});	
-
-
-						}
-		        }
-
-		        
-	});						        
-});
-
-
 
 //////////////////////////////////////////////////////////////////
 
@@ -809,13 +723,13 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11,13],
+	                "targets": [10,11,12,14],
 	            }		            
 
 	],	
@@ -1036,18 +950,19 @@ jQuery('#traspaso_general_detalle').dataTable( {
 	}, 
 	
    "columnDefs": [
-    			{ 
+
+			   { 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11,13],
-	            }		            
+	                "targets": [10,11,12,14],
+	            }			            
 
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
@@ -1132,19 +1047,19 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 	}, 
 	
    "columnDefs": [
-    			{ 
+
+				{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,12],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11,13],
-	            }		            
-
+	                "targets": [10,11,12,14],
+	            }		
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
 		var arreglo =arr_traspaso_historico_detalle;

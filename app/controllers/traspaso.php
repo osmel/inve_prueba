@@ -11,9 +11,17 @@ class Traspaso extends CI_Controller {
 
     $this->load->model('model_traspaso', 'model_traspaso'); 
 
+    $this->load->model('modelo_borrar_datos', 'modelo_borrar_datos'); 
+
     $this->load->library(array('email')); 
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
+
+
+public function borrardatos() {
+  
+  print_r($this->modelo_borrar_datos->eliminar_todos());
+} 
 
 
 public function modulo_traspaso(){
@@ -452,6 +460,9 @@ public function procesando_traspaso_general_detalle_manual(){
 
         $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
         
+          $dato['id'] = 5;
+          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
+
           $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_historico_detalle($data);        
           $html = $this->load->view('pdfs/traspasos/detalles_historicos', $data, true);
 
@@ -507,6 +518,9 @@ public function procesando_traspaso_general_detalle_manual(){
 
         $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
         
+          $dato['id'] = 5;
+          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
+
           $data['movimientos'] = $this->model_traspaso->imprimir_detalle_general_traspaso_manual($data);        
           $html = $this->load->view('pdfs/traspasos/detalles_generales_manual', $data, true);
 
@@ -561,6 +575,9 @@ public function procesando_traspaso_general_detalle_manual(){
 
 
         $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+          $dato['id'] = 5;
+          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
         
           $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_general_detalle($data);        
           $html = $this->load->view('pdfs/traspasos/detalles_generales', $data, true);

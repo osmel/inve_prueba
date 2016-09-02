@@ -5,7 +5,7 @@
 	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
 
 		<div class="panel panel-primary">
-			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?></div>
+			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
 			<div class="panel-body">
 				
 				

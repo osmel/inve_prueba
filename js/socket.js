@@ -62,7 +62,136 @@ conf_entrada
 conf_devolucion
 */
 
+    if  ( (hash_url=="/listado_traspaso")  ) {  //estos son los que tienen el pedido del conteo
+           $('#tabla_general_traspaso').dataTable().fnDraw();
+            $('#tabla_traspaso_historico').dataTable().fnDraw();
 
+
+
+
+          switch(data.tipo) {
+
+
+      
+             case "conf_apartado":
+                     mensaje_notif=  "Nuevo pedido de vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+              case "conf_pedido":
+                     mensaje_notif=  "Nuevo pedido de tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+              case "form_apartado":
+                     mensaje_notif=  "Se eliminó apartado de vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+
+              case "form_pedido":
+                     mensaje_notif=  "Se eliminó apartado de tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+
+              //salida    
+              case "agregar":
+                     mensaje_notif=  "Producto(s) apartado(s) pendiente(s) de incluir en salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+              case "agregar_traspaso":
+                     mensaje_notif=  "Producto(s) en proceso de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+               case "quitar_traspaso":
+                     mensaje_notif=  "Liberado del estado de traspaso(s).";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;       
+
+
+
+              case "quitar":
+                     mensaje_notif=  "Liberado del estado Producto(s) apartado(s) pendiente(s) de incluir en salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+              case "proc_salida":
+                     mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;   
+
+              //generar_pedido
+              case "agregar_pedido":
+                     mensaje_notif=  "Producto apartado. Para realizar un pedido, procese y confirme apartado.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;  
+
+              case "quitar_pedido":
+                     mensaje_notif=  "Producto desapartado por tienda.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                                        
+
+             //apartado de vendedores en el home de vendedor
+              case "apartar":
+                     mensaje_notif=  "Producto apartado. No se ha procesado el pedido.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                                        
+
+
+              case "noapartar":
+                     mensaje_notif=  "Producto desapartado por vendedor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;                                        
+
+                 //incluye apartados y pedidos
+              case "incluir_salida":
+                     mensaje_notif=  "Se incluyó apartado de vendedor para salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+
+              case "incluir_pedido":
+                     mensaje_notif=  "Se incluyó apartado de tienda para salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;     
+
+                  //excluye apartados y pedidos
+
+              case "excluir_salida":
+                     mensaje_notif=  "Se excluyó apartado de vendedor de la salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+
+              case "excluir_pedido":
+                     mensaje_notif=  "Se excluyó apartado de tienda de la salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;   
+
+
+              //entrada de datos    
+              case "conf_entrada":
+                     mensaje_notif=  "Entrada de productos, actualizando inventario. Espere por favor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+               //Devolución de datos   
+              case "conf_devolucion":
+                     mensaje_notif=  "Devolución de productos, actualizando inventario. Espere por favor.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;    
+
+
+                  
+              default:
+                  mensaje_notif=  "notificación";
+
+             //http://www.webcodo.net/simple-live-notifications-with-jquery/#.VZofI3Wlyko     
+          }            
+
+    }  
 
     if  ( (hash_url=="/pedidos")  ) {  //estos son los que tienen el pedido del conteo
         $('#tabla_apartado').dataTable().fnDraw();

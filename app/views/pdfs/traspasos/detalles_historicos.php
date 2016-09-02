@@ -50,14 +50,18 @@
 						</th>
 					</tr>
 					<tr>
-						<th width="25%">Código</th>
-						<th width="20%">Descripción</th>
+						<th width="30%">Código</th>
+						<th width="25%">Descripción</th>
 						<th width="8%">Color</th>
-						<th width="6%">Cantidad</th>
+						<th width="10%">Cantidad</th>
 						<th width="10%">Ancho</th>
-						<th width="8%">Precio</th>
-						<th width="15%">Proveedor</th>
-						<th width="8%">Lote</th>
+						<?php if ($configuracion->activo==1) { ?> 
+							<th width="9%">Lote</th>
+							<th width="8%">Precio</th>
+						<?php } else { ?> 	
+							<th width="17%">Lote</th>
+						<?php }  ?> 
+
 
 					</tr>
 				</thead>	
@@ -66,17 +70,21 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 
-							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
-							<td width="6%" style="border-top: 1px solid #222222;">
+							
+							<td width="30%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
+							<td width="8%" style="border-top: 1px solid #222222;">
 								<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
 							</td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?> <?php echo $movimiento->medida; ?></td>
-							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
-							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
-
-							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cliente; ?></td>
-							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
+							
+							<?php if ($configuracion->activo==1) { ?> 
+								<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
+								<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio+($movimiento->precio*$movimiento->iva)/100; ?></td>
+							<?php } else {  ?> 	
+								<td width="17%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
+							<?php }  ?> 	
 
 
 

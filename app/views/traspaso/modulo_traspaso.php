@@ -267,6 +267,49 @@
 		</div>
 
 
+	<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="subtotal"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="iva"></span>			
+					</div>				
+					<div class="col-sm-3 col-md-2">	
+						<span id="total"></span>			
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes Totales</b>			
+					</div>									
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_subtotal"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_iva"></span>			
+					</div>					
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_total"></span>			
+					</div>	
+
+				</div>		
+
+
 		<!-- Segunda tabla-->
 		<div class="col-md-12">		
 			
@@ -336,6 +379,48 @@
 						<span id="total_kg2" ></span>				
 					</div>	
 				</div>
+
+	<br/>
+		
+				<div class="row bloque_totales2">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="subtotal2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="iva2"></span>			
+					</div>				
+					<div class="col-sm-3 col-md-2">	
+						<span id="total2"></span>			
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales2">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes Totales</b>			
+					</div>									
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_subtotal2"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_iva2"></span>			
+					</div>					
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_total2"></span>			
+					</div>	
+
+				</div>				
 
 <br>
 

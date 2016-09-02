@@ -169,8 +169,6 @@ jQuery('body').on('click','#exportar_totales', function (e) {
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
 			id_almacen : id_almacen,
-
-
     		
     }, '_blank' );
 		        
@@ -1996,10 +1994,6 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
 		return x + y;
 	} );
 } );
-
-	
-		           
-		        
 
 
 
@@ -4774,9 +4768,9 @@ jQuery('#tabla_detalle').dataTable( {
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
 
  			if (settings.json.datos.tipo_factura!=null) {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
+		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
 		    }else {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido);	
+		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
 		    }
 
 		}	
@@ -4801,7 +4795,7 @@ jQuery('#tabla_detalle').dataTable( {
 
 	"rowCallback": function( row, data ) {
 					    
-		    if (( data[10] != data[11]) && ( data[11] != 0)  ) {
+		    if (( data[11] != data[12]) && ( data[12] != 0)  ) {
 		      jQuery('td', row).addClass( "danger" );
 		    }
 
@@ -5573,9 +5567,9 @@ jQuery('#pedido_completo_detalle').dataTable( {
 		    //jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
 
 		    if (settings.json.datos.tipo_factura!=null) {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
+		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
 		    }else {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido);	
+		    	jQuery('.panel-heading > span').text(settings.json.datos.tipo_pedido);	
 		    }
 
 
@@ -5587,7 +5581,7 @@ jQuery('#pedido_completo_detalle').dataTable( {
 	"rowCallback": function( row, data ) {
 		    //aqui lo esta comparando con id_factura_original=13
 		    //( data[10] != 0) -->para caso tipo_pedido=surtido
-		    if (( data[13] != data[10]) && ( data[13] != 0)  ) {
+		    if (( data[14] != data[11]) && ( data[14] != 0)  ) {
 		      jQuery('td', row).addClass( "danger" );
 		    }
 	 },		   
@@ -5863,14 +5857,14 @@ jQuery('#pedido_detalle').dataTable( {
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
 
 		    if (settings.json.datos.tipo_factura!=null) {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
+		    	jQuery('.panel-heading > span').text(settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
 		    }else {
-		    	jQuery('.panel-heading').text( jQuery('.panel-heading').text()+'  '+settings.json.datos.tipo_pedido);	
+		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
 		    }
 			
 		}	
 
-		//alert(jQuery('.panel-heading').text());
+		
 		
 
 		
@@ -5895,7 +5889,7 @@ jQuery('#pedido_detalle').dataTable( {
 
 	"rowCallback": function( row, data ) {
 					    
-		    if (( data[10] != data[11]) && ( data[11] != 0)  ) {
+		     if (( data[11] != data[12]) && ( data[12] != 0)  ) {
 		      jQuery('td', row).addClass( "danger" );
 		    }
 

@@ -197,8 +197,12 @@ class Pedidos extends CI_Controller {
 
 
 ////////////////////////Registros de cada detalle de  "http://inventarios.dev.com/pedidos"//////////////////////////
-
-
+										/*
+                                      10=>$row->almacen,
+                                      11=>$row->id_factura,
+                                      12=>$row->id_tipo_factura,
+                                      13=>$row->id_tipo_pedido,
+                                      14=>$row->t_factura,    */
 	//"Regilla detalle" de la 1ra PARA "Pedidos de vendedores"
 	//http://inventarios.dev.com/apartado_detalle/MGNjNTUxMGYtYzQ1Mi0xMWU0LThhZGEtNzA3MWJjZTE4MWMz/MTE=
 	public function procesando_detalle(){

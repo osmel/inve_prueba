@@ -260,7 +260,7 @@ class Pdfs_model extends CI_Model
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
           $this->db->select('pr.nombre dependencia ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.consecutivo');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado,m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida, m.cantidad_um');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -334,7 +334,7 @@ class Pdfs_model extends CI_Model
           $this->db->select('p.nombre comprador ');  
           $this->db->select('pr.nombre cliente ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.consecutivo');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado,m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida, m.cantidad_um');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -420,7 +420,7 @@ class Pdfs_model extends CI_Model
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
-          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado, m.consecutivo');  
+          $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado, m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida, m.cantidad_um');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
