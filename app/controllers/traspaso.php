@@ -26,8 +26,6 @@ public function borrardatos() {
 
 public function modulo_traspaso(){
 
-
-
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 

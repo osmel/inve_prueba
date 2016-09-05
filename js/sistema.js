@@ -6229,6 +6229,10 @@ jQuery('#id_almacen_generar_pedido').change(function(e) {
 	
 });
 
+jQuery("#id_factura_filtro").on('change', function(e) {
+	jQuery('#pedido_entrada').dataTable().fnDraw();
+});
+
 jQuery('#pedido_entrada').dataTable( {
 	
 	"processing": true,
@@ -6258,6 +6262,7 @@ jQuery('#pedido_entrada').dataTable( {
 							d.id_tipo_pedido = jQuery("#id_tipo_pedido").val();
 							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
 
+							d.id_factura_filtro = jQuery("#id_factura_filtro").val();
 
     			 }
      }, 

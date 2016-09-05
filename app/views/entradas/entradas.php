@@ -109,7 +109,7 @@ echo form_open('validar_agregar_producto', $attr);
 		</div>
 
 					<!--almacen Asociado -->
-					<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="col-xs-12 col-sm-6 col-md-2">
 					    
 							<label for="id_almacen" class="col-sm-3 col-md-3 control-label">Almacén</label>
 							<div class="col-sm-9 col-md-10">
@@ -147,10 +147,47 @@ echo form_open('validar_agregar_producto', $attr);
 					</div>		
 
 
+					<!--Tipos de factura -->
+					<div class="col-xs-12 col-sm-6 col-md-2">
+					    
+							<label for="id_tipo_pago" class="col-sm-3 col-md-12">Tipo de Pago</label>
+							<div class="col-sm-9 col-md-12">
+							    <!--Los administradores o con permisos de entrada 
+							    	Y que no este inhabilitado y 
+							    	que no sean facturaista 
+							    	ENTONCES lista editable -->
+
+								<?php if ($val_proveedor) { ?>
+									<fieldset class="disabledme" disabled>							
+								<?php } else { ?>
+									<fieldset class="disabledme">						
+								<?php } ?>
+
+											<select name="id_tipo_pago" id="id_tipo_pago" class="form-control">
+												<!--<option value="0">Selecciona una opción</option>-->
+													<?php foreach ( $pagos as $pago ){ ?>
+															<?php 
+																if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
+																	 if ($pago->id==$val_proveedor->id_tipo_pago) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+																}
+															?>
+																<option value="<?php echo $pago->id; ?>" <?php echo $seleccionado; ?> ><?php echo $pago->tipo_pago; ?></option>
+													<?php } ?>
+												<!--rol de usuario -->
+											</select>
+								    </fieldset>
+
+							</div>
+					</div>		
+
 
 
 					<!--Tipos de factura -->
-					<div class="col-xs-12 col-sm-6 col-md-3">
+					<div class="col-xs-12 col-sm-6 col-md-2">
 					    
 							<label for="id_factura" class="col-sm-3 col-md-12">Tipo de factura</label>
 							<div class="col-sm-9 col-md-12">

@@ -89,6 +89,12 @@
 						</a>
 					</div>
 
+				<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>costo_inventario" type="button" class="btn btn-info btn-block ttip" title="Ver Costo de Inventario.">
+							Costo de Inventario
+						</a>
+					</div>
 
 				</div>
 

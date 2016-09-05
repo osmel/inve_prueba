@@ -34,7 +34,7 @@
 
 
     //cuando se elimina un diseño en particular
-    public function eliminar_todos(  ){
+    public function eliminar_todos(){
        
         
         $this->db->empty_table( $this->registros_entradas);

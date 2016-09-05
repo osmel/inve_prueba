@@ -40,9 +40,10 @@
       $this->almacenes                 = $this->db->dbprefix('catalogo_almacenes');
       $this->catalogo_configuraciones  = $this->db->dbprefix('catalogo_configuraciones');
 
+      $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
+
       
 
-     
 
 
 		}
@@ -54,7 +55,7 @@
           $id_session = $this->session->userdata('id');
           
           $this->db->distinct();          
-          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.iva');
+          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.id_tipo_pago,m.iva');
           $this->db->select('p.nombre');
           
           $this->db->from($this->registros_temporales.' as m');
@@ -246,6 +247,8 @@
               $this->db->set( 'factura', $data['factura']   );  
               $this->db->set( 'id_almacen', $data['id_almacen']   );  
               $this->db->set( 'id_factura', $data['id_factura']   );  
+              $this->db->set( 'id_tipo_pago', $data['id_tipo_pago']   );  
+              
               $this->db->set( 'iva', $data['iva']   );  
 
 
@@ -808,7 +811,7 @@ public function totales_importes($where){
           $fecha_hoy = date('Y-m-d H:i:s');  
              
           //aqui lista todos los datos que fueron entrados por un usuario especifico   
-          $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen,id_factura,iva');
+          $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen,id_factura,iva, id_tipo_pago');
           $this->db->select('id_medida, cantidad_um, peso_real, cantidad_royo, ancho, precio, codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('id_cargador, id_usuario, fecha_mac, id_operacion');
           $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
@@ -871,7 +874,7 @@ public function totales_importes($where){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,iva');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,id_tipo_pago, iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -928,7 +931,7 @@ public function totales_importes($where){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion,m.id_almacen, m.id_factura,m.iva');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion,m.id_almacen, m.id_factura,m.id_tipo_pago, m.iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');

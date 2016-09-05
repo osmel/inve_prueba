@@ -102,7 +102,7 @@ class Pdfs_model extends CI_Model
                     
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
+          $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
 
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
@@ -113,11 +113,6 @@ class Pdfs_model extends CI_Model
                            ELSE ""
                         END AS estatusd
          ',False);          
-
-
-//          $this->db->select('m.fecha_mac fecha', false);
-
-
 
 
           $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre');

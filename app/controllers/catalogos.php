@@ -308,6 +308,12 @@ class Catalogos extends CI_Controller {
             $busqueda = $this->catalogo->buscador_proveedores($data);
           break;
 
+        case 'editar_proveedor_costo':  //editar costo
+            $busqueda = $this->catalogo->buscador_proveedores($data);
+          break;
+
+          
+
         case 'editar_proveedor_consulta':
             $busqueda = $this->catalogo->buscador_provee_consulta($data);
           break;

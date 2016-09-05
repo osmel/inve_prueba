@@ -46,6 +46,15 @@ class Exportar_reportes extends CI_Controller {
         // 2- ordenar por factura
         switch($extra_search) {
 
+
+
+            case "reportes_costo":
+                $data['movimientos'] = $this->exportar_model->exportar_reportes_costo($data);
+                if ($data['movimientos']) {
+                    $this->export->to_excel($data['movimientos'], 'reporte_entrada_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
+                }    
+                break;
+
             case "entrada":
                 $data['movimientos'] = $this->exportar_model->exportar_entrada_devolucion($data);
                 if ($data['movimientos']) {

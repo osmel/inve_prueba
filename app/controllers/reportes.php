@@ -5,6 +5,8 @@ class Reportes extends CI_Controller {
 		parent::__construct();
 		$this->load->model('model_pedido', 'modelo_pedido');
 		$this->load->model('modelo_reportes', 'modelo_reportes');  
+		$this->load->model('modelo_costo_inventario', 'modelo_costo_inventario');  
+		
 	    $this->load->model('catalogo', 'catalogo');  
 	    $this->load->model('modelo', 'modelo');  
 
@@ -240,6 +242,53 @@ class Reportes extends CI_Controller {
 		//echo json_encode(array("osmel"=>"hijos"));
 	}
 
+
+	public function costo_inventario(){
+
+       if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+              $data['medidas']  = $this->catalogo->listado_medidas();
+              $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
+              $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
+              $data['productos'] = $this->catalogo->listado_productos_unico();
+              $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+          switch ($id_perfil) {    
+            case 1:          
+
+                        $this->load->view( 'reportes/costo_inventario/costo_inventario',$data );
+              break;
+            case 2:
+            case 3:
+                  if  (in_array(9, $coleccion_id_operaciones))  {                 
+                            $this->load->view( 'reportes/costo_inventario/costo_inventario',$data );
+                 }   
+              break;
+
+
+            default:  
+              redirect('');
+              break;
+          }
+        }
+        else{ 
+          redirect('');
+        }  
+
+
+	}
+
+
+public function procesando_costo_inventario(){ //13=>$row->num_partida,
+		$data=$_POST;
+		$busqueda = $this->modelo_costo_inventario->buscador_entrada_home($data); //13 443
+		echo $busqueda;
+	}
 
 
 /////////////////validaciones/////////////////////////////////////////	

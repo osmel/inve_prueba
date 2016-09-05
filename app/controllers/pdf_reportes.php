@@ -76,6 +76,12 @@ class Pdf_reportes extends CI_Controller {
 
         switch($extra_search) {
 
+            case "reportes_costo":
+                $data['movimientos'] = $this->informes_model->informe_reportes_costo($data);
+                $data['totales'] = $this->informes_model->total_reportes_costo($data);        
+                $html = $this->load->view('pdfs/informes/costos', $data, true);
+                 
+                break;
 
             case "entrada":
                 $data['movimientos'] = $this->informes_model->buscador_entrada_devolucion($data);

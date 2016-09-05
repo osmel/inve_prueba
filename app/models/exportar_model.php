@@ -28,7 +28,7 @@ class Exportar_model extends CI_Model
 
                   $this->historico_registros_entradas = $this->db->dbprefix('historico_registros_entradas');
                   $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
-
+                  $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
 
                     //usuarios
                   $this->usuarios    = $this->db->dbprefix('usuarios');
@@ -233,6 +233,187 @@ class Exportar_model extends CI_Model
                 return 0;
             $login->free_result();
     }     
+
+
+
+    public function exportar_reportes_costo($data){
+
+
+          //$cadena = addslashes($data['search']['value']);
+
+          $cadena = addslashes($data['busqueda']);
+          
+          $id_estatus= $data['id_estatus'];
+          $id_empresa= addslashes($data['proveedor']);
+          $id_almacen= $data['id_almacen'];
+
+          $factura_reporte = addslashes($data['factura_reporte']);
+
+
+       
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+                          
+
+          } else {
+           $fechas .= ' ';
+          }
+
+
+
+          $donde = '';
+         if ($id_empresa!="") {
+              $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                if (!($id_empre)) {
+                  $id_empre =0;
+                }
+
+
+
+                  $donde .= ' AND ( m.id_empresa  =  '.$id_empre.' ) ';
+
+
+        } else 
+        {
+           $donde .= ' ';
+        }
+
+         if ($factura_reporte!="") {
+            $donde .= ' AND ( m.factura  =  "'.$factura_reporte.'" ) ';
+        } 
+
+
+          //productos
+          $id_descripcion= addslashes($data['id_descripcion']);
+          $id_color= $data['id_color'];
+          $id_composicion= $data['id_composicion'];
+          $id_calidad= $data['id_calidad'];
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          
+          $this->db->select('m.codigo, m.id_descripcion');
+          $this->db->select('c.color');
+          $this->db->select('CONCAT(m.cantidad_um," ",u.medida) as cantidad', false);
+          $this->db->select('CONCAT(m.ancho," ","cm") as ancho', false);
+          
+          $this->db->select("m.precio,((m.precio*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("tff.tipo_factura t_factura");  
+
+          $this->db->select('m.movimiento');
+          $this->db->select('p.nombre');
+          $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
+
+          $this->db->from($this->registros.' as m');
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+          
+
+            $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';
+
+          if ($id_estatus!=0) {
+            $estatus_idid = ' and ( m.id_estatus =  '.$id_estatus.' ) ';  
+          } else {
+            $estatus_idid = '';
+          }
+
+          if ($id_almacen!=0) {
+            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+            $id_almacenid = '';
+          }
+
+          
+
+          $where = '(
+                      (
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                      ) 
+                       AND
+                      ( ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
+                        ( m.codigo LIKE  "%'.$cadena.'%" ) OR (m.id_descripcion LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
+                        ( CONCAT(m.cantidad_um," ",u.medida) LIKE  "%'.$cadena.'%" ) OR (CONCAT(m.ancho," cm") LIKE  "%'.$cadena.'%")  OR
+                        (m.factura LIKE  "%'.$cadena.'%") OR ( m.movimiento LIKE  "%'.$cadena.'%" ) OR ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR '.$cond.' 
+                       )
+
+            ) ' ;                     
+          
+
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+
+
+
+
+          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
+            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
+            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
+            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
+            ) {
+              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
+              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
+          }    
+
+          elseif
+           ( 
+               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
+            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
+            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
+            ) {
+              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
+              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
+          }  
+
+          elseif 
+           ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
+            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
+            ) {
+              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
+          }  
+
+          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
+              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
+              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
+          }  
+
+
+          $where_total.= $donde.$fechas; //$donde.
+
+
+
+          $this->db->where($where.$donde.$fechas); //
+    
+       
+          //ordenacion
+
+          $this->db->order_by('m.factura', 'asc'); 
+
+          $result = $this->db->get();
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+      }  
 
 
 

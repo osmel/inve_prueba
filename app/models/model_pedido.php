@@ -238,6 +238,9 @@
 
           $id_tipo_factura = $data['id_tipo_factura'];
            $id_tipo_pedido = $data['id_tipo_pedido'];
+
+           
+           $id_factura_filtro = $data['id_factura_filtro'];
           
 
           $columa_order = $data['order'][0]['column'];
@@ -308,9 +311,9 @@
           } 
  
           //este no hace falta en pedido porq no se filtra
-          if ($id_tipo_factura!=0) {
-              //$id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' ) ';  
-              $id_tipo_facturaid = '';
+          if ($id_factura_filtro!=0) {
+              $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_factura_filtro.' ) ';  
+              //$id_tipo_facturaid = '';
           } else {
               $id_tipo_facturaid = '';
           } 

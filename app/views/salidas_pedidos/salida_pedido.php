@@ -179,8 +179,6 @@
 
 
 
-
-
 	
 </div>
 
@@ -261,9 +259,16 @@
 		<section>
 
 
-
-
-
+		<div class="col-xs-12 col-sm-6 col-md-2">
+		<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
+			<select name="id_factura_filtro" id="id_factura_filtro" class="form-control">
+					<option value="0">Todos</option> 
+					<?php foreach ( $facturas as $factura ){ ?>
+								<option value="<?php echo $factura->id; ?>"><?php echo $factura->tipo_factura; ?></option>
+					<?php } ?>
+			</select>
+		</div>				
+		<br/>		
 
 
 
@@ -273,7 +278,9 @@
 
 
 			<table id="pedido_entrada" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+
 			<thead>
+
 				<tr>
 					<th style="width:20%;">Código</th>
 					<th style="width:10%;">Producto</th>

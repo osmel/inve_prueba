@@ -25,8 +25,9 @@
 					<thead>	
 						<tr>
 							<th class="text-center cursora" width="10%">Movimiento  <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" width="10%">Tipo Pago  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" width="5%">Almacén  <i class="glyphicon glyphicon-sort"></i></th>
-							<th class="text-center cursora" width="45%">Proveedor  <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" width="35%">Proveedor  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" width="10%">Fecha  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" width="10%">Factura  <i class="glyphicon glyphicon-sort"></i></th>
 							
@@ -42,6 +43,7 @@
 							<tr style="color:<?php echo $entrada->color_devolucion?>">
 								
 								<td class="text-center"><?php echo $entrada->movimiento ; ?></td>
+								<td class="text-center"><?php echo $entrada->tipo_pago ; ?></td>
 								<td class="text-center"><?php echo $entrada->almacen ; ?></td>
 								<td class="text-center"><?php echo $entrada->nombre ; ?></td>
 								<td class="text-center"><?php echo $entrada->fecha ; ?></td>

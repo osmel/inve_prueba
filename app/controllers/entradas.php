@@ -36,6 +36,7 @@ class Entradas extends CI_Controller {
 		       	$data['productos']   = $this->catalogo->listado_productos_unico_activo();
     	        $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
     	        $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+    	        $data['pagos']   = $this->catalogo->listado_tipos_pagos();
 
 
 		      switch ($id_perfil) {    
@@ -119,7 +120,8 @@ class Entradas extends CI_Controller {
           	$data['iva'] = 0;
           }
 
-
+          $data['id_tipo_pago']   = $this->input->post('id_tipo_pago');
+          
 
           $data['id_descripcion']   = $this->input->post('prod_entrada');
           $data['id_color']   = $this->input->post('color');

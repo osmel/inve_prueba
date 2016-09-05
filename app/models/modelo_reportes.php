@@ -47,6 +47,7 @@
       $this->registros_entradas               = $this->db->dbprefix('registros_entradas');
       $this->registros_cambios               = $this->db->dbprefix('registros_cambios');
       $this->almacenes       = $this->db->dbprefix('catalogo_almacenes');
+      $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
 
       
 
@@ -1929,7 +1930,7 @@
  
           $this->db->select('m.movimiento');
           $this->db->select('a.almacen');
-          $this->db->select('p.nombre, m.factura');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
           $this->db->select("MAX(m.devolucion) devolucion",false);
@@ -1945,6 +1946,7 @@
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
           $where = '(
                       (

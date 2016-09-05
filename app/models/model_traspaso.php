@@ -1679,21 +1679,34 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                    case '4':
                         $columna = 'm.ancho';
                      break;
+
                    case '5':
-                        $columna = 'm.movimiento';
+                        $columna = 'm.precio';
                      break;
                    case '6':
+                        $columna = 'm.iva';
+                     break;                     
+
+                   case '7':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '8':
                               $columna= 'p.nombre';
                      break;
-                   case '7':
+                   case '9':
                               $columna= 'm.id_lote, m.consecutivo';  
                      break;
-                   
+                   case '10':
+                              $columna= 'm.num_partida';  
+                     break;
+
                    default:
                        $columna = 'm.codigo';
                      break;
                  }                 
           
+ 
+
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
@@ -1709,7 +1722,8 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-          
+          $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
+          $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);          
 
 
           $this->db->from($this->registros.' as m');
@@ -1800,6 +1814,9 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       12=>$row->num_partida,
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
+                                      15=>$row->sum_iva,
+                                      16=>$row->sum_total
+
                                       
                                     );
                       }
@@ -1812,6 +1829,11 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
+                          "totales_importe"            =>  array(
+                            "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                            "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                            "total"=>floatval( self::totales_importes($where_total)->total ),
+                            ),                          
                       ));
                     
               }   
@@ -1822,6 +1844,11 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                   "recordsFiltered" =>0,
                   "aaData" => array(),
                    "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
+                     "totales_importe"            =>  array(
+                            "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                            "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                            "total"=>floatval( self::totales_importes($where_total)->total ),
+                            ),                     
                   );
                   $array[]="";
                   return json_encode($output);
@@ -1914,6 +1941,7 @@ public function valores_movimientos_temporal(){
           $columa_order = $data['order'][0]['column'];
                  $order = $data['order'][0]['dir'];
 
+          
           switch ($columa_order) {
                    case '0':
                         $columna = 'm.codigo';
@@ -1930,20 +1958,31 @@ public function valores_movimientos_temporal(){
                    case '4':
                         $columna = 'm.ancho';
                      break;
+
                    case '5':
-                        $columna = 'm.movimiento';
+                        $columna = 'm.precio';
                      break;
                    case '6':
+                        $columna = 'm.iva';
+                     break;                     
+
+                   case '7':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '8':
                               $columna= 'p.nombre';
                      break;
-                   case '7':
+                   case '9':
                               $columna= 'm.id_lote, m.consecutivo';  
                      break;
-                   
+                   case '10':
+                              $columna= 'm.num_partida';  
+                     break;
+
                    default:
                        $columna = 'm.codigo';
                      break;
-                 }                 
+                 }                
           
 
           $id_session = $this->db->escape($this->session->userdata('id'));
@@ -1959,6 +1998,8 @@ public function valores_movimientos_temporal(){
          
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
+          $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);          
           
           $this->db->select("num_control, comentario_traspaso, id_usuario_traspaso", FALSE);
 
@@ -2050,6 +2091,8 @@ public function valores_movimientos_temporal(){
                                       12=>$row->num_partida,
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
+                                      15=>$row->sum_iva,
+                                      16=>$row->sum_total                                      
                                     );
                       }
 
@@ -2061,6 +2104,12 @@ public function valores_movimientos_temporal(){
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
+                          "totales_importe"            =>  array(
+                                "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                                "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                                "total"=>floatval( self::totales_importes($where_total)->total ),
+                                ),  
+
                       ));
                     
               }   
@@ -2071,6 +2120,12 @@ public function valores_movimientos_temporal(){
                   "recordsFiltered" =>0,
                   "aaData" => array(),
                    "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
+                      "totales_importe"            =>  array(
+                            "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                            "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                            "total"=>floatval( self::totales_importes($where_total)->total ),
+                            ),  
+
                   );
                   $array[]="";
                   return json_encode($output);
@@ -2081,7 +2136,31 @@ public function valores_movimientos_temporal(){
               $result->free_result();           
 
       }  
+     
+public function totales_importes($where){
+
+           $this->db->select("SUM(precio) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+   
+          $this->db->from($this->registros.' as m');
+          $this->db->where($where);
+
+
+          $result = $this->db->get();
       
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();              
+
+    }  
+
+
+
+              
+
 
 
 
