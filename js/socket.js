@@ -61,6 +61,64 @@ $(function(){
 conf_entrada
 conf_devolucion
 */
+var url_pedidos = hash_url.split( '/' )
+//console.log(a[1]);
+if  ( (url_pedidos[1]=="pedido_detalle")  ) {  //estos son los que tienen el pedido del conteo
+    $('#pedido_detalle').dataTable().fnDraw();
+
+              switch(data.tipo) {
+                  case "incluir_pedido":
+                         mensaje_notif=  "Se incluyó apartado de tienda para salida.";
+                         caja_notificacion = '.notif-bot-pedidos';
+                      break;     
+
+                      case "form_pedido":
+                             mensaje_notif=  "Se eliminó apartado de tienda.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break; 
+
+                      case "proc_salida":
+                             mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;   
+
+                  
+              default:
+                  mensaje_notif=  "notificación";
+          }            
+
+}  
+
+//para los vendedores
+if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el pedido del conteo
+
+    $('#tabla_detalle').dataTable().fnDraw();
+
+              switch(data.tipo) {
+                  case "incluir_salida":
+                     mensaje_notif=  "Se incluyó apartado de vendedor para salida.";
+                     caja_notificacion = '.notif-bot-pedidos';
+                  break;
+      
+                  case "form_apartado":
+                      mensaje_notif=  "Se eliminó apartado de vendedor.";
+                      caja_notificacion = '.notif-bot-pedidos';
+                  break;
+
+                  case "proc_salida":
+                      mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
+                      caja_notificacion = '.notif-bot-pedidos';
+                  break;   
+
+                  
+              default:
+                  mensaje_notif=  "notificación";
+          }            
+
+
+
+}  
+
 
     if  ( (hash_url=="/listado_traspaso")  ) {  //estos son los que tienen el pedido del conteo
            $('#tabla_general_traspaso').dataTable().fnDraw();

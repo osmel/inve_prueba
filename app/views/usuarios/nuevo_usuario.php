@@ -74,7 +74,7 @@
 					<div class="form-group">
 						<label for="id_perfil" class="col-sm-3 col-md-2 control-label">Rol de usuario</label>
 						<div class="col-sm-9 col-md-10">
-							<?php  if ( $this->session->userdata( 'id_perfil' ) == 2 ){ ?>											
+							<?php  if (( $this->session->userdata( 'id_perfil' ) == 2 ) || ( $this->session->userdata( 'id_perfil' ) == 4 )){ ?>											
 								<fieldset disabled>
 									
 
@@ -118,7 +118,7 @@
 					<div class="form-group">
 						<label for="id_cliente" class="col-sm-3 col-md-2 control-label">Empresa Relacionada</label>
 						<div class="col-sm-9 col-md-10">
-							<?php  if ( $this->session->userdata( 'id_perfil' ) == 2 ){ ?>											
+							<?php  if (( $this->session->userdata( 'id_perfil' ) == 2 ) || ( $this->session->userdata( 'id_perfil' ) == 4 )) { ?>											
 								<fieldset disabled>
 									
 

@@ -24,6 +24,7 @@
 							<th class="text-center cursora" width="7%">Factura  <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center " width="10%"><strong>Detalles</strong></th>
 						</tr>
+						
 					</thead>		
 					<?php if ( isset($salidas ) && !empty($salidas ) ): ?>
 						<?php foreach( $salidas  as $salida  ): ?>
@@ -35,11 +36,13 @@
 								<td class="text-center"><?php echo $salida->cargador; ?></td>
 								<td class="text-center"><?php echo $salida->fecha ; ?></td>
 								
-								<?php if ($salida->destino!='') { ?>
-									<td class="text-center"><?php echo $salida->destino; ?></td>
+
+								<?php if ($salida->id_tipo_factura!=0) { ?>
+										<td class="text-center"><?php  echo $salida->tipo_factura; ?></td>
 								<?php } else { ?>
-									<td class="text-center">NP</td>	
+										<td class="text-center"><?php  echo $salida->tipo_pedido; ?></td>
 								<?php } ?>	
+
 
 								<td class="text-center"><?php echo $salida->factura ; ?></td>
 								 <td>

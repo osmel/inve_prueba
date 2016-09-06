@@ -167,6 +167,7 @@ class Catalogos extends CI_Controller {
           break;
         case 2:
         case 3:
+        case 4:
              if   ((in_array(8, $coleccion_id_operaciones)) 
                   || (in_array(11, $coleccion_id_operaciones)) || (in_array(12, $coleccion_id_operaciones)) 
                   || (in_array(13, $coleccion_id_operaciones)) || (in_array(14, $coleccion_id_operaciones)) 
@@ -384,6 +385,7 @@ class Catalogos extends CI_Controller {
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones))  ) 
 
                { 
@@ -469,6 +471,7 @@ class Catalogos extends CI_Controller {
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones))  )   { 
                 $this->load->view( 'catalogos/medidas/nuevo_medida');
               }   
@@ -530,6 +533,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones))  )   { 
                   $data['medida'] = $this->catalogo->coger_medida($data);
                   if ( $data['medida'] !== FALSE ){
@@ -602,6 +606,7 @@ function validacion_edicion_unidad_medida(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones))  )   { 
                 $data['id']         = $id;
                 $this->load->view( 'catalogos/medidas/eliminar_medida', $data );
@@ -659,6 +664,7 @@ function validacion_edicion_unidad_medida(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )   { 
                 $this->load->view( 'catalogos/composiciones');
               }  else  {
@@ -694,6 +700,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/composiciones/nuevo_composicion');
               }   
@@ -763,6 +770,7 @@ if($this->session->userdata('session') === TRUE ){
                 break;
               case 2:
               case 3:
+              case 4:
                    if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                       $data['composicion'] = $this->catalogo->coger_composicion($data);
                       if ( $data['composicion'] !== FALSE ){
@@ -843,6 +851,7 @@ function validacion_edicion_composicion(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                 $data['id']         = $id;
                 $this->load->view( 'catalogos/composiciones/eliminar_composicion', $data );
@@ -905,6 +914,7 @@ function validacion_edicion_composicion(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
               ob_start();
               $this->paginacion_ajax_actividad(0); //
@@ -992,6 +1002,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
              if   ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/actividades/nuevo_actividad');
               }   
@@ -1053,6 +1064,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                 $data['actividad'] = $this->catalogo->coger_actividad($data);
                 if ( $data['actividad'] !== FALSE ){
@@ -1123,6 +1135,7 @@ function validacion_edicion_actividad_comercial(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(13, $coleccion_id_operaciones))  )  { 
                 $data['id']         = $id;
                 $this->load->view( 'catalogos/actividades/eliminar_actividad', $data );
@@ -1181,6 +1194,7 @@ function validacion_edicion_actividad_comercial(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(12, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/colores');
               }  else  {
@@ -1219,6 +1233,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(12, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/colores/nuevo_color');
               }   
@@ -1291,6 +1306,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(12, $coleccion_id_operaciones))  )  { 
                   $data['color'] = $this->catalogo->coger_color($data);
                   if ( $data['color'] !== FALSE ){
@@ -1375,6 +1391,7 @@ function validacion_edicion_color(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(12, $coleccion_id_operaciones))  )  { 
                      $this->load->view( 'catalogos/colores/eliminar_color', $data );
              }   
@@ -1426,6 +1443,7 @@ function validacion_edicion_color(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(19, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/calidades');
               }  else  {
@@ -1463,6 +1481,7 @@ function validacion_edicion_color(){
               break;
             case 2:
             case 3:
+            case 4:
                  if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(19, $coleccion_id_operaciones))  )  { 
                     $this->load->view( 'catalogos/calidades/nuevo_calidad');
                   }   
@@ -1534,6 +1553,7 @@ function validacion_edicion_color(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(19, $coleccion_id_operaciones))  )  { 
                     $data['calidad'] = $this->catalogo->coger_calidad($data);
                      if ( $data['calidad'] !== FALSE ){
@@ -1614,6 +1634,7 @@ function validacion_edicion_calidad(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(19, $coleccion_id_operaciones))  )  {                 
                         $this->load->view( 'catalogos/calidades/eliminar_calidad', $data );
              }   
@@ -1676,6 +1697,7 @@ function validacion_edicion_calidad(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(18, $coleccion_id_operaciones))  )  { 
               ob_start();
               $this->paginacion_ajax_ancho(0); //
@@ -1763,6 +1785,7 @@ function validacion_edicion_calidad(){
               break;
             case 2:
             case 3:
+            case 4:
                  if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(18, $coleccion_id_operaciones))  )  { 
                     $this->load->view( 'catalogos/anchos/nuevo_ancho');
                   }   
@@ -1826,6 +1849,7 @@ if($this->session->userdata('session') === TRUE ){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(18, $coleccion_id_operaciones))  )  { 
                 $data['ancho'] = $this->catalogo->coger_ancho($data);
                 if ( $data['ancho'] !== FALSE ){
@@ -1894,6 +1918,7 @@ function validacion_edicion_ancho(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(18, $coleccion_id_operaciones))  )  {                 
                         $this->load->view( 'catalogos/anchos/eliminar_ancho', $data );
              }   
@@ -1949,6 +1974,7 @@ function validacion_edicion_ancho(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(17, $coleccion_id_operaciones))  )  { 
                 $this->load->view( 'catalogos/cargadores');
               }  else  {
@@ -1985,6 +2011,7 @@ function validacion_edicion_ancho(){
               break;
             case 2:
             case 3:
+            case 4:
                  if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(17, $coleccion_id_operaciones))  )  { 
                     $this->load->view( 'catalogos/cargadores/nuevo_cargador');
                   }   
@@ -2057,6 +2084,7 @@ function validacion_edicion_ancho(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(17, $coleccion_id_operaciones))  )  { 
                     $data['cargador'] = $this->catalogo->coger_cargador($data);
                     if ( $data['cargador'] !== FALSE ){
@@ -2134,6 +2162,7 @@ function validacion_edicion_cargador(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(17, $coleccion_id_operaciones))  )  {                 
                         $this->load->view( 'catalogos/cargadores/eliminar_cargador', $data );
              }   
@@ -2195,6 +2224,7 @@ function validacion_edicion_cargador(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(22, $coleccion_id_operaciones))  )  { 
               ob_start();
               $this->paginacion_ajax_operacion(0);//
@@ -2281,6 +2311,7 @@ function validacion_edicion_cargador(){
               break;
             case 2:
             case 3:
+            case 4:
                  if   ( (in_array(8, $coleccion_id_operaciones))  || (in_array(22, $coleccion_id_operaciones))  )   { 
                     $this->load->view( 'catalogos/operaciones/nuevo_operacion');
                   }   
@@ -2343,6 +2374,7 @@ function validacion_edicion_cargador(){
           break;
         case 2:
         case 3:
+        case 4:
               if   ( (in_array(8, $coleccion_id_operaciones))  || (in_array(22, $coleccion_id_operaciones))  )   { 
                   $data['operacion']  = $this->catalogo->coger_operacion($data);
                   if ( $data['operacion'] !== FALSE ){
@@ -2412,6 +2444,7 @@ function validacion_edicion_operacion(){
           break;
         case 2:
         case 3:
+        case 4:
               if   ( (in_array(8, $coleccion_id_operaciones))  || (in_array(22, $coleccion_id_operaciones))  )   {                 
                         $this->load->view( 'catalogos/operaciones/eliminar_operacion', $data );
              }   
@@ -2467,6 +2500,7 @@ function validacion_edicion_operacion(){
           break;
         case 2:
         case 3: //8catalogo, 14proveedores, 15cliente, 16comprador
+        case 4:
              if ( (in_array(8, $coleccion_id_operaciones))  || (in_array(14, $coleccion_id_operaciones))  
                       || (in_array(15, $coleccion_id_operaciones)) || (in_array(16, $coleccion_id_operaciones)) )   { 
 
@@ -2509,6 +2543,7 @@ function validacion_edicion_operacion(){
               break;
             case 2:
             case 3:
+            case 4:
                  if   ((in_array(8, $coleccion_id_operaciones))  || (in_array(14, $coleccion_id_operaciones))  
                       || (in_array(15, $coleccion_id_operaciones)) || (in_array(16, $coleccion_id_operaciones)) )   { 
                     
@@ -2618,6 +2653,7 @@ function validacion_edicion_operacion(){
           break;
         case 2:
         case 3:
+        case 4:
                  if   ((in_array(8, $coleccion_id_operaciones))  || (in_array(14, $coleccion_id_operaciones))  
                       || (in_array(15, $coleccion_id_operaciones)) || (in_array(16, $coleccion_id_operaciones)) )   { 
 
@@ -2700,6 +2736,7 @@ function validacion_edicion_proveedor(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(14, $coleccion_id_operaciones))  
               || (in_array(15, $coleccion_id_operaciones)) || (in_array(16, $coleccion_id_operaciones)) )   { 
                         $this->load->view( 'catalogos/proveedores/eliminar_proveedor', $data );
@@ -2763,6 +2800,7 @@ function validacion_edicion_proveedor(){
               break;
             case 2:
             case 3:
+            case 4:
 
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))   { 
                   //$data['productos']  = $this->catalogo->listado_productos($config['per_page'], $offset);
@@ -2809,6 +2847,7 @@ function validacion_edicion_proveedor(){
           break;
         case 2:
         case 3:
+        case 4:
              if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))   { 
                 $this->load->view( 'catalogos/productos/nuevo_producto',$data);
               }   
@@ -3029,6 +3068,7 @@ function validacion_edicion_proveedor(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
                 $data['producto']  = $this->catalogo->coger_producto($data);
                 if ( $data['producto'] !== FALSE ){
@@ -3214,6 +3254,7 @@ function validacion_edicion_producto(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
                 $data['producto']  = $this->catalogo->coger_producto($data);
                 if ( $data['producto'] !== FALSE ){
@@ -3296,6 +3337,7 @@ function validacion_edicion_minimo(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  {                 
                         $this->load->view( 'catalogos/productos/eliminar_producto', $data );
              }   
@@ -3363,6 +3405,7 @@ function validacion_edicion_minimo(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
                 $data['producto']  = $this->catalogo->coger_producto($data);
                 if ( $data['producto'] !== FALSE ){
@@ -3417,6 +3460,7 @@ function validacion_edicion_minimo(){
           break;
         case 2:
         case 3:
+        case 4:
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
                 $data['producto']  = $this->catalogo->coger_producto($data);
                 if ( $data['producto'] !== FALSE ){
@@ -3502,6 +3546,7 @@ function catalogo_modal($catalogo, $uri){
           break;
         case 2:
         case 3:
+        case 4:
               if  (in_array(8, $coleccion_id_operaciones))  {                 
                         $this->load->view( 'catalogos/modal/catalogo_modal', $data );
              }   

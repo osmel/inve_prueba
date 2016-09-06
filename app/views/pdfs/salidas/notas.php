@@ -19,10 +19,10 @@
 								<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br> 
 								
 								
-								<?php if ($movimientos[0]->destino!='') { ?>
-										<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->destino; ?></span> 
+								<?php if ($movimientos[0]->id_tipo_factura!=0) { ?>
+										<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?></span> 
 								<?php } else { ?>
-									<span><b>Tipo de Salida: </b> NP </span> 
+									<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_pedido; ?></span> 
 								<?php } ?>	
 
 
@@ -32,7 +32,9 @@
 						</th>
 
 						<th width="30%" style="text-align:right;">
-							<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
+							<?php if ($movimientos[0]->id_tipo_factura!=2) { ?>
+								<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
+							<?php } ?>	
 						</th>
 
 					</tr>

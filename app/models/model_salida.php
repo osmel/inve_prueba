@@ -48,6 +48,12 @@
       $this->registros_cambios               = $this->db->dbprefix('registros_cambios');
 
       $this->almacenes             = $this->db->dbprefix('catalogo_almacenes');
+      
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
+      $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
+      $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
+
+
     }
 
 
@@ -937,7 +943,7 @@
           $this->db->select('"'.$data['valor'].'" AS tipo_salida',FALSE);
 
           $this->db->select('m.peso_real');
-          $this->db->select('m.id_destino,de.nombre destino');
+          //$this->db->select('m.id_destino,de.nombre destino');
           $this->db->select('m.id_almacen');
           $this->db->select('m.consecutivo_venta');
         
@@ -947,7 +953,7 @@
           $this->db->from($this->registros_salidas.' As m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          $this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
+          //$this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
 
 
           $this->db->where('m.id_usuario',$id_session);
@@ -1121,9 +1127,12 @@
           $this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
           
           $this->db->select('m.peso_real');
-          $this->db->select('m.id_destino,de.nombre destino');
+          
 
           $this->db->select('a.almacen');
+          $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
@@ -1131,7 +1140,10 @@
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT');
+          
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
 
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 

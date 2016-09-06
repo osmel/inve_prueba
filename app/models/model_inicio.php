@@ -903,6 +903,8 @@ precio_nodisp
           $id_estatus= $data['id_estatus'];
             $id_color= $data['id_color'];
             $id_almacen= $data['id_almacen'];
+            $id_factura_inicio= $data['id_factura_inicio'];
+
 
 
           $id_session = $this->db->escape($this->session->userdata('id'));
@@ -937,12 +939,18 @@ precio_nodisp
               $id_almacenid ='';
           } 
 
+          if ($id_factura_inicio!=0) {
+              $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_factura_inicio.' ) ';  
+          } else {
+              $id_tipo_facturaid = '';
+          } 
+
           //$this->db->select("a.almacen");
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'p.referencia = m.referencia'.$id_almacenid,'LEFT');
+          $this->db->join($this->registros.' As m', 'p.referencia = m.referencia'.$id_almacenid.$id_tipo_facturaid,'LEFT');
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
 
@@ -973,11 +981,14 @@ precio_nodisp
                    $where .= ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
               $where_total = ' ( m.id_almacen =  '.$id_almacen.' ) ';  
 
-          } else {
-              //$id_almacenid ='';
           } 
 
- 
+
+         if ($id_factura_inicio!=0) {
+                   $where .= ' AND ( m.id_factura =  '.$id_factura_inicio.' ) ';  
+              $where_total = ' ( m.id_factura =  '.$id_factura_inicio.' ) ';  
+
+          }  
 
           $this->db->where($where);
 

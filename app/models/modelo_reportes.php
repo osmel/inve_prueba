@@ -30,7 +30,7 @@
       $this->movimientos               = $this->db->dbprefix('movimientos');
       $this->registros_temporales               = $this->db->dbprefix('temporal_registros');
       $this->registros               = $this->db->dbprefix('registros_entradas');
-      $this->catalogo_destinos       = $this->db->dbprefix('catalogo_destinos');
+      
 
       $this->colores                 = $this->db->dbprefix('catalogo_colores');
       
@@ -48,6 +48,10 @@
       $this->registros_cambios               = $this->db->dbprefix('registros_cambios');
       $this->almacenes       = $this->db->dbprefix('catalogo_almacenes');
       $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
+      
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
+      $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
+      $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 
       
 
@@ -1979,13 +1983,18 @@
           $this->db->distinct();                    
           $this->db->select('m.mov_salida ,p.nombre cliente, ca.nombre cargador, m.factura');   //movimiento  id_empresa  p.nombre, , m.id_operacion
           $this->db->select("(DATE_FORMAT(m.fecha_salida,'%d-%m-%Y')) as fecha",false);
-          $this->db->select('m.id_destino,de.nombre destino');
+          
           $this->db->select('a.almacen');
+           $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          $this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
+          
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
 

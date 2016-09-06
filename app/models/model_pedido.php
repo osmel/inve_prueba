@@ -784,7 +784,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,m.fecha_apartado,id_prorroga,m.fecha_vencimiento');  //fecha falta
+          $this->db->select('m.id_usuario_apartado,m.id_apartado, m.id_cliente_apartado,m.fecha_apartado,id_prorroga,m.fecha_vencimiento');  //fecha falta
           $this->db->select('p.nombre comprador ');  
           $this->db->select('m.consecutivo_venta');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
@@ -912,6 +912,7 @@
                                       11=>$row->consecutivo_venta,
                                       12=>$row->tipo_pedido,
                                       13=>$row->tipo_factura,                                      
+                                      14=>$row->id_apartado, 
 
                                     );
                       }
@@ -1003,7 +1004,9 @@
                      break;
                  }                    
 
-          $id_session = $this->db->escape($this->session->userdata('id'));
+          $perfil= $this->session->userdata('id_perfil'); 
+          
+          $id_session = $this->session->userdata('id');
           $fecha_hoy =  date("Y-m-d h:ia"); 
           $hoy = new DateTime($fecha_hoy);
 
@@ -1013,7 +1016,7 @@
 
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,m.fecha_apartado,m.id_prorroga,m.fecha_vencimiento');  //fecha falta
-          $this->db->select('p.nombre comprador ');  
+          $this->db->select('p.nombre comprador,m.id_apartado ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('pr.nombre as dependencia', FALSE);
 
@@ -1077,6 +1080,18 @@
             )';   
 
           $where_total = '( m.id_apartado = 5 ) or ( m.id_apartado = 6 )'.$id_almacenid;
+
+        if ( $perfil == 4 )  { 
+
+            //SELECT * FROM `inven_registros_entradas` WHERE (( id_apartado = 5 ) OR ( id_apartado = 6 ))
+            $where .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
+            $where_total .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
+
+         }
+
+
+
+
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
           $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado");
@@ -1129,6 +1144,7 @@
                                       8=>$row->almacen,
                                       9=>$row->tipo_pedido,
                                       10=>$row->tipo_factura,
+                                      11=>$row->id_apartado
                                     );
                       }
 
@@ -1213,7 +1229,9 @@
                  }            
           
 
-          $id_session = $this->db->escape($this->session->userdata('id'));
+          //$id_session = $this->db->escape($this->session->userdata('id'));
+          $perfil= $this->session->userdata('id_perfil'); 
+          $id_session = $this->session->userdata('id');       
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
@@ -1291,8 +1309,17 @@
             )';   
 
 
-          $this->db->where($where);
+          
           $where_total = '( m.id_apartado = 3 ) or ( m.id_apartado = 6 )'.$id_almacenid; 
+
+          if ( ( $perfil == 3 ) OR ( $perfil == 4 ) ) { 
+            //SELECT * FROM `inven_registros_entradas` WHERE (( id_apartado = 2 ) OR ( id_apartado = 3 ))
+            $where .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
+            $where_total .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
+          }
+          $this->db->where($where);
+
+
           $this->db->order_by($columna, $order); 
 
           $this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_cliente_apartado");

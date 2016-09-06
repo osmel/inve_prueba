@@ -79,26 +79,29 @@ jQuery('.fecha_costo').daterangepicker(
 
 
  jQuery("#producto, #color, #composicion, #calidad").on('change', function(e) {
-
-		var campo = jQuery(this).attr("name");   
- 		 var val_prod = jQuery('#producto option:selected').text();  		  
- 		 var val_color = jQuery('#color').val();  		  
- 		 var val_comp = jQuery('#composicion').val();  		  
- 		 var val_calida = jQuery('#calidad').val();  		  
-
-         var dependencia = jQuery(this).attr("dependencia"); 
-         var nombre = jQuery(this).attr("nombre");           
-        
-    	if (dependencia !="") {	    
-	        //limpiar la dependencia
-	        jQuery("#"+dependencia).html(''); 
-	        //cargar la dependencia
-	        cargarDependenciaaa(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
-        }
-
-		var hash_url = window.location.pathname;
+ 		var hash_url = window.location.pathname;
 
 		if  ( (hash_url=="/costo_inventario") )   {  
+ 		
+			var campo = jQuery(this).attr("name");   
+	 		 var val_prod = jQuery('#producto option:selected').text();  		  
+	 		 var val_color = jQuery('#color').val();  		  
+	 		 var val_comp = jQuery('#composicion').val();  		  
+	 		 var val_calida = jQuery('#calidad').val();  		  
+
+	         var dependencia = jQuery(this).attr("dependencia"); 
+	         var nombre = jQuery(this).attr("nombre");           
+	        
+	    	if (dependencia !="") {	    
+		        //limpiar la dependencia
+		        jQuery("#"+dependencia).html(''); 
+		        //cargar la dependencia
+		        cargarDependenciaaa(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
+	        }
+
+			
+
+		
 				var oTable =jQuery('#tabla_costo_inventario').dataTable();
 				oTable._fnAjaxUpdate();
     	}	
@@ -1147,15 +1150,15 @@ jQuery('body').on('click','#proc_traspaso', function (e) {
 									'scrollTop': jQuery('#messages').offset().top
 								}, 1000);
 						}else{
-
+							spinner.stop();
+							jQuery('#foo').css('display','none');
 						
 						    abrir('POST', 'imprimir_detalle_traspaso_post', {
 						    			datos: JSON.stringify(datos),
 						    }, '_blank' );							
 						    
-							spinner.stop();
-							jQuery('#foo').css('display','none');
-							window.location.href = '/';
+							
+							//window.location.href = '/';
 
 								
 								jQuery.ajax({

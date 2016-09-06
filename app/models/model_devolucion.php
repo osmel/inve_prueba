@@ -477,6 +477,12 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $this->db->select('a.almacen');
 
+          $this->db->select('sum(m.precio) as sum_precio');           
+          $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
+
+          
+
           
           //$this->db->from($this->registros_entradas.' as m');
           $this->db->from($this->historico_registros_entradas.' as m');

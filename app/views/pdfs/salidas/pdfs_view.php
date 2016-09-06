@@ -46,11 +46,11 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 
 				<div class="col-sm-3 col-md-3">
-					<?php if ($movimientos[0]->destino!='') { ?>
-							<h4>Tipo de salida: <?php echo $movimientos[0]->destino; ?></h4>
-					<?php } else { ?>
-						<h4>Tipo de salida: NP</h4>
-					<?php } ?>	
+						<?php if ($movimientos[0]->id_tipo_factura!=0) { ?>
+								<h4>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?><h4>
+						<?php } else { ?>
+							<h4>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_pedido; ?><h4>
+						<?php } ?>	
 				</div>		
 
 				<div class="col-sm-4 col-md-4" style="margin-bottom:25px">

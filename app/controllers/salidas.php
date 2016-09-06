@@ -104,6 +104,7 @@ class Salidas extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(2, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'salidas/salida',$data );
 		             }   
@@ -401,6 +402,7 @@ class Salidas extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		             if  (in_array(2, $coleccion_id_operaciones))  { 
 		                 $this->load->view( 'salidas/salida_modal', $data );
 		              }  else  {
@@ -415,7 +417,9 @@ class Salidas extends CI_Controller {
 	}
 
 
-
+public function validar_confirmar_salida_sino222(){
+	print_r("expression");
+}
 public function validar_confirmar_salida_sino(){
 
 		  if ( $this->session->userdata('session') !== TRUE ) {
@@ -452,6 +456,7 @@ public function validar_confirmar_salida_sino(){
 			        break;
 		        case 2:
 		        case 3:
+		        case 4:
 		             if  (in_array(2, $coleccion_id_operaciones))  { 
 		                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 		              }  else  {
@@ -517,6 +522,7 @@ public function validar_confirmar_salida_sino(){
 			          break;
 			        case 2:
 			        case 3:
+			        case 4:
 			              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );

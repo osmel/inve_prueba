@@ -88,6 +88,7 @@ class Inventario extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(3, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'editar_inventario/editar',$data );
                  }   

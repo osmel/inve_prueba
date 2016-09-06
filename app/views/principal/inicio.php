@@ -28,7 +28,7 @@
 			<!--status 				
 			<div class="col-sm-0 col-md-3"></div>-->
 
-	   <div class="col-xs-12 col-sm-6 col-md-3">
+	   <div class="col-xs-12 col-sm-6 col-md-2">
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
@@ -65,7 +65,17 @@
 						</div>	
 					
 
-		   </div>				
+		   </div>	
+
+		<div class="col-xs-12 col-sm-6 col-md-2">
+			<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
+			<select name="id_factura_inicio" id="id_factura_inicio" class="form-control">
+					<option value="0">Todos</option> 
+					<?php foreach ( $facturas as $factura ){ ?>
+								<option value="<?php echo $factura->id; ?>"><?php echo $factura->tipo_factura; ?></option>
+					<?php } ?>
+			</select>
+		</div>		   			
 
 			<div class="col-sm-4 col-md-2">
 				<div class="form-group">

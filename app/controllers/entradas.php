@@ -46,6 +46,7 @@ class Entradas extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(1, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'entradas/entradas',$data );
 		             }   
@@ -189,6 +190,7 @@ class Entradas extends CI_Controller {
           break;
         case 2:
         case 3:
+        case 4:
              if  (in_array(1, $coleccion_id_operaciones))  { 
 
 				$this->load->view( 'entradas/temporales/eliminar_producto', $data );
@@ -333,6 +335,7 @@ class Entradas extends CI_Controller {
 			          break;
 			        case 2:
 			        case 3:
+			        case 4:
 			              if  (in_array(1, $coleccion_id_operaciones))  {                 
 						       
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
@@ -420,6 +423,7 @@ class Entradas extends CI_Controller {
 			          break;
 			        case 2:
 			        case 3:
+			        case 4:
 			              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/pdfs_view',$data );

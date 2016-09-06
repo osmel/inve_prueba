@@ -23,12 +23,16 @@ class Pdfs_model extends CI_Model
                   $this->registros_salidas       = $this->db->dbprefix('registros_salidas');
                   $this->cargadores             = $this->db->dbprefix('catalogo_cargador');
 
-                  $this->catalogo_destinos       = $this->db->dbprefix('catalogo_destinos');
+                  
 
                   $this->almacenes       = $this->db->dbprefix('catalogo_almacenes');
 
                   $this->historico_registros_entradas = $this->db->dbprefix('historico_registros_entradas');
                   $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
+
+                  $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
+                  $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
+                  $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 
 
                     //usuarios
@@ -167,7 +171,10 @@ class Pdfs_model extends CI_Model
           $this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
           $this->db->select('m.peso_real');
 
-          $this->db->select('m.id_destino,de.nombre destino');
+          
+          $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+
 
           $this->db->select('a.almacen');
 
@@ -177,7 +184,10 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
+          
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
           //$this->db->where('m.id_usuario',$id_session);

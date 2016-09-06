@@ -1789,11 +1789,11 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
  		 var val_comp = jQuery('#composicion').val();  		  //elemento** id
  		 var val_calida = jQuery('#calidad').val();  		  //elemento** id
 
-
+ 		 var hash_url = window.location.pathname;
          var dependencia = jQuery(this).attr("dependencia"); //color composicion
          var nombre = jQuery(this).attr("nombre");           //color composicion
         //alert(valor);
-    	if (dependencia !="") {	    
+    	if ((dependencia !="") && (hash_url!="/costo_inventario")) {	    
 	        //limpiar la dependencia
 	        jQuery("#"+dependencia).html(''); 
 	        //cargar la dependencia
@@ -1803,13 +1803,7 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 
 
         //reportes
-		var hash_url = window.location.pathname;
-/*
-		if  ( (hash_url=="/entradas") && (hash_url=="/editar_inventario") )   {  //sino es entrada
-				var oTable =jQuery('#tabla_reporte').dataTable();
-				oTable._fnAjaxUpdate();
-    	}	
-*/
+		
 
 		if  ( (hash_url=="/reportes") )   {  
 
@@ -1856,8 +1850,6 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 					        dataType : 'json',
 				        success : function(dato) {
 
-				        	//console.log(hash_url+' **  '+campo);
-
 				        	codigo_proveedor =dato.cliente_id;
 						        		lote =jQuery('#id_lote option:selected').text();
 						        
@@ -1873,11 +1865,7 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 
 
 				        	codigo=codigo_proveedor+referencia2+lote+fecha_formateada;
-				        		//codigo
-				        		//console.log(dato);
-				        		//alert(precio);
-
-				        	
+				        				        	
 				        	jQuery('#codigo').val(codigo);	
 
  							//referencia
@@ -4227,8 +4215,13 @@ jQuery('#id_almacen_inicio').change(function(e) {
 	comienzo=true; //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_inicio').dataTable();
 	oTable._fnAjaxUpdate();		
-		
-	
+});
+
+
+jQuery('#id_factura_inicio').change(function(e) {
+	comienzo=true; //para indicar que start comience en 0;
+	var oTable =jQuery('#tabla_inicio').dataTable();
+	oTable._fnAjaxUpdate();		
 });
 
 
@@ -4246,6 +4239,8 @@ jQuery('#tabla_inicio').dataTable( {
 				     d.id_estatus = jQuery("#id_estatus").val();  
 				       d.id_color = jQuery("#id_color").val();  
 				       d.id_almacen = jQuery('#id_almacen_inicio').val();  
+				       d.id_factura_inicio = jQuery('#id_factura_inicio').val();  
+				       
 				 }
 
      },   
@@ -4460,10 +4455,17 @@ jQuery('#id_estatus, #id_color').change(function(e) {
 
 jQuery('#id_almacen_pedido').change(function(e) {
 	comienzo=true; //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_apartado').dataTable();
-	oTable._fnAjaxUpdate();		
-	var oTable =jQuery('#tabla_pedido').dataTable();
-	oTable._fnAjaxUpdate();		
+	
+	var mi_perfil = jQuery('#mi_perfil').val();
+
+	if ( jQuery("#mi_perfil").val() !='4') {
+		var oTable =jQuery('#tabla_apartado').dataTable();
+		oTable._fnAjaxUpdate();		
+	}
+	if ( jQuery("#mi_perfil").val() !='3') {
+		var oTable =jQuery('#tabla_pedido').dataTable();
+		oTable._fnAjaxUpdate();		
+	}	
 	var oTable =jQuery('#tabla_pedido_completado').dataTable();
 	oTable._fnAjaxUpdate();		
 	
@@ -4538,18 +4540,20 @@ jQuery('#tabla_apartado').dataTable({
     			
     			{ 
 	                "render": function ( data, type, row ) {
-	                	if (row[9]!=3) {
+	                	if (row[14]!=3) {
 							texto='<td><a href="eliminar_apartado_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[11])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
 								texto+='<span class="glyphicon glyphicon-remove"></span>';
 							texto+='</a></td>';
 						} else {
- 	   							texto='	<fieldset disabled> <td>';								
+
+
+								texto='	<fieldset disabled> <td>';								
 									texto+=' <a href="#"'; 
-									texto+=' class="btn btn-danger  btn-block">';
-									texto+='<span class="glyphicon glyphicon-remove"></span>';
+									texto+=' class="btn btn-danger btn-sm btn-block">';
+									texto+=' <span class="glyphicon glyphicon-remove"></span>';
 									texto+=' </a>';
-								texto+=' </td></fieldset>';	
+								texto+=' </td></fieldset>';									
 
 						}
 							
@@ -4773,7 +4777,9 @@ jQuery('#tabla_detalle').dataTable( {
 		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
 		    }
 
-		}	
+		}	else {
+			window.location.href = '/pedidos';	
+		}
 	    return pre
 	},    
 
@@ -5862,7 +5868,9 @@ jQuery('#pedido_detalle').dataTable( {
 		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
 		    }
 			
-		}	
+		}	else {
+			window.location.href = '/pedidos';	
+		}
 
 		
 		
@@ -6013,12 +6021,21 @@ jQuery('#tabla_pedido').dataTable( {
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
+	                	if ( (row[11]!=6) ) { //|| ( (row[11]==6) && (jQuery("#mi_perfil").val() !='4')  )  
+							texto='<td><a href="eliminar_pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'" '; 
+								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
+								texto+='<span class="glyphicon glyphicon-remove"></span>';
+							texto+='</a></td>';
+						} else {
+	   							texto='	<fieldset disabled> <td>';								
+									texto+=' <a href="#"'; 
+									texto+=' class="btn btn-danger btn-sm btn-block">';
+									texto+=' <span class="glyphicon glyphicon-remove"></span>';
+									texto+=' </a>';
+								texto+=' </td></fieldset>';	
 
-						texto='<td><a href="eliminar_pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'" '; 
-							texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
-							texto+='<span class="glyphicon glyphicon-remove"></span>';
-						texto+='</a></td>';
-						
+						}	
+							
 						return texto;	
 
 	                },
@@ -6030,8 +6047,6 @@ jQuery('#tabla_pedido').dataTable( {
 						texto='<td><button type="button"  id_cliente_apartado="'+jQuery.base64.encode(row[6])+'"  class="btn btn-warning  btn-block prorrogar_tienda ">';
 						texto+=' <span class="glyphicon glyphicon-time"></span>';
 						texto+='</button></td>';	
-
-						return texto;	
 
 
 						return texto;	
@@ -6045,6 +6060,11 @@ jQuery('#tabla_pedido').dataTable( {
 	                },
 	                "targets": [11]
 	            },
+	            /*
+	            { 
+		                 "visible": false,
+		                "targets": [11]
+		         }*/
 
 
 
@@ -6748,7 +6768,25 @@ jQuery('.datepicker').datepicker({
 		return false;
 	});	
 
+//input[name='coleccion_id_logo[]'][value=1]
 
+		//notificando cuando diga si en la salida
+	 /*
+	 jQuery('body').on('click','#deleteUserSubmit[name="procesando_salida"]', function (e) {
+			jQuery.ajax({
+						        url : 'conteo_tienda',
+						        data : { 
+						        	tipo: 'tienda',
+						        },
+						        type : 'POST',
+						        dataType : 'json',
+						        success : function(data) {	
+						        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'proc_salida');
+									return false;	
+						        }
+			});	
+			
+	 });*/
 
 
     jQuery('body').on('submit','#form_prod', function (e) {

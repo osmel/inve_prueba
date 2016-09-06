@@ -117,7 +117,7 @@
 									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<div class="col-sm-12 col-md-12">
 				
-							    <?php if  ( $this->session->userdata( 'id_perfil' ) == 1  ) { ?>
+							    <?php if  ( $this->session->userdata( 'id_perfil' ) != 2  ) { ?>
 									 <fieldset class="disabledme">				
 								<?php } else { ?>	
 									 <fieldset class="disabledme" disabled>

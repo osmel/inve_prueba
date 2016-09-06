@@ -93,6 +93,7 @@ class Devoluciones extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(23, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'devoluciones/editar',$data );
                   }  else {
@@ -211,6 +212,7 @@ class Devoluciones extends CI_Controller {
             break;
         case 2:
         case 3:
+        case 4:
              if  (in_array(23, $coleccion_id_operaciones))  { 
                   $this->load->view( 'devoluciones/quitar_prod_devolucion', $data );
               }  else  {
@@ -293,6 +295,7 @@ class Devoluciones extends CI_Controller {
                 break;
               case 2:
               case 3:
+              case 4:
                   if  (in_array(23, $coleccion_id_operaciones))  {                 
                          $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);
                          $this->load->view( 'pdfs/pdfs_view',$data );

@@ -54,7 +54,7 @@
 							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
-							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(23, $coleccion_id_operaciones)) )  && ( $this->session->userdata( 'id_perfil' ) != 2  ) ){ ?>
+							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(4, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabled_almacen">				
 								<?php } else { ?>	
 									 <fieldset class="disabled_almacen" disabled>
@@ -260,7 +260,7 @@
 
 
 		<div class="col-xs-12 col-sm-6 col-md-2">
-		<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
+			<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
 			<select name="id_factura_filtro" id="id_factura_filtro" class="form-control">
 					<option value="0">Todos</option> 
 					<?php foreach ( $facturas as $factura ){ ?>

@@ -1,6 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <?php 
 	  $perfil= $this->session->userdata('id_perfil'); 
+	  $id_session = $this->session->userdata('id');
 	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 
 	  //if (isset($params['level']) && in_array($params['level'], array('L','M','Q','H'))) $level = $params['level'];
@@ -19,13 +20,43 @@
 	              $id_almacenid = '';
 	          } 
 
+ 
+         if ( ( $perfil == 3 ) OR ( $perfil == 4 ) ) { 
+            $restriccion  =' AND (m.id_usuario_apartado = "'.$id_session.'")';
+         } else {
+         	$restriccion = '';
+         }
 
+          
+         if (  $perfil != 4 ) {
+	     		$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid.$restriccion;
+				$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
+         } else {
+         	$dato['vendedor'] ="0";
+         }
 
-			$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid;
-			$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
-
-			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid;
+         if (  $perfil != 3 ) {
+			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid.$restriccion;
 			$dato['tienda'] = (string)$this->modelo_pedido->total_pedidos_pendientes($where_total);  
+         } else {
+         	$dato['tienda'] ="0";
+         }
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			
 			$conteos =  '<span title="Pedidos Vendedores." class="ttip">'.$dato['vendedor'].'</span><span> - </span><span title="Pedidos Tiendas." class="ttip">'.$dato['tienda'].'</span>';
 

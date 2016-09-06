@@ -40,6 +40,7 @@ class Reportes extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(9, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'reportes/reportes',$data );
                  }   
@@ -117,6 +118,7 @@ class Reportes extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'reportes/devolucion/notas',$data );
 		             }   
@@ -157,6 +159,7 @@ class Reportes extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'reportes/notas',$data );
 		             }   
@@ -195,6 +198,7 @@ class Reportes extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'reportes/salidas/notas',$data );
 		             }   
@@ -265,6 +269,7 @@ class Reportes extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(9, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'reportes/costo_inventario/costo_inventario',$data );
                  }   

@@ -185,6 +185,7 @@ class Main extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                  if  (in_array(5, $coleccion_id_operaciones))  { 
                      ob_start();
                           $this->paginacion_ajax_usuario(0);
@@ -284,6 +285,7 @@ class Main extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                  if  (in_array(5, $coleccion_id_operaciones))  { 
                     $this->load->view( 'usuarios/nuevo_usuario', $data );   
                  }   
@@ -519,6 +521,7 @@ class Main extends CI_Controller {
               break;
             case 2:
             case 3:
+            case 4:
                  if  (in_array(5, $coleccion_id_operaciones))  { 
                       if ($uid=='') {
                           $uid= $this->session->userdata('id');
@@ -567,14 +570,17 @@ class Main extends CI_Controller {
           $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
           $data['productos'] = $this->catalogo->listado_productos_unico();
           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 
           switch ($id_perfil) {    
             case 1:
             case 2:
+            case 4:
                 $this->load->view( 'principal/dashboard',$data );
               break;
 
             case 3:
+
                 $data['colores'] =  $this->catalogo->listado_colores(  );
             	$data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
                 $this->load->view( 'principal/inicio',$data );

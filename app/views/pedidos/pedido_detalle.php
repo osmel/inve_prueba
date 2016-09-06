@@ -1,5 +1,18 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <?php $this->load->view( 'header' ); ?>
+
+<?php 
+	  $perfil= $this->session->userdata('id_perfil'); 
+	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+
+	  if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) )  
+	  		{
+	  			$coleccion_id_operaciones = array();
+	  		} 	
+
+
+?>	
+
 <div class="container margenes">
 	<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
 	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
@@ -100,17 +113,18 @@
 								</div>
 
 								
-								
-								<div class="col-sm-3 col-md-3 marginbuttom">
-									<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para que NO sea visible y no pueda ser procesada su salida." id="excluir_pedido">
-										<span>Excluir de la Salida</span>
-									</button>
-								</div>	
-								<div class="col-sm-3 col-md-3 marginbuttom">
-									<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="incluir_pedido">
-										<span>Incluir en la Salida</span>
-									</button>
-								</div>			
+								<?php if ( ( $perfil != 4 ) ) { ?>
+									<div class="col-sm-3 col-md-3 marginbuttom">
+										<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para que NO sea visible y no pueda ser procesada su salida." id="excluir_pedido">
+											<span>Excluir de la Salida</span>
+										</button>
+									</div>	
+									<div class="col-sm-3 col-md-3 marginbuttom">
+										<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="incluir_pedido">
+											<span>Incluir en la Salida</span>
+										</button>
+									</div>			
+								<?php } ?>		
 								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a href="<?php echo base_url(); ?>pedidos" type="button" class="btn btn-danger btn-block">Regresar</a>
 								</div>	

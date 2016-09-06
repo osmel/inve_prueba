@@ -30,7 +30,7 @@
       $this->movimientos               = $this->db->dbprefix('movimientos');
       $this->registros_temporales               = $this->db->dbprefix('temporal_registros');
       $this->registros               = $this->db->dbprefix('registros_entradas');
-      $this->catalogo_destinos       = $this->db->dbprefix('catalogo_destinos');
+      
 
       $this->colores                 = $this->db->dbprefix('catalogo_colores');
       

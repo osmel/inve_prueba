@@ -58,6 +58,7 @@ public function modulo_traspaso(){
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(26, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'traspaso/modulo_traspaso',$data );
                  }   
@@ -198,6 +199,7 @@ public function modulo_traspaso(){
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(4, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'traspaso/listado_traspaso',$data );
                  }   
@@ -235,6 +237,7 @@ public function modulo_traspaso(){
                   break;
                 case 2:
                 case 3:
+                case 4:
                       if  (in_array(10, $coleccion_id_operaciones))  {            
                           $this->load->view('traspaso/traspaso_detalle',$data);
                       } else {
@@ -282,6 +285,7 @@ public function modulo_traspaso(){
                   break;
                 case 2:
                 case 3:
+                case 4:
                       if  (in_array(10, $coleccion_id_operaciones))  {            
                           $this->load->view( 'traspaso/traspaso_general_detalle_manual',$data);
                       } else {
@@ -327,6 +331,7 @@ public function modulo_traspaso(){
               break;
             case 2:
             case 3:
+            case 4:
                   if  (in_array(10, $coleccion_id_operaciones))  {            
                       $this->load->view( 'traspaso/traspaso_general_detalle',$data);
                   } else {

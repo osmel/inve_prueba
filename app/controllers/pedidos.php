@@ -15,7 +15,7 @@ class Pedidos extends CI_Controller {
 ///////////////////////////////////////////////////////salidas de pedidos/////////////////////////////////////////////////
 
 
- function cargar_dependencia_pedido(){
+ function cargar_dependencia_pedido() {
     
     $data['campo']        = $this->input->post('campo');
 
@@ -94,6 +94,7 @@ class Pedidos extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(4, $coleccion_id_operaciones))  {                 
 		                        $this->load->view( 'salidas_pedidos/salida_pedido',$data );
 		             }   
@@ -134,6 +135,7 @@ class Pedidos extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(10, $coleccion_id_operaciones))  {            
 		              			$this->load->view( 'pedidos/pedidos' ,$data );     
 		              } else {
@@ -163,12 +165,32 @@ class Pedidos extends CI_Controller {
               $id_almacenid = '';
           } 
 
+          $perfil= $this->session->userdata('id_perfil'); 
+          $id_session = $this->session->userdata('id');
+          
+         if ( ( $perfil == 3 ) OR ( $perfil == 4 ) ) { 
+            $restriccion  =' AND (m.id_usuario_apartado = "'.$id_session.'")';
+         } else {
+         	$restriccion = '';
+         }
 
-			$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid;
-			$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
 
-			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid;
+
+          
+         if (  $perfil != 4 ) {
+	     		$where_total = '(( m.id_apartado = 2 ) or ( m.id_apartado = 3 ))'.$id_almacenid.$restriccion;
+				$dato['vendedor'] = (string)$this->modelo_pedido->total_apartados_pendientes($where_total);
+         } else {
+         	$dato['vendedor'] ="0";
+         }
+
+        if (  $perfil != 3 ) {
+			$where_total = '(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ))'.$id_almacenid.$restriccion;
 			$dato['tienda'] = (string)$this->modelo_pedido->total_pedidos_pendientes($where_total);  
+         } else {
+         	$dato['tienda'] ="0";
+         }
+	
 			echo  json_encode($dato);
 		}	
   
@@ -272,6 +294,7 @@ class Pedidos extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(10, $coleccion_id_operaciones))  {            
 		              			$this->load->view( 'pedidos/apartado_detalle',$data);
 		              } else {
@@ -322,6 +345,7 @@ class Pedidos extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(10, $coleccion_id_operaciones))  {            
 		              	  $this->load->view( 'pedidos/pedido_detalle',$data);
 		              } else {
@@ -374,6 +398,7 @@ class Pedidos extends CI_Controller {
 		          break;
 		        case 2:
 		        case 3:
+		        case 4:
 		              if  (in_array(10, $coleccion_id_operaciones))  {            
 		              	  $this->load->view( 'pedidos/pedido_completo_detalle',$data);
 		              } else {
@@ -608,6 +633,7 @@ function agregar_prod_pedido(){
               break;
             case 2:
             case 3:
+            case 4:
                  if  (in_array(10, $coleccion_id_operaciones))  { 
 	                      $this->load->view( 'pedidos/eliminar_pedido', $data );
                  }   
@@ -672,6 +698,7 @@ function agregar_prod_pedido(){
               break;
             case 2:
             case 3:
+            case 4:
                  if  (in_array(10, $coleccion_id_operaciones))  { 
 	                      $this->load->view( 'pedidos/eliminar_apartado', $data );
                  }   

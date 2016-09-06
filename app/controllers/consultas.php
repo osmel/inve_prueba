@@ -101,6 +101,7 @@ class Consultas extends CI_Controller {
 		                    $this->load->view( 'consultas/consulta_totales',$data );
 		          break;
 		        case 2:
+		        case 4:
 		                        $this->load->view( 'consultas/consulta_totales',$data );
 		          break;
 
@@ -174,6 +175,7 @@ class Consultas extends CI_Controller {
 		                    $this->load->view( 'consultas/consulta_producto',$data );
 		          break;
 		        case 2:
+		        case 4:
 		                        $this->load->view( 'consultas/consulta_producto',$data );
 		          break;
 
@@ -214,6 +216,7 @@ class Consultas extends CI_Controller {
 		                    $this->load->view( 'consultas/consulta_proveedor',$data );
 		          break;
 		        case 2:
+		        case 4:
 		        
 		              $this->load->view( 'consultas/consulta_proveedor',$data );
 		          

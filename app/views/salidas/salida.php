@@ -220,7 +220,7 @@
 			    	Y que no este inhabilitado y 
 			    	que no sean almacenista 
 			    	ENTONCES lista editable -->
-			    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(2, $coleccion_id_operaciones)) ) && (!$val_proveedor) && ( $this->session->userdata( 'id_perfil' ) != 2  ) ){ ?>
+			    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(2, $coleccion_id_operaciones)) ) && (!$val_proveedor) &&  (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 					 <fieldset class="disabledme">				
 				<?php } else { ?>	
 					 <fieldset class="disabledme" disabled>

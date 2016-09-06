@@ -28,7 +28,7 @@
 		<div class="alert" id="messagesModal"></div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-danger" id="deleteUserSubmit">SI</button>
+		<button class="btn btn-danger" name="procesando_salida" id="deleteUserSubmit">SI</button>
 		<button class="btn btn-default" data-dismiss="modal">NO</button>
 	</div>
 	<input type="hidden" id="valor" name="valor" value="<?php echo $valor; ?>">

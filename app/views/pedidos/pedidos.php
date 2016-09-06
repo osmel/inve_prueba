@@ -47,7 +47,7 @@
 							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
-							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(23, $coleccion_id_operaciones)) )  && ( $this->session->userdata( 'id_perfil' ) != 2  ) ){ ?>
+							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(10, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabled_almacen">				
 								<?php } else { ?>	
 									 <fieldset class="disabled_almacen" disabled>
@@ -91,22 +91,19 @@
 
 			<hr/>
 
-		<div class="table-responsive">
+		<?php if ( ( $perfil != 4 ) ) { ?>		 
+			<div class="table-responsive">
 
-			<h4>Pedidos de vendedores</h4>	
-			<br>	
+				<h4>Pedidos de vendedores</h4>	
+				<br>	
+				<section>
+					<table id="tabla_apartado" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
 
-
+					</table>
+				</section>
+			</div>
+		<?php } ?>		
 			
-
-						
-			<section>
-				<table id="tabla_apartado" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
-
-				</table>
-			</section>
-		</div>
-
 		<?php if ( ( $perfil != 3 ) ) { ?>		 
 			<div class="table-responsive">
 				
@@ -119,7 +116,7 @@
 					</table>
 				</section>
 			</div>		
-
+		<?php } ?>		
 
 			<div class="table-responsive">
 				
@@ -132,7 +129,7 @@
 					</table>
 				</section>
 			</div>		
-		<?php } ?>		
+			
 
 	
 </div>
