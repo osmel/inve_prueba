@@ -394,7 +394,6 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           $this->db->where('devolucion',1);
           $this->db->update($this->historico_registros_salidas);
 
-
           //
 
 
@@ -413,17 +412,30 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
              
           $this->db->select('id_empresa, id_descripcion, id_color, id_composicion, id_calidad, referencia');
-          $this->db->select('id_medida, cantidad_um, cantidad_royo, ancho, precio,  comentario,  id_lote, consecutivo, consecutivo_cambio');
+          $this->db->select('id_medida, cantidad_um, cantidad_royo, ancho,   comentario,  id_lote, consecutivo, consecutivo_cambio'); //checar que es este consecutivo_cambio
           $this->db->select('id_cargador,  fecha_mac');
           
           //aqui  "peso_real = peso_real_devolucion"        
           $this->db->select('peso_real_devolucion peso_real',false);      
 
           $this->db->select('id_almacen');
+          $this->db->select('precio, iva, id_factura');
+
           $this->db->from($this->historico_registros_salidas);
 
           $this->db->where('id_user_devolucion',$id_session);
-          $this->db->where('devolucion',1);
+          $this->db->where('devolucion',1);          
+
+/*
+          //no para que no regrese en forma de traspasos. ya el producto fue traspasado y debe de mantenerse en ese estatus, 
+          //para cambiar ese estatus que lo haga de manera manual
+          $this->db->select('id_pedido,  id_tipo_pedido,id_tipo_factura, id_factura_original,incluir,proceso_traspaso');
+
+          //NO para que regresen sin apartados 
+          $this->db->select('m.id_apartado, m.id_usuario_apartado, m.id_cliente_apartado,m.fecha_apartado,m.id_prorroga,m.consecutivo_venta');
+*/
+
+
 
           $result = $this->db->get();
 

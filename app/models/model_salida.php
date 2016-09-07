@@ -776,7 +776,7 @@
 
              $this->db->select('id_apartado, id_usuario_apartado, id_cliente_apartado, fecha_apartado');
 
-             $this->db->select('"'.$data['id_destino'].'" AS id_destino',false); 
+             //$this->db->select('"'.$data['id_destino'].'" AS id_destino',false); 
 
              
              $this->db->select('"'.$data['id_tipo_factura'].'" AS id_tipo_factura',false); 
@@ -893,8 +893,6 @@
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
 
           $this->db->select('id_almacen');
-
-
           $this->db->select('precio, iva, id_pedido, id_factura, id_tipo_pedido,id_tipo_factura, id_factura_original,incluir');
 
           //$this->db->select('0 incluir',false);
@@ -1177,7 +1175,7 @@ public function valores_movimientos_temporal(){
           $id_session = $this->session->userdata('id');
           
           $this->db->distinct();          
-          $this->db->select('m.id, m.id_cliente, m.id_cargador, m.factura,m.id_destino, m.id_almacen');
+          $this->db->select('m.id, m.id_cliente, m.id_cargador, m.factura, m.id_almacen'); //m.id_destino,
           $this->db->select('p.nombre, ca.nombre cargador');
            $this->db->select('m.id_tipo_pedido,m.id_tipo_factura, m.id_tipo_factura');
           

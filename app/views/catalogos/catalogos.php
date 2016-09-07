@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<script type="text/javascript" src="<?php echo base_url(); ?>js/sistema.js"></script>
+
 <?php $this->load->view( 'header' ); ?>
 	<!-- Aseguradoras-->
 <?php 

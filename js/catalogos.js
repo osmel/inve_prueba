@@ -244,34 +244,6 @@ jQuery('.fecha_costo').daterangepicker(
 
 
 
-/*
-
-     				     d.id_estatus = jQuery("#id_estatuss_costo").val(); 
-     				     d.id_almacen = jQuery("#id_almacen_costo").val(); 
-
-     				   //datos del producto
-     				   d.id_descripcion = jQuery("#producto").val(); 
-     				   if (d.id_descripcion !='') {
-     				   	  d.id_descripcion = jQuery('#producto option:selected').text();
-     				   }
-
-
-
-     				   //
-     				   d.id_color = jQuery("#color").val(); 
-     				   d.id_composicion = jQuery("#composicion").val(); 
-     				   d.id_calidad = jQuery("#calidad").val(); 
-	
-						d.factura_reporte = jQuery('#factura_costo').val();					
-
-					   d.proveedor = jQuery("#editar_proveedor_costo").val(); 	   
-
-						var fecha = (jQuery('.fecha_costo').val()).split(' / ');
-						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];
-
-*/
-
 //Agregar las estradas a salidas
 jQuery('body').on('click','#impresion_reporte_costo', function (e) {
 

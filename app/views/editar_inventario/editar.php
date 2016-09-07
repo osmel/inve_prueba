@@ -88,7 +88,7 @@ echo form_open('validar_edicion_producto', $attr);
 	<!--producto proveedor y factura -->
 	<div class="row">
 		<input type="hidden" id="oculto_producto" name="oculto_producto" value="no" color="" composicion="" calidad="">
-		<div class="col-xs-12 col-sm-12 col-md-4">
+		<div class="col-xs-12 col-sm-12 col-md-3">
 		
 			<div class="form-group">
 				<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>
@@ -98,7 +98,7 @@ echo form_open('validar_edicion_producto', $attr);
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-sm-12 col-md-4">
+		<div class="col-xs-12 col-sm-12 col-md-3">
 				<fieldset disabled>
 						<div class="form-group">
 							<label for="proveedor" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Proveedor</label>
@@ -112,7 +112,7 @@ echo form_open('validar_edicion_producto', $attr);
 		
 		
 
-		<div class="col-xs-12 col-sm-12 col-md-4">
+		<div class="col-xs-12 col-sm-12 col-md-2">
 				<fieldset class="disabledme" disabled>							
 
 				<div class="form-group">
@@ -126,6 +126,38 @@ echo form_open('validar_edicion_producto', $attr);
 			
 		
 		</div>
+
+
+		<div class="col-xs-12 col-sm-6 col-md-2">
+			<div class="form-group">
+				<label for="descripcion" class="col-sm-12 col-md-12">Tipo de Pago</label>
+				<div class="col-sm-12 col-md-12">
+					<fieldset disabled>	
+						<select name="id_tipo_pago" id="id_tipo_pago" class="form-control">
+								<?php foreach ( $pagos as $pago ){ ?>
+										<option value="<?php echo $pago->id; ?>"><?php echo $pago->tipo_pago; ?></option>
+								<?php } ?>
+						</select>
+					</fieldset>			
+				</div>
+			</div>
+		</div>	
+
+
+		<div class="col-xs-12 col-sm-6 col-md-2">
+			<div class="form-group">
+				<label for="descripcion" class="col-sm-12 col-md-12">Tipo de factura</label>
+				<div class="col-sm-12 col-md-12">
+					<fieldset disabled>	
+						<select name="id_factura" id="id_factura" class="form-control">
+								<?php foreach ( $facturas as $factura ){ ?>
+										<option value="<?php echo $factura->id; ?>"><?php echo $factura->tipo_factura; ?></option>
+								<?php } ?>
+						</select>
+					</fieldset>			
+				</div>
+			</div>
+		</div>	
 
 	</div>
 
@@ -162,11 +194,13 @@ echo form_open('validar_edicion_producto', $attr);
 		                     <div class="form-group">
 								<label id="label_color" class="col-sm-12 col-md-12">Color</label>
 								<div class="col-sm-12 col-md-12 ttip" title="Campo dependiente. Seleccione primero un PRODUCTO.">
-			                          <select class="col-sm-12 col-md-12 form-control" name="color" id="color"  dependencia="composicion" nombre="composición" style="padding-right:0px;font-size:12px;">
-			                            <option value="0">Selecciona un color</option>
-			                            <option value="1">Selecciona un color</option>
-			                            <option value="2">Selecciona un color</option>
-			                          </select>
+									<fieldset disabled>	
+				                          <select class="col-sm-12 col-md-12 form-control" name="color" id="color"  dependencia="composicion" nombre="composición" style="padding-right:0px;font-size:12px;">
+				                            <option value="0">Selecciona un color</option>
+				                            <option value="1">Selecciona un color</option>
+				                            <option value="2">Selecciona un color</option>
+				                          </select>
+				                    </fieldset>	      
 		                        </div>  
 		                          
 		                     </div>
@@ -176,10 +210,11 @@ echo form_open('validar_edicion_producto', $attr);
 		                     <div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Composición</label>
 								<div class="col-sm-12 col-md-12">
-
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Seleccione primero un COLOR." name="composicion" id="composicion" dependencia="calidad" nombre="calidad" style="padding-right:0px;font-size:12px;">
-			                            <option value="0">Selecciona una composición</option>
-			                          </select>
+									<fieldset disabled>	
+				                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Seleccione primero un COLOR." name="composicion" id="composicion" dependencia="calidad" nombre="calidad" style="padding-right:0px;font-size:12px;">
+				                            <option value="0">Selecciona una composición</option>
+				                          </select>
+			                         </fieldset>	 
 		                        </div>  
 		                          
 		                     </div>
@@ -191,9 +226,11 @@ echo form_open('validar_edicion_producto', $attr);
 		                     <div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Calidad</label>
 								<div class="col-sm-12 col-md-12 ttip" title="Campo dependiente. Seleccione primero una COMPOSICIÓN.">
-			                          <select class="col-sm-12 col-md-12 form-control" name="calidad" id="calidad" dependencia="" nombre="" style="padding-right:0px;font-size:12px;">
-			                            <option value="0">Seleccione una calidad</option>
-			                          </select>
+									<fieldset disabled>	
+				                          <select class="col-sm-12 col-md-12 form-control" name="calidad" id="calidad" dependencia="" nombre="" style="padding-right:0px;font-size:12px;">
+				                            <option value="0">Seleccione una calidad</option>
+				                          </select>
+				                    </fieldset>	       
 		                        </div>  
 		                          
 		                     </div>
@@ -241,7 +278,7 @@ echo form_open('validar_edicion_producto', $attr);
 
 
 
-						<div class="col-xs-12 col-sm-6 col-md-3">
+						<div class="col-xs-12 col-sm-6 col-md-2">
 							<div class="form-group">
 								<label for="ancho" class="col-sm-12 col-md-12">Ancho</label>
 								<div class="col-sm-12 col-md-12">
@@ -251,7 +288,7 @@ echo form_open('validar_edicion_producto', $attr);
 							</div>
 						</div>	
 
-						<div class="col-xs-12 col-sm-6 col-md-3">
+						<div class="col-xs-12 col-sm-6 col-md-2">
 							<div class="form-group">
 								<label for="precio" class="col-sm-12 col-md-12">Precio</label>
 								<div class="col-sm-12 col-md-12">
@@ -260,6 +297,20 @@ echo form_open('validar_edicion_producto', $attr);
 								</div>
 							</div>
 						</div>	
+
+						<div class="col-xs-12 col-sm-6 col-md-2">
+							<fieldset disabled>
+								<div class="form-group">
+									<label for="iva" class="col-sm-12 col-md-12">IVA</label>
+									<div class="col-sm-12 col-md-12">
+										<input type="text" class="form-control ttip" title="Números y puntos decimales." restriccion="decimal" id="iva"  name="iva" placeholder="IVA">
+
+									</div>
+								</div>
+							</fieldset>
+						</div>	
+
+
 					</div>
 						<!--3ta linea -->
 
@@ -275,12 +326,13 @@ echo form_open('validar_edicion_producto', $attr);
 								</div>	
 								
 								<div class="col-xs-12 col-sm-12 col-md-12">				
-									<div class="form-group">
-										<label for="num_partida" class="col-sm-12 col-md-12">No. de Partida</label>
-										
-											<input type="text" class="form-control" id="num_partida" name="num_partida" placeholder="No. de Partida">
-										
-									</div>
+									<fieldset disabled>	
+										<div class="form-group">
+											<label for="num_partida" class="col-sm-12 col-md-12">No. de Partida</label>
+											
+												<input type="text" class="form-control" id="num_partida" name="num_partida" placeholder="No. de Partida">
+										</div>
+									</fieldset>		
 								</div>	
 
 							</div>	
@@ -301,11 +353,13 @@ echo form_open('validar_edicion_producto', $attr);
 								<div class="form-group">
 									<label for="descripcion" class="col-sm-12 col-md-12">Lote</label>
 									<div class="col-sm-12 col-md-12">
-										<select name="id_lote" id="id_lote" class="form-control">
-												<?php foreach ( $lotes as $lote ){ ?>
-														<option value="<?php echo $lote->id; ?>"><?php echo $lote->lote; ?></option>
-												<?php } ?>
-										</select>
+										<fieldset disabled>	
+											<select name="id_lote" id="id_lote" class="form-control">
+													<?php foreach ( $lotes as $lote ){ ?>
+															<option value="<?php echo $lote->id; ?>"><?php echo $lote->lote; ?></option>
+													<?php } ?>
+											</select>
+										</fieldset>			
 									</div>
 								</div>
 							</div>	
@@ -314,11 +368,13 @@ echo form_open('validar_edicion_producto', $attr);
 								<div class="form-group">
 									<label for="descripcion" class="col-sm-12 col-md-12">Estatus</label>
 									<div class="col-sm-12 col-md-12">
-										<select name="id_estatus" id="id_estatus" class="form-control">
-												<?php foreach ( $estatuss as $estatus ){ ?>
-														<option value="<?php echo $estatus->id; ?>"><?php echo $estatus->estatus; ?></option>
-												<?php } ?>
-										</select>
+										<fieldset disabled>	
+											<select name="id_estatus" id="id_estatus" class="form-control">
+													<?php foreach ( $estatuss as $estatus ){ ?>
+															<option value="<?php echo $estatus->id; ?>"><?php echo $estatus->estatus; ?></option>
+													<?php } ?>
+											</select>
+										</fieldset>		
 									</div>
 								</div>
 							</div>							

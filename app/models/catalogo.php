@@ -1033,12 +1033,12 @@
                  $columa_order ='-1';
                  $order = 'desc';
            } 
-
+           /*
            if ($data['comenzar'] == true) {
                  $columa_order ='-1';
                  $order = 'desc';
             
-           }
+           }*/
 
 
           switch ($columa_order) {
@@ -1089,7 +1089,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
           
           $this->db->select('p.id, p.uid, p.referencia,  p.comentario,p.consecutivo');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho');
+          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho,p.codigo_contable');
           $this->db->select('p.id_usuario, p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
 
           $this->db->select('co.composicion, ca.calidad, p.activo');
@@ -1107,6 +1107,7 @@
 
                       (
                         ( p.descripcion LIKE  "%'.$cadena.'%" ) OR (p.referencia LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
+                        (p.codigo_contable LIKE  "%'.$cadena.'%")  OR
                         ( p.minimo LIKE  "%'.$cadena.'%" ) 
                         
                        )
@@ -1209,6 +1210,7 @@
                                        9=>$row->calidad, 
                                        10=>$row->precio, 
                                        11=>$row->activo, 
+                                       12=>$row->codigo_contable
                                     );
                       }
 
@@ -1613,8 +1615,10 @@
             $this->db->select("c.hexadecimal_color", FALSE);  
             $this->db->from($this->productos.' as p');
             $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+            $this->db->where('p.activo',0);
             //$this->db->where('p.descripcion', $data['val_prod']);
             $this->db->where('p.descripcion', ($data['val_prod']) );
+
 
             $this->db->order_by('c.color', 'asc'); 
             
@@ -1638,6 +1642,7 @@
             $this->db->from($this->productos.' as p');
             $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id','LEFT');
             //$this->db->where('p.descripcion', $data['val_prod']);
+            $this->db->where('p.activo',0);
             $this->db->where('p.descripcion', ($data['val_prod']) );
 
             $this->db->where('p.id_color', $data['val_color']);
@@ -1658,6 +1663,7 @@
             $this->db->from($this->productos.' as p');
             $this->db->join($this->calidades.' As c', 'p.id_calidad = c.id','LEFT');
             //$this->db->where('p.descripcion', $data['val_prod']);
+            $this->db->where('p.activo',0);
             $this->db->where('p.descripcion', ($data['val_prod']) );
             $this->db->where('p.id_color', $data['val_color']);
             $this->db->where('p.id_composicion', $data['val_comp']);
@@ -3664,12 +3670,12 @@
      public function buscador_prod_inven($data){
             $this->db->select('m.codigo');
             $this->db->select('m.referencia');
-            $this->db->select('m.num_partida');
+            $this->db->select('m.num_partida,m.id_factura, m.id_tipo_pago');
             $this->db->select('m.id_descripcion,c.color,m.id_color, co.composicion, ca.calidad');
             $this->db->select('m.id_composicion,m.id_calidad'); //m.id_color,
             
             $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
-            $this->db->select('m.id_medida, m.ancho,m.precio, m.id_estatus, m.id_lote, m.id ');
+            $this->db->select('m.id_medida, m.ancho,m.precio,m.iva, m.id_estatus, m.id_lote, m.id ');
             $this->db->select('m.peso_real');
 
             $this->db->from($this->registros_entradas.' as m');
@@ -3719,6 +3725,9 @@
                                        "id"=>$row->id,
                                        "num_partida"=>$row->num_partida,
                                        "peso_real"=>$row->peso_real,
+                                       "iva"=>$row->iva,
+                                       "id_factura"=>$row->id_factura,
+                                       "id_tipo_pago"=>$row->id_tipo_pago,
                                        
 
                                     );
@@ -3996,6 +4005,7 @@
           $this->db->distinct();
           $this->db->select('p.descripcion');
           $this->db->from($this->productos.' as p');
+          $this->db->where('p.activo',0);
           $this->db->order_by('p.descripcion', 'asc'); 
 
           $result = $this->db->get();
@@ -4445,7 +4455,7 @@
      public function coger_producto( $data ){
 
           $this->db->select('p.id, p.uid, p.referencia,p.comentario, p.consecutivo, id_imagen_check');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho');
+          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.codigo_contable, p.id_color,p.id_calidad,p.precio,p.ancho');
           $this->db->select('p.id_usuario, p.fecha_mac');
 
           $this->db->from($this->productos.' as p');
@@ -4483,7 +4493,7 @@
                $this->db->set( 'precio', $data['precio'] );  
                $this->db->set( 'ancho', $data['ancho'] );  
 
-               $this->db->set( 'precio_anterior', $data['precio'] );  
+               //$this->db->set( 'precio_anterior', $data['precio'] );  
 
                $this->db->set( 'id_composicion', $data['id_composicion'] );  
                $this->db->set( 'id_color', $data['colores'][$i] );  
@@ -4554,6 +4564,7 @@
           $this->db->set( 'id_color', $data['id_color'] );  
           $this->db->set( 'id_calidad', $data['id_calidad'] );  
           $this->db->set( 'comentario', $data['comentario'] );  
+          $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
 
           if  (isset($data['archivo_imagen'])) {
             $this->db->set( 'imagen', $data['archivo_imagen']['file_name']);          
@@ -4609,7 +4620,7 @@
           $id_session = $this->session->userdata('id');
           $this->db->set( 'id_usuario',  $id_session );
 
-          $this->db->set( 'precio_anterior', 'precio', FALSE  );
+          //$this->db->set( 'precio_anterior', 'precio', FALSE  );
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'comentario', $data['comentario'] );  
           $this->db->where('id', $data['id'] );
@@ -4618,6 +4629,7 @@
 
 
           //actualizando precio de todos los productos
+         /*
           $this->db->set( 'precio_anterior', 'precio', FALSE  );
           $this->db->set( 'precio', $data['precio'] );  
 
@@ -4626,13 +4638,16 @@
           $this->db->where('estatus_salida', '0' ); //LOS QUE ESTAN EN SALIDAS
           
           $this->db->update($this->registros_entradas );
+          */
 
 
           //actualizando "cambio de precios para todos los q pertenecen a la referencia"
+          /*
           $this->db->set( 'precio_cambio', $data['precio'] );  
           $this->db->where('referencia', $data['referencia'] );
+          $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
           $this->db->update($this->registros_entradas );
-
+          */
           
           return true;
           $result->free_result();

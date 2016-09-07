@@ -109,7 +109,7 @@
 								
 								<th class="text-center" width="5%"><strong>Eliminar</strong></th>
 								
-								<th class="text-center" width="5%"><strong>Cambio Precio</strong></th>
+								<th class="text-center" width="5%"><strong>Cambio Precio/Código</strong></th>
 								<th class="text-center" width="5%"><strong>Detalle</strong></th>
 
 

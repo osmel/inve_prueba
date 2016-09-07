@@ -594,6 +594,20 @@ jQuery('#descripcion[restriccion="nominuscula"]').bind('keypress paste', functio
     }
 });
 
+var reg2 = /^['A-Z0-9]{0,6}$/;
+jQuery('#codigo_contable[restriccion="nominuscula"]').bind('keypress paste', function (e) {
+    var nn = jQuery('#codigo_contable[restriccion="nominuscula"]');
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue); 
+    var bool = reg2.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
+
 
 
 var reg = /^[0-9]{1,10}(\.[0-9]{0,2})?$/;
@@ -1380,12 +1394,24 @@ var comenzar = false;
 
 
 		"columnDefs": [
-			    	
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[12]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[12];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		            },
+
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4]   //el 3 es la imagen q ya viene formada desde el modelo
+		                "targets": [1,2,3,4]   //el 3 es la imagen q ya viene formada desde el modelo
 		            },
 
 		            {
@@ -1872,7 +1898,8 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 							jQuery('#referencia').val(referencia);
 
 				        		
-						if  ( (hash_url!="/editar_inventario") )   {  
+						//if  ( (hash_url!="/editar_inventario") )   {  
+						if  ( (hash_url!="/editar_inventario") && (hash_url!="/devolucion") )   {  	
 							
 
 								//ancho
@@ -6737,7 +6764,7 @@ jQuery('.datepicker').datepicker({
 	    jQuery(this).removeData('bs.modal');
 	});	
 
-	//gestion de usuarios (crear, editar y eliminar )
+	//gestion de usuarios (crear, editar y eliminar)
 
     	//gestion de usuarios (crear, editar y eliminar )
 	jQuery("#form_sino").submit(function(e){
@@ -6745,7 +6772,7 @@ jQuery('.datepicker').datepicker({
 		var spinner = new Spinner(opts).spin(target);
 		jQuery(this).ajaxSubmit({
 			success: function(data){
-				if(data != true){
+				if (data != true) {
 					
 					spinner.stop();
 					jQuery('#foo').css('display','none');
@@ -6755,9 +6782,7 @@ jQuery('.datepicker').datepicker({
 					jQuery('html,body').animate({
 						'scrollTop': jQuery('#messages').offset().top
 					}, 1000);
-				
-
-				}else{
+				} else {
 					    $catalogo = e.target.name;
 						spinner.stop();
 						jQuery('#foo').css('display','none');
@@ -6768,16 +6793,17 @@ jQuery('.datepicker').datepicker({
 		return false;
 	});	
 
-//input[name='coleccion_id_logo[]'][value=1]
+	//input[name='coleccion_id_logo[]'][value=1]
 
-		//notificando cuando diga si en la salida
+	//notificando cuando diga si en la salida
+	
 	 /*
 	 jQuery('body').on('click','#deleteUserSubmit[name="procesando_salida"]', function (e) {
 			jQuery.ajax({
 						        url : 'conteo_tienda',
 						        data : { 
 						        	tipo: 'tienda',
-						        },
+						        } ,
 						        type : 'POST',
 						        dataType : 'json',
 						        success : function(data) {	
@@ -7447,6 +7473,7 @@ jQuery('body').on('click','#impresion', function (e) {
 	   	jQuery('#id_medida').val(datum.id_medida);
 	   	jQuery('#ancho').val(datum.ancho);
 	   	jQuery('#precio').val(datum.precio);
+	   	jQuery('#iva').val(datum.iva);
 
 	   	jQuery('#peso_real').val(datum.peso_real);
 		
@@ -7462,6 +7489,11 @@ jQuery('body').on('click','#impresion', function (e) {
 
 
 	   	jQuery('#id_lote').val(datum.id_lote);
+
+	   	jQuery('#id_tipo_pago').val(datum.id_tipo_pago);
+	   	jQuery('#id_factura').val(datum.id_factura);
+
+	   	
 
 	   	jQuery('#tabla_cambio').dataTable().fnDraw();
 	    

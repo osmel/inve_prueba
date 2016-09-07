@@ -200,7 +200,7 @@ class Salidas extends CI_Controller {
 				 		$data['id'] = $this->input->post('identificador');
 				 		$data['factura'] = $this->input->post('factura');
 				 		$data['id_movimiento'] = $this->input->post('movimiento');
-				 		$data['id_destino'] = $this->input->post('id_destino');
+				 		//$data['id_destino'] = $this->input->post('id_destino');
 				 		$data['id_almacen'] = $this->input->post('id_almacen');
 
 				 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
@@ -433,7 +433,7 @@ public function validar_confirmar_salida_sino(){
 		       }   
 		       
 		       $data['id_cliente'] 			= $this->input->post('id_cliente');
-		       $data['id_destino'] 			= $this->input->post('id_destino');
+		       //$data['id_destino'] 			= $this->input->post('id_destino');
 		       $data['valor'] 				= $this->input->post('valor');
 		       $data['id_operacion'] 		= 2;
   				$data['encabezado'] 		= $this->modelo_salida->procesando_operacion_salida($data); //871

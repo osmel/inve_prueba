@@ -37,6 +37,7 @@ class Catalogos extends CI_Controller {
             break;
         case "color_catalogo":
             $elementos  = $this->catalogo->lista_colores($data);
+            
             break;
 
         case "composicion_catalogo":
@@ -3193,6 +3194,7 @@ function validacion_edicion_producto(){
                     $data['minimo']    = $this->input->post('minimo'); 
                     $data['precio']    = $this->input->post('precio'); 
                     $data['ancho']    = $this->input->post('ancho'); 
+                    $data['codigo_contable']    = $this->input->post('codigo_contable'); 
 
 
                     $data['comentario']    = $this->input->post('comentario'); 
@@ -3496,6 +3498,7 @@ function validacion_cambio_producto(){
                 $data['referencia']    =  $this->input->post('referencia'); 
                 $data['comentario']    = $this->input->post('comentario'); 
                 $data['precio']    = $this->input->post('precio'); 
+                $data['codigo_contable']    = $this->input->post('codigo_contable'); 
 
                 $data               = $this->security->xss_clean($data);  
                 $guardar            = $this->catalogo->cambiar_precio_producto( $data );

@@ -184,31 +184,7 @@
 
 	
 
-	<div class="col-xs-12 col-sm-4 col-md-2">
-		<?php if ($val_proveedor) { ?>
-		<fieldset class="disabledme" disabled>							
-		<?php } else { ?>
-		<fieldset class="disabledme">						
-		<?php } ?>
-			<div class="form-group">
-			<label for="factura">Tipo de salida</label>
-				<div>
-					  <select name="id_destino" id="id_destino" class="col-sm-12 col-md-12 form-control ttip" title="Seleccione un tipo de salida."  >
-	                    <?php if($destinos){ ?>
-	                      <?php foreach($destinos as $destino){ ?>
-								<?php 
-								   if  ($destino->id==$val_proveedor->id_destino)
-									 {$seleccionado='selected';} else {$seleccionado='';}
-								?>
-
-	                        <option value="<?php echo $destino->id; ?>" <?php echo $seleccionado; ?> ><?php echo htmlspecialchars($destino->nombre); ?></option>
-	                      <?php } ?>
-	                    <?php } ?>
-	                  </select>					
-				</div>
-			</div>
-		</fieldset>	
-	</div>
+	
 
 
 	<!--almacen Asociado -->

@@ -78,6 +78,10 @@ class Inventario extends CI_Controller {
               $data['estatuss']  = $this->catalogo->listado_estatus_excluir(-1,-1,9);
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
 
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['pagos']   = $this->catalogo->listado_tipos_pagos();
+
+
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
@@ -174,14 +178,24 @@ class Inventario extends CI_Controller {
   
       
 
+ $data['codigo'] = false;
+ $dato['codigo1'] =false;
+
      if ($this->input->post('editar_prod_inven')) {
+            //////////////////////////////////////////
+            $dato['id_almacen'] = $this->input->post('id_almacen');
+            $dato['cod'] = $this->input->post('editar_prod_inven');
 
-        $data['codigo'] =  $this->catalogo->check_existente_codigo($this->input->post('editar_prod_inven'));
-        if (!($data['codigo'])){
-          print "el codigo no existe";
-        }
-       }
-
+            $data['codigo'] =  $this->catalogo->check_existente_codigo($dato['cod']);
+            if (!($data['codigo'])){
+                print "El código no existe";
+            } else {
+              $dato['codigo1'] =  $this->model_entrada->confirmando_prod_libre_inventario($dato);  
+              if (!($dato['codigo1'])) { //para verificar que no este en otra operacion
+                 print "La operación no es posible, El producto esta siendo utilizado por otro usuario";
+              }
+            }
+     }
 
      if ($this->input->post('proveedor')) {
      
@@ -216,7 +230,7 @@ class Inventario extends CI_Controller {
 
     //print_r($this->input->post('precio'));      
 
-      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) and ($data['codigo']) ) {
+      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) and ($data['codigo'])  and ($dato['codigo1']) ) {
           
           $data['referencia']   = $this->input->post('referencia');
 

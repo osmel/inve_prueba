@@ -276,8 +276,8 @@
                 $id_session = $this->session->userdata('id');
                 $fecha_hoy = date('Y-m-d H:i:s');  
 
-                $this->db->set( 'precio_anterior', 'precio', FALSE  );
-                $this->db->set( 'precio', 'precio_cambio', FALSE  );
+                //$this->db->set( 'precio_anterior', 'precio', FALSE  );
+                //$this->db->set( 'precio', 'precio_cambio', FALSE  );
 
                 $this->db->set( 'fecha_vencimiento', '' ); 
                 $this->db->set( 'id_prorroga', 0);
@@ -311,8 +311,8 @@
                 $id_session = $this->session->userdata('id');
 
 
-              $this->db->set( 'precio_anterior', '((precio*id_apartado)+(precio_anterior*(1 XOR id_apartado)) )', FALSE  );
-              $this->db->set( 'precio', '((precio_cambio*id_apartado)+(precio*(1 XOR id_apartado)) )', FALSE  );
+              //$this->db->set( 'precio_anterior', '((precio*id_apartado)+(precio_anterior*(1 XOR id_apartado)) )', FALSE  );
+              //$this->db->set( 'precio', '((precio_cambio*id_apartado)+(precio*(1 XOR id_apartado)) )', FALSE  );
 
               //$this->db->set( 'precio', 'precio_cambio', FALSE  );
 

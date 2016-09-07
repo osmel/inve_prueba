@@ -2137,7 +2137,7 @@ public function valores_movimientos_temporal(){
 
       }  
      
-public function totales_importes($where){
+    public function totales_importes($where){
 
            $this->db->select("SUM(precio) as subtotal", FALSE);
            $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
@@ -2157,15 +2157,7 @@ public function totales_importes($where){
 
     }  
 
-
-
-              
-
-
-
-
-
-        public function quitar_productos_traspasado( $data ){
+    public function quitar_productos_traspasado( $data ){
                 $id_almacen= $data['id_almacen'];
                 $porciento_aplicar = 16;                 
 
@@ -2206,7 +2198,7 @@ public function totales_importes($where){
                 }  else
                    return FALSE;                
 
-          }      
+        }      
 
           public function total_registros_traspaso(){
 
@@ -2222,10 +2214,7 @@ public function totales_importes($where){
                  return $cant;
               else
                  return 0;         
-
           }
-
-
 
 
 

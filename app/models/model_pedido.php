@@ -2226,8 +2226,8 @@
             $id_session = $this->db->escape($this->session->userdata('id'));
             $fecha_hoy = date('Y-m-d H:i:s');  
                 
-            $this->db->set( 'precio_anterior', 'precio', FALSE  );
-            $this->db->set( 'precio', 'precio_cambio', FALSE  );
+            //$this->db->set( 'precio_anterior', 'precio', FALSE  );
+            //$this->db->set( 'precio', 'precio_cambio', FALSE  );
             
             $this->db->set( 'id_usuario_apartado', ''  );
             $this->db->set( 'id_apartado', 0);

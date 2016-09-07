@@ -106,7 +106,27 @@
             $result->free_result();
         }        
 
+ public function confirmando_prod_libre_inventario($data){
+            
+            $this->db->from($this->registros.' as m');
+           
+            $where = '(
+                        (
+                          ( m.id_apartado = 0 ) AND  ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 )
+                        ) AND (m.id_almacen = '.$data['id_almacen'].' )  AND ( m.codigo =  "'.addslashes($data['cod']).'" ) 
+              )';   
 
+  
+            $this->db->where($where);
+            $login = $this->db->get();
+
+            if ($login->num_rows() > 0) {
+               return true;
+            }    
+            else
+                return false;
+            $login->free_result();
+      }
 
 
       //****************Añadir un producto a temporal************************************************************
@@ -117,12 +137,19 @@
 
               //registros de entradas
               $this->db->select('id id_entrada, fecha_entrada, fecha_salida, movimiento, id_empresa, factura, id_descripcion, id_color,num_partida');
-              $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, peso_real, cantidad_royo, ancho, precio');
+              $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, peso_real, cantidad_royo, ancho');
               $this->db->select('codigo,  id_estatus, id_lote, consecutivo, id_cargador, id_usuario, id_usuario_salida');
               $this->db->select('fecha_mac, id_operacion, estatus_salida, id_apartado, id_usuario_apartado, id_cliente_apartado');
-              $this->db->select('fecha_apartado, id_prorroga, fecha_vencimiento, consecutivo_cambio');
+              $this->db->select('fecha_apartado, id_prorroga, fecha_vencimiento, consecutivo_cambio,devolucion');
 
               $this->db->select('"'.$data["comentario"].'" as comentario', false);
+
+              $this->db->select('id_almacen');
+              $this->db->select('precio, iva, id_factura');
+              $this->db->select('id_pedido,  id_tipo_pedido,id_tipo_factura, id_factura_original,incluir,proceso_traspaso, consecutivo_venta');
+            
+            $this->db->select('id_usuario_traspaso, id_tipo_pago, precio_anterior, precio_cambio, comentario_traspaso, num_control');
+
 
               $this->db->from($this->registros);
 
@@ -135,38 +162,32 @@
                 $this->db->insert($this->registros_cambios, $value); 
               }              
 
-              ///
-  
               $this->db->set( 'consecutivo_cambio', 'consecutivo_cambio+1', FALSE  );
               $this->db->set( 'id_usuario',  $id_session );
-              $this->db->set( 'referencia', $data['referencia']);
-
-              
-              $this->db->set( 'fecha_entrada', $data['fecha_entrada']  );  
-              $this->db->set( 'movimiento', $data['movimiento']);  
-              
-
-              $this->db->set( 'codigo', $data['codigo']   );
-              $this->db->set( 'id_empresa',  $data['id_empresa'] );    
-              $this->db->set( 'factura', $data['factura']   );  
-
-
-              $this->db->set( 'id_descripcion', $data['id_descripcion']);  
-              $this->db->set( 'id_color', $data['id_color']);  
-              $this->db->set( 'id_composicion', $data['id_composicion']  );  
-              $this->db->set( 'id_calidad', $data['id_calidad']   );  
-
-              $this->db->set( 'peso_real', $data['peso_real']  );  
               $this->db->set( 'cantidad_um', $data['cantidad_um']  );  
               $this->db->set( 'id_medida', $data['id_medida']  );  
               $this->db->set( 'ancho', $data['ancho']   );   
               $this->db->set( 'precio', $data['precio']  );  
-
-              $this->db->set( 'num_partida', $data['num_partida']  );  
-
               $this->db->set( 'comentario', $data['comentario']);  //
-              $this->db->set( 'id_lote', $data['id_lote']);     
-              $this->db->set( 'id_estatus', $data['id_estatus']);
+
+
+              //$this->db->set( 'referencia', $data['referencia']);
+              //$this->db->set( 'fecha_entrada', $data['fecha_entrada']  );  
+              //$this->db->set( 'movimiento', $data['movimiento']);  
+              //$this->db->set( 'id_almacen', $data['id_almacen']);  
+              //$this->db->set( 'codigo', $data['codigo']   );
+              //$this->db->set( 'id_empresa',  $data['id_empresa'] );    
+              //$this->db->set( 'factura', $data['factura']   );  
+              //$this->db->set( 'id_descripcion', $data['id_descripcion']);  
+              //$this->db->set( 'id_color', $data['id_color']);  
+              //$this->db->set( 'id_composicion', $data['id_composicion']  );  
+              //$this->db->set( 'id_calidad', $data['id_calidad']   );  
+              //$this->db->set( 'peso_real', $data['peso_real']  );  
+              //$this->db->set( 'iva', $data['iva']  );  
+              //$this->db->set( 'num_partida', $data['num_partida']  );  
+              //$this->db->set( 'id_lote', $data['id_lote']);     
+              //$this->db->set( 'id_estatus', $data['id_estatus']);
+
 
               $this->db->where('codigo',$data['codigo']);
 

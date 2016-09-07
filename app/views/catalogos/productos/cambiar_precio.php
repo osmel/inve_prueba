@@ -46,9 +46,24 @@
 						  <input restriccion="entero" value="<?php echo  set_value('consecutivo',$nomb_nom); ?>" type="text" class="form-control" id="consecutivo" name="consecutivo" placeholder="Consecutivo">
 						</div>
 					  </div>
+					</fieldset>	  
 
 
+					<fieldset >
+						<div class="form-group">
+							<label for="codigo_contable" class="col-sm-12 col-md-12">Código único</label>
+							<div class="col-sm-12 col-md-12">
+								<?php 
+									$nomb_nom='';
+									if (isset($producto->codigo_contable)) 
+									 {	$nomb_nom = $producto->codigo_contable;}
+								?>
+								<input restriccion="nominuscula" title="Letras mayusculas, números y espacios." value="<?php echo  set_value('codigo_contable',$nomb_nom); ?>" type="text" class="form-control ttip" id="codigo_contable" name="codigo_contable" placeholder="Código único">
+							</div>
+						</div>
+					</fieldset>							  
 
+					<fieldset disabled>
 						<div class="form-group">
 							<label for="descripcion" class="col-sm-12 col-md-12">Nombre</label>
 							<div class="col-sm-12 col-md-12">
