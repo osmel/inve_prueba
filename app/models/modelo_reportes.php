@@ -53,6 +53,7 @@
       $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
       $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 
+      $this->historico_ctasxpagar                           = $this->db->dbprefix('historico_ctasxpagar');
       
 
 
@@ -1883,9 +1884,441 @@
 
 
 
-/////////////////////////////////DEVOLUCION/////////////////////////////////////////
+/////////////////////////////////ctasxpagar/////////////////////////////////////////
 
-        public function listado_devolucion( $data ){
+
+ public function buscador_ctasxpagar($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==1) { //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'desc';
+           } 
+
+
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '1':
+                        $columna = 'tp.tipo_pago';
+                     break;
+                   case '2':
+                        $columna = 'a.almacen';
+                     break;
+                   case '3':
+                        $columna = 'p.nombre';
+                     break;
+                   case '4':
+                        $columna = 'm.fecha_entrada';
+                     break;
+                   case '5':
+                        $columna = 'm.factura';
+                     break;
+                   case '6':
+                        $columna = 'sum_precio';
+                     break;
+                   case '7':
+                        $columna = 'sum_iva';
+                     break;
+                   case '8':
+                        $columna = 'sum_total';
+                     break;
+
+
+                   default:
+                        $columna = 'm.movimiento';
+                        //$this->db->order_by('m.movimiento', 'desc'); 
+                     break;
+                 }                 
+
+                                      
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+
+
+/*
+$this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
+                  $this->db->select('m.id_tipo_pago');
+                  $this->db->select('m.id_almacen');
+                  $this->db->select('m.id_empresa');
+                  $this->db->select('m.fecha_entrada');
+                  $this->db->select('m.factura');
+                  $this->db->select('m.id_factura');
+                  $this->db->select('m.fecha_mac, m.id_operacion,m.id_usuario');
+                  $this->db->select('m.comentario');
+                  
+                  $this->db->select('sum(m.precio) as subtotal');           
+                  $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
+                  $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
+
+*/
+
+
+          $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+          
+          
+          $this->db->select('subtotal');           
+          $this->db->select("iva", FALSE);
+          $this->db->select("total", FALSE);
+
+
+          
+
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' )    
+                      ) 
+
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+
+
+
+            )';   
+
+
+
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )   
+                      )';
+           
+
+          $this->db->where($where);          
+
+          
+
+          
+          //ordenacion
+          $this->db->order_by($columna, $order); 
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+                  foreach ($result->result() as $row) {
+                               $dato[]= array(
+                                      0=>$row->movimiento,
+                                      1=>$row->tipo_pago,
+                                      2=>$row->almacen,
+                                      3=>$row->nombre,
+                                      4=>$row->fecha,
+                                      5=>$row->factura,
+                                      6=>number_format($row->subtotal, 2, '.', ','),
+                                      7=>number_format($row->iva, 2, '.', ','),
+                                      8=>number_format($row->total, 2, '.', ','),
+                                      9=>"4",
+                                      
+                                      
+
+                                    );
+                      }
+
+
+
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_ctasxpagar($where_total) ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato 
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      }  
+       
+
+
+ public function total_ctasxpagar($where){
+              
+
+              $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+             
+              $this->db->from($this->historico_ctasxpagar.' as m');
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
+              $this->db->where($where);          
+              
+             $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                  $found_rows = $cantidad_consulta->row(); 
+                  $registros_filtrados =  ( (int) $found_rows->cantidad);
+              }  
+              
+              $cant = $registros_filtrados;
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }      
+
+        
+
+//////////////////////////////////////////////////fin de reportes presentaciones/////////////////////////////////////////////////////////////////
+
+ public function buscador_historico_entradas($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==1) { //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'desc';
+           } 
+
+
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '1':
+                        $columna = 'tp.tipo_pago';
+                     break;
+                   case '2':
+                        $columna = 'a.almacen';
+                     break;
+                   case '3':
+                        $columna = 'p.nombre';
+                     break;
+                   case '4':
+                        $columna = 'm.fecha_entrada';
+                     break;
+                   case '5':
+                        $columna = 'm.factura';
+                     break;
+                   case '6':
+                        $columna = 'sum_precio';
+                     break;
+                   case '7':
+                        $columna = 'sum_iva';
+                     break;
+                   case '8':
+                        $columna = 'sum_total';
+                     break;
+
+
+                   default:
+                        $columna = 'm.movimiento';
+                        //$this->db->order_by('m.movimiento', 'desc'); 
+                     break;
+                 }                 
+
+                                      
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+
+
+          $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+          $this->db->select("MAX(m.devolucion) devolucion",false);
+          $this->db->select("MAX( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+          
+          $this->db->select('sum(m.precio) as sum_precio');           
+          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
+
+
+          
+
+          $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
+                      ) 
+
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+
+
+
+            )';   
+
+
+
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
+                      )';
+           
+
+          $this->db->where($where);          
+
+          $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
+
+          
+          //ordenacion
+          $this->db->order_by($columna, $order); 
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+                  foreach ($result->result() as $row) {
+                               $dato[]= array(
+                                      0=>$row->movimiento,
+                                      1=>$row->tipo_pago,
+                                      2=>$row->almacen,
+                                      3=>$row->nombre,
+                                      4=>$row->fecha,
+                                      5=>$row->factura,
+                                      6=>number_format($row->sum_precio, 2, '.', ','),
+                                      7=>number_format($row->sum_iva, 2, '.', ','),
+                                      8=>number_format($row->sum_total, 2, '.', ','),
+                                      9=>$row->devolucion,
+                                      
+
+                                    );
+                      }
+
+
+
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_historico_entradas($where_total) ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato 
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      }  
+       
+
+
+ public function total_historico_entradas($where){
+              
+
+              $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+             
+              $this->db->from($this->historico_registros_entradas.' as m');
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
+              $this->db->where($where);          
+              $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
+              //$this->db->having($where);
+
+             $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                  $found_rows = $cantidad_consulta->row(); 
+                  $registros_filtrados =  ( (int) $found_rows->cantidad);
+              }  
+              
+              $cant = $registros_filtrados;
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }
+
+/*
+ public function listado_devolucion( $data ){
 
           $id_session = $this->session->userdata('id');
                     
@@ -1922,59 +2355,202 @@
             else
                return False;
             $result->free_result();
-        }        
+        }       
+*/
 
-//////////////////////////////////////////////////fin de reportes presentaciones/////////////////////////////////////////////////////////////////
+public function buscador_historico_devolucion($data){
 
-        public function listado_entradas( $data ){
-
-          $id_session = $this->session->userdata('id');
-                    
-          //$this->db->distinct();                    
- 
-          $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
-
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
-          $this->db->select("MAX(m.devolucion) devolucion",false);
-          $this->db->select("MAX( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
           
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==1) { //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'desc';
+           } 
+
+
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '1':
+                        $columna = 'a.almacen';
+                     break;
+                   case '2':
+                        $columna = 'p.nombre';
+                     break;
+                   case '3':
+                        $columna = 'm.fecha_entrada';
+                     break;
+                   case '4':
+                        $columna = 'm.factura';
+                     break;
+                   case '5':
+                        $columna = 'sum_precio';
+                     break;
+                   case '6':
+                        $columna = 'sum_iva';
+                     break;
+                   case '7':
+                        $columna = 'sum_total';
+                     break;
+
+
+                   default:
+                        $columna = 'm.movimiento';
+                        //$this->db->order_by('m.movimiento', 'desc'); 
+                     break;
+                 }                 
+
+                                      
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+
+
+          $this->db->distinct();                    
+
+          $this->db->select('m.movimiento,m.id_empresa,p.nombre, m.factura, m.id_operacion,m.devolucion');
+          $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+
           $this->db->select('sum(m.precio) as sum_precio');           
-          $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
-
+          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
 
           
-
+          $this->db->select('a.almacen');
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
-          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+
+
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )
                       ) 
+
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+
+
 
             )';   
 
 
 
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )
+                      )';
+           
+
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
+          
 
-          $this->db->order_by('m.movimiento', 'desc'); 
+          
+          //ordenacion
+          $this->db->order_by($columna, $order); 
 
-           $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-        }        
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+                  foreach ($result->result() as $row) {
+                               $dato[]= array(
+                                      0=>$row->movimiento,
+                                      1=>$row->almacen,
+                                      2=>$row->nombre,
+                                      3=>$row->fecha,
+                                      4=>$row->factura,
+                                      5=>number_format($row->sum_precio, 2, '.', ','),
+                                      6=>number_format($row->sum_iva, 2, '.', ','),
+                                      7=>number_format($row->sum_total, 2, '.', ','),
+                                      8=>$row->devolucion,
+                                      
+
+                                    );
+                      }
+
+
+
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_historico_devolucion($where_total) ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato 
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      }  
+       
+
+
+ public function total_historico_devolucion($where){
+
+              $this->db->from($this->historico_registros_entradas.' as m');
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+
+              $this->db->where($where);
+
+              $cant = $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }  
+
+ 
+
+
+
+
+
+
+/*
+
+
 
         public function listado_salidas( $data ){
 
@@ -2011,11 +2587,228 @@
                return False;
             $result->free_result();
         }  
+*/
+
+
+
+
+public function buscador_historico_salida($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==1) { //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'desc';
+           } 
+
+
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'm.mov_salida';
+                     break;
+                   case '1':
+                        $columna = 'a.almacen';
+                     break;
+                   case '2':
+                        $columna = 'p.nombre'; //cliente
+                     break;
+                   case '3':
+                        $columna = 'ca.nombre'; //cargador
+                     break;                     
+                     
+                   case '4':
+                        $columna = 'm.fecha_salida';
+                     break;
+                   case '5':
+                        $columna = 'tf.tipo_factura,tp.tipo_pedido';
+                     break;
+
+                   case '6':
+                        $columna = 'm.factura';
+                     break;
+                   case '7':
+                        $columna = 'sum_precio';
+                     break;
+                   case '8':
+                        $columna = 'sum_iva';
+                     break;
+                   case '9':
+                        $columna = 'sum_total';
+                     break;
+
+
+                   default:
+                        $columna = 'm.mov_salida';
+                        //$this->db->order_by('m.movimiento', 'desc'); 
+                     break;
+                 }                 
+
+                                      
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+
+
+
+          $this->db->distinct();                    
+          $this->db->select('m.mov_salida ,p.nombre cliente, ca.nombre cargador, m.factura');  
+          $this->db->select("(DATE_FORMAT(m.fecha_salida,'%d-%m-%Y %H:%i')) as fecha",false);
+          
+          $this->db->select('a.almacen');
+           $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+
+          $this->db->select('sum(m.precio) as sum_precio');           
+          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
+
+
+          $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+
+
+
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' )  
+                      ) 
+
+                       AND
+                      ( 
+                        ( m.mov_salida LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        (ca.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_salida),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (tf.tipo_factura LIKE  "%'.$cadena.'%") OR (tp.tipo_pedido LIKE  "%'.$cadena.'%") OR 
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+
+
+
+            )';   
+
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' ) 
+                      )';
+           
+
+          $this->db->where($where);          
+
+          
+
+          
+          //ordenacion
+          $this->db->order_by($columna, $order); 
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+                  foreach ($result->result() as $row) {
+
+
+
+                              if ($row->id_tipo_factura!=0) {
+                                $tipo_salida=$row->tipo_factura;
+                              } else {
+                                $tipo_salida=$row->tipo_pedido;
+                              }
+
+
+                               $dato[]= array(
+                                      0=>$row->mov_salida,
+                                      1=>$row->almacen,
+                                      2=>$row->cliente,
+                                      3=>$row->cargador,
+                                      4=>$row->fecha,
+                                      5=>$tipo_salida, //'tf.tipo_factura,tp.tipo_pedido';
+                                      6=>$row->factura,
+                                      7=>number_format($row->sum_precio, 2, '.', ','),
+                                      8=>number_format($row->sum_iva, 2, '.', ','),
+                                      9=>number_format($row->sum_total, 2, '.', ','),
+                                      //8=>$row->devolucion,
+                                      
+
+                                    );
+                      }
 
 
 
 
 
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_historico_salida($where_total) ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato 
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      }  
+       
+
+
+ public function total_historico_salida($where){
+            $this->db->distinct();
+            $this->db->from($this->historico_registros_salidas.' as m');
+            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+            $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+            
+            $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+            $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+
+               $this->db->where($where);
+
+              $cant = $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;   
+       }  
 
 
 

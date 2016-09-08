@@ -548,6 +548,14 @@ $route['listado_devolucion']    = 'reportes/listado_devolucion';
 
 $route['exportar_reporte']    = 'reportes/exportar_reporte';
 
+$route['procesando_historico_entrada']    = 'reportes/procesando_historico_entrada';
+$route['procesando_historico_devolucion']    = 'reportes/procesando_historico_devolucion';
+$route['procesando_historico_salida']    = 'reportes/procesando_historico_salida';
+
+
+
+
+
 
 
 /////////////////////////////////////////////Listado de todas las reportes
@@ -588,7 +596,14 @@ $route['procesando_traspaso_definitivo']			= 'traspaso/procesando_traspaso_defin
 /////////////////////////////Costo de Inventarios////////////////////////
 
 $route['costo_inventario']						= 'reportes/costo_inventario';
-$route['procesando_costo_inventario']						= 'reportes/procesando_costo_inventario';
+$route['procesando_costo_inventario']			= 'reportes/procesando_costo_inventario';
+
+
+///ctas por pagar
+$route['listado_ctasxpagar']						= 'reportes/listado_ctasxpagar';
+$route['procesando_ctasxpagar']			= 'reportes/procesando_ctasxpagar';
+
+
 
 
 

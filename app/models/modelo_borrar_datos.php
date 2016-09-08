@@ -26,6 +26,12 @@
       $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
       $this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
       $this->historico_acceso        = $this->db->dbprefix('historico_acceso');
+
+      $this->historico_pagos_realizados        = $this->db->dbprefix('historico_pagos_realizados');
+      $this->historico_ctasxpagar        = $this->db->dbprefix('historico_ctasxpagar');
+
+      
+      
       
 
     }
@@ -46,11 +52,8 @@
         $this->db->empty_table( $this->historico_registros_salidas);
         $this->db->empty_table( $this->historico_registros_traspasos);
         $this->db->empty_table( $this->historico_acceso);
-
-        
-    
-      
-
+        $this->db->empty_table( $this->historico_pagos_realizados);
+        $this->db->empty_table( $this->historico_ctasxpagar);
         
         return "todo fue eliminado";
 

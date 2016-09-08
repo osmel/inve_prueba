@@ -23,9 +23,565 @@ var target = document.getElementById('foo');
 
 
 
+/////////////////////////////////////////////////ctas por pagar/////////////////////////////////////////////////////////////////
+
+	jQuery('#tabla_ctas_vencidas').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctasxpagar",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Estatus';
+							texto+='</a>';
+						texto+='</td>';
 
 
 
+							return texto;	
+		                },
+		                "targets": 10
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+
+jQuery('#tabla_ctasxpagar').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctasxpagar",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Estatus';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 10
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+jQuery('#tabla_ctas_pagadas').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctasxpagar",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Estatus';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 10
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+
+
+
+/////////////////////////////////////////////////Historico de entradas/////////////////////////////////////////////////////////////////
+
+	jQuery('#tabla_historico_entrada').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_historico_entrada",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8] 
+		            },
+
+
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_notas";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 9
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+
+
+
+
+
+
+	jQuery('#tabla_historico_devolucion').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_historico_devolucion",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7] 
+		            },
+
+
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_devolucion";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+							return texto;	
+		                },
+		                "targets": 8
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+
+
+
+
+
+	jQuery('#tabla_historico_salida').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_historico_salida",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=2;
+	         		 }
+	         		
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		            },
+
+
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_devolucion";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[2])+'/'+jQuery.base64.encode(row[3])+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+							return texto;	
+		                },
+		                "targets": 10
+		            },
+
+
+
+									
+
+
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});		
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var existencia_costo_inventario = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'precio','iva', 'Tipo Factura', 'No. Movimiento','Proveedor', 'Ingreso'];
 

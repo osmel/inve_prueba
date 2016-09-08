@@ -42,7 +42,9 @@
 
       $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
 
-      
+      $this->historico_pagos_realizados        = $this->db->dbprefix('historico_pagos_realizados');
+      $this->historico_ctasxpagar        = $this->db->dbprefix('historico_ctasxpagar');
+
 
 
 
@@ -852,9 +854,52 @@ public function totales_importes($where){
           foreach ($objeto as $key => $value) {
             $this->db->insert($this->registros, $value); 
             $this->db->insert($this->historico_registros_entradas, $value); 
-            
             $num_movimiento = $value->movimiento;
           }
+
+          //aqui es donde voy a agregar "historico_ctasxpagar"
+
+                  $this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
+                  $this->db->select('m.id_tipo_pago');
+                  $this->db->select('m.id_almacen');
+                  $this->db->select('m.id_empresa');
+                  $this->db->select('m.fecha_entrada');
+                  $this->db->select('m.factura');
+                  $this->db->select('m.id_factura');
+                  $this->db->select('m.fecha_mac, m.id_operacion,m.id_usuario');
+                  $this->db->select('m.comentario');
+                  
+                  $this->db->select('sum(m.precio) as subtotal');           
+                  $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
+                  $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
+                 
+
+                  $this->db->from($this->registros_temporales.' as m');
+
+          
+                  $where = '(
+                                 (m.id_usuario = "'.$id_session.'" ) AND
+                                 ( m.id_operacion = '.$id_operacion.' )    AND ( m.devolucion = 0 )
+                           )';
+                   
+
+                  $this->db->where($where);          
+
+                  $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+
+
+                  $result_ctas_pagar = $this->db->get();
+
+                  
+                  $objeto_ctas_pagar = $result_ctas_pagar->result();
+                  //copiar a tabla de "historico_ctasxpagar"  un resumen
+                  foreach ($objeto_ctas_pagar as $key => $value) {
+                    $this->db->insert($this->historico_ctasxpagar, $value); 
+                    
+                  }
+
+
+          //fin de  agregar "historico_ctasxpagar"
 
           //actualizar (consecutivo) en tabla "operacion" 
           $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );

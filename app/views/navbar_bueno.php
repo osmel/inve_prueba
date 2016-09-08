@@ -1,4 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
+
 <?php 
 	  $perfil= $this->session->userdata('id_perfil'); 
 	  $id_session = $this->session->userdata('id');
@@ -68,8 +69,10 @@
 <div class="row-fluid">
 	<div class="navbar navbar-default navbar-custom" role="navigation">
 		<div class="container">
+		
 			
 	 <?php  if ($this->session->userdata('session')) {  ?>
+				
 				<div class="navbar-brand" style="margin-right: 15px;" id="bar_">
 					<a href="<?php echo base_url(); ?>" style="color: #ffffff;"><i class="glyphicon glyphicon-home"></i></a>
 				</div>
@@ -82,13 +85,14 @@
 				<?php } ?>	
 
 				<div class="navbar-header">
-				<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-navbar">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			</div>
+					<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#main-navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+
 				<div class="collapse navbar-collapse" id="main-navbar">
 					<ul class="nav navbar-nav navbar-left" id="menu_opciones">
 
@@ -149,13 +153,14 @@
 						<li id="bar_catalogos">
 							<a title="Todos los catálogos del sistema." href="<?php echo base_url(); ?>catalogos" class="ttip color-blanco">Catálogos</a> 
 						</li>
-					<?php } ?>			
+					<?php } ?>					
 
 					<?php if ( ( $perfil == 1 ) || (in_array(27, $coleccion_id_operaciones)) ) { ?>		 
-						<li id="bar_ctasxpagar"> 
+						<li id="bar_usuarios"> 
 							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>ctasxpagar" class="ttip color-blanco">Ctas X Pagar</a>
 						</li>
-					 <?php } ?>	
+					 <?php } ?>						
+
 
 
 					<?php if ( ( $perfil == 1 ) || (in_array(5, $coleccion_id_operaciones)) ) { ?>		 
@@ -166,6 +171,7 @@
 
 						
 					</ul>
+					<!--</div>  fin <div class="wrapper"> -- >
 				</div>
 	 <?php } ?>
 		</div>

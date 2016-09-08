@@ -108,19 +108,19 @@ class Reportes extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
-				$data['id_operacion'] =1;
-				$data['entradas']  = $this->modelo_reportes->listado_devolucion($data);
+				//$data['id_operacion'] =1;
+				//$data['entradas']  = $this->modelo_reportes->listado_devolucion($data);
 				
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'reportes/devolucion/notas',$data );
+		                    $this->load->view( 'reportes/devolucion/historico_devolucion' );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/devolucion/notas',$data );
+		                        $this->load->view( 'reportes/devolucion/historico_devolucion' );
 		             }   
 		          break;
 
@@ -136,6 +136,14 @@ class Reportes extends CI_Controller {
 	}
 
 
+
+ public function procesando_historico_devolucion(){
+
+    $data=$_POST;
+	$busqueda  = $this->modelo_reportes->buscador_historico_devolucion($data);
+
+    echo $busqueda;
+  } 
 
 //***********************Los azules mios**********************************//
 	//consulta de entradas por movimientos
@@ -149,19 +157,16 @@ class Reportes extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
-				$data['id_operacion'] =1;
-				$data['entradas']  = $this->modelo_reportes->listado_entradas($data);
-				
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'reportes/notas',$data );
+		                    $this->load->view( 'reportes/entradas/historico_entrada' );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/notas',$data );
+		                        $this->load->view( 'reportes/entradas/historico_entrada' );
 		             }   
 		          break;
 
@@ -175,6 +180,19 @@ class Reportes extends CI_Controller {
 		      redirect('');
 		    }  
 	}
+
+
+ public function procesando_historico_entrada(){
+
+    $data=$_POST;
+    //$busqueda = $this->catalogo->buscador_cat_colores($data);
+    //$data['id_operacion'] =1;
+	$busqueda  = $this->modelo_reportes->buscador_historico_entradas($data);
+
+    echo $busqueda;
+  } 
+
+	
 
 
 	//consulta de salidas por movimientos
@@ -188,19 +206,19 @@ class Reportes extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
-				$data['id_operacion'] =2;
-				$data['salidas']  = $this->modelo_reportes->listado_salidas($data);
+				//$data['id_operacion'] =2;
+				//$data['salidas']  = $this->modelo_reportes->listado_salidas($data);
 
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'reportes/salidas/notas',$data );
+		                    $this->load->view( 'reportes/salidas/historico_salida' );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/salidas/notas',$data );
+		                        $this->load->view( 'reportes/salidas/historico_salida' );
 		             }   
 		          break;
 
@@ -215,6 +233,13 @@ class Reportes extends CI_Controller {
 		    }  
 	}
 
+ public function procesando_historico_salida(){
+
+    $data=$_POST;
+	$busqueda  = $this->modelo_reportes->buscador_historico_salida($data);
+
+    echo $busqueda;
+  } 
 
 
 	/////////////////////////////exportar_reporte 
@@ -294,6 +319,54 @@ public function procesando_costo_inventario(){ //13=>$row->num_partida,
 		$busqueda = $this->modelo_costo_inventario->buscador_entrada_home($data); //13 443
 		echo $busqueda;
 	}
+
+
+
+
+	public function listado_ctasxpagar(){
+
+		 if($this->session->userdata('session') === TRUE ){
+		      $id_perfil=$this->session->userdata('id_perfil');
+
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }   
+
+		      switch ($id_perfil) {    
+		        case 1:          
+
+		                    $this->load->view( 'reportes/ctasxpagar/ctasxpagar' );
+		          break;
+		        case 2:
+		        case 3:
+		        case 4:
+		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		                        $this->load->view( 'reportes/ctasxpagar/ctasxpagar' );
+		             }   
+		          break;
+
+
+		        default:  
+		          redirect('');
+		          break;
+		      }
+		    }
+		    else{ 
+		      redirect('');
+		    }  
+	}
+
+
+ public function procesando_ctasxpagar(){
+
+    $data=$_POST;
+    //$busqueda = $this->catalogo->buscador_cat_colores($data);
+    //$data['id_operacion'] =1;
+	$busqueda  = $this->modelo_reportes->buscador_ctasxpagar($data);
+
+    echo $busqueda;
+  } 
 
 
 /////////////////validaciones/////////////////////////////////////////	
