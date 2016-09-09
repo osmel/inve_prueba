@@ -1,6 +1,6 @@
 <?php if(! defined('BASEPATH')) exit('No tienes permiso para acceder a este archivo');
 
-  class modelo_reportes extends CI_Model{
+  class modelo_ctasxpagar extends CI_Model{
     
     private $key_hash;
     private $timezone;
@@ -64,6 +64,31 @@
 
         
 //////////////////////Auxiliar 
+
+
+        public function editar_pago_realizado($data){
+          
+          $this->db->select('h.id, h.movimiento, h.id_documento_pago, h.instrumento_pago, h.fecha_pago, h.importe, h.comentario');
+          $this->db->from($this->historico_pagos_realizados.' as h');
+          $where = '(
+                          ( h.id =  "'.$data["id"].'" ) 
+          )';   
+  
+          $this->db->where($where);
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+        }    
+
+
+
+
+
         public function check_existente_proveedor_entrada($descripcion){
             $this->db->select("pro.id", FALSE);         
             $this->db->from($this->proveedores.' as pro ');

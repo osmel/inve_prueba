@@ -23,6 +23,167 @@ var target = document.getElementById('foo');
 
 
 
+
+/////////////////////////////////////////////////pagos realizados/////////////////////////////////////////////////////////////////
+
+	jQuery('#tabla_pagos_realizados').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "/procesando_pagos_realizados",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 	d.movimiento=jQuery("#movimiento").val();
+	         		 }
+	    },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+ 			"rowCallback": function( row, data ) {
+				    if  (data[7] == 0) 					    {
+				      jQuery('td', row).addClass( "danger" );
+				    }
+			},	
+
+			"infoCallback": function( settings, start, end, max, total, pre ) {
+
+
+			    if (settings.json.totales) {
+				    jQuery('#etiq_num_mov').val(  settings.json.totales.movimiento);
+					jQuery('#etiq_almacen').val( settings.json.totales.tipo_pago);
+					jQuery('#etiq_proveedor').val( settings.json.totales.almacen);
+
+					jQuery('#etiq_fecha').val( settings.json.totales.fecha);
+					jQuery('#etiq_factura').val( settings.json.totales.factura);
+					jQuery('#etiq_subtotal').val( settings.json.totales.subtotal);
+					jQuery('#etiq_iva').val( settings.json.totales.iva);
+					jQuery('#etiq_total').val( settings.json.totales.total);
+					jQuery('#etiq_dia_vencido').val( settings.json.totales.dias_vencidos);
+					jQuery('#etiq_monto_paga').val( settings.json.totales.monto_restante);
+					jQuery('#importe_pagado').html( number_format((settings.json.totales.total-settings.json.totales.monto_restante), 2, '.', ','));
+					
+
+				} else {
+				    /*
+				    jQuery('#total_entrada').html( 'Total de Entradas: 0');
+					jQuery('#total_salida').html( 'Total de Salidas: 0');
+					jQuery('#total_devoluciones').html('Total de Devoluciones: 0');
+					*/
+
+				}	
+
+					
+
+			    return pre;
+			  } ,
+
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+
+		                },
+		                "targets": [0,1,2,3,4] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+						if (row[6]!=0) { //si esta autorizado a eliminar
+							texto='<td>';
+								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'" type="button"'; 
+								texto+=' class="btn btn-warning btn-sm btn-block" >';
+									texto+=' <span class="glyphicon glyphicon-edit"></span>';
+								texto+=' </a>';
+							texto+='</td>';
+						} else {
+							texto='<fieldset disabled> <td>';
+								texto+='<a href="#" type="button"'; 
+								texto+=' class="btn btn-warning btn-sm btn-block" >';
+									texto+=' <span class="glyphicon glyphicon-edit"></span>';
+								texto+=' </a>';
+							texto+='</td> </fieldset>';							
+						}
+
+
+
+
+							return texto;	
+		                },
+		                "targets": 5
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+	                	if (row[6]!=0) { //si esta autorizado a eliminar
+	                	
+							texto='<td><a href="eliminar_pago_realizado/'+jQuery.base64.encode(row[5])+'" '; 
+								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
+								texto+='<span class="glyphicon glyphicon-remove"></span>';
+							texto+='</a></td>';
+						} else {
+
+
+								texto='	<fieldset disabled> <td>';								
+									texto+=' <a href="#"'; 
+									texto+=' class="btn btn-danger btn-sm btn-block">';
+									texto+=' <span class="glyphicon glyphicon-remove"></span>';
+									texto+=' </a>';
+								texto+=' </td></fieldset>';									
+
+						}
+
+
+
+
+
+
+
+							return texto;	
+		                },
+		                "targets": 6
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		          
+		           
+		            
+		        ],
+	});	
+
+
 /////////////////////////////////////////////////ctas por pagar/////////////////////////////////////////////////////////////////
 
 	jQuery('#tabla_ctas_vencidas').dataTable( {
@@ -32,7 +193,7 @@ var target = document.getElementById('foo');
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
-	            	"url" : "procesando_ctasxpagar",
+	            	"url" : "procesando_ctas_vencidas",
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
@@ -78,12 +239,12 @@ var target = document.getElementById('foo');
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Estatus';
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-warning btn-block">';
+							texto+=row[10];
 							texto+='</a>';
 						texto+='</td>';
 
@@ -97,10 +258,10 @@ var target = document.getElementById('foo');
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; 							
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -166,29 +327,24 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 
 		"columnDefs": [
-			    	
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
 		                "targets": [0,1,2,3,4,5,6,7,8,9] 
 		            },
-
      				 {
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Estatus';
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-warning btn-block">';
+							texto+=row[10];
 							texto+='</a>';
 						texto+='</td>';
-
-
-
 							return texto;	
 		                },
 		                "targets": 10
@@ -197,7 +353,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
@@ -231,7 +387,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
-	            	"url" : "procesando_ctasxpagar",
+	            	"url" : "procesando_ctas_pagadas",
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
@@ -270,19 +426,19 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		                "targets": [0,1,2,3,4,5,6,7,8] 
 		            },
 
      				 {
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Estatus';
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+='type="button" class="btn btn-warning btn-block">';
+							texto+=row[10];
 							texto+='</a>';
 						texto+='</td>';
 
@@ -290,13 +446,13 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 9
 		            },
 		            {
 		                "render": function ( data, type, row ) {
 
 
-						$otro_retorno="listado_notas";
+						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
@@ -309,7 +465,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 							return texto;	
 		                },
-		                "targets": 11
+		                "targets": 10
 		            },
   					/*
   					{ 

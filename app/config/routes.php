@@ -601,10 +601,19 @@ $route['procesando_costo_inventario']			= 'reportes/procesando_costo_inventario'
 
 ///ctas por pagar
 $route['listado_ctasxpagar']						= 'reportes/listado_ctasxpagar';
+$route['procesando_ctas_vencidas']			= 'reportes/procesando_ctas_vencidas';
 $route['procesando_ctasxpagar']			= 'reportes/procesando_ctasxpagar';
+$route['procesando_ctas_pagadas']			= 'reportes/procesando_ctas_pagadas';
 
 
 
+$route['procesar_ctasxpagar/(:any)/(:any)']    = 'reportes/procesar_ctasxpagar/$1/$2';
+$route['procesando_pagos_realizados']			= 'reportes/procesando_pagos_realizados';
+
+
+/////////////////////////////CTAS POR PAGAR////////////////////////
+
+$route['editar_pago_realizado/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1';
 
 
 /////////////////////////////dependencias////////////////////////

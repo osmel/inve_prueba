@@ -6,6 +6,8 @@ class Ctasxpagar extends CI_Controller {
 		$this->load->model('model_pedido', 'modelo_pedido');
 		$this->load->model('modelo_reportes', 'modelo_reportes');  
 		$this->load->model('modelo_costo_inventario', 'modelo_costo_inventario');  
+		$this->load->model('modelo_ctasxpagar', 'modelo_ctasxpagar');  
+		
 		
 	    $this->load->model('catalogo', 'catalogo');  
 	    $this->load->model('modelo', 'modelo');  
@@ -15,57 +17,53 @@ class Ctasxpagar extends CI_Controller {
 	}
 
 
+  function editar_pago_realizado( $id = '' ){
+    if($this->session->userdata('session') === TRUE ){
+      $id_perfil=$this->session->userdata('id_perfil');
+
+      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+            $coleccion_id_operaciones = array();
+       }   
+
+      $data['id']  =  base64_decode($id);
+      
+
+      $dato['id'] = 6;
+      $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+      $data['doc_pagos'] =  $this->catalogo->listado_documentos_pagos();
+      $data['pago'] =  $this->modelo_ctasxpagar->editar_pago_realizado($data);
+
+      
+      switch ($id_perfil) {    
+        case 1:
+                  $this->load->view( 'ctasxpagar/editar_pago', $data );
+          break;
+        case 2:
+        case 3:
+        case 4:
+              /*
+              if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
+                $data['producto']  = $this->catalogo->coger_producto($data);
+                if ( $data['producto'] !== FALSE ){
+                    $this->load->view( 'catalogos/productos/editar_producto', $data );
+                } else {
+                      redirect('');
+                }       
+
+             }  */ 
+          break;
 
 
-//***********************Los azules mios**********************************//
-	//consulta de entradas por movimientos
-	public function listado_notas(){
-
-		 if($this->session->userdata('session') === TRUE ){
-		      $id_perfil=$this->session->userdata('id_perfil');
-
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
-
-		      switch ($id_perfil) {    
-		        case 1:          
-
-		                    $this->load->view( 'reportes/entradas/historico_entrada' );
-		          break;
-		        case 2:
-		        case 3:
-		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/entradas/historico_entrada' );
-		             }   
-		          break;
-
-
-		        default:  
-		          redirect('');
-		          break;
-		      }
-		    }
-		    else{ 
-		      redirect('');
-		    }  
-	}
-
-
- public function procesando_historico_entrada(){
-
-    $data=$_POST;
-    //$busqueda = $this->catalogo->buscador_cat_colores($data);
-    //$data['id_operacion'] =1;
-	$busqueda  = $this->modelo_reportes->buscador_historico_entradas($data);
-
-    echo $busqueda;
-  } 
-
-	
-
+        default:  
+          redirect('');
+          break;
+      }
+    }
+    else{ 
+      redirect('');
+    }
+  }
 
 
 

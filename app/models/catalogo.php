@@ -49,10 +49,28 @@
       $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
       $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 		  $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
+
+      $this->catalogo_documentos_pagos  = $this->db->dbprefix('catalogo_documentos_pagos');
+      
     
     }
 
 
+
+        public function listado_documentos_pagos(){
+          
+          $this->db->select('c.id, c.documento_pago');
+          $this->db->from($this->catalogo_documentos_pagos.' as c');
+         
+          
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
 
 
         public function listado_tipos_pagos(){
