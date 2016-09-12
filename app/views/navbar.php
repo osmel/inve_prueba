@@ -152,8 +152,8 @@
 					<?php } ?>			
 
 					<?php if ( ( $perfil == 1 ) || (in_array(27, $coleccion_id_operaciones)) ) { ?>		 
-						<li id="bar_ctasxpagar"> 
-							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>ctasxpagar" class="ttip color-blanco">Ctas X Pagar</a>
+						<li id="bar_listado_ctasxpagar"> 
+							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>listado_ctasxpagar" class="ttip color-blanco">Ctas X Pagar</a>
 						</li>
 					 <?php } ?>	
 

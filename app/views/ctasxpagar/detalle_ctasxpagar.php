@@ -13,6 +13,7 @@
     }
 
 
+
 if (ltrim($retorno)=="") {
 	$regreso = " Ir a Home";
 } elseif ($retorno=="reportes") {
@@ -155,7 +156,7 @@ if (ltrim($retorno)=="") {
 									<?php if (($configuracion->activo==1) and ( ( $perfil == 1 ) || ((in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones)))  ))
 									 { ?> 
 										<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
-											<a href="<?php echo base_url(); ?>nuevo_producto" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
+											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
 										</div>
 									<?php } else { ?> 	
 										<fieldset disabled>

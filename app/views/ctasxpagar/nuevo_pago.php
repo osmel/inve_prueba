@@ -9,20 +9,19 @@
         $coleccion_id_operaciones = array();
    }   
 
-
  	if (!isset($retorno)) {
       	$retorno ="";
     }
 
-  $hidden = array('id'=>$id);
+  $hidden = array('movimiento'=>$movimiento);
   $attr = array('class' => 'form-horizontal', 'id'=>'form_pago','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
-  echo form_open('validacion_edicion_ctasxpagar', $attr,$hidden);
+  echo form_open('validacion_nuevo_ctasxpagar', $attr,$hidden);
 
 ?>	
 <div class="container">
 		<br>
 	<div class="row">
-		<div class="col-sm-8 col-md-8"><h4>Edición de pago</h4></div>
+		<div class="col-sm-8 col-md-8"><h4>Nuevo pago</h4></div>
 	</div>
 	<br>
 	<div class="container row">
@@ -42,11 +41,7 @@
 							
 								<select name="id_documento_pago" id="id_documento_pago" class="form-control">
 										<?php foreach ( $doc_pagos as $doc_pago ){ ?>
-												<?php 
-												   if  ($doc_pago->id==$pago->id_documento_pago)
-													 {$seleccionado='selected';} else {$seleccionado='';}
-												?>
-												<option value="<?php echo $doc_pago->id; ?>"  <?php echo $seleccionado; ?>><?php echo $doc_pago->documento_pago; ?></option>
+												<option value="<?php echo $doc_pago->id; ?>" ><?php echo $doc_pago->documento_pago; ?></option>
 										<?php } ?>
 								</select>
 							</div>
@@ -56,13 +51,8 @@
 					  <div class="form-group">
 						<label for="instrumento_pago" class="col-sm-12 col-md-12">Referencia</label>
 						<div class="col-sm-12 col-md-12">
-						  <?php 
-							$nomb_nom='';
-							if (isset($pago->instrumento_pago)) 
-							 {  $nomb_nom = $pago->instrumento_pago;}
-							//$nomb_nom = $pago->instrumento_pago;
-						  ?>
-						  <input restriccion="entero" value="<?php echo  set_value('instrumento_pago',$nomb_nom); ?>" type="text" class="form-control" id="instrumento_pago" name="instrumento_pago" placeholder="Referencia">
+						
+						  <input restriccion="entero" type="text" class="form-control" id="instrumento_pago" name="instrumento_pago" placeholder="Referencia">
 						</div>
 					  </div>
 					
@@ -71,12 +61,8 @@
 					  <div class="form-group">
 						<label for="importe" class="col-sm-12 col-md-12">Importe</label>
 						<div class="col-sm-12 col-md-12">
-						  <?php 
-							$nomb_nom='';
-							if (isset($pago->importe)) 
-							 {  $nomb_nom = $pago->importe;}
-						  ?>
-						  <input restriccion="decimal" value="<?php echo  set_value('importe',$nomb_nom); ?>" type="text" class="form-control" id="importe" name="importe" placeholder="Importe">
+						  
+						  <input restriccion="decimal" type="text" class="form-control" id="importe" name="importe" placeholder="Importe">
 						</div>
 					  </div>				
 
@@ -84,33 +70,21 @@
 
 				<div class="col-sm-12 col-md-6">
 
-
+					<!-- comentarios-->	
+					
 					<div class="form-group">
-						<label for="fecha_pago" class="col-sm-12 col-md-12">Fecha Contrato de Compraventa:</label>
+						<label for="fecha_pago" class="col-sm-12 col-md-12">Fecha de pago:<span class="obligatorio"> *</span></label>
 						<div class="col-sm-12 col-md-12">
-							<?php 
-								$nomb_nom='';
-								if (isset($pago->fecha_pago)) 
-								 {	$nomb_nom = $pago->fecha_pago;}
-							?>	
-							<input value="<?php echo  set_value('fecha_pago',$nomb_nom); ?>" type="text" class="fecha_pago  input-sm form-control" id="fecha_pago" name="fecha_pago" placeholder="DD-MM-YYYY">
+							<input type="text" class="fecha  input-sm form-control" id="fecha_pago" name="fecha_pago" placeholder="DD-MM-YYYY">
 								
 						</div>
 					</div>
 
-
-					<!-- comentarios-->	
-					
 						<div class="form-group">
 							<label for="comentario" class="col-sm-12 col-md-12">Comentarios</label>
 							<div class="col-sm-12 col-md-12">
-								<?php 
-									$nomb_nom='';
-									if (isset($pago->comentario)) 
-									 {	$nomb_nom = $pago->comentario;}
-								?>	
 
-								<textarea  class="form-control" name="comentario" id="comentario" rows="8" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
+								<textarea  class="form-control" name="comentario" id="comentario" rows="6" placeholder="Comentarios"></textarea>
 							</div>
 						</div>						
 					

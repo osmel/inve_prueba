@@ -3,7 +3,7 @@
 
 <?php
  	if (!isset($retorno)) {
-      	$retorno ="reportes";
+      	$retorno ="";
       	$otro_retorno='listado_notas';
       	
     }
@@ -23,12 +23,35 @@
 
 			<!--tabla-->	
 
+						<div id="fecha_ctasxpagar" class="col-xs-12 col-sm-6 col-md-3">
+							<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+							<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
+	                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+								<input id="foco_ctasxpagar" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_ctasxpagar ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+							</div>	
+	                     </div>
+
+
+
 				<div class="col-md-12">
 					
 					<div class="table-responsive">
 
 						<h4>Vencidas</h4>	
 						<br>	
+
+							<fieldset id="disa_vencidas" disabled>
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="impresion_vencidas" type="button" class="btn btn-success btn-block impresion_ctas" tipo="vencidas">Imprimir</a>
+								</div>
+
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="exportar_vencidas" type="button" class="btn btn-success btn-block exportar_ctas" tipo="vencidas" >Exportar</a>
+								</div>
+
+							</fieldset>			
+							<br>
+
 
 						<section>
 							<table id="tabla_ctas_vencidas" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
@@ -60,6 +83,18 @@
 						<h4>Por Pagar</h4>	
 						<br>	
 
+							<fieldset id="disa_xpagar" disabled>
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="impresion_ctasxpagar" type="button" class="btn btn-success btn-block impresion_ctas" tipo="xpagar">Imprimir</a>
+								</div>
+
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="exportar_ctasxpagar" type="button" class="btn btn-success btn-block exportar_ctas" tipo="xpagar" >Exportar</a>
+								</div>
+
+							</fieldset>			
+							<br>
+
 						<section>
 							<table id="tabla_ctasxpagar" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 								<thead>
@@ -89,6 +124,20 @@
 					<div class="table-responsive">
 						<h4>Pagadas</h4>	
 						<br>	
+
+
+							<fieldset id="disa_pagadas" disabled>
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="impresion_pagadas" type="button" class="btn btn-success btn-block impresion_ctas" tipo="pagadas">Imprimir</a>
+								</div>
+
+								<div class="col-sm-4 col-md-4 marginbuttom">
+									<a id="exportar_pagadas" type="button" class="btn btn-success btn-block exportar_ctas" tipo="pagadas">Exportar</a>
+								</div>
+
+							</fieldset>			
+							<br>						
+
 
 						<section>
 							<table id="tabla_ctas_pagadas" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">

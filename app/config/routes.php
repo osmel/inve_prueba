@@ -600,20 +600,31 @@ $route['procesando_costo_inventario']			= 'reportes/procesando_costo_inventario'
 
 
 ///ctas por pagar
-$route['listado_ctasxpagar']						= 'reportes/listado_ctasxpagar';
-$route['procesando_ctas_vencidas']			= 'reportes/procesando_ctas_vencidas';
-$route['procesando_ctasxpagar']			= 'reportes/procesando_ctasxpagar';
-$route['procesando_ctas_pagadas']			= 'reportes/procesando_ctas_pagadas';
 
-
-
-$route['procesar_ctasxpagar/(:any)/(:any)']    = 'reportes/procesar_ctasxpagar/$1/$2';
-$route['procesando_pagos_realizados']			= 'reportes/procesando_pagos_realizados';
 
 
 /////////////////////////////CTAS POR PAGAR////////////////////////
 
-$route['editar_pago_realizado/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1';
+$route['listado_ctasxpagar']						= 'ctasxpagar/listado_ctasxpagar';
+$route['procesando_ctas_vencidas']			= 'ctasxpagar/procesando_ctas_vencidas';
+$route['procesando_ctasxpagar']			= 'ctasxpagar/procesando_ctasxpagar';
+$route['procesando_ctas_pagadas']			= 'ctasxpagar/procesando_ctas_pagadas';
+$route['procesar_ctasxpagar/(:any)/(:any)']    = 'ctasxpagar/procesar_ctasxpagar/$1/$2';
+$route['procesando_pagos_realizados']			= 'ctasxpagar/procesando_pagos_realizados';
+
+$route['editar_pago_realizado/(:any)/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1/$2';
+$route['nuevo_pago/(:any)']			= 'ctasxpagar/nuevo_pago/$1';
+
+$route['validacion_nuevo_ctasxpagar']			= 'ctasxpagar/validacion_nuevo_ctasxpagar';
+$route['validacion_edicion_ctasxpagar']			= 'ctasxpagar/validacion_edicion_ctasxpagar';
+
+$route['eliminar_pago/(:any)/(:any)/(:any)']			= 'ctasxpagar/eliminar_pago/$1/$2/$3';
+$route['validar_eliminar_pago']			= 'ctasxpagar/validar_eliminar_pago';
+
+$route['impresion_ctasxpagar']			= 'ctasxpagar/impresion_ctasxpagar';
+$route['exportar_ctasxpagar']			= 'ctasxpagar/exportar_ctasxpagar';
+
+
 
 
 /////////////////////////////dependencias////////////////////////

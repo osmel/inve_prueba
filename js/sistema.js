@@ -657,6 +657,18 @@ jQuery('#precio[restriccion="decimal"]').bind('keypress paste', function (e) {
 
 
 
+jQuery('#importe[restriccion="decimal"]').bind('keypress paste', function (e) {
+    var nn = jQuery('#importe[restriccion="decimal"]');
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
 
 
 
@@ -2479,21 +2491,21 @@ jQuery('#tabla_devolucion').dataTable( {
 //fecha
 			  
 
-              jQuery('.fecha_reporte').daterangepicker(
-              	  { 
-				    locale: { cancelLabel: 'Cancelar',
-				    		  applyLabel: 'Aceptar',
-				    		  fromLabel : 'Desde',
-				    		  toLabel: 'Hasta',
-				    		  monthNames : "ene._feb._mar_abr._may_jun_jul._ago_sep._oct._nov._dec.".split("_"),
-				    		  daysOfWeek: "Do_Lu_Ma_Mi_Ju_Vi_Sa".split("_"),
-				     } , 
-				    separator: ' / ',
-				    format: 'DD-MM-YYYY',
-				    //startDate: fecha_hoy, //'2014/09/01',
-				    //endDate: fecha_hoy //'2014/12/31'
-				  }
-              );
+  jQuery('.fecha_reporte').daterangepicker(
+  	  { 
+	    locale: { cancelLabel: 'Cancelar',
+	    		  applyLabel: 'Aceptar',
+	    		  fromLabel : 'Desde',
+	    		  toLabel: 'Hasta',
+	    		  monthNames : "ene._feb._mar_abr._may_jun_jul._ago_sep._oct._nov._dec.".split("_"),
+	    		  daysOfWeek: "Do_Lu_Ma_Mi_Ju_Vi_Sa".split("_"),
+	     } , 
+	    separator: ' / ',
+	    format: 'DD-MM-YYYY',
+	    //startDate: fecha_hoy, //'2014/09/01',
+	    //endDate: fecha_hoy //'2014/12/31'
+	  }
+  );
 
 jQuery('.fecha_reporte').on('apply.daterangepicker', function(ev, picker) {
 	comienzo=true; //para indicar que start comience en 0;
@@ -7809,6 +7821,7 @@ jQuery('.buscar_producto').typeahead(
 
 
  	jQuery('.fecha').datepicker({ format: 'dd-mm-yyyy'});
+ 	jQuery('.fecha_pago').datepicker({ format: 'dd-mm-yyyy'});
 
 								
 
