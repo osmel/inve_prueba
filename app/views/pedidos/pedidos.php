@@ -93,8 +93,12 @@
 
 		<?php if ( ( $perfil != 4 ) ) { ?>		 
 			<div class="table-responsive">
-
-				<h4>Pedidos de vendedores</h4>	
+				
+				<?php if ( ( $perfil == 3 ) ) { ?>		 
+					<h4>Mis Pedidos</h4>	
+				<?php } else { ?>		
+					<h4>Pedidos de vendedores</h4>	
+				<?php } ?>		
 				<br>	
 				<section>
 					<table id="tabla_apartado" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
@@ -107,7 +111,15 @@
 		<?php if ( ( $perfil != 3 ) ) { ?>		 
 			<div class="table-responsive">
 				
-				<h4>Pedidos de tiendas</h4>	
+				
+
+				<?php if ( ( $perfil == 4 ) ) { ?>		 
+					<h4>Mis Pedidos</h4>	
+				<?php } else { ?>		
+					<h4>Pedidos de tiendas</h4>	
+				<?php } ?>		
+
+
 				<br>			
 				   
 				<section>

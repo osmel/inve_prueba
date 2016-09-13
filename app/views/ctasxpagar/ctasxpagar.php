@@ -197,7 +197,7 @@
 											<th class="text-center cursora" width="10%">Subtotal  </th>
 											<th class="text-center cursora" width="10%">IVA  </th>
 											<th class="text-center cursora" width="10%">Total  </th>
-											<th class="text-center " width="20%"><strong>Días Vencidos</strong></th>
+											<th class="text-center " width="20%"><strong>Días por Vencer</strong></th>
 											<th class="text-center " width="20%"><strong>Monto a Pagar</strong></th>
 											<th class="text-center " width="20%"><strong>Detalles</strong></th>
 									</tr>

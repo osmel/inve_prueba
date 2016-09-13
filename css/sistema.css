@@ -595,3 +595,12 @@ textarea {
 }
 
 
+#main-navbar > ul > li > a {
+
+        padding: 15px 12px !important; 
+}
+
+#main-navbar >ul  > li > a:hover {
+   cursor:pointer;
+
+}

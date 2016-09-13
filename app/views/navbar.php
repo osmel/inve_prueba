@@ -66,7 +66,7 @@
 ?>	
 
 <div class="row-fluid">
-	<div class="navbar navbar-default navbar-custom" role="navigation">
+	<div class="navbar navbar-default navbar-custom" style="font-size: 12px;" role="navigation">
 		<div class="container">
 			
 	 <?php  if ($this->session->userdata('session')) {  ?>
@@ -153,7 +153,7 @@
 
 					<?php if ( ( $perfil == 1 ) || (in_array(27, $coleccion_id_operaciones)) ) { ?>		 
 						<li id="bar_listado_ctasxpagar"> 
-							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>listado_ctasxpagar" class="ttip color-blanco">Ctas X Pagar</a>
+							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>listado_ctasxpagar" class="ttip color-blanco">Cuentas por Pagar</a>
 						</li>
 					 <?php } ?>	
 
