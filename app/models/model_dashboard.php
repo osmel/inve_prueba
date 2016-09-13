@@ -149,6 +149,7 @@
           
           $id_empresa= addslashes($data['proveedor']);
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
 
           $columa_order = $data['order'][0]['column'];
@@ -262,6 +263,12 @@
         
         if ($id_almacen!=0) {
             $donde .= ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+        } else {
+            $donde .= '';
+        }  
+
+        if ($id_factura!=0) {
+            $donde .= ' AND ( m.id_factura =  '.$id_factura.' ) ';  
         } else {
             $donde .= '';
         }  
@@ -613,6 +620,12 @@
             $donde .= '';
         }  
 
+        if ($id_factura!=0) {
+            $donde .= ' AND ( m.id_factura =  '.$id_factura.' ) ';  
+        } else {
+            $donde .= '';
+        }          
+
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
                           
@@ -947,6 +960,7 @@
 
           $id_estatus= $data['id_estatus'];
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $id_empresa= addslashes($data['proveedor']);
 
@@ -1177,9 +1191,15 @@ CASE
           }
 
 
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }
+
           $where = '(
                       (
-                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (
@@ -1191,7 +1211,7 @@ CASE
 
             ) ' ;   
  
-          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid;
+          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid;
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -1408,6 +1428,7 @@ CASE
           $largo = $data['length'];
           $estatus= $data['extra_search'];
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           //productos
           //$id_descripcion= $data['id_descripcion'];
@@ -1490,11 +1511,17 @@ CASE
             $id_almacenid = '';
           }    
 
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }    
+
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid.$id_facturaid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
           //filtro de busqueda

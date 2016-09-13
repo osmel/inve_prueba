@@ -1090,6 +1090,7 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
 	   extra_search = jQuery("#botones").val(); 
 	   id_estatus = jQuery("#id_estatuss").val(); 
 	   id_almacen = jQuery("#id_almacen_reporte").val(); 
+	   id_factura = jQuery("#id_factura_reporte").val(); 
 
 	     				   //datos del producto
 	   //id_descripcion = jQuery("#producto").val(); 
@@ -1150,6 +1151,8 @@ jQuery('body').on('click','#impresion_reporte', function (e) {
 	   extra_search = jQuery("#botones").val(); 
 	   id_estatus = jQuery("#id_estatuss").val(); 
 	   id_almacen = jQuery("#id_almacen_reporte").val(); 
+
+	   id_factura = jQuery("#id_factura_reporte").val(); 
 
 
 	     				   //datos del producto
@@ -2056,8 +2059,8 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
     	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
     	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 		
-		var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén'];
-		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Prorrogar','Almacén' ]; 
+		var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 		var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 		var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
@@ -2528,6 +2531,12 @@ jQuery('#id_almacen_reporte').change(function(e) {
 		oTable._fnAjaxUpdate();
 });
 
+jQuery('#id_factura_reporte').change(function(e) {
+		comienzo=true; //para indicar que start comience en 0;
+		var oTable =jQuery('#tabla_reporte').dataTable();
+		oTable._fnAjaxUpdate();
+});
+
 jQuery('#exportar_reporte').click(function (e) {
 
 	var fecha = (jQuery('.fecha_reporte').val()).split(' / ');
@@ -2538,6 +2547,7 @@ jQuery('#exportar_reporte').click(function (e) {
 					extra_search 	: jQuery("#botones").val(), 
 					id_estatus 	 	: jQuery("#id_estatuss").val(), 
 					//id_almacen 	 	: jQuery("#id_almacen_reporte").val(),
+					id_factura      : jQuery("#id_factura_reporte").val(),
 					id_descripcion 	: jQuery("#producto").val(),
 					id_color 		: jQuery("#color").val(), 
 					id_composicion 	: jQuery("#composicion").val(),
@@ -2633,6 +2643,8 @@ jQuery('#tabla_reporte').dataTable( {
      				   d.extra_search = jQuery("#botones").val(); 
      				     d.id_estatus = jQuery("#id_estatuss").val(); 
      				     d.id_almacen = jQuery("#id_almacen_reporte").val(); 
+     				     d.id_factura = jQuery("#id_factura_reporte").val(); 
+
 
      				   //datos del producto
      				   d.id_descripcion = jQuery("#producto").val(); 
@@ -2844,8 +2856,8 @@ jQuery("#foco").focusout(function (e) {
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	oTable._fnAjaxUpdate();
 
-}
-	);
+});
+
 
 jQuery('#existencia_reporte').click(function (e) {
 	
@@ -2856,6 +2868,9 @@ jQuery('#existencia_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
 
 
 
@@ -2911,6 +2926,7 @@ jQuery('#salida_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
     
     jQuery('#factura_reporte').val('');
@@ -2957,6 +2973,7 @@ jQuery('#apartado_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_reporte').val('');
@@ -3001,6 +3018,7 @@ jQuery('#cero_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_reporte').val('');
@@ -3045,6 +3063,7 @@ jQuery('#baja_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_reporte').val('');
@@ -3089,6 +3108,7 @@ jQuery('#top_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_reporte').val('');
@@ -3134,6 +3154,8 @@ jQuery('#entrada_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_reporte').val('');
@@ -3192,6 +3214,9 @@ jQuery('#devolucion_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
+	
+	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
 
 
 
@@ -3433,6 +3458,7 @@ jQuery('#tabla_home').dataTable( {
 
 					    d.id_estatus = jQuery("#id_estatus_home").val(); 
 					    d.id_almacen = jQuery("#id_almacen_home").val(); 
+					    d.id_factura = jQuery("#id_factura_home").val(); 
 						var fecha = (jQuery('.fecha_home').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];
@@ -3636,6 +3662,13 @@ jQuery('#id_almacen_home').change(function(e) {
 	oTable._fnAjaxUpdate();		
 });
 
+jQuery('#id_factura_home').change(function(e) {
+	comienzo=true; //para indicar que start comience en 0;
+	var oTable =jQuery('#tabla_home').dataTable();
+	oTable._fnAjaxUpdate();		
+});
+
+
 jQuery('.fecha_home').daterangepicker(
 	  { 
     locale: { cancelLabel: 'Cancelar',
@@ -3677,6 +3710,8 @@ jQuery('#existencia_home').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
 	}
+
+	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
 
 	
 
@@ -3726,6 +3761,7 @@ jQuery('#devolucion_home').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_dashboard').val('');
@@ -3770,6 +3806,7 @@ jQuery('#apartado_home').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
 
 
 	jQuery('#factura_dashboard').val('');
@@ -3814,6 +3851,7 @@ jQuery('#cero_home').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
 	
 
 	jQuery('#label_home').text("Existencias Cero");
@@ -3858,6 +3896,7 @@ jQuery('#baja_home').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
 	}
+	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
 	
 
 	jQuery('#factura_dashboard').val('');
@@ -4436,10 +4475,11 @@ jQuery('body').on('click','#conf_apartado', function (e) {
 								jQuery('#foo').css('display','none');
 								jQuery('#messages').css('display','block');
 								jQuery('#messages').addClass('alert-danger');
-								jQuery('#messages').html(datos);
+								jQuery('#messages').html(datos.mensaje);
 								jQuery('html,body').animate({
 									'scrollTop': jQuery('#messages').offset().top
 								}, 1000);
+
 						}else{
 
 						
@@ -4600,7 +4640,8 @@ jQuery('#tabla_apartado').dataTable({
 
 	                },
 	                "targets": [9]
-	            },
+	            },/*
+	             prorrogar
     			{ 
 	                "render": function ( data, type, row ) {
 
@@ -4623,12 +4664,12 @@ jQuery('#tabla_apartado').dataTable({
 
 	                },
 	                "targets": [10]
-	            },
+	            },*/
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[10];	
 	                },
-	                "targets": [11]
+	                "targets": [10]
 	            }
 
 	],	
@@ -6079,8 +6120,8 @@ jQuery('#tabla_pedido').dataTable( {
 
 	                },
 	                "targets": [9]
-	            },	  
-    			{ 
+	            },	/*  
+    			{ 	prorrogar
 	                "render": function ( data, type, row ) {
 
 						texto='<td><button type="button"  id_cliente_apartado="'+jQuery.base64.encode(row[6])+'"  class="btn btn-warning  btn-block prorrogar_tienda ">';
@@ -6092,12 +6133,12 @@ jQuery('#tabla_pedido').dataTable( {
 
 	                },
 	                "targets": [10]
-	            },
+	            },*/
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[8];	
 	                },
-	                "targets": [11]
+	                "targets": [10]
 	            },
 	            /*
 	            { 

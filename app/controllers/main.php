@@ -572,6 +572,7 @@ class Main extends CI_Controller {
           $data['productos'] = $this->catalogo->listado_productos_unico();
           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+          
 
           switch ($id_perfil) {    
             case 1:
@@ -805,11 +806,12 @@ class Main extends CI_Controller {
 							//$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
 
 							if (!($data['id_cliente'])){
-								print "El cliente no existe";
+								$datos['mensaje'] = "El cliente no existe";
 							}
 				  } else {
 				  	$data['id_cliente']=null;
-				  	print "Campo <b>cliente</b> obligatorio. ";
+				  	$datos['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
+
 				  }
 
 				  $datos['exito'] =false;

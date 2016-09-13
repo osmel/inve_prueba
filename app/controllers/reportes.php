@@ -32,6 +32,7 @@ class Reportes extends CI_Controller {
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 
           switch ($id_perfil) {    
             case 1:          
@@ -157,16 +158,24 @@ class Reportes extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
+
+			  
+              $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+
+
+
+
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'reportes/entradas/historico_entrada' );
+		                    $this->load->view( 'reportes/entradas/historico_entrada',$data );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/entradas/historico_entrada' );
+		                        $this->load->view( 'reportes/entradas/historico_entrada',$data );
 		             }   
 		          break;
 
@@ -206,19 +215,20 @@ class Reportes extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
-				//$data['id_operacion'] =2;
-				//$data['salidas']  = $this->modelo_reportes->listado_salidas($data);
+
+              $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'reportes/salidas/historico_salida' );
+		                    $this->load->view( 'reportes/salidas/historico_salida',$data );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'reportes/salidas/historico_salida' );
+		                        $this->load->view( 'reportes/salidas/historico_salida' ,$data );
 		             }   
 		          break;
 

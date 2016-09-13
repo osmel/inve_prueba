@@ -147,6 +147,7 @@
           $id_estatus= $data['id_estatus'];
           $id_empresa= addslashes($data['proveedor']);
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $factura_reporte = $data['factura_reporte'];
 
@@ -326,9 +327,15 @@
           }
          
 
+          if ($id_factura!=0) {
+          $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+          $id_facturaid = '';
+          }
+
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (  ( m.num_partida LIKE  "%'.$cadena.'%" ) OR 
@@ -340,7 +347,7 @@
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -565,6 +572,7 @@
           $id_estatus= $data['id_estatus'];
           $id_empresa= addslashes($data['proveedor']);
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $factura_reporte = addslashes($data['factura_reporte']);
 
@@ -764,11 +772,17 @@
             $id_almacenid = '';
           }
 
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }
+
           
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       ( ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
@@ -780,7 +794,7 @@
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -995,6 +1009,7 @@
           $estatus= $data['extra_search'];
           $id_estatus= $data['id_estatus'];
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $id_empresa= addslashes($data['proveedor']);
 
@@ -1161,11 +1176,16 @@
           } else {
             $id_almacenid = '';
           }
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }
 
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (  ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
@@ -1179,7 +1199,7 @@
 
 
 
-          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid;
+          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid;
 
            if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
@@ -1370,6 +1390,7 @@
           $id_composicion= $data['id_composicion'];
           $id_calidad= $data['id_calidad'];
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $columa_order = $data['order'][0]['column'];
 
@@ -1445,11 +1466,17 @@
             $id_almacenid = '';
           }   
 
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }   
+
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid.$id_facturaid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
 
@@ -1670,6 +1697,7 @@
           $largo = $data['length'];
           $estatus= $data['extra_search'];
           $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
           $columa_order = $data['order'][0]['column'];
                  /*
            if ($data['draw'] ==0) {
@@ -1771,11 +1799,17 @@
             $id_almacenid = '';
           }   
 
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }   
+
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid,'LEFT');
+          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
           if ($estatus=="cero") {
@@ -1894,6 +1928,8 @@
           $cadena = addslashes($data['search']['value']);
           $inicio = $data['start'];
           $largo = $data['length'];
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
           
 
           $columa_order = $data['order'][0]['column'];
@@ -1969,9 +2005,33 @@
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
+          if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }           
+
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
                       ) 
 
                        AND
@@ -1991,7 +2051,7 @@
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
@@ -2140,6 +2200,10 @@ public function buscador_historico_devolucion($data){
           $cadena = addslashes($data['search']['value']);
           $inicio = $data['start'];
           $largo = $data['length'];
+
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
           
 
           $columa_order = $data['order'][0]['column'];
@@ -2192,7 +2256,7 @@ public function buscador_historico_devolucion($data){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
 
-          $this->db->distinct();                    
+          //$this->db->distinct();                    
 
           $this->db->select('m.movimiento,m.id_empresa,p.nombre, m.factura, m.id_operacion,m.devolucion');
           $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
@@ -2208,11 +2272,35 @@ public function buscador_historico_devolucion($data){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
+          if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }     
+
 
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
                       ) 
 
                        AND
@@ -2229,12 +2317,12 @@ public function buscador_historico_devolucion($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
           $this->db->where($where);          
-
+          $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
           
 
           
@@ -2309,6 +2397,7 @@ public function buscador_historico_devolucion($data){
               $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
               $this->db->where($where);
+              $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
 
               $cant = $this->db->count_all_results();          
      
@@ -2374,7 +2463,9 @@ public function buscador_historico_salida($data){
           $cadena = addslashes($data['search']['value']);
           $inicio = $data['start'];
           $largo = $data['length'];
-          
+
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];          
 
           $columa_order = $data['order'][0]['column'];
                  $order = $data['order'][0]['dir'];
@@ -2435,7 +2526,7 @@ public function buscador_historico_salida($data){
 
 
 
-          $this->db->distinct();                    
+          //$this->db->distinct();                    
           $this->db->select('m.mov_salida ,p.nombre cliente, ca.nombre cargador, m.factura');  
           $this->db->select("(DATE_FORMAT(m.fecha_salida,'%d-%m-%Y %H:%i')) as fecha",false);
           
@@ -2457,11 +2548,34 @@ public function buscador_historico_salida($data){
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
 
+          if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_salida),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_salida),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }     
 
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' )  
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_almacenid.$id_facturaid.'  
                       ) 
 
                        AND
@@ -2481,13 +2595,13 @@ public function buscador_historico_salida($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' ) 
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
           $this->db->where($where);          
 
-          
+          $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
 
           
           //ordenacion
@@ -2528,9 +2642,6 @@ public function buscador_historico_salida($data){
                                       7=>number_format($row->sum_precio, 2, '.', ','),
                                       8=>number_format($row->sum_iva, 2, '.', ','),
                                       9=>number_format($row->sum_total, 2, '.', ','),
-                                      //8=>$row->devolucion,
-                                      
-
                                     );
                       }
 
@@ -2550,14 +2661,13 @@ public function buscador_historico_salida($data){
                   //cuando este vacio la tabla que envie este
                 //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
                   $output = array(
-                  "draw" =>  intval( $data['draw'] ),
-                  "recordsTotal" => 0,
-                  "recordsFiltered" =>0,
-                  "aaData" => array()
+                    "draw" =>  intval( $data['draw'] ),
+                    "recordsTotal" => 0,
+                    "recordsFiltered" =>0,
+                    "aaData" => array()
                   );
                   $array[]="";
                   return json_encode($output);
-                  
 
               }
 
@@ -2568,7 +2678,7 @@ public function buscador_historico_salida($data){
 
 
  public function total_historico_salida($where){
-            $this->db->distinct();
+            //$this->db->distinct();
             $this->db->from($this->historico_registros_salidas.' as m');
             $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
             $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
@@ -2576,6 +2686,7 @@ public function buscador_historico_salida($data){
             $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
             $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
             $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+            $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
 
                $this->db->where($where);
 

@@ -249,16 +249,20 @@ class Ctasxpagar extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }   
 
+              $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+
+
 		      switch ($id_perfil) {    
 		        case 1:          
 
-		                    $this->load->view( 'ctasxpagar/ctasxpagar' );
+		                    $this->load->view( 'ctasxpagar/ctasxpagar',$data );
 		          break;
 		        case 2:
 		        case 3:
 		        case 4:
 		              if  (in_array(9, $coleccion_id_operaciones))  {                 
-		                        $this->load->view( 'ctasxpagar/ctasxpagar' );
+		                        $this->load->view( 'ctasxpagar/ctasxpagar',$data );
 		             }   
 		          break;
 

@@ -185,22 +185,41 @@
 
 									<?php
 									if  ($total_archivos->cantidad==0) {
-										print "Usted no tiene imagen adjunta.";
+										print "Usted no tiene imagen adjunta. Desea agregarla?";
 									} else  { ?>	
-
-	 									   <a target="_blank" href="<?php echo base_url(); ?>uploads/productos/<?php echo $total_archivos->archivo; ?>" type="button">
-													 <img src="<?php echo base_url(); ?>uploads/productos/thumbnail/300X300/<?php echo substr($producto->imagen,0,-4).'_thumb'.substr($producto->imagen,-4); ?>" border="0" width="300" height="200">
-										   </a>
+ 									   Su imagen adjunta actual es: 
+	
 
 
+		 									 <?php  
+				                        				$nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($producto->imagen,0,strrpos($producto->imagen,".")).'_thumb'.substr($producto->imagen,strrpos($producto->imagen,"."));
+
+				                        				if (file_exists($nombre_fichero)) {
+				                        				  echo '<a target="_blank" href="'.base_url().$nombre_fichero.'" type="button">';
+				                            			  		echo '<img src="'.base_url().$nombre_fichero.'" border="0" width="50" height="50">';
+								                          echo '</a>';	
+								                        } else {
+								                            
+				                        				  echo '<a target="_blank" href="'.base_url().'img/sinimagen.png'.'" type="button">';
+				                            			  		echo '<img src="'.base_url().'img/sinimagen.png'.'" border="0" width="50" height="50">';
+				                            			  echo '</a>';		
+								                        }
+						                        ?>
+
+
+
+ 									     <br/>Desea reemplazarlo por un archivo diferente?
  									<?php     
 									}   
 									print '<br/>';
 									 ?>	
-								
+								<input type="file" name="archivo_imagen" id="archivo_imagen" class="ttip" title="Archivo .jpg, .png, .gif." size="20">
 							</div>
 						</div>
 					</div>
+
+		
+					<!-- -->			
 
 
 

@@ -114,5 +114,10 @@
 					
 			</table>
 		</div>
+
 	</div>
+	<br/><br/><br/>
+	<hr style="padding: 0px; margin: 60px; width: 200px;"/>	
+
+	<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 </div>

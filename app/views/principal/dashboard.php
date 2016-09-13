@@ -79,7 +79,24 @@
 						
 
 					<div  class="row">
-				
+						
+							<div class="col-xs-12 col-sm-6 col-md-2">
+							    
+									<label for="id_factura_home" class="col-sm-3 col-md-12">Tipo de factura</label>
+									<div class="col-sm-9 col-md-12">
+									    			
+													<select name="id_factura_home" id="id_factura_home" class="form-control">
+															<option value="0">Todos</option>	
+															<?php foreach ( $facturas as $factura ){ ?>
+																		<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
+															<?php } ?>
+														<!--rol de usuario -->
+													</select>
+										    
+
+									</div>
+							</div>	
+
 							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 							
 							<div id="almacen_id" class="col-xs-12 col-sm-6 col-md-2">
@@ -140,7 +157,7 @@
 							</div>						
 
 
-						<div id="fecha_id" class="col-xs-12 col-sm-6 col-md-3">
+						<div id="fecha_id" class="col-xs-12 col-sm-6 col-md-2">
 							<div class="form-group">
 									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
 									<div class="input-prepend input-group  form-group col-sm-12 col-md-12" style="padding-left:30px !important; ">
@@ -151,7 +168,7 @@
 	                     </div>
 
 
-							<div class="col-xs-12 col-sm-6 col-md-2" id="bloque_factura">
+							<div class="col-xs-12 col-sm-6 col-md-1" id="bloque_factura">
 									<div class="form-group">
 									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
 										<div class="col-sm-12 col-md-12">

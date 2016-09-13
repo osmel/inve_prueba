@@ -231,41 +231,7 @@ var target = document.getElementById('foo');
 
 
 
-jQuery('.fecha_ctasxpagar').daterangepicker(
-  	  { 
-	    locale: { cancelLabel: 'Cancelar',
-	    		  applyLabel: 'Aceptar',
-	    		  fromLabel : 'Desde',
-	    		  toLabel: 'Hasta',
-	    		  monthNames : "ene._feb._mar_abr._may_jun_jul._ago_sep._oct._nov._dec.".split("_"),
-	    		  daysOfWeek: "Do_Lu_Ma_Mi_Ju_Vi_Sa".split("_"),
-	     } , 
-	    separator: ' / ',
-	    format: 'DD-MM-YYYY',
-	    //startDate: fecha_hoy, //'2014/09/01',
-	    //endDate: fecha_hoy //'2014/12/31'
-	  }
-  );
 
-jQuery('.fecha_ctasxpagar').on('apply.daterangepicker', function(ev, picker) {
-	var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
-	oTable._fnAjaxUpdate();
-	var oTable =jQuery('#tabla_ctasxpagar').dataTable();
-	oTable._fnAjaxUpdate();	
-	var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
-	oTable._fnAjaxUpdate();
-
-});
-
-jQuery("#foco_ctasxpagar").focusout(function (e) {
-	var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
-	oTable._fnAjaxUpdate();
-	var oTable =jQuery('#tabla_ctasxpagar').dataTable();
-	oTable._fnAjaxUpdate();	
-	var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
-	oTable._fnAjaxUpdate();
-
-});
 
 
 
@@ -281,9 +247,12 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
   	    busqueda      = jQuery('input[type=search]').val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
-		var fecha = (jQuery('.fecha_ctasxpagar').val()).split(' / ');
+		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+
     abrir('POST', 'impresion_ctasxpagar', {
     			busqueda:busqueda,
 			extra_search:extra_search,
@@ -291,6 +260,9 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
 			
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+
     }, '_blank' );
 		        
 	
@@ -301,9 +273,12 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
   	    busqueda      = jQuery('input[type=search]').val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
-		var fecha = (jQuery('.fecha_ctasxpagar').val()).split(' / ');
+		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+
     abrir('POST', 'exportar_ctasxpagar', {
     			busqueda:busqueda,
 			extra_search:extra_search,
@@ -311,6 +286,9 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 			
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+
     }, '_blank' );
 		        
 	
@@ -332,9 +310,11 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
 	         		 	
-						var fecha = (jQuery('.fecha_ctasxpagar').val()).split(' / ');
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	
 
 
 	         		 }
@@ -446,9 +426,11 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion = 1;
 
-	         		 	var fecha = (jQuery('.fecha_ctasxpagar').val()).split(' / ');
+	         		 	var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];	         		 	
+						d.fecha_final = fecha[1];	      
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	   		 	
 	         		 }
 	         		
 	     },   
@@ -551,9 +533,11 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
-						var fecha = (jQuery('.fecha_ctasxpagar').val()).split(' / ');
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];	         		 	
+						d.fecha_final = fecha[1];	
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	         		 	
 	         		 }
 	         		
 	     },   
@@ -667,6 +651,88 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 /////////////////////////////////////////////////Historico de entradas/////////////////////////////////////////////////////////////////
 
+
+		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos').change(function(e) {
+					switch(jQuery(this).attr('vista')) {
+					    case "entrada":
+					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "salida":
+					    	var oTable =jQuery('#tabla_historico_salida').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "devolucion":
+							var oTable =jQuery('#tabla_historico_devolucion').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+					    case "cuentas":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+					    default:
+					        var oTable =jQuery('#tabla_historico_entrada').dataTable();			        
+
+			              break;
+					}
+
+		});
+
+		jQuery('.fecha_historicos').daterangepicker(
+		  	  { 
+			    locale: { cancelLabel: 'Cancelar',
+			    		  applyLabel: 'Aceptar',
+			    		  fromLabel : 'Desde',
+			    		  toLabel: 'Hasta',
+			    		  monthNames : "ene._feb._mar_abr._may_jun_jul._ago_sep._oct._nov._dec.".split("_"),
+			    		  daysOfWeek: "Do_Lu_Ma_Mi_Ju_Vi_Sa".split("_"),
+			     } , 
+			    separator: ' / ',
+			    format: 'DD-MM-YYYY',
+			    //startDate: fecha_hoy, //'2014/09/01',
+			    //endDate: fecha_hoy //'2014/12/31'
+			  }
+		  );
+
+
+		jQuery('.fecha_historicos').on('apply.daterangepicker', function(ev, picker) {
+
+					switch(jQuery(this).attr('vista')) {
+					    case "entrada":
+					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "salida":
+					    	var oTable =jQuery('#tabla_historico_salida').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "devolucion":
+							var oTable =jQuery('#tabla_historico_devolucion').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+					    case "cuentas":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+					    default:
+					        var oTable =jQuery('#tabla_historico_entrada').dataTable();			        
+
+			              break;
+					}
+
+		});
+
+
 	jQuery('#tabla_historico_entrada').dataTable( {
 	
 	  "pagingType": "full_numbers",
@@ -678,6 +744,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
+
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
 
 	         		 }
 	         		
@@ -766,6 +838,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
+
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
+
+
 	         		 }
 	         		
 	     },   
@@ -849,6 +929,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=2;
+
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
+
+
 	         		 }
 	         		
 	     },   

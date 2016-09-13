@@ -21,6 +21,102 @@
 			<div class="panel-heading">Histórico de Entradas</div>
 			<div class="panel-body">		
 
+
+
+
+
+
+
+
+<!-- Aqui comienza filtro	-->
+				<div class="row">
+					<div id="disponibilidad"  class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
+								<button  id="ver_filtro" type="button" class="btn btn-success btn-block ttip" title="Mostrar u ocultar filtros.">Filtros</button>
+					</div>
+				</div>
+
+				<div class="col-md-12 form-horizontal" style="display:none;" id="tab_filtro">      
+						
+					<h4>Filtros</h4>	
+					<hr style="padding: 0px; margin: 15px;"/>					
+
+					<div  class="row">
+				
+							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
+							
+							<!--Tipos de factura -->
+							<div class="col-xs-12 col-sm-6 col-md-2">
+							    
+									<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo de factura</label>
+									<div class="col-sm-9 col-md-12">
+									    			
+													<select name="id_factura_historicos" vista="entrada" id="id_factura_historicos" class="form-control">
+															<option value="0">Todos</option>	
+															<?php foreach ( $facturas as $factura ){ ?>
+																		<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
+															<?php } ?>
+														<!--rol de usuario -->
+													</select>
+										    
+
+									</div>
+							</div>	
+
+
+
+							<!--Tipos de almacen -->
+							<div class="col-xs-12 col-sm-6 col-md-2">
+								<div class="form-group">
+									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
+									<div class="col-sm-12 col-md-12">
+				
+									    <?php if  ( $this->session->userdata( 'id_perfil' ) == 1  ) { ?>
+											 <fieldset class="disabledme">				
+										<?php } else { ?>	
+											 <fieldset class="disabledme" disabled>
+										<?php } ?>	
+
+												<select name="id_almacen_historicos" vista="entrada" id="id_almacen_historicos" class="form-control ttip" title="Seleccione el almacén del producto a consultar.">
+												
+													<option value="0">Todos</option>
+
+														<?php foreach ( $almacenes as $almacen ){ ?>
+															<?php 
+															if  (($almacen->id_almacen==$id_almacen) ) 
+																{$seleccionado='selected';} else {$seleccionado='';}
+															?>
+															
+																<option value="<?php echo $almacen->id_almacen; ?>" <?php echo $seleccionado; ?>><?php echo $almacen->almacen; ?></option>
+														<?php } ?>
+												</select>
+											</fieldset>	
+
+									</div>
+								</div>
+							</div>	
+
+							<!--Rango de fecha -->
+							<div class="col-xs-12 col-sm-6 col-md-3">
+									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+									<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
+			                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+										<input id="foco_historicos" vista="entrada" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+									</div>	
+			                </div>
+
+		            </div>     
+
+		            <hr style="padding: 0px; margin: 15px;"/>					
+				</div>
+
+<!-- Hasta aqui el filtro	-->
+
+
+
+
+
+
+
 			<!--tabla-->	
 
 				<div class="col-md-12">

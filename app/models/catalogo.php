@@ -4641,8 +4641,16 @@
           //$this->db->set( 'precio_anterior', 'precio', FALSE  );
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'comentario', $data['comentario'] );  
+          
+
+          if  (isset($data['archivo_imagen'])) {
+            $this->db->set( 'imagen', $data['archivo_imagen']['file_name']);          
+          }
+
+
           $this->db->where('id', $data['id'] );
           $this->db->update($this->productos );
+
 
 
 

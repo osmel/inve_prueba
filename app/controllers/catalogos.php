@@ -3500,17 +3500,93 @@ function validacion_cambio_producto(){
                 $data['precio']    = $this->input->post('precio'); 
                 $data['codigo_contable']    = $this->input->post('codigo_contable'); 
 
-                $data               = $this->security->xss_clean($data);  
-                $guardar            = $this->catalogo->cambiar_precio_producto( $data );
 
-                if ( $guardar !== FALSE ){
-                  echo true;
+                   
 
+
+                $config_adjunto['upload_path']    = './uploads/productos/';
+                $config_adjunto['allowed_types']  = 'jpg|png|gif|jpeg';
+                $config_adjunto['max_size']     = '20480';
+                $config_adjunto['file_name']    = 'img_'.$data['referencia'];
+                $config_adjunto['overwrite']    = true;             
+
+                $this->load->library('upload', $config_adjunto);
+
+                $this->upload->do_upload('archivo_imagen'); 
+                $errors = $this->upload->display_errors();
+
+
+                if (!(($errors=='') || ($errors=='<p>No ha seleccionado ningún archivo para subir</p>'))) {
+                  echo $this->upload->display_errors('<span class="error">', '</span>');
                 } else {
-                  echo '<span class="error"><b>E01</b> - El nuevo producto no pudo ser agregado</span>';
-                }
+                    if ($errors=='') {
+                      $data['archivo_imagen'] = $this->upload->data();
+                    } 
 
-    
+                    if  (isset($data['archivo_imagen'])) {
+                       //este es el thumbnail 
+
+                        /////////////THUMBNAIL///////////////////
+                         $this->load->library('image_lib');
+
+                         //este es el thumbnail 
+                         $config1 = array(
+                            'image_library' => 'GD',
+                            'source_image' => $data['archivo_imagen']['full_path'],
+                            'new_image' => './uploads/productos/thumbnail/300X300/',
+                            'create_thumb' => TRUE,
+                            'maintain_ratio' => FALSE,
+                            'width' => 300,
+                            'height' => 300
+                          );
+
+
+                          //$this->load->library('image_lib', $config2);
+                          //$this->image_lib->resize();
+
+
+                          $this->image_lib->clear();
+                          $this->image_lib->initialize($config1);
+                          $this->image_lib->resize();
+
+
+           
+                         $config2 = array(
+                            'image_library' => 'GD',
+                            'source_image' => $data['archivo_imagen']['full_path'],
+                            'new_image' => './uploads/productos/thumbnail/516X516/',
+                            'create_thumb' => TRUE,
+                            'maintain_ratio' => FALSE,
+                            'width' => 516,
+                            'height' => 516
+                          );    
+
+
+                          $this->image_lib->clear();
+                          $this->image_lib->initialize($config2);
+                          $this->image_lib->resize();                            
+
+                          /////////////fin del THUMBNAIL///////////////////
+
+                    }    
+ 
+
+
+
+
+
+
+                    $data               = $this->security->xss_clean($data);  
+                    $guardar            = $this->catalogo->cambiar_precio_producto( $data );
+
+                    if ( $guardar !== FALSE ){
+                      echo true;
+
+                    } else {
+                      echo '<span class="error"><b>E01</b> - El nuevo producto no pudo ser agregado</span>';
+                    }
+
+               }  
         } else {      
           echo validation_errors('<span class="error">','</span>');
         }        

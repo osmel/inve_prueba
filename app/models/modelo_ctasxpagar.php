@@ -166,6 +166,8 @@ public function buscador_ctasxpagar($data){
                  $order = 'desc';
            } 
 
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
 
           switch ($columa_order) {
@@ -249,6 +251,19 @@ public function buscador_ctasxpagar($data){
            $fechas .= ' ';
           }
 
+          if ($id_almacen!=0) {
+            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+            $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }
+
 
 
           $where = '(
@@ -256,7 +271,7 @@ public function buscador_ctasxpagar($data){
                           
                           
 
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.' 
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.' 
                          
                       ) 
 
@@ -277,7 +292,7 @@ public function buscador_ctasxpagar($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.'   
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.'   
                       )';
            
 
@@ -741,6 +756,8 @@ public function impresion_ctasxpagar($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
           $this->db->select('m.movimiento');
           $this->db->select('a.almacen');
@@ -766,6 +783,19 @@ public function impresion_ctasxpagar($data){
           
 
 
+         if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
                            $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
@@ -775,11 +805,11 @@ public function impresion_ctasxpagar($data){
 
           } else {
            $fechas .= ' ';
-          }
+          }     
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.' 
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
@@ -792,7 +822,7 @@ public function impresion_ctasxpagar($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.'   
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
@@ -829,7 +859,8 @@ public function exportar_ctasxpagar($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
 
 
           $this->db->select('m.movimiento');
@@ -855,6 +886,18 @@ public function exportar_ctasxpagar($data){
           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
           
 
+         if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
 
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
@@ -865,11 +908,11 @@ public function exportar_ctasxpagar($data){
 
           } else {
            $fechas .= ' ';
-          }
+          }     
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.' 
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
@@ -882,7 +925,7 @@ public function exportar_ctasxpagar($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.'   
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
