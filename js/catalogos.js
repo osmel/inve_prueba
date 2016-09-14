@@ -243,8 +243,11 @@ jQuery('body').on('click','.impresion1', function (e) {
 
 });
 
+
+
 jQuery('body').on('click','.impresion_ctas', function (e) {
-  	    busqueda      = jQuery('input[type=search]').val();
+  	    //busqueda      = jQuery('input[type=search]').val();
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
 		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
@@ -270,7 +273,8 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
 
 
 jQuery('body').on('click','.exportar_ctas', function (e) {
-  	    busqueda      = jQuery('input[type=search]').val();
+  	    //busqueda      = jQuery('input[type=search]').val();
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
 		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
@@ -320,7 +324,74 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 	         		 }
 	         		
 	     },   
+
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+		if  (data.length>0) {   
+				
+
+			total_subtotal = api
+					.column( 6)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 7)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+				
+				total = api
+					.column( 8)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
+
+		} else 	{
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+
+		}	
+    },
+
+
 		"infoCallback": function( settings, start, end, max, total, pre ) {
+	
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+				jQuery('#total_iva').html( 'IVA: 0.00');
+				jQuery('#total_total').html('Total de mts: 0.00');
+
+			}	
+
+
 			if (settings.json.recordsTotal==0) {
 					jQuery("#disa_vencidas").attr('disabled', true);					
 				} else {
@@ -434,7 +505,71 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 	         		 }
 	         		
 	     },   
+
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 6)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal2').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva2').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total2').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal2').html('SubTotal: 0.00');	
+						jQuery('#iva2').html('IVA: 0.00');	
+						jQuery('#total2').html('Total: 0.00');										
+
+
+			}	
+	    },
+
 		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal2').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva2').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total2').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal2').html( 'Subtotal: 0.00');
+				jQuery('#total_iva2').html( 'IVA: 0.00');
+				jQuery('#total_total2').html('Total de mts: 0.00');
+
+			}	
+
+
 			if (settings.json.recordsTotal==0) {
 					jQuery("#disa_xpagar").attr('disabled', true);					
 				} else {
@@ -541,7 +676,68 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		 }
 	         		
 	     },   
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 6)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal3').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva3').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total3').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal3').html('SubTotal: 0.00');	
+						jQuery('#iva3').html('IVA: 0.00');	
+						jQuery('#total3').html('Total: 0.00');										
+
+
+			}	
+	    },
+
 		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal3').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva3').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total3').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal3').html( 'Subtotal: 0.00');
+				jQuery('#total_iva3').html( 'IVA: 0.00');
+				jQuery('#total_total3').html('Total de mts: 0.00');
+			}				
+
 			if (settings.json.recordsTotal==0) {
 					jQuery("#disa_pagadas").attr('disabled', true);					
 				} else {
@@ -755,6 +951,71 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		
 	     },   
 
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 6)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal').html('SubTotal: 0.00');	
+						jQuery('#iva').html('IVA: 0.00');	
+						jQuery('#total').html('Total: 0.00');										
+
+
+			}	
+	    },
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+				jQuery('#total_iva').html( 'IVA: 0.00');
+				jQuery('#total_total').html('Total de mts: 0.00');
+			}				
+
+			return pre
+		},		    	     
+
 		"language": {  //tratamiento de lenguaje
 			"lengthMenu": "Mostrar _MENU_ registros por página",
 			"zeroRecords": "No hay registros",
@@ -875,6 +1136,72 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		},
 
 
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 5)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 6)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal').html('SubTotal: 0.00');	
+						jQuery('#iva').html('IVA: 0.00');	
+						jQuery('#total').html('Total: 0.00');										
+
+
+			}	
+	    },
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+				jQuery('#total_iva').html( 'IVA: 0.00');
+				jQuery('#total_total').html('Total de mts: 0.00');
+			}				
+
+			return pre
+		},			
+
+
 		"columnDefs": [
 			    	
 			    	{ 
@@ -939,7 +1266,73 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 	         		 }
 	         		
-	     },   
+	     },  
+
+
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 9)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal').html('SubTotal: 0.00');	
+						jQuery('#iva').html('IVA: 0.00');	
+						jQuery('#total').html('Total: 0.00');										
+
+
+			}	
+	    },
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+				jQuery('#total_iva').html( 'IVA: 0.00');
+				jQuery('#total_total').html('Total de mts: 0.00');
+			}				
+
+			return pre
+		},				      
 
 		"language": {  //tratamiento de lenguaje
 			"lengthMenu": "Mostrar _MENU_ registros por página",
@@ -1376,7 +1769,6 @@ jQuery('#tabla_costo_inventario').dataTable( {
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 	    if (settings.json.totales) {
 		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
-		  
 			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
 			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
 
@@ -1391,6 +1783,7 @@ jQuery('#tabla_costo_inventario').dataTable( {
 		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
 			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
 			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
 
 		} else {
 		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
@@ -1467,7 +1860,7 @@ jQuery('#tabla_costo_inventario').dataTable( {
 					//importes
 					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
 					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
-					jQuery('#total').html('Total:'+ number_format(total_subtotal*total_iva, 2, '.', ','));	
+					jQuery('#total').html('Total:'+ number_format(total_subtotal+total_iva, 2, '.', ','));	
 
 		} else 	{
 			        jQuery('#pieza').html('Total de piezas: 0');

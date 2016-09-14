@@ -21,18 +21,7 @@
 			<div class="panel-heading">Gestión de Cuentas por pagar</div>
 			<div class="panel-body">		
 
-			<!--tabla-->	
-						<!--
-						<div id="fecha_ctasxpagar" class="col-xs-12 col-sm-6 col-md-3">
-							<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
-							<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
-	                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-								<input id="foco_ctasxpagar" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_ctasxpagar ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
-							</div>	
-	                     </div>-->
-
-
-
+			
 
 
 <!-- Aqui comienza filtro	-->
@@ -164,8 +153,48 @@
 						</section>
 
 					</div>
-				
+											
+													<div class="row bloque_totales">						
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes por Página</b>
+														</div>	
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="subtotal"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="iva"></span>			
+														</div>				
+														<div class="col-sm-3 col-md-2">	
+															<span id="total"></span>			
+														</div>	
+													</div>			
+
+													<div class="row bloque_totales">		
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes Totales</b>			
+														</div>									
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_subtotal"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_iva"></span>			
+														</div>					
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_total"></span>			
+														</div>	
+
+													</div>				
 					
+					<hr style="padding: 0px; margin: 15px;"/>					
 					<div class="table-responsive">
 						<h4>Por Pagar</h4>	
 						<br>	
@@ -207,7 +236,47 @@
 
 					</div>
 
+													<div class="row bloque_totales">						
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes por Página</b>
+														</div>	
 
+														<div class="col-sm-3 col-md-2">	
+															<span id="subtotal2"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="iva2"></span>			
+														</div>				
+														<div class="col-sm-3 col-md-2">	
+															<span id="total2"></span>			
+														</div>	
+													</div>			
+
+													<div class="row bloque_totales">		
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes Totales</b>			
+														</div>									
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_subtotal2"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_iva2"></span>			
+														</div>					
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_total2"></span>			
+														</div>	
+
+													</div>							
+
+				<hr style="padding: 0px; margin: 15px;"/>					
 					<div class="table-responsive">
 						<h4>Pagadas</h4>	
 						<br>	
@@ -249,7 +318,50 @@
 							</table>
 						</section>
 
-					</div>
+												</div>
+
+
+
+													<div class="row bloque_totales">						
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes por Página</b>
+														</div>	
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="subtotal3"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="iva3"></span>			
+														</div>				
+														<div class="col-sm-3 col-md-2">	
+															<span id="total3"></span>			
+														</div>	
+													</div>			
+
+													<div class="row bloque_totales">		
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes Totales</b>			
+														</div>									
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_subtotal3"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_iva3"></span>			
+														</div>					
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_total3"></span>			
+														</div>	
+
+													</div>							
+
 
 
 				</div>				

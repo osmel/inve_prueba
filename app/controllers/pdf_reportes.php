@@ -141,11 +141,12 @@ class Pdf_reportes extends CI_Controller {
 
         /////////////
 
+
+
         set_time_limit(0); 
         ignore_user_abort(1);
-        //ini_set('memory_limit','999M'); //512M
-        //ini_set('max_execution_time','999'); //512M
-        ini_set('memory_limit','512M'); 
+        ini_set('memory_limit','1024M'); 
+
 
         $this->load->library('Pdf');
         $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);

@@ -51,12 +51,16 @@
 							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>					
 							<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
 							
+							<!--
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
+							-->
+							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
+
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad; ?></td>
 
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?></td>
-							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>				
-							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->sum_iva; ?></td>					
+							<td width="5%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>				
+							<td width="5%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->sum_iva, 2, '.', ','); ?></td>				
 
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->t_factura; ?></td>		
 							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>
@@ -76,18 +80,19 @@
 						<tr>
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 
-									<span><b>Subtotal: </b><?php echo $totales->subtotal; ?></span> <br>
-									<span><b>Iva: </b><?php echo $totales->iva; ?></span><br>
-									<span><b>Total: </b><?php echo $totales->total; ?></span><br>
+									<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
+
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->iva, 2, '.', ','); ?></span>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->total, 2, '.', ','); ?></span><br>
 									
 									<?php  if ($totales->metros>0) { ?>	
-										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span><br>
+										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>
 									<?php } ?>		
 									<?php  if ($totales->kilogramos>0) { ?>	
-										<span><b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span><br>
+										<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span>
 									<?php } ?>	
 
-									<span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
 
 							</td>
 						</tr>

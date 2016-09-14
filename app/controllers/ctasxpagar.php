@@ -261,7 +261,7 @@ class Ctasxpagar extends CI_Controller {
 		        case 2:
 		        case 3:
 		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		              if ( (in_array(27, $coleccion_id_operaciones)) || (in_array(28, $coleccion_id_operaciones))  ) {                 
 		                        $this->load->view( 'ctasxpagar/ctasxpagar',$data );
 		             }   
 		          break;
@@ -312,11 +312,12 @@ class Ctasxpagar extends CI_Controller {
     $data=$_POST;
     
     //OR ( monto_restante NOT IS null )   
+    //( monto_restante <=0 ) OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) )
      $data['having'] = '(
-                         ( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) )
+                         ( monto_restante <=0 )  OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) )
                       )';  
 
-    $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) ';   //or ya esta pagado
+    $data["condicion"]=' AND ((m.id_tipo_pago=2) OR (m.id_tipo_pago<>2)) ';   //or ya esta pagado
 	$busqueda  = $this->modelo_ctasxpagar->buscador_ctasxpagar($data);
     echo $busqueda;
   }   
@@ -346,7 +347,8 @@ class Ctasxpagar extends CI_Controller {
 		        case 2:
 		        case 3:
 		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		              if ( (in_array(27, $coleccion_id_operaciones)) || (in_array(28, $coleccion_id_operaciones))  ) {
+                  
 		                        $this->load->view( 'ctasxpagar/detalle_ctasxpagar',$data );
 		             }   
 		          break;
@@ -480,11 +482,11 @@ class Ctasxpagar extends CI_Controller {
             default:
         }
 
-
+        $data['totales'] = json_decode($this->modelo_ctasxpagar->totales_importes_ctas($data));
 
         $data['movimientos'] = $this->modelo_ctasxpagar->impresion_ctasxpagar($data);
         $html = $this->load->view('pdfs/ctasxpagar/'.$extra_search, $data, true);
-    	//print_r($data['movimientos']) ;
+    	   //print_r($data['totales']) ;
     	//die;
 
         /////////////

@@ -350,8 +350,8 @@
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>$row->precio,
-                                      6=>$row->sum_iva,
+                                      5=>number_format($row->precio, 2, '.', ','),
+                                      6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
                                            '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"

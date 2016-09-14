@@ -149,6 +149,47 @@
 						</section>	
 				</div>
 
+
+													<div class="row bloque_totales">						
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes por Página</b>
+														</div>	
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="subtotal"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="iva"></span>			
+														</div>				
+														<div class="col-sm-3 col-md-2">	
+															<span id="total"></span>			
+														</div>	
+													</div>			
+
+													<div class="row bloque_totales">		
+														<div class="col-sm-0 col-md-2">	
+														  
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+														  <b>Importes Totales</b>			
+														</div>									
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_subtotal"></span>			
+														</div>	
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_iva"></span>			
+														</div>					
+
+														<div class="col-sm-3 col-md-2">	
+															<span id="total_total"></span>			
+														</div>	
+
+													</div>						
+
 				<div class="row">
 						<div class="col-sm-8 col-md-9"></div>
 						<div class="col-sm-4 col-md-3">

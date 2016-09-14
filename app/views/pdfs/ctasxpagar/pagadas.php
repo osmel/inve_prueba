@@ -68,19 +68,16 @@
 				<?php endif; ?>	
 				</tbody>	
 				<tfooter>	
-						<!--
 						<tr>
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
-									<?php  if ($totales->metros>0) { ?>	
-										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span><br>
-									<?php } ?>		
-									<?php  if ($totales->kilogramos>0) { ?>	
-										<span><b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span><br>
-									<?php } ?>	
 
-									<span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
+									<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
+
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->iva, 2, '.', ','); ?></span>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->total, 2, '.', ','); ?></span><br>
+									
 							</td>
-						</tr>-->
+						</tr>
 				</tfooter>			
 					
 			</table>

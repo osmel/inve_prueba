@@ -2050,10 +2050,12 @@
 
 
 
-          $where_total= '(
+          $where_total= $where;
+                /*
+                    '(
                          ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
-           
+            */
 
           $this->db->where($where);          
 
@@ -2100,7 +2102,12 @@
                         "draw"            => intval( $data['draw'] ),
                         "recordsTotal"    =>intval( self::total_historico_entradas($where_total) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
-                        "data"            =>  $dato 
+                        "data"            =>  $dato,
+                        "totales_importe"            =>  array(
+                              "subtotal"=>floatval( self::totales_importes($where_total)->subtotal ), 
+                              "iva"=>floatval( self::totales_importes($where_total)->iva ), 
+                              "total"=>floatval( self::totales_importes($where_total)->total ),
+                            ),                           
                       ));
                     
               }   
@@ -2122,6 +2129,32 @@
               $result->free_result();           
 
       }  
+
+
+    
+public function totales_importes($where){
+
+           $this->db->select("SUM(precio) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+   
+          $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+
+          $this->db->where($where);
+
+
+          $result = $this->db->get();
+      
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();              
+
+    }        
        
 
 
@@ -2130,10 +2163,13 @@
 
               $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
              
+          
               $this->db->from($this->historico_registros_entradas.' as m');
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
               $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
-          
+              $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+
+
               $this->db->where($where);          
               $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
               //$this->db->having($where);
@@ -2316,9 +2352,9 @@ public function buscador_historico_devolucion($data){
 
 
 
-          $where_total= '(
+          $where_total= $where; /*'(
                          ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion <> 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
-                      )';
+                      )';*/
            
 
           $this->db->where($where);          
@@ -2365,7 +2401,13 @@ public function buscador_historico_devolucion($data){
                         "draw"            => intval( $data['draw'] ),
                         "recordsTotal"    =>intval( self::total_historico_devolucion($where_total) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
-                        "data"            =>  $dato 
+                        "data"            =>  $dato,
+                        "totales_importe"            =>  array(
+                              "subtotal"=>floatval( self::totales_importes_devolucion($where_total)->subtotal ), 
+                              "iva"=>floatval( self::totales_importes_devolucion($where_total)->iva ), 
+                              "total"=>floatval( self::totales_importes_devolucion($where_total)->total ),
+                        ),                              
+
                       ));
                     
               }   
@@ -2380,8 +2422,6 @@ public function buscador_historico_devolucion($data){
                   );
                   $array[]="";
                   return json_encode($output);
-                  
-
               }
 
               $result->free_result();           
@@ -2389,23 +2429,57 @@ public function buscador_historico_devolucion($data){
       }  
        
 
+   
+public function totales_importes_devolucion($where){
 
- public function total_historico_devolucion($where){
+           $this->db->select("SUM(precio) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+   
+          $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
-              $this->db->from($this->historico_registros_entradas.' as m');
-              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
-              $this->db->where($where);
-              $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
 
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }  
+          $this->db->where($where);
+
+
+          $result = $this->db->get();
+      
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();              
+
+    }              
+
+
+      public function total_historico_devolucion($where){
+                    $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+                    $this->db->from($this->historico_registros_entradas.' as m');
+                    $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+                    $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+
+                    $this->db->where($where);          
+                    $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+
+                   $result = $this->db->get();
+
+                    if ( $result->num_rows() > 0 ) {
+                        $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                        $found_rows = $cantidad_consulta->row(); 
+                        $registros_filtrados =  ( (int) $found_rows->cantidad);
+                    }  
+                    
+                    $cant = $registros_filtrados;
+           
+                    if ( $cant > 0 )
+                       return $cant;
+                    else
+                       return 0;         
+      }
 
  
 
@@ -2594,9 +2668,10 @@ public function buscador_historico_salida($data){
 
 
 
-          $where_total= '(
+          $where_total= $where;
+                  /*'(
                          ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_almacenid.$id_facturaid.' 
-                      )';
+                      )';*/
            
 
           $this->db->where($where);          
@@ -2653,7 +2728,12 @@ public function buscador_historico_salida($data){
                         "draw"            => intval( $data['draw'] ),
                         "recordsTotal"    =>intval( self::total_historico_salida($where_total) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
-                        "data"            =>  $dato 
+                        "data"            =>  $dato,
+                        "totales_importe"            =>  array(
+                              "subtotal"=>floatval( self::totales_importes_salida($where_total)->subtotal ), 
+                              "iva"=>floatval( self::totales_importes_salida($where_total)->iva ), 
+                              "total"=>floatval( self::totales_importes_salida($where_total)->total ),
+                        ),                           
                       ));
                     
               }   
@@ -2677,27 +2757,67 @@ public function buscador_historico_salida($data){
        
 
 
+   
+public function totales_importes_salida($where){
+
+           $this->db->select("SUM(precio) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+   
+          $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+
+
+
+          $this->db->where($where);
+
+
+          $result = $this->db->get();
+      
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();              
+
+    }       
  public function total_historico_salida($where){
-            //$this->db->distinct();
-            $this->db->from($this->historico_registros_salidas.' as m');
-            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-            $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-            
-            $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
-            $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
-            $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
+              $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+               
 
-               $this->db->where($where);
+                $this->db->from($this->historico_registros_salidas.' as m');
+                $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+                $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+                $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+                $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
-              $cant = $this->db->count_all_results();          
+
+
+
+              $this->db->where($where);          
+
+              $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
+
+             $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                  $found_rows = $cantidad_consulta->row(); 
+                  $registros_filtrados =  ( (int) $found_rows->cantidad);
+              }  
+              
+              $cant = $registros_filtrados;
      
               if ( $cant > 0 )
                  return $cant;
               else
-                 return 0;   
-       }  
-
+                 return 0;         
+ }
 
 
 
