@@ -37,7 +37,8 @@ class Ctasxpagar extends CI_Controller {
         case 2:
         case 3:
         case 4:
-             if  ( (in_array(8, $coleccion_id_operaciones))  || (in_array(20, $coleccion_id_operaciones))  )   { 
+             
+             if ( (in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones))  ) { 
                 $this->load->view( 'ctasxpagar/nuevo_pago',$data);
               }   
           break;
@@ -120,7 +121,10 @@ class Ctasxpagar extends CI_Controller {
         case 2:
         case 3:
         case 4:
-        	$this->load->view( 'ctasxpagar/editar_pago', $data );	
+             if ( (in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones))  ) { 
+                $this->load->view( 'ctasxpagar/editar_pago', $data ); 
+              }   
+        	
               /*
               if  ((in_array(8, $coleccion_id_operaciones))  || (in_array(11, $coleccion_id_operaciones)))  { 
                 $data['producto']  = $this->catalogo->coger_producto($data);
@@ -205,7 +209,9 @@ class Ctasxpagar extends CI_Controller {
         case 2:
         case 3:
         case 4:
+            if ( (in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones))  ) { 
                 $this->load->view( 'ctasxpagar/eliminar_pago', $data );
+             }   
           break;
 
 
@@ -348,7 +354,7 @@ class Ctasxpagar extends CI_Controller {
 		        case 3:
 		        case 4:
 		              if ( (in_array(27, $coleccion_id_operaciones)) || (in_array(28, $coleccion_id_operaciones))  ) {
-                  
+
 		                        $this->load->view( 'ctasxpagar/detalle_ctasxpagar',$data );
 		             }   
 		          break;
