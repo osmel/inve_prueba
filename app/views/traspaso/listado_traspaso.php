@@ -47,7 +47,7 @@
 							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
-							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(23, $coleccion_id_operaciones)) )  &&  (( $this->session->userdata( 'id_perfil' ) != 2 ) && ( $this->session->userdata( 'id_perfil' ) != 4 )) ){ ?>
+							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(26, $coleccion_id_operaciones)) )  &&  (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabled_almacen">				
 								<?php } else { ?>	
 									 <fieldset class="disabled_almacen" disabled>

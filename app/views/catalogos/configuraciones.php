@@ -1,5 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<script type="text/javascript" src="<?php echo base_url(); ?>js/sistema.js"></script>
+<?php $this->load->view('header'); ?>
+
 <?php
  	if (!isset($retorno)) {
       	$retorno ="catalogos";
@@ -50,25 +51,6 @@
 
 
 
-				
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			</div>
 		</div>
 	</div>
@@ -81,7 +63,7 @@
 			</div>
 		</div>
 	</div>
-
+<?php $this->load->view('footer'); ?>
 <div class="modal fade bs-example-modal-lg" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
         <div class="modal-content"></div>

@@ -76,39 +76,8 @@ class Catalogos extends CI_Controller {
 
 
 
- public function procesando_cat_calidades(){
-
-    $data=$_POST;
-    $busqueda = $this->catalogo->buscador_cat_calidades($data);
-    echo $busqueda;
-  } 
-
-
 
  
- public function procesando_cat_composiciones(){
-
-    $data=$_POST;
-    $busqueda = $this->catalogo->buscador_cat_composiciones($data);
-    echo $busqueda;
-  } 
-
-
- public function procesando_cat_cargadores(){
-
-    $data=$_POST;
-    $busqueda = $this->catalogo->buscador_cat_cargadores($data);
-    echo $busqueda;
-  } 
-
-
- public function procesando_cat_colores(){
-
-    $data=$_POST;
-    $busqueda = $this->catalogo->buscador_cat_colores($data);
-    echo $busqueda;
-  } 
-
   public function procesando_cat_producto(){
     $data=$_POST;
    
@@ -118,11 +87,6 @@ class Catalogos extends CI_Controller {
   } 
 
 
- public function procesando_cat_configuraciones(){
-    $data=$_POST;
-    $busqueda = $this->catalogo->buscador_cat_configuraciones($data);
-    echo $busqueda;
-  } 
 
 
  function referencia(){
@@ -685,6 +649,14 @@ function validacion_edicion_unidad_medida(){
     
   }
 
+ 
+ public function procesando_cat_composiciones(){
+
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_composiciones($data);
+    echo $busqueda;
+  } 
+
     // crear
   function nuevo_composicion(){
 if($this->session->userdata('session') === TRUE ){
@@ -1215,7 +1187,13 @@ function validacion_edicion_actividad_comercial(){
     
   }
 
-  
+  public function procesando_cat_colores(){
+
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_colores($data);
+    echo $busqueda;
+  } 
+
 
 
     // crear
@@ -1463,6 +1441,13 @@ function validacion_edicion_color(){
     }    
     
   }
+
+   public function procesando_cat_calidades(){
+
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_calidades($data);
+    echo $busqueda;
+  } 
 
 
 
@@ -1995,6 +1980,13 @@ function validacion_edicion_ancho(){
     
   }
 
+
+ public function procesando_cat_cargadores(){
+
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_cargadores($data);
+    echo $busqueda;
+  } 
 
     // crear
   function nuevo_cargador(){
@@ -3102,6 +3094,10 @@ function validacion_edicion_producto(){
       redirect('');
     } else {
 
+        $data['id']    =  $this->input->post('id'); 
+        $data['codigo_contable']    = $this->input->post('codigo_contable'); 
+        $existe2            =  $this->catalogo->check_codigo_contable( $data );
+
       $this->form_validation->set_rules( 'descripcion', 'Descripción', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
       $this->form_validation->set_rules( 'ancho', 'Ancho', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules( 'precio', 'Precio', 'required|callback_importe_valido|xss_clean');   
@@ -3109,10 +3105,15 @@ function validacion_edicion_producto(){
       $this->form_validation->set_rules( 'minimo', 'Minimo',  'required|callback_valid_cero|xss_clean');      
       $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
 
-      if ($this->form_validation->run() === TRUE){
+
+
+
+      
+      if (($this->form_validation->run() === TRUE) AND ( $existe2 !== TRUE )){
+
           
           //IMPR-AAAAMMDD-ABCD123
-            $data['id']    =  $this->input->post('id'); 
+            
             $data['referencia']    =  $this->input->post('referencia'); 
 
             $data['descripcion']    = $this->input->post('descripcion'); 
@@ -3194,7 +3195,7 @@ function validacion_edicion_producto(){
                     $data['minimo']    = $this->input->post('minimo'); 
                     $data['precio']    = $this->input->post('precio'); 
                     $data['ancho']    = $this->input->post('ancho'); 
-                    $data['codigo_contable']    = $this->input->post('codigo_contable'); 
+                    
 
 
                     $data['comentario']    = $this->input->post('comentario'); 
@@ -3218,7 +3219,16 @@ function validacion_edicion_producto(){
            } 
 
         } else {      
-          echo validation_errors('<span class="error">','</span>');
+          
+
+            if ($existe2==TRUE) {
+              echo '<span class="error"><b>E01</b> - El Código Contable que desea agregar ya existe. No es posible agregar dos Códigos Contables iguales.</span>';
+            } else {
+              echo validation_errors('<span class="error">','</span>');  
+            }
+
+
+
         }        
    }
  } 
@@ -3489,16 +3499,20 @@ function validacion_cambio_producto(){
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
     } else {
-
+      //validar si codigo se repite
+        $data['id']    =  $this->input->post('id'); 
+        $data['codigo_contable']    = $this->input->post('codigo_contable'); 
+        $existe            =  $this->catalogo->check_codigo_contable( $data );
+ 
       $this->form_validation->set_rules( 'precio', 'Precio', 'required|callback_importe_valido|xss_clean');   
 
-      if ($this->form_validation->run() === TRUE){
+      if (($this->form_validation->run() === TRUE) AND ( $existe !== TRUE )){
 
-                $data['id']    =  $this->input->post('id'); 
+                
                 $data['referencia']    =  $this->input->post('referencia'); 
                 $data['comentario']    = $this->input->post('comentario'); 
                 $data['precio']    = $this->input->post('precio'); 
-                $data['codigo_contable']    = $this->input->post('codigo_contable'); 
+                
 
 
                    
@@ -3588,7 +3602,12 @@ function validacion_cambio_producto(){
 
                }  
         } else {      
-          echo validation_errors('<span class="error">','</span>');
+          if ($existe==TRUE) {
+            echo '<span class="error"><b>E01</b> - El Código Contable que desea agregar ya existe. No es posible agregar dos Códigos Contables iguales.</span>';
+          } else {
+            echo validation_errors('<span class="error">','</span>');  
+          }
+          
         }        
    }
  }   
@@ -3997,88 +4016,56 @@ function validacion_edicion_almacen(){
 
 //***********************configuraciones **********************************//
 
+
+
+
+
   public function listado_configuraciones(){
+  
 
-  if ( $this->session->userdata('session') !== TRUE ) {
-      redirect('login');
+   if ( $this->session->userdata('session') !== TRUE ) {
+        redirect('login');
     } else {
-      $id_perfil=$this->session->userdata('id_perfil');
+        $id_perfil=$this->session->userdata('id_perfil');
 
-      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-            $coleccion_id_operaciones = array();
-       }   
+        $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+              $coleccion_id_operaciones = array();
+         }   
+
 
       switch ($id_perfil) {    
         case 1:
-            if ( ( $id_perfil == 1 ) && ($this->session->userdata('especial') ==1 ) ) { 
-                ob_start();
-                $this->paginacion_ajax_configuracion(0);  //
-                $initial_content = ob_get_contents();
-                ob_end_clean();    
-                $data['table'] = "<div id='paginacion'>" . $initial_content . "</div>" ;
-                $this->load->view( 'paginacion/paginacion',$data);
-            }  else  {
-                redirect('');
-            } 
-
-            
+              $this->load->view( 'catalogos/configuraciones');            
           break;
+        case 2:
+        case 3:
+        case 4:
+                if ( ( $id_perfil == 1 ) && ($this->session->userdata('especial') ==1 ) ) {
+                  $this->load->view( 'catalogos/configuraciones');
+                } else {
+                        redirect('');
+                } 
+          break;
+
+
         default:  
           redirect('');
           break;
       }
-   }    
+
+
+
+    }    
+    
   }
 
-  public function paginacion_ajax_configuracion($offset = 0)  {
-        //hacemos la configuración de la librería jquery_pagination
-        $config['base_url'] = base_url('catalogos/paginacion_ajax_configuracion/');  //controlador/funcion
+   public function procesando_cat_configuraciones(){
+    $data=$_POST;
+    $busqueda = $this->catalogo->buscador_cat_configuraciones($data);
+    echo $busqueda;
+  } 
 
-        $config['div'] = '#paginacion';//asignamos un id al contendor general
-        $config['configuracionr_class'] = 'page_link';//asignamos una clase a los links para maquetar
-      $config['show_count'] = false;//en true queremos ver Viendo 1 a 10 de 52
-        $config['per_page'] = 20;//-->número de configuraciones por página
-        $config['num_links'] = 4;//-->número de links visibles en el pie de la pagina
-
-        $config['full_tag_open']       = '<ul class="pagination">';  
-        $config['full_tag_close']      = '</ul>';
-        $config['first_tag_open']      = '<li >'; 
-        $config['first_tag_close']     = '</li>';
-        $config['first_link']          = 'Primero'; 
-        $config['last_tag_open']       = '<li >'; 
-        $config['last_tag_close']      = '</li>';
-        $config['last_link']           = 'Último';   
-        $config['next_tag_open']       = '<li >'; 
-        $config['next_tag_close']      = '</li>';
-        $config['next_link']           = '&raquo;';  
-        $config['prev_tag_open']       = '<li >'; 
-        $config['prev_tag_close']      = '</li>';
-        $config['prev_link']           = '&laquo;';   
-        $config['num_tag_open']        = '<li>';
-        $config['num_tag_close']       = '</li>';
-        $config['cur_tag_open']        = '<li class="active"><a href="#">';
-        $config['cur_tag_close']       = '</a></li>';   
-        $config['total_rows'] = $this->catalogo->total_configuraciones(); 
- 
-        //inicializamos la librería
-        $this->jquery_pagination->initialize($config); 
-
-    $data['configuraciones']  = $this->catalogo->listado_configuraciones($config['per_page'], $offset);
-
-    $html = $this->load->view( 'catalogos/configuraciones',$data ,true);
-
-        $html = $html.
-        '<div class="container">
-      <div class="col-xs-12">
-            <div id="paginacion">'.
-              $this->jquery_pagination->create_links()
-            .'</div>
-        </div>
-    </div>';
-        echo $html;
- 
-    }   
 
     // crear
   function nuevo_configuracion(){

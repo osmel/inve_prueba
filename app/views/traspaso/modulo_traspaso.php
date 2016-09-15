@@ -89,7 +89,7 @@
 							    	Y que no este inhabilitado y 
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
-							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(2, $coleccion_id_operaciones)) ) && (!$val_proveedor) && (( $this->session->userdata( 'id_perfil' ) != 2 ) && ( $this->session->userdata( 'id_perfil' ) != 4 )) ){ ?>
+							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(26, $coleccion_id_operaciones)) ) && (!$val_proveedor) && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabledme">				
 								<?php } else { ?>	
 									 <fieldset class="disabledme" disabled>
@@ -122,7 +122,7 @@
 					<!--Tipos de factura -->
 						<div class="col-xs-12 col-sm-6 col-md-4 tipo_factura1">
 
-								<label for="id_tipo_factura_traspaso" id="label_tipo_factura_traspaso" class="col-sm-3 col-md-12">Tipo de factura</label>
+								<label for="id_tipo_factura_traspaso" id="label_tipo_factura_traspaso" class="col-sm-3 col-md-12"></label>
 								<div class="col-sm-9 col-md-12">
 								    <!--Los administradores o con permisos de entrada 
 								    	Y que no este inhabilitado y 

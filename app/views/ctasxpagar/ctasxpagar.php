@@ -5,8 +5,8 @@
  	if (!isset($retorno)) {
       	$retorno ="";
       	$otro_retorno='listado_notas';
-      	
     }
+    $id_almacen=$this->session->userdata('id_almacen');
 ?>   
 					<div class="col-md-2" > </div>
 	                <div class="col-md-2" >
@@ -37,8 +37,7 @@
 					<hr style="padding: 0px; margin: 15px;"/>					
 
 					<div  class="row">
-							<!--
-							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>"> -->
+							
 							
 							<!--Tipos de factura -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
@@ -59,18 +58,20 @@
 							</div>	
 
 
-
+							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 							<!--Tipos de almacen -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
 								<div class="form-group">
 									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<div class="col-sm-12 col-md-12">
 				
-									    <?php if  ( $this->session->userdata( 'id_perfil' ) == 1  ) { ?>
+									    <?php if  ( $this->session->userdata( 'id_perfil' ) != 2  ) { ?>
 											 <fieldset class="disabledme">				
 										<?php } else { ?>	
 											 <fieldset class="disabledme" disabled>
 										<?php } ?>	
+
+
 
 												<select name="id_almacen_historicos" vista="cuentas" id="id_almacen_historicos" class="form-control ttip" title="Seleccione el almacén del producto a consultar.">
 												
@@ -84,12 +85,22 @@
 															
 																<option value="<?php echo $almacen->id_almacen; ?>" <?php echo $seleccionado; ?>><?php echo $almacen->almacen; ?></option>
 														<?php } ?>
+
+
+
+
 												</select>
 											</fieldset>	
 
 									</div>
 								</div>
 							</div>	
+
+
+
+		
+
+
 
 							<!--Rango de fecha -->
 							<div class="col-xs-12 col-sm-6 col-md-3">

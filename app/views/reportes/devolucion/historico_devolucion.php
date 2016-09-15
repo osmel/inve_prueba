@@ -6,6 +6,8 @@
       	$retorno ="reportes";
       	$otro_retorno='listado_devolucion';
     }	
+    $id_almacen=$this->session->userdata('id_almacen');
+
 ?>   
 					<div class="col-md-2" > </div>
 	                <div class="col-md-2" >
@@ -40,8 +42,8 @@
 					<hr style="padding: 0px; margin: 15px;"/>					
 
 					<div  class="row">
-							<!--
-							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>"> -->
+							
+							
 							
 							<!--Tipos de factura -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
@@ -69,7 +71,7 @@
 									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<div class="col-sm-12 col-md-12">
 				
-									    <?php if  ( $this->session->userdata( 'id_perfil' ) == 1  ) { ?>
+									    <?php if  ( $this->session->userdata( 'id_perfil' ) != 2  ) { ?>
 											 <fieldset class="disabledme">				
 										<?php } else { ?>	
 											 <fieldset class="disabledme" disabled>

@@ -556,6 +556,11 @@ $route['procesando_historico_salida']    = 'reportes/procesando_historico_salida
 
 
 
+/////////////////////////////////////////////Listado de todas las reportes
+$route['pedido_compra']								= 'pedido_compra/modulo_pedido_compra';
+$route['procesando_entrada_pedido_compra']			= 'pedido_compra/procesando_entrada_pedido_compra';
+
+
 
 
 /////////////////////////////////////////////Listado de todas las reportes

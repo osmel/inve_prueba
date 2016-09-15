@@ -109,7 +109,19 @@
 
 												
 												<tr>
-													<td style="font-size: 5px; text-align: center;">&nbsp;</td>
+													
+
+													<?php if ($movimiento->codigo_contable!='') { ?>
+														<td style="font-size: 10px; text-align: left;">
+															<b style="color:red;">Cód: </b>	
+															<?php echo $movimiento->codigo_contable; ?>&nbsp;
+														</td> 
+													<?php } else { ?>
+														<td style="font-size: 5px; text-align: center;">&nbsp;</td>	
+													<?php }  ?>
+
+
+
 												</tr>												
 												<tr>
 													<td style="font-size: 5px; text-align: center;">&nbsp;</td>

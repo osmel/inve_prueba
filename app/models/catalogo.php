@@ -56,6 +56,24 @@
     }
 
 
+        public function check_codigo_contable($data){
+                $this->db->select("id", FALSE);         
+                $this->db->from($this->productos);
+
+                $where = '(
+                              ( id <> '.$data['id'].' ) AND
+                              ( codigo_contable =  "'.$data['codigo_contable'].'" )
+                  )';   
+
+                $this->db->where($where);  
+                
+                $login = $this->db->get();
+                if ($login->num_rows() > 0)
+                    return true;
+                else
+                    return false;
+                $login->free_result();
+        } 
 
         public function listado_documentos_pagos(){
           
@@ -4639,6 +4657,7 @@
           $this->db->set( 'id_usuario',  $id_session );
 
           //$this->db->set( 'precio_anterior', 'precio', FALSE  );
+          $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'comentario', $data['comentario'] );  
           

@@ -523,6 +523,9 @@ public function validar_confirmar_salida_sino(){
 			        case 2:
 			        case 3:
 			        case 4:
+			              
+			              //solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
+			        	  //aparecen en todo el sistema que tiene el numero de salida
 			              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );

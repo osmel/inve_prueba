@@ -1,5 +1,13 @@
 jQuery(document).ready(function($) {
 
+//alert(jQuery('#id_tipo_factura_traspaso').val()); 
+/*
+jQuery('body').on('load','#id_tipo_factura_traspaso', function (e) {
+//jQuery('#id_tipo_factura_traspaso').change(function(e) {
+	alert('ass');
+
+});
+*/
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
 

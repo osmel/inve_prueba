@@ -106,7 +106,7 @@ class Pdfs_model extends CI_Model
                     
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario');
+          $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario,prod.codigo_contable');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
 
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
@@ -130,6 +130,8 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->productos.' as prod', 'prod.referencia = m.referencia','LEFT');
+
 
           //$this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.movimiento',$data['id_movimiento']);
@@ -220,7 +222,7 @@ class Pdfs_model extends CI_Model
 
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
 
-          $this->db->select('c.hexadecimal_color,c.color, u.medida, ca.nombre cargador');
+          $this->db->select('c.hexadecimal_color,c.color, u.medida, ca.nombre cargador,prod.codigo_contable');
 
           $this->db->select('
                         CASE m.id_estatus
@@ -228,6 +230,8 @@ class Pdfs_model extends CI_Model
                            ELSE ""
                         END AS estatusd
          ',False);          
+
+          
           
 
           $this->db->from($this->registros.' as m');
@@ -235,6 +239,7 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
+          $this->db->join($this->productos.' as prod', 'prod.referencia = m.referencia','LEFT');
 
 
           $this->db->where('m.codigo',$data['codigo']);

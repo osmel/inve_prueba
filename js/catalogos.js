@@ -28,6 +28,180 @@ var target = document.getElementById('foo');
 
 
 
+jQuery('#tabla_entrada_pedido_compra').dataTable( {
+ 	"processing": true, //	//tratamiento con base de datos
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_entrada_pedido_compra",
+         		"type": "POST",
+         		 "data": function ( d ) {
+
+         		 	d.id_tipo_factura_inversa = (jQuery("#id_tipo_factura_traspaso").val()==2) ? 1: 2;
+				    d.id_almacen = jQuery('#id_almacen_modulo').val();	
+					d.id_tipo_factura = jQuery("#id_tipo_factura_traspaso").val();
+    			 } 
+     }, 
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+		  
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+		
+		if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+		}			
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 13 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 14 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				total_pieza = (end-start);	
+
+	
+				total_subtotal = api
+					.column( 5)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 15)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+				
+				total_total = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );				
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total_total, 2, '.', ','));						
+
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+    },  		  
+	"columnDefs": [
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,1,2,3,4,5,6,7,8,9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[12];	
+	                },
+	                "targets": [10]
+	            },
+
+	            {
+	                "render": function ( data, type, row ) {
+						texto='<td><button '; 
+							texto+='type="button" class="btn btn-success btn-block agregar_traspaso '+row[10]+'" identificador="'+row[10]+'" >';
+							texto+='<span  class="">Agregar</span>';
+						texto+='</button></td>';
+						return texto;	
+	                },
+	                "targets": 11
+	            },
+				{ 
+	                 "visible": false,
+	                 "targets": [12,13,14,15,16]
+	            }		            
+	        ],
+});	
+
 
 
     jQuery('body').on('submit','#form_pago', function (e) {
@@ -1960,7 +2134,14 @@ jQuery('#id_almacen_modulo').change(function(e) {
 	oTable._fnAjaxUpdate();		
 });
 
+
+
+
+
+	jQuery('#label_tipo_factura_traspaso').text(((jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ")+jQuery('#id_tipo_factura_traspaso option:selected').text());
+
 jQuery('#id_tipo_factura_traspaso').change(function(e) {
+	//alert('ass');
 	comienzo=true; //para indicar que start comience en 0;
 
 	etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";

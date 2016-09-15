@@ -424,6 +424,8 @@ class Entradas extends CI_Controller {
 			        case 2:
 			        case 3:
 			        case 4:
+			        		//solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
+			        		//aparecen en todo el sistema que tiene el numero de entrada
 			              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/pdfs_view',$data );
