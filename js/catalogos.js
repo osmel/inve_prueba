@@ -543,44 +543,31 @@ jQuery('table').on('click','.quitar_compra', function (e) {
 
 jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
-
 	jQuery('#foo').css('display','block');
 	var spinner = new Spinner(opts).spin(target);
 
-	id_cliente = jQuery('.buscar_proveedor').typeahead("val");
-	id_cargador = jQuery('.buscar_cargador').typeahead("val");
-	factura = jQuery("#factura").val();
-	id_destino = jQuery("#id_destino").val();
 	id_almacen = jQuery('#id_almacen').val();
+	factura = jQuery("#factura").val();
+	
+	 var url = 'proc_pedido_compra';
 
-	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
-	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
-
-
-	 var url = 'confirmar_salida_sino';
-
-	    var arreglo_peso = [];
+	    var arreglo_pedido_compra = [];
 	    var arreglo = {};
 
-	   jQuery("#tabla_salida tbody tr td input.peso_real").each(function(e) {
+	   jQuery("#tabla_salida_pedido_compra tbody tr td input.pedido_compra").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
-	   		arreglo['peso_real'] = jQuery(this).val();
-	   		arreglo_peso.push( arreglo);
+	   		arreglo['pedido_compra'] = jQuery(this).val();
+	   		arreglo_pedido_compra.push( arreglo);
 	   });
 
 	jQuery.ajax({
 		        url : url,
 		        type : 'POST',
 		       	data : { 
-		        	id_cliente: id_cliente,
-		        	id_cargador: id_cargador,
-		        	factura: factura,
-		        	arreglo_peso:arreglo_peso,
-		        	id_destino:id_destino,
-		        	id_almacen:id_almacen,
-		        	id_tipo_pedido:id_tipo_pedido,
-		        	id_tipo_factura:id_tipo_factura
+		        	arreglo_pedido_compra:arreglo_pedido_compra,
+		        	id_almacen:id_almacen,		
+		        	factura:factura        	
 		        },
 		        dataType : 'json',
 		        success : function(data) {	

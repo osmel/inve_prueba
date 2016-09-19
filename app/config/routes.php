@@ -563,6 +563,7 @@ $route['procesando_salida_pedido_compra']			= 'pedido_compra/procesando_salida_p
 $route['agregar_salida_compra']						= 'pedido_compra/agregar_salida_compra';
 $route['quitar_salida_compra']						= 'pedido_compra/quitar_salida_compra';
 $route['cargar_dependencia_compra']					= 'pedido_compra/cargar_dependencia_compra';
+$route['proc_pedido_compra']						= 'pedido_compra/proc_pedido_compra';
 
 
 

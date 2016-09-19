@@ -212,7 +212,68 @@ function quitar_salida_compra(){
 
 
 
+  public function proc_pedido_compra(){
 
+
+       if($this->session->userdata('session') === TRUE ){
+            $id_perfil=$this->session->userdata('id_perfil');
+
+            $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+            if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                  $coleccion_id_operaciones = array();
+             }  
+
+            $existe = $this->modelo_salida->existencia_temporales();
+
+            $errores='';
+
+        
+
+            $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+
+            
+        if ($this->form_validation->run() === TRUE) {           
+           if  (!($existe)) {
+            $errores= "Debe agregar al menos un producto";
+           } else {  //si estan agregados los productos entonces checar si tienen el peso real
+              
+              //actualizar peso real
+              $data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_pedido_compra') ),true  );
+              $this->modelo_salida->actualizar_peso_real($data);
+
+              //verificar si hay pesos reales en cero 
+              $existe = $this->modelo_salida->existencia_temporales_peso_real();
+              if  (!($existe)) {
+                $errores= "Existen productos sin especificar Peso real";
+              } 
+
+           }
+           
+        }  
+        
+          $data['id_almacen'] = $this->input->post('id_almacen');
+
+          $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+          $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+          if (($existe) and ($this->form_validation->run() === TRUE) and ($data['id_cliente']) and ($data['id_cargador']) ) {
+                //verificar si los apartados estan siendo totales o parciales
+                $dato['valor'] = $this->modelo_salida->cantidad_apartados($data);
+                $dato['id_cliente'] = $data['id_cliente'];
+                    $dato['exito'] = true;
+                    echo json_encode($dato);
+          } else {
+                $dato['exito']  = false;
+                $dato['errores'] =$errores;
+                $dato['error'] = validation_errors('<span class="error">','</span>');
+                echo json_encode($dato);
+          }   
+    
+
+    } else { //fin de session
+      redirect('');
+    }   
+    
+  }
 
 
 
