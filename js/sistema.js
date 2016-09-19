@@ -5586,6 +5586,20 @@ jQuery('#tabla_salida').dataTable( {
 	        ],
 });	
 
+jQuery('body').on('keypress paste','.pedido_compra[restriccion="decimal"]', function (e) {	
+	//console.log('aaa');
+    //var nn = jQuery('.peso_real[restriccion="decimal"]');
+    var nn = jQuery(this);
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
 
 //jQuery('#peso_real[restriccion="decimal"]').bind('keypress paste', function (e) {
 //id="peso_real" name="peso_real"

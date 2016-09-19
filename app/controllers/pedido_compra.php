@@ -35,17 +35,13 @@ public function modulo_pedido_compra(){
            //no. movimiento
            $data['consecutivo']  = $this->catalogo->listado_consecutivo(26);
            //valor del cliente, cargador, factura, 
-           $data['val_proveedor']  = $this->model_traspaso->valores_movimientos_temporal();
-           //print_r($data['val_proveedor']);
-           //die;
+           $data['val_compra']  = $this->model_pedido_compra->valores_movimientos_temporal();
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
-           $data['destinos'] = $this->catalogo->lista_destino();
+           
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
 
-           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
-           $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
            
            
 
@@ -79,57 +75,96 @@ public function modulo_pedido_compra(){
       $data=$_POST;
       $busqueda = $this->model_pedido_compra->buscador_entrada_compra($data);
       echo $busqueda;
+
   }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-  public function procesando_entrada_traspaso(){
+  public function procesando_salida_pedido_compra(){
       $data=$_POST;
-      $busqueda = $this->model_traspaso->buscador_entrada($data);
+      $busqueda = $this->model_pedido_compra->buscador_salida_compra($data);
       echo $busqueda;
+      
+  }
+
+
+function cargar_dependencia_compra(){
+    
+    $data['campo']        = $this->input->post('campo');
+
+    $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_color']        = $this->input->post('val_color');
+    $data['val_comp']        = $this->input->post('val_comp');
+    $data['val_calida']        = $this->input->post('val_calida');
+
+    $data['dependencia']        = $this->input->post('dependencia');
+
+    switch ($data['dependencia']) {
+        case "producto_catalogo_compra": //nunca será una dependencia
+            $elementos  = $this->catalogo->listado_productos_unico();
+            break;
+        case "color_catalogo_compra":
+            $elementos  = $this->catalogo->lista_colores($data);
+            
+            break;
+
+        case "composicion_catalogo_compra":
+            $elementos  = $this->catalogo->lista_composiciones($data);
+            break;
+        case "calidad_catalogo_compra":
+            $elementos  = $this->catalogo->lista_calidad($data);
+            break;
+
+        default:
+    }
+
+
+
+      $variables = array();
+    if ($elementos != false)  {     
+         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
+            if ($data['dependencia']=="color_catalogo_compra"){
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => $valor->hexadecimal_color)); 
+            } else {
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => "FFFFFF"));  
+            }
+       }
+    }  
+
+     echo json_encode($variables);
   }
 
 
 
-  public function procesando_salida_traspaso(){
-      $data=$_POST;
-      $busqueda = $this->model_traspaso->buscador_salida($data);
-      echo $busqueda;
-  }
 
 
-  function agregar_prod_salida_traspaso(){
+
+
+
+
+
+function agregar_salida_compra(){
 
       if ($this->session->userdata('session') !== TRUE) {
         redirect('');
       } else {
 
-
-     $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
-     $this->form_validation->set_rules( 'comentario', 'comentario', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
 
 
       if ( ($this->form_validation->run() === TRUE)  ) {
 
             $data['id'] = $this->input->post('identificador');
-            $data['id_almacen'] = $this->input->post('id_almacen');
-            $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-
+            $data['movimiento'] = $this->input->post('movimiento');
             $data['factura'] = $this->input->post('factura');
             $data['comentario'] = $this->input->post('comentario');
+            $data['id_almacen'] = $this->input->post('id_almacen');
 
-
-            /*
             
-            $data['id_movimiento'] = $this->input->post('movimiento');
-            $data['id_destino'] = $this->input->post('id_destino');
-            */
-           
-            $this->model_traspaso->establecer_productos_traspasado($data);  
-              
-            $actualizar = true;
+           $actualizar = $this->model_pedido_compra->enviar_salida_compra($data);  
+
+            //$actualizar = $this->modelo_salida->quitar_prod_entrada($data );
+
+              //$actualizar=TRUE;
             if ( $actualizar !== FALSE ){
               echo TRUE;
             } else {
@@ -140,469 +175,38 @@ public function modulo_pedido_compra(){
         
              echo validation_errors('<span class="error">','</span>');
 
-          }     
-
-
-
-
+      }     
 
     } 
-   }
+}
 
 
-  //quitar_prod_salida
-  
-
-  function quitar_prod_salida_traspaso(){
+function quitar_salida_compra(){
 
       if ($this->session->userdata('session') !== TRUE) {
         redirect('');
       } else {
-
-
- 
-            $data['id'] = $this->input->post('identificador');
-            $data['id_almacen'] = $this->input->post('id_almacen');
-            $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-           
-               $actualizar = $this->model_traspaso->quitar_productos_traspasado($data);  
-            $dato['total'] = $this->model_traspaso->total_registros_traspaso();
-
-          
-            if ( $actualizar !== FALSE ){
-              $dato['exito']  = true;
-              echo json_encode($dato);
-              
-            } else {
-              $dato['exito']  = false;
-              $dato['error'] = '<span class="error">No se ha podido actualizar el producto</span>';
-              echo json_encode($dato);
-            }
-
- 
-
-
-
-
+      
+      $data['id'] = $this->input->post('identificador');
+      $actualizar =  $this->model_pedido_compra->quitar_salida_compra( $data );
+      $dato['val_compra']  = $this->model_pedido_compra->valores_movimientos_temporal();
+      
+      $actualizar=true;
+      if ( $actualizar !== FALSE ){
+        $dato['exito']  = true;
+        echo json_encode($dato);
+        
+      } else {
+        $dato['exito']  = false;
+        $dato['error'] = '<span class="error">No se ha podido actualizar el producto</span>';
+        echo json_encode($dato);
+      }
     } 
    }
 
-
-//////////////////Listado de traspaso///////////////////////////
-  public function listado_traspaso(){
-
-      if($this->session->userdata('session') === TRUE ){
-          $id_perfil=$this->session->userdata('id_perfil');
-
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
-         $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-           
-          switch ($id_perfil) {    
-            case 1:          
-                        $this->load->view( 'traspaso/listado_traspaso',$data );
-              break;
-            case 2:
-            case 3:
-            case 4:
-                  if  (in_array(26, $coleccion_id_operaciones))  {                 
-                            $this->load->view( 'traspaso/listado_traspaso',$data );
-                 }   
-              break;
-
-
-            default:  
-              redirect('');
-              break;
-          }
-        }
-        else{ 
-          redirect('');
-        }     
-  } 
-
-
-
-
-  public function traspaso_detalle($consecutivo_traspaso){
-        if($this->session->userdata('session') === TRUE ){
-              
-              $id_perfil=$this->session->userdata('id_perfil');
-
-              $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-              if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                    $coleccion_id_operaciones = array();
-               }   
-    
-            $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);       
-           
-              switch ($id_perfil) {    
-                case 1:          
-                           $this->load->view('traspaso/traspaso_detalle',$data);
-                  break;
-                case 2:
-                case 3:
-                case 4:
-                      if  (in_array(26, $coleccion_id_operaciones))  {            
-                          $this->load->view('traspaso/traspaso_detalle',$data);
-                      } else {
-                        redirect('');
-                      }   
-                  break;
-                default:  
-                  redirect('');
-                  break;
-              } //fin del case
-        }
-        else{ 
-          redirect('');
-        }     
-  }
-
-////////////////////////// (Histórico de pedidos)
-
-  public function traspaso_general_detalle_manual($id_usuario,$id_almacen){ 
-
-
-     if($this->session->userdata('session') === TRUE ){
-              $id_perfil=$this->session->userdata('id_perfil');
-
-              $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-              if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                    $coleccion_id_operaciones = array();
-               }   
-               
-               //no. movimiento $data
-            $data['id_usuario'] = base64_decode($id_usuario);
-            $data['id_almacen'] = base64_decode($id_almacen);
-
-            $data['id']=$data['id_almacen'];
-            if ($data['id']==0){
-              $data['almacen'] = 'Todos'; 
-            } else {
-              $data['almacen'] = $this->catalogo->coger_almacen($data)->almacen;
-            }
-
-
-              switch ($id_perfil) {    
-                case 1:          
-                           $this->load->view( 'traspaso/traspaso_general_detalle_manual',$data);
-                  break;
-                case 2:
-                case 3:
-                case 4:
-                      if  (in_array(26, $coleccion_id_operaciones))  {            
-                          $this->load->view( 'traspaso/traspaso_general_detalle_manual',$data);
-                      } else {
-                        redirect('');
-                      }   
-                  break;
-                default:  
-                  redirect('');
-                  break;
-              } //fin del case
-        }
-        else{ 
-          redirect('');
-        }         
-
-  }  
-  public function traspaso_general_detalle($num_movimiento,$id_apartado,$id_almacen){ 
-
-    if($this->session->userdata('session') === TRUE ){
-          $id_perfil=$this->session->userdata('id_perfil');
-
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
-           
-           //no. movimiento $data
-        $data['num_movimiento'] = base64_decode($num_movimiento);
-        $data['id_apartado'] = base64_decode($id_apartado);
-        $data['id_almacen'] = base64_decode($id_almacen);
-
-        $data['id']=$data['id_almacen'];
-        if ($data['id']==0){
-          $data['almacen'] = 'Todos'; 
-        } else {
-          $data['almacen'] = $this->catalogo->coger_almacen($data)->almacen;
-        }
-
-
-          switch ($id_perfil) {    
-            case 1:          
-                       $this->load->view( 'traspaso/traspaso_general_detalle',$data);
-              break;
-            case 2:
-            case 3:
-            case 4:
-                  if  (in_array(26, $coleccion_id_operaciones))  {            
-                      $this->load->view( 'traspaso/traspaso_general_detalle',$data);
-                  } else {
-                    redirect('');
-                  }   
-              break;
-            default:  
-              redirect('');
-              break;
-          } //fin del case
-    }
-    else{ 
-      redirect('');
-    }     
-
-
-
-  }
-
-
-
-
-
-  public function traspaso_historico_detalle(){
-      $data=$_POST;
-      $busqueda = $this->model_traspaso->buscador_traspaso_historico_detalle($data);
-      echo $busqueda;
-  }
-
-
-
-  public function procesando_traspaso_general_detalle(){
-      $data=$_POST;
-      $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle($data);
-      echo $busqueda;
-  }
-
-public function procesando_traspaso_general_detalle_manual(){
-      $data=$_POST;
-      $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle_manual($data);
-      echo $busqueda;
-  }
-
-
-  //1ra Regilla PARA "Pedidos de vendedores"
-  public function procesando_general_traspaso(){
-    $data=$_POST;
-    $busqueda = $this->model_traspaso->buscador_general_traspaso($data);
-    echo $busqueda;
-  } 
-
-  public function procesando_traspaso_historico(){
-    $data=$_POST;
-    $busqueda = $this->model_traspaso->buscador_traspaso_historico($data);
-    echo $busqueda;
-  } 
-
-
-
-
-  public function procesando_traspaso_definitivo(){
-      $data['consecutivo']  = (($this->catalogo->listado_consecutivo(26)->consecutivo)+1);
-      $actualizar = $this->model_traspaso->procesando_traspaso_definitivo($data);
-      $this->model_traspaso->eliminar_traspaso_definitivo($data);
-      
-
-          if ( $actualizar !== FALSE ){
-              $data['exito']  = true;
-              echo json_encode($data);
-              
-            } else {
-              $data['exito']  = false;
-              $data['error'] = '<span class="error">No se ha podido actualizar el producto</span>';
-              echo json_encode($data);
-            }
-
-  } 
-
-
-  public function imprimir_detalle_traspaso_post(){
-
-     if($this->session->userdata('session') === TRUE ){
-        
-          $misdatos = json_decode($this->input->post('datos'));
-          
-        $data['consecutivo'] =base64_encode($misdatos->consecutivo);         
-
-        $this->imprimir_detalle_historico_traspaso($data['consecutivo']);
-
-    }
-  } 
-
-
- public function imprimir_detalle_historico_traspaso($consecutivo_traspaso) {
-
-        $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);
-
-        set_time_limit(0); 
-        ignore_user_abort(1);
-        ini_set('memory_limit','512M');         
-       
-        $this->load->library('Pdf');
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Titulo Generación de Etiqueta');
-        $pdf->SetSubject('Subtitulo');
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
- 
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
- 
-
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
- 
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('freemono', '', 14, '', true);
- 
-        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
- 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->SetMargins(10, 10, 10,true);
-        
-        $pdf->SetAutoPageBreak(true, 10);
-
-
-        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
-        
-          $dato['id'] = 5;
-          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
-
-          $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_historico_detalle($data);        
-          $html = $this->load->view('pdfs/traspasos/detalles_historicos', $data, true);
-
-
-// Imprimimos el texto con writeHTMLCell()
-        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
- 
-// ---------------------------------------------------------
-// Cerrar el documento PDF y preparamos la salida
-// Este método tiene varias opciones, consulte la documentación para más información.
-        $nombre_archivo = utf8_decode("traspaso_".$data['consecutivo_traspaso'].".pdf");
-        $pdf->Output($nombre_archivo, 'I');
-}    
-
-
-
- public function imprimir_detalle_general_traspaso_manual($id_usuario,$id_almacen) {
-
-           $data['id_usuario'] = base64_decode($id_usuario);
-            $data['id_almacen'] = base64_decode($id_almacen);
-
-        set_time_limit(0); 
-        ignore_user_abort(1);
-        ini_set('memory_limit','512M');         
-       
-        $this->load->library('Pdf');
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Titulo Generación de Etiqueta');
-        $pdf->SetSubject('Subtitulo');
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
- 
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
- 
-
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
- 
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('freemono', '', 14, '', true);
- 
-        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
- 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->SetMargins(10, 10, 10,true);
-        
-        $pdf->SetAutoPageBreak(true, 10);
-
-
-        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
-        
-          $dato['id'] = 5;
-          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
-
-          $data['movimientos'] = $this->model_traspaso->imprimir_detalle_general_traspaso_manual($data);        
-          $html = $this->load->view('pdfs/traspasos/detalles_generales_manual', $data, true);
-
-
-// Imprimimos el texto con writeHTMLCell()
-        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
- 
-// ---------------------------------------------------------
-// Cerrar el documento PDF y preparamos la salida
-// Este método tiene varias opciones, consulte la documentación para más información.
-        $nombre_archivo = utf8_decode("traspaso_detalle_traspaso".$data['id_almacen'].".pdf");
-        $pdf->Output($nombre_archivo, 'I');
-
- }
-
- public function imprimir_detalle_general_traspaso($num_movimiento,$id_apartado,$id_almacen) {
-
-        $data['num_movimiento'] = base64_decode($num_movimiento);
-           $data['id_apartado'] = base64_decode($id_apartado);
-            $data['id_almacen'] = base64_decode($id_almacen);
-
-         set_time_limit(0); 
-        ignore_user_abort(1);
-        ini_set('memory_limit','512M');         
-       
-        $this->load->library('Pdf');
-        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetTitle('Titulo Generación de Etiqueta');
-        $pdf->SetSubject('Subtitulo');
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
- 
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
- 
-
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
- 
-        $pdf->setFontSubsetting(true);
-        $pdf->SetFont('freemono', '', 14, '', true);
- 
-        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
- 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->SetMargins(10, 10, 10,true);
-        
-        $pdf->SetAutoPageBreak(true, 10);
-
-
-        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
-
-          $dato['id'] = 5;
-          $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
-        
-          $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_general_detalle($data);        
-          $html = $this->load->view('pdfs/traspasos/detalles_generales', $data, true);
-
-
-// Imprimimos el texto con writeHTMLCell()
-        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
- 
-// ---------------------------------------------------------
-// Cerrar el documento PDF y preparamos la salida
-// Este método tiene varias opciones, consulte la documentación para más información.
-        $nombre_archivo = utf8_decode("traspaso_".$data['num_movimiento'].".pdf");
-        $pdf->Output($nombre_archivo, 'I');
-}    
-
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

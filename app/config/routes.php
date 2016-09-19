@@ -559,6 +559,10 @@ $route['procesando_historico_salida']    = 'reportes/procesando_historico_salida
 /////////////////////////////////////////////Listado de todas las reportes
 $route['pedido_compra']								= 'pedido_compra/modulo_pedido_compra';
 $route['procesando_entrada_pedido_compra']			= 'pedido_compra/procesando_entrada_pedido_compra';
+$route['procesando_salida_pedido_compra']			= 'pedido_compra/procesando_salida_pedido_compra';
+$route['agregar_salida_compra']						= 'pedido_compra/agregar_salida_compra';
+$route['quitar_salida_compra']						= 'pedido_compra/quitar_salida_compra';
+$route['cargar_dependencia_compra']					= 'pedido_compra/cargar_dependencia_compra';
 
 
 
