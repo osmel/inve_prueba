@@ -29,7 +29,7 @@
 					<div class="form-group">
 						<label for="fecha" class="ttip" title="Campo informativo, no editable.">Fecha</label>
 						<div>
-							<input value="<?php echo $fecha_hoy; ?>"  type="text" class="form-control" id="fecha" name="fecha" placeholder="Fecha">
+							<input value="<?php echo $val_compra->fecha_entrada; ?>"  type="text" class="form-control" id="fecha" name="fecha" placeholder="Fecha">
 						</div>
 					</div>
 					</fieldset>	
@@ -39,7 +39,7 @@
 						<div class="form-group">
 							<label for="movimiento" class="ttip" title="Campo informativo, no editable.">No. Movimiento</label>
 							<div>
-								<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+								<input type="text" value="<?php echo $val_compra->movimiento; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 							</div>
 						</div>
 					</fieldset>			
@@ -118,7 +118,7 @@
 					<div class="col-sm-4 col-md-12">
 
 						<?php if ($val_compra) { ?>
-							<fieldset class="disabledme" disabled>							
+							<fieldset class="disabledme">							
 						<?php } else { ?>
 							<fieldset class="disabledme">						
 						<?php } ?>					
@@ -151,139 +151,40 @@
 		<div class="col-md-12">	
 
 
-				<div id="example22" class="row">
-				              <div class="col-sm-6 col-md-3">
-				                 <div class="form-group">
-										<label for="descripcion">Producto</label>
-				                        <select class="form-control" name="producto_catalogo_compra" id="producto_catalogo_compra" dependencia="color_catalogo_compra" nombre="un color">
-				                            <option value="">Seleccione un producto</option>
-				                            <?php if($productos){ ?>
-				                              <?php foreach($productos as $producto){ ?>
-				                                <option value="<?php echo htmlspecialchars($producto->descripcion); ?>"><?php echo htmlspecialchars($producto->descripcion); ?></option>
-				                              <?php } ?>
-				                            <?php } ?>
-				                        </select>
-				                 </div>
-				              </div>
+					<!-- Segunda tabla-->
+					<div class="col-md-12">		
+						
+						<h4>Orden Pedido de Compra</h4>	
+						<br>	
+						<div class="table-responsive">
+							<section>
+								<table id="tabla_revisa_pedido_compra" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+									<thead>
+										<tr>
 
-				              <div class="col-sm-6 col-md-3">
-				                 <div class="form-group">
-									<label for="descripcion">Color</label>
-				                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="color_catalogo_compra" id="color_catalogo_compra"  dependencia="composicion_catalogo_compra" nombre="una composición">
-				                            <option value="0">Seleccione un color</option>
-				                          </select>
-				                 </div>
-				              </div>
-				              
-				              <div class="col-sm-6 col-md-3">
-				                 <div class="form-group">
-									<label for="descripcion">Composición</label>
-				                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="composicion_catalogo_compra" id="composicion_catalogo_compra" dependencia="calidad_catalogo_compra" nombre="una calidad">
-				                            <option value="0">Seleccione una composición</option>
-				                          </select>
-				                 </div>
-				              </div>
-
-
-
-				              <div class="col-sm-6 col-md-3">
-				                 <div class="form-group">
-									  <label for="descripcion">Calidad</label>
-				                      <select class="form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="calidad_catalogo_compra" id="calidad_catalogo_compra" dependencia="" nombre="">
-				                        <option value="0">Seleccione una calidad</option>
-				                      </select>
-				                 </div>
-				              </div>
-
-				</div>     
-
-
-				<div class="table-responsive" > <!--style="overflow-x:initial !important;" -->
-						<section>
-							<table id="tabla_entrada_pedido_compra" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
-							<thead>
-								<tr>
-								<th width="25%">Nombre de Tela</th>
-								<th  width="5%">Imagen</th>
-								<th  width="10%">Color</th>
-								<th  width="10%">Ancho</th>
-								<th  width="10%">Composición</th>
-								<th  width="10%">Calidad</th>
-								<th  width="10%">Precio</th>
-								<th width="10%">Cant. Disponible</th>
-								<th width="10%">Agregar</th>
-
-
-
-
-								</tr>
-							</thead>
-							</table>
-						</section>
-				</div>			
+											<th width="25%">Nombre de Tela</th>
+											<th  width="5%">Imagen</th>
+											<th  width="10%">Color</th>
+											<th  width="10%">Ancho</th>
+											<th  width="10%">Composición</th>
+											<th  width="8%">Calidad</th>
+											<th  width="8%">Precio</th>
+											<th width="8%">Cant. Disponible</th>
+											<th width="8%">Cant. Solicitada</th>
+											<th width="8%">Cant. Aprobada</th>
+										</tr>
+									</thead>
+								</table>
+							</section>
+						</div>
+					</div>
+			
 		</div>
 
 
 
 
-	<br/>
-		
-				<div class="row bloque_totales">						
-					<div class="col-sm-0 col-md-4">	
-					  
-					</div>	
-					<div class="col-sm-3 col-md-2">	
-					  <b>Importes por Página</b>
-					</div>	
-			
-					<div class="col-sm-3 col-md-2">	
-						<span id="total"></span>			
-					</div>	
-				</div>			
-
-				<div class="row bloque_totales">		
-					<div class="col-sm-0 col-md-4">	
-					  
-					</div>	
-					<div class="col-sm-3 col-md-2">	
-					  <b>Importes Totales</b>			
-					</div>									
-
-					
-					<div class="col-sm-3 col-md-2">	
-						<span id="total_total"></span>			
-					</div>	
-
-				</div>		
-
-
-		<!-- Segunda tabla-->
-		<div class="col-md-12">		
-			
-			<h4>Orden Pedido de Compra</h4>	
-			<br>	
-			<div class="table-responsive">
-				<section>
-					<table id="tabla_salida_pedido_compra" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
-						<thead>
-							<tr>
-
-								<th width="25%">Nombre de Tela</th>
-								<th  width="5%">Imagen</th>
-								<th  width="10%">Color</th>
-								<th  width="10%">Ancho</th>
-								<th  width="10%">Composición</th>
-								<th  width="8%">Calidad</th>
-								<th  width="8%">Precio</th>
-								<th width="8%">Cant. Disponible</th>
-								<th width="8%">Cant. Pedido</th>
-								<th width="8%">Quitar</th>
-							</tr>
-						</thead>
-					</table>
-				</section>
-			</div>
-		</div>
+	
 
 
 

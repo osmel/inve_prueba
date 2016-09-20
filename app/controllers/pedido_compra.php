@@ -21,7 +21,123 @@ class Pedido_compra extends CI_Controller {
 
 
 
-public function modulo_pedido_compra(){
+
+public function detalle_revision($movimiento, $modulo){
+
+     if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+           
+           $data['modulo']  = base64_decode($modulo); 
+           $data['movimiento']  = base64_decode($movimiento); 
+
+           //$data['retorno'] = base64_decode($modulo);
+
+           switch ($data['modulo']) {
+             case 1:
+                  $data['retorno'] ='/pendiente_revision';
+               break;
+             case 2:
+                  $data['retorno'] ='/solicitar_modificacion';
+               break;
+             case 3:
+                  $data['retorno'] ='/aprobado';
+               break;
+             case 4:
+                  $data['retorno'] ='/cancelado';
+               break;
+             case 5:
+                  $data['retorno'] ='/gestionar_pedido_compra';
+               break;
+             
+             default:
+                // $data['retorno'] ='/pendiente_revision';
+               break;
+           }
+
+           //no. movimiento
+           
+           //Aqui busca el encabezado del pedido de compra
+           $data['val_compra']  = $this->model_pedido_compra->valores_revision_temporal($data);
+           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+          switch ($id_perfil) {    
+            case 1:          
+                        $this->load->view( 'pedido_compra/revisar_compra',$data );
+              break;
+            case 2:
+            case 3:
+            case 4:
+                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                           $this->load->view( 'pedido_compra/revisar_compra',$data );
+                 }   
+              break;
+
+
+            default:  
+              redirect('');
+              break;
+          }
+        }
+        else{ 
+          redirect('');
+        }   
+
+
+}  
+
+
+public function procesando_revisar_pedido_compra(){
+      $data=$_POST;
+      $busqueda = $this->model_pedido_compra->buscador_revisar_pedido_compra($data);
+      echo $busqueda;
+      
+  }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function procesando_pedido_compra(){
+      $data=$_POST;
+      $busqueda = $this->model_pedido_compra->buscador_pedido_compra($data);
+      echo $busqueda;
+      
+  }
+
+
+public function pendiente_revision(){
+  $data['modulo'] = 1;
+  self::modulo_pedido_compra($data);
+}
+
+public function solicitar_modificacion(){
+  $data['modulo'] = 2;
+  self::modulo_pedido_compra($data);
+}
+
+public function aprobado(){
+  $data['modulo'] = 3;
+  self::modulo_pedido_compra($data);
+}
+
+public function cancelado(){
+  $data['modulo'] = 4;
+  self::modulo_pedido_compra($data);
+}
+
+public function gestionar_pedido_compra(){
+  $data['modulo'] = 5;
+  self::modulo_pedido_compra($data);
+}
+
+
+public function modulo_pedido_compra($data){
 
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
@@ -40,6 +156,56 @@ public function modulo_pedido_compra(){
            $data['colores'] = $this->catalogo->listado_colores_unico();
            
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+          switch ($id_perfil) {    
+            case 1:          
+                        $this->load->view( 'pedido_compra/pedido_compra',$data );
+              break;
+            case 2:
+            case 3:
+            case 4:
+                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                           $this->load->view( 'pedido_compra/pedido_compra',$data );
+                 }   
+              break;
+
+
+            default:  
+              redirect('');
+              break;
+          }
+        }
+        else{ 
+          redirect('');
+        }   
+
+
+}  
+
+
+
+
+public function nuevo_pedido_compra($url){
+
+     if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+           
+
+           //no. movimiento
+           $data['consecutivo']  = $this->catalogo->listado_consecutivo(26);
+           //valor del cliente, cargador, factura, 
+           $data['val_compra']  = $this->model_pedido_compra->valores_movimientos_temporal();
+           $data['productos'] = $this->catalogo->listado_productos_unico();
+           $data['colores'] = $this->catalogo->listado_colores_unico();
+           
+           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+           $data['retorno'] = base64_decode($url);
 
 
            
@@ -86,6 +252,14 @@ public function modulo_pedido_compra(){
       
   }
 
+
+
+
+  
+  
+
+
+  
 
 function cargar_dependencia_compra(){
     
@@ -223,13 +397,14 @@ function quitar_salida_compra(){
                   $coleccion_id_operaciones = array();
              }  
 
-            $existe = $this->modelo_salida->existencia_temporales();
+            
+            $existe  = $this->model_pedido_compra->valores_movimientos_temporal();
 
             $errores='';
 
         
 
-            $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
 
             
         if ($this->form_validation->run() === TRUE) {           
@@ -238,13 +413,13 @@ function quitar_salida_compra(){
            } else {  //si estan agregados los productos entonces checar si tienen el peso real
               
               //actualizar peso real
-              $data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_pedido_compra') ),true  );
-              $this->modelo_salida->actualizar_peso_real($data);
+              $data['cantidad'] =  json_decode(json_encode( $this->input->post('arreglo_pedido_compra') ),true  );
+              $this->model_pedido_compra->actualizar_pedido_compra($data);
 
-              //verificar si hay pesos reales en cero 
-              $existe = $this->modelo_salida->existencia_temporales_peso_real();
+              //verificar si hay cantidades a pedir en cero 
+              $existe = $this->model_pedido_compra->existencia_temporales_cantidad();
               if  (!($existe)) {
-                $errores= "Existen productos sin especificar Peso real";
+                $errores= "Existen productos sin especificar cantidades a pedir";
               } 
 
            }
@@ -253,12 +428,13 @@ function quitar_salida_compra(){
         
           $data['id_almacen'] = $this->input->post('id_almacen');
 
-          $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-          $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-          if (($existe) and ($this->form_validation->run() === TRUE) and ($data['id_cliente']) and ($data['id_cargador']) ) {
+          $data['consecutivo']  = $this->catalogo->listado_consecutivo(26)->consecutivo;
+
+          if ( ($existe) and ($this->form_validation->run() === TRUE) ) {
                 //verificar si los apartados estan siendo totales o parciales
-                $dato['valor'] = $this->modelo_salida->cantidad_apartados($data);
-                $dato['id_cliente'] = $data['id_cliente'];
+                    
+                    $this->model_pedido_compra->enviar_historico_pedido_compra($data);
+
                     $dato['exito'] = true;
                     echo json_encode($dato);
           } else {
@@ -274,6 +450,9 @@ function quitar_salida_compra(){
     }   
     
   }
+
+
+
 
 
 

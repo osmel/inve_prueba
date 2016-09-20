@@ -557,7 +557,8 @@ $route['procesando_historico_salida']    = 'reportes/procesando_historico_salida
 
 
 /////////////////////////////////////////////Listado de todas las reportes
-$route['pedido_compra']								= 'pedido_compra/modulo_pedido_compra';
+//$route['pedido_compra']								= 'pedido_compra/modulo_pedido_compra';
+$route['nuevo_pedido_compra/(:any)']						= 'pedido_compra/nuevo_pedido_compra/$1';
 $route['procesando_entrada_pedido_compra']			= 'pedido_compra/procesando_entrada_pedido_compra';
 $route['procesando_salida_pedido_compra']			= 'pedido_compra/procesando_salida_pedido_compra';
 $route['agregar_salida_compra']						= 'pedido_compra/agregar_salida_compra';
@@ -565,7 +566,18 @@ $route['quitar_salida_compra']						= 'pedido_compra/quitar_salida_compra';
 $route['cargar_dependencia_compra']					= 'pedido_compra/cargar_dependencia_compra';
 $route['proc_pedido_compra']						= 'pedido_compra/proc_pedido_compra';
 
+$route['pendiente_revision']							= 'pedido_compra/pendiente_revision';
+$route['solicitar_modificacion']						= 'pedido_compra/solicitar_modificacion';
+$route['aprobado']										= 'pedido_compra/aprobado';
+$route['cancelado']										= 'pedido_compra/cancelado';
+$route['gestionar_pedido_compra']						= 'pedido_compra/gestionar_pedido_compra';
 
+$route['procesando_pedido_compra']						= 'pedido_compra/procesando_pedido_compra';
+$route['detalle_revision/(:any)/(:any)']				= 'pedido_compra/detalle_revision/$1/$2';
+
+$route['procesando_revisar_pedido_compra']						= 'pedido_compra/procesando_revisar_pedido_compra';
+
+										
 
 
 /////////////////////////////////////////////Listado de todas las reportes

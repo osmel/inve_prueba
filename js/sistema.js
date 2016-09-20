@@ -551,6 +551,7 @@ jQuery('#codigo[restriccion="numletra"]').bind('keypress paste', function (event
 });
 
 
+
 // entradas y editar y "minimo"
 jQuery('#cantidad_royo[restriccion="entero"]').bind('keypress paste', function (event) {
     var regex = new RegExp("^[0-9]+$");
@@ -569,6 +570,25 @@ jQuery('#minimo[restriccion="entero"]').bind('keypress paste', function (event) 
        return false;
     }
 });
+
+
+
+/*
+jQuery('body').on('keypress paste','.pedido_compra[restriccion="decimal"]', function (e) {	
+	//console.log('aaa');
+    //var nn = jQuery('.peso_real[restriccion="decimal"]');
+    var nn = jQuery(this);
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
+*/
 
 /*
 nominuscula
@@ -5586,20 +5606,6 @@ jQuery('#tabla_salida').dataTable( {
 	        ],
 });	
 
-jQuery('body').on('keypress paste','.pedido_compra[restriccion="decimal"]', function (e) {	
-	//console.log('aaa');
-    //var nn = jQuery('.peso_real[restriccion="decimal"]');
-    var nn = jQuery(this);
-    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
-    strValue = jQuery.trim(strValue);
-    var bool = reg.test(strValue);
-    if (bool) {
-        return true;
-    }
-    else { 
-        e.preventDefault();
-    }
-});
 
 //jQuery('#peso_real[restriccion="decimal"]').bind('keypress paste', function (e) {
 //id="peso_real" name="peso_real"

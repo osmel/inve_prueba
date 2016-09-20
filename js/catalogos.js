@@ -22,11 +22,312 @@ jQuery(document).ready(function($) {
 var target = document.getElementById('foo');
 
 
+/////////////////////////////////////////////////Revisar de pedido de compra/////////////////////////////////////////////////////////////////
+
+
+jQuery('#tabla_revisa_pedido_compra').dataTable( {
+ 	"processing": true, //	//tratamiento con base de datos
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_revisar_pedido_compra",
+         		"type": "POST",
+         		"data": function ( d ) {
+         			
+
+    				   //datos del producto
+    				   d.id_almacen = jQuery("#id_almacen_compra").val(); 
+     				   d.id_descripcion = jQuery("#producto_catalogo_compra").val(); 
+     				   if (d.id_descripcion !='') {
+     				   	  d.id_descripcion = jQuery('#producto_catalogo_compra option:selected').text();
+     				   }
+
+     				   d.id_color = jQuery("#color_catalogo_compra").val(); 
+     				   d.id_composicion = jQuery("#composicion_catalogo_compra").val(); 
+     				   d.id_calidad = jQuery("#calidad_catalogo_compra").val(); 
+     				   d.movimiento = jQuery("#movimiento").val(); 
+    				   
+    			 	}	
+     }, 
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		
+		if (settings.json.totales_importe) {
+			jQuery('#total_total2').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+
+			jQuery('#total_total2').html('Total: 0.00');
+
+		}			
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+			
+
+				//importe
+				
+				total_precio = api
+					.column( 6 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );				
+
+
+
+					//importes
+					jQuery('#total2').html('Total:'+ number_format(total_precio, 2, '.', ','));						
+
+
+		} else 	{
+					//importes
+					jQuery('#total2').html('Total: 0.00');										
+
+		}	
+    },  	
+    
+	"columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[8]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[8];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },
+
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [1,2,3,4,5,6,7]
+	            },
+
+				{
+	                "render": function ( data, type, row ) {
+						texto='<td><fieldset disabled>'; 
+							texto+='<input restriccion="entero" value="'+row[11]+'" identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra" title="Números enteros."  placeholder="entero">';							
+						texto+='</fieldset></td>';
+						return texto;	
+
+	                },
+	                "targets": 8
+	            },	            
+    			
+				{
+	                "render": function ( data, type, row ) {
+						texto='<td>'; 
+							texto+='<input restriccion="entero" value="'+row[12]+'" identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra" title="Números enteros."  placeholder="entero">';							
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 9
+	            },	            
+    			
+
+	          /*
+	            {
+	                "render": function ( data, type, row ) {
+						texto='<td><button'; 
+							texto+='type="button" identificador="'+row[9]+'" class="btn btn-danger btn-block quitar_compra">'; 
+							 texto+='Quitar';
+						texto+='</button></td>';
+						return texto;	
+
+	                },
+	                "targets": 9
+	            },
+	            */
+
+
+	        ],
+});	
+
+/////////////////////////////////////////////////Status de pedido de compra/////////////////////////////////////////////////////////////////
+
+
+jQuery('#tabla_pedido_compra').dataTable( {
+ 	"processing": true, //	//tratamiento con base de datos
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_pedido_compra",
+         		"type": "POST",
+         		"data": function ( d ) {
+						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	
+					    d.id_almacen = jQuery("#id_almacen_historicos").val();   
+					    d.modulo = jQuery("#modulo").val();   
+
+    			 	}	
+     }, 
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		
+		if (settings.json.totales_importe) {
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+
+			jQuery('#total_total').html('Total: 0.00');
+
+		}			
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+			
+
+				//importe
+				
+				total_precio = api
+					.column( 6 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );				
+
+
+
+					//importes
+					jQuery('#total').html('Total:'+ number_format(total_precio, 2, '.', ','));						
+
+
+		} else 	{
+					//importes
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+    },  	
+    
+    
+	"columnDefs": [
+				/*
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[8]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[8];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },*/
+
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,1,2,3,4,5,6,7]
+	            },
+    			
+  				{
+	                "render": function ( data, type, row ) {
+	                	
+/*
+						texto='<td><button '; 
+							texto+='type="button" class="btn btn-success btn-block detalle_compra" movimiento="'+row[0]+'" modulo="'+row[8]+'" >';
+							texto+='<span  class="">Ver Detalle</span>';
+						texto+='</button></td>';
+*/
+
+						texto='<td>';
+							texto+='<a href="detalle_revision/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+ '"'; 
+							texto+=' class="btn btn-warning btn-sm btn-block" >';
+								texto+=' <span class="glyphicon glyphicon-edit"></span>';
+							texto+=' </a>';
+						texto+='</td>';
+
+
+						return texto;	
+	                },
+	                "targets": 8
+	            },
+
+	        ],
+});	
 
 
 /////////////////////////////////////////////////pagos realizados/////////////////////////////////////////////////////////////////
-
-
 
 jQuery('#id_almacen_compra').change(function(e) {
 	var oTable =jQuery('#tabla_entrada_pedido_compra').dataTable();
@@ -56,7 +357,8 @@ jQuery("#producto_catalogo_compra, #color_catalogo_compra, #composicion_catalogo
 		var hash_url = window.location.pathname;
 
 
-		if  ( (hash_url=="/pedido_compra") )   {  
+		//if  ( (hash_url=="/nuevo_pedido_compra") )   
+		{  
 
 				//comienzo=true; //para indicar que start comience en 0;
 				var oTable =jQuery('#tabla_entrada_pedido_compra').dataTable();
@@ -72,10 +374,10 @@ jQuery("#producto_catalogo_compra, #color_catalogo_compra, #composicion_catalogo
 
 	function cargarDependencia_catalogo_compra(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre) {
 		
-		var url = 'cargar_dependencia_compra';	
+		var url = '/cargar_dependencia_compra';	
 
 		jQuery.ajax({
-		        url : 'cargar_dependencia_compra',
+		        url : '/cargar_dependencia_compra',
 		        data:{
 		        	campo:campo,
 		        	
@@ -126,7 +428,7 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
 	"ajax": {
-            	"url" : "procesando_entrada_pedido_compra",
+            	"url" : "/procesando_entrada_pedido_compra",
          		"type": "POST",
          		"data": function ( d ) {
          			/*	
@@ -283,7 +585,7 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 
  
 	jQuery.ajax({
-		        url : 'agregar_salida_compra',
+		        url : '/agregar_salida_compra',
 		        data : { 
 		        	identificador: identificador,
 		        	movimiento: movimiento,
@@ -349,7 +651,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
 	"ajax": {
-            	"url" : "procesando_salida_pedido_compra",
+            	"url" : "/procesando_salida_pedido_compra",
          		"type": "POST",
          		"data": function ( d ) {
          			
@@ -466,7 +768,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 				{
 	                "render": function ( data, type, row ) {
 						texto='<td>'; 
-							texto+='<input restriccion="decimal" value="'+row[11]+'" identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='<input restriccion="entero" value="'+row[11]+'" identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra" title="Números enteros."  placeholder="entero">';							
 						texto+='</td>';
 						return texto;	
 
@@ -491,6 +793,17 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 	        ],
 });	
 
+//jQuery('.pedido_compra[restriccion="entero"]').bind('keypress paste', function (event) {
+jQuery('body').on('keypress paste','.pedido_compra[restriccion="entero"]', function (event) {	
+    var regex = new RegExp("^[0-9]+$");
+    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+    if (!regex.test(key)) {
+       event.preventDefault();
+       return false;
+    }
+});
+
+
 jQuery('table').on('click','.quitar_compra', function (e) {
 
 	jQuery(this).attr('disabled', true);				        
@@ -499,7 +812,7 @@ jQuery('table').on('click','.quitar_compra', function (e) {
 	
 
 	jQuery.ajax({
-		        url : 'quitar_salida_compra', //
+		        url : '/quitar_salida_compra', //
 		        data : { 
 		        	identificador: identificador,
 		        },
@@ -546,10 +859,11 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 	jQuery('#foo').css('display','block');
 	var spinner = new Spinner(opts).spin(target);
 
-	id_almacen = jQuery('#id_almacen').val();
+	id_almacen = jQuery('#id_almacen_compra').val();
 	factura = jQuery("#factura").val();
+	var retorno = jQuery("#retorno").val();
 	
-	 var url = 'proc_pedido_compra';
+	 var url = '/proc_pedido_compra';
 
 	    var arreglo_pedido_compra = [];
 	    var arreglo = {};
@@ -589,23 +903,28 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 
 								jQuery.ajax({
-									        url : 'conteo_tienda',
+									        url : '/conteo_tienda',
 									        data : { 
 									        	tipo: 'tienda',
 									        },
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_pedido_compra');
 
+									        	//$catalogo = 'pedido_compra';
+												window.location.href = retorno;	
+
+									        	/*
 												valor= jQuery.base64.encode(data.valor);
-
 												var url = "pro_salida/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
 											
 												jQuery('#modalMessage').modal({
 													  show:'true',
 													remote:url,
 												}); 									        	
+												*/
+												
 									        }
 								});	
 
@@ -1443,6 +1762,11 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+					    case "pedido_compra":
+					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
 					    case "entrada":
 					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
 					    	oTable._fnAjaxUpdate();
@@ -1464,6 +1788,8 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
 							oTable._fnAjaxUpdate();
 					        break;
+
+
 					    default:
 					        var oTable =jQuery('#tabla_historico_entrada').dataTable();			        
 
@@ -1492,6 +1818,11 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		jQuery('.fecha_historicos').on('apply.daterangepicker', function(ev, picker) {
 
 					switch(jQuery(this).attr('vista')) {
+					    case "pedido_compra":
+					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
 					    case "entrada":
 					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
 					    	oTable._fnAjaxUpdate();

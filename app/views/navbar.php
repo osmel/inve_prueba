@@ -158,8 +158,8 @@
 					 <?php } ?>	
 
 					<?php if ( ( $perfil == 1 ) || (in_array(29, $coleccion_id_operaciones)) ) { ?>		 
-						<li id="bar_pedido_compra"> 
-							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>pedido_compra" class="ttip color-blanco">Compra</a>
+						<li id="bar_pendiente_revision"> 
+							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>pendiente_revision" class="ttip color-blanco">Compra</a>
 						</li>
 					 <?php } ?>	
 
