@@ -223,15 +223,11 @@
  <br>
 
 	<div class="row">
-		<div class="col-sm-4 col-md-4">	</div>
+		<div class="col-sm-8 col-md-8">	</div>
 		<div class="col-sm-4 col-md-4 marginbuttom">
 			<a href="<?php echo $retorno; ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
 		</div>
-		<div class="col-sm-4 col-md-4">
-				<button id="proc_pedido_cambio" type="button"  class="btn btn-success btn-block">
-					<span class="">Confirmar cambios</span>
-				</button>
-		</div>
+		
 	</div>
 
 </div>

@@ -17,7 +17,7 @@
 
 <div class="container margenes">
 	<div class="panel panel-primary">
-		<div id="label_reporte" class="panel-heading">Costos de Inventario</div>
+		<div id="label_reporte" class="panel-heading"><?php echo $titulo; ?></div>
 			<div class="container">	
 				<br>
 
@@ -196,7 +196,7 @@
 															<th  width="10%">Importe</th>
 															<th  width="10%">Recorrido</th>
 															<th width="10%">Revisar</th>
-
+															<th width="10%">Cancelar Pedido</th>
 														</tr>
 													</thead>
 												</table>
@@ -278,5 +278,12 @@
 
 </div>
 
+<div class="modal fade bs-example-modal-lg" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+        <div class="modal-content"></div>
+    </div>
+</div>	
 
 <?php $this->load->view( 'footer' ); ?>
+
+

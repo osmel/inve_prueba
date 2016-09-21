@@ -575,10 +575,16 @@ $route['gestionar_pedido_compra']						= 'pedido_compra/gestionar_pedido_compra'
 $route['procesando_pedido_compra']						= 'pedido_compra/procesando_pedido_compra';
 $route['detalle_revision/(:any)/(:any)']				= 'pedido_compra/detalle_revision/$1/$2';
 
-$route['procesando_revisar_pedido_compra']						= 'pedido_compra/procesando_revisar_pedido_compra';
+$route['procesando_revisar_pedido_compra']				= 'pedido_compra/procesando_revisar_pedido_compra';
 
-										
+$route['cancelar_pedido_compra/(:any)/(:any)']					= 'pedido_compra/cancelar_pedido_compra/$1/$2';
 
+$route['validar_cancelar_pedido_compra']				= 'pedido_compra/validar_cancelar_pedido_compra';
+$route['proc_pedido_cambio']						= 'pedido_compra/proc_pedido_cambio';								
+
+
+
+$route['pedido_compra_modal/(:any)/(:any)']					= 'pedido_compra/pedido_compra_modal/$1/$2';
 
 /////////////////////////////////////////////Listado de todas las reportes
 $route['traspasos']								= 'traspaso/modulo_traspaso';
