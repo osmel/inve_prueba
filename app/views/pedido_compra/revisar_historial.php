@@ -74,8 +74,8 @@
 					<!--almacen Asociado -->
 					<div class="col-xs-12 col-sm-6 col-md-4">
 					    
-							<label for="id_almacen_compra" class="col-sm-3 col-md-3 control-label">Almacén</label>
-							<div class="col-sm-9 col-md-10">
+							<label for="id_almacen_compra" class="col-sm-12 col-md-12 control-label">Almacén</label>
+							<div class="col-sm-12 col-md-12">
 							    <!--Los administradores o con permisos de traspaso 
 							    	Y que no este inhabilitado y 
 							    	que no sean almacenista 
@@ -107,7 +107,20 @@
 								    </fieldset>
 
 							</div>
+
+																
 					</div>		
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<fieldset id="disa_reportes" disabled>
+										<div class="col-sm-6 col-md-6">
+											<a id="impresion_reporte_costo" type="button" class="btn btn-success btn-block">Imprimir</a>
+										</div>
+
+										<div class="col-sm-6 col-md-6">
+											<a id="exportar_reportes_costo" type="button" class="btn btn-success btn-block">Exportar</a>
+										</div>
+						</fieldset>	
+					</div>
 			</div>
 
 		</div>		
@@ -116,27 +129,29 @@
 				<div class="form-group">
 					<!--<label for="comentario" class="col-sm-4 col-md-4">Especificaciones</label>-->
 					<label for="factura">Comentarios</label>
-					<div class="col-sm-4 col-md-12">
+					<fieldset disabled>
+						<div class="col-sm-4 col-md-12">
 
-						<?php if ($val_compra) { ?>
-							<fieldset class="disabledme">							
-						<?php } else { ?>
-							<fieldset class="disabledme">						
-						<?php } ?>					
-									<?php 
+							<?php if ($val_compra) { ?>
+								<fieldset class="disabledme">							
+							<?php } else { ?>
+								<fieldset class="disabledme">						
+							<?php } ?>					
+										<?php 
 
-										$nomb_nom='';
-											if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
-												if (isset($val_compra->comentario)) 
-												 {	$nomb_nom = $val_compra->comentario;}
-											}
+											$nomb_nom='';
+												if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
+													if (isset($val_compra->comentario)) 
+													 {	$nomb_nom = $val_compra->comentario;}
+												}
 
-										
-									?>	
+											
+										?>	
 
-									<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
-							  </fieldset>		
-					</div>
+										<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
+								  </fieldset>		
+						</div>
+					</fieldset>	
 				</div>						
 		</div>	
 			<!-- -->		
@@ -223,14 +238,9 @@
  <br>
 
 	<div class="row">
-		<div class="col-sm-4 col-md-4">	</div>
+		<div class="col-sm-8 col-md-8">	</div>
 		<div class="col-sm-4 col-md-4 marginbuttom">
 			<a href="<?php echo $retorno; ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
-		</div>
-		<div class="col-sm-4 col-md-4">
-				<button id="proc_pedido_cambio" type="button"  class="btn btn-success btn-block">
-					<span class="">Confirmar cambios</span>
-				</button>
 		</div>
 	</div>
 

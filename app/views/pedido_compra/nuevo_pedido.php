@@ -18,7 +18,7 @@
 
 <div class="container margenes">
 <div class="panel panel-primary">
-<div class="panel-heading">Registro Pedido de Compra</div>
+<div class="panel-heading">Detalles del Pedido de Compra</div>
 <div class="panel-body">		
 	
 	<div class="row">		

@@ -20,16 +20,24 @@ class Pedido_compra extends CI_Controller {
   }
 
 
-public function proc_pedido_cambio33(){
 
-  if ($this->session->userdata('session') ===TRUE) {
+public function proc_pedido_aprobado(){
 
-  }
-   
-   $dato['exito'] = true;
-  echo json_encode($dato);
-}
+   if($this->session->userdata('session') === TRUE ){
+          
+          $data['movimiento'] =   $this->input->post('movimiento');
+          $data['status_compra'] = 5; //para que pase al historial
+            
+          $this->model_pedido_compra->confirmando_aprobado($data);
+          $dato['exito'] = true;
+          echo json_encode($dato);
+    } else { 
+          $dato['exito']  = false;
+          $dato['error'] = validation_errors('<span class="error">','</span>');
+          echo json_encode($dato);
+    }   
 
+}  
 public function proc_pedido_cambio(){
 
 
@@ -50,9 +58,10 @@ public function proc_pedido_cambio(){
                 if ($this->form_validation->run() === TRUE) {           
                       //actualizar cantidad aprobada
                       $data['movimiento'] =   $this->input->post('movimiento');
+                      $data['comentario'] =   $this->input->post('comentario');
                       $data['cant_solicitada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_solicitada') ),true  );
                       $data['cant_aprobada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_aprobada') ),true  );
-                      
+                        
                       $dato['aprobado'] = $this->model_pedido_compra->actualizar_cantidad_aprobado($data);
                       $dato['exito'] = true;
                       echo json_encode($dato);
@@ -71,8 +80,56 @@ public function proc_pedido_cambio(){
 
 
 
+public function confirmar_pedido_compra(){
+  //Array ( [aprobado] => false [movimiento] => 9 [procesando_confirmar_pedido] => [modulo] => 1 [retorno] => /pendiente_revision )
+  //print_r($_POST);
+  //redirect($data['retorno']);
 
-public function pedido_compra_modal($aprobado,$movimiento){
+ if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+         
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $data['aprobado'] =   $this->input->post('aprobado');
+          $data['movimiento'] =   $this->input->post('movimiento');
+          $data['modulo'] =   $this->input->post('modulo');
+          $data['retorno'] =   $this->input->post('retorno');
+
+
+          
+
+          
+          switch ($data['modulo']) {    
+            case 1: //cambios del admin
+                  if  ($data['aprobado']!="false")  { 
+                      $data['status_compra'] = 3; //aprobado
+                  } else {
+                    $data['status_compra'] = 2; //modificado
+                  } 
+              break;
+            case 2: //cambios del almacenista
+                  if  ($data['aprobado']!="false")  { 
+                      $data['status_compra'] = 3; //aprobado
+                  } else {
+                    $data['status_compra'] = 1; //modificado
+                  } 
+              break;
+            default:  
+               redirect($data['retorno']);
+              break;
+          }
+
+            $this->model_pedido_compra->confirmar_cambio($data);
+          //  print_r($data);
+          redirect($data['retorno']);
+          
+       }     
+
+ 
+}  
+
+public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
 
       if ( $this->session->userdata('session') !== TRUE ) {
           redirect('');
@@ -90,6 +147,8 @@ public function pedido_compra_modal($aprobado,$movimiento){
           
           $data['aprobado']         = base64_decode($aprobado);
           $data['movimiento']         = base64_decode($movimiento);
+          $data['modulo']         = base64_decode($modulo);
+          $data['retorno']         = base64_decode($retorno);
 
           switch ($id_perfil) {    
             case 1:
@@ -144,7 +203,7 @@ public function detalle_revision($movimiento, $modulo){
                break;
              case 3:
                   $data['retorno'] ='/aprobado';
-                  $revisar = 'revisar_compra';
+                  $revisar = 'revisar_aprobado';
                   $data['val_compra']  = $this->model_pedido_compra->valores_revision_temporal($data);
                break;
              case 4:
@@ -154,8 +213,8 @@ public function detalle_revision($movimiento, $modulo){
                break;
              case 5:
                   $data['retorno'] ='/gestionar_pedido_compra';
-                  $revisar = 'revisar_compra';
-                  $data['val_compra']  = $this->model_pedido_compra->valores_revision_temporal($data);
+                  $revisar = 'revisar_historial';
+                  $data['val_compra']  = $this->model_pedido_compra->valores_revision_historial($data);
                break;
              
              default:
@@ -208,17 +267,14 @@ public function procesando_revisar_pedido_compra(){
             case 1:          
             case 2:   
             case 3:   
-            case 5:   
                   $busqueda = $this->model_pedido_compra->buscador_revisar_pedido_compra($data);
               break;
             case 4:
                   $busqueda = $this->model_pedido_compra->buscador_revisar_cancela_compra($data);
-                  //print_r($busqueda);
-                  
-                  //die;
-
-                  
               break;
+            case 5:   
+                  $busqueda = $this->model_pedido_compra->buscador_revisar_historial_compra($data);
+              break;              
             default:  
                  $busqueda = $this->model_pedido_compra->buscador_revisar_pedido_compra($data);
               break;
@@ -245,12 +301,13 @@ public function procesando_pedido_compra(){
             case 1:          
             case 2:   
             case 3:   
-            case 5:   
                   $busqueda = $this->model_pedido_compra->buscador_pedido_compra($data);
               break;
             case 4:
                   $busqueda = $this->model_pedido_compra->buscador_cancela_compra($data);
-                  
+              break;
+            case 5:   
+                  $busqueda = $this->model_pedido_compra->buscador_historial_compra($data);
               break;
 
 
@@ -270,31 +327,31 @@ public function procesando_pedido_compra(){
 
 public function pendiente_revision(){
   $data['modulo'] = 1;
-  $data['titulo'] = "En proceso de revisión";
+  $data['titulo'] = "Revisión - Admin.";
   self::modulo_pedido_compra($data);
 }
 
 public function solicitar_modificacion(){
   $data['modulo'] = 2;
-  $data['titulo'] = "Solicitud de cambio";
+  $data['titulo'] = "Revisión - Almacén.";
   self::modulo_pedido_compra($data);
 }
 
 public function aprobado(){
   $data['modulo'] = 3;
-  $data['titulo'] = "Aprobado";
+  $data['titulo'] = "Aprobados";
   self::modulo_pedido_compra($data);
 }
 
 public function cancelado(){
   $data['modulo'] = 4;
-  $data['titulo'] = "Cancelado";
+  $data['titulo'] = "Cancelados";
   self::modulo_pedido_compra($data);
 }
 
 public function gestionar_pedido_compra(){
   $data['modulo'] = 5;
-  $data['titulo'] = "Historico de pedidos";
+  $data['titulo'] = "Histórico";
   self::modulo_pedido_compra($data);
 }
 
@@ -316,8 +373,21 @@ public function modulo_pedido_compra($data){
            $data['val_compra']  = $this->model_pedido_compra->valores_movimientos_temporal();
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
-           
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
+          $data['id_almacen']=$this->session->userdata('id_almacen');
+           $data['mod']=1;      
+           $data['cant'][1]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=2;      
+           $data['cant'][2]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=3;      
+           $data['cant'][3]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=4;      
+           $data['cant'][4]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=5;      
+           $data['cant'][5]   =  $this->model_pedido_compra->total_modulo($data);
+
+           
 
           switch ($id_perfil) {    
             case 1:          

@@ -7,12 +7,13 @@
         $coleccion_id_operaciones = array();
    }   
 
-
+ $perfil= $this->session->userdata('id_perfil'); 
  $id_almacen=$this->session->userdata('id_almacen');
 
 ?>
 
 
+<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 <input type="hidden" id="modulo" name="modulo" value="<?php echo $modulo; ?>">
 
 <div class="container margenes">
@@ -27,7 +28,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>pendiente_revision"  
-							type="button" class="btn btn-info btn-block ttip" title="Se hizo un pedido y esta esperando a que el admin lo revise, O el almacenista hizo la modificacion .">En proceso de revisión
+							type="button" class="btn <?php echo ($modulo==1) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Se hizo un pedido y esta esperando a que el admin lo revise, O el almacenista hizo la modificacion .">Revisión - Admin. <?php echo "(".$cant[1].")"; ?>
 						</a>
 					</div>
 
@@ -35,7 +36,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>solicitar_modificacion"  
-							type="button" class="btn btn-info btn-block ttip" title="El admin pide modificar">Solicitud de cambio
+							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="El admin pide modificar">Revisión - Alm. <?php echo "(".$cant[2].")"; ?>
 						</a>
 					</div>
 
@@ -44,14 +45,14 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>aprobado"  
-							type="button" class="btn btn-info btn-block ttip" title="Imprimir y pasarlo al historico.">Aprobado
+							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Imprimir y pasarlo al historico.">Aprobados <?php echo "(".$cant[3].")"; ?>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>cancelado"  
-							type="button" class="btn btn-info btn-block ttip" title="Ver listado de cancelados.">Cancelado
+							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ver listado de cancelados.">Cancelados <?php echo "(".$cant[4].")"; ?>
 						</a>
 					</div>
 
@@ -61,7 +62,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>gestionar_pedido_compra"  
-							type="button" class="btn btn-info btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Historico de pedidos
+							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Histórico <?php echo "(".$cant[5].")"; ?>
 						</a>
 					</div>
 
@@ -150,7 +151,7 @@
                            <div class="col-md-7">		
 	                           <div class="col-md-4 leyen_home" style="display: block;" ><span> Apartados</span><div style="margin-right: 15px;float:left;background-color:#14b80f;width:15px;height:15px;"></div></div>
 							   <div class="col-md-4 leyen_home"  style="display: block;"><span> Devoluciones</span><div style="margin-right: 15px;float:left;background-color:#ab1d1d;width:15px;height:15px;"></div> </div>
-							   <div class="col-md-4 leyen_home"  style="display: block;"><span> Traspasos en proceso</span><div style="border: 1px solid black; margin-right: 15px;float:left;background-color:#fcf8e3;width:15px;height:15px;"></div> </div>
+							   <div class="col-md-4 leyen_home"  style="display: block;"><span> Traspasos Revisión</span><div style="border: 1px solid black; margin-right: 15px;float:left;background-color:#fcf8e3;width:15px;height:15px;"></div> </div>
 						   </div>
 
 							<div class="col-md-8">		
@@ -162,27 +163,17 @@
 						   <hr style="padding: 0px; margin: 8px;"/>					
 						   	<div class="notif-bot-pedidos"></div>
 							
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-4 col-md-4">
 									<a href="nuevo_pedido_compra/<?php echo base64_encode($_SERVER["REQUEST_URI"]); ?>" id="nuevo_pedido_compra" type="button" class="btn btn-success btn-block">Nuevo Pedido de Compra</a>
 								</div>
-
-							<fieldset id="disa_reportes" disabled>
-								<div class="col-sm-4 col-md-4 marginbuttom">
-									<a id="impresion_reporte_costo" type="button" class="btn btn-success btn-block">Imprimir</a>
-								</div>
-
-								<div class="col-sm-4 col-md-4 marginbuttom">
-									<a id="exportar_reportes_costo" type="button" class="btn btn-success btn-block">Exportar</a>
-								</div>
-
-							</fieldset>			
-							<br>
-								<!-- Segunda tabla-->
 									
+								<div class="col-sm-12 col-md-12">
+									<br/>
+									<h4>Pedidos Revisión de revisión</h4>	
+								</div>											
 										
-										<h4>Pedidos en proceso de revisión</h4>	
 										<br>	
-										<div class="table-responsive">
+										<div class="col-md-12">
 											<section>
 												<table id="tabla_pedido_compra" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 													<thead>

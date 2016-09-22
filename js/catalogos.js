@@ -23,6 +23,60 @@ var target = document.getElementById('foo');
 
 
 
+
+jQuery('body').on('click','#proc_aprobado', function (e) {
+
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	   var retorno = jQuery("#retorno").val();
+	var movimiento = jQuery("#movimiento").val();
+	
+	 var url = '/proc_pedido_aprobado';
+   
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	movimiento:movimiento,
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_aprobado');
+												window.location.href = retorno;	
+
+									        }
+								});	
+						}
+		        }
+
+		        
+	});						        
+});
+
+
 ////////////////////////////Procesar pedido cambio////////////////////////////
 
 jQuery('body').on('click','#proc_pedido_cambio', function (e) {
@@ -34,6 +88,10 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 	factura = jQuery("#factura").val();
 	movimiento = jQuery("#movimiento").val();
 	var retorno = jQuery("#retorno").val();
+	var modulo = jQuery("#modulo").val();
+	
+	var comentario = jQuery("#comentario").val();
+	
 	
 	 var url = '/proc_pedido_cambio';
 
@@ -45,6 +103,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
 	   		arreglo['cantidad'] = jQuery(this).val();
+	   		//alert(arreglo['cantidad']);
 	   		arreglo_cant_aprobada.push( arreglo);
 	   });
 
@@ -64,7 +123,9 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 		        	arreglo_cant_solicitada: arreglo_cant_solicitada,
 		        	id_almacen:id_almacen,		
 		        	factura:factura,
-		        	movimiento: movimiento        	
+		        	movimiento: movimiento,
+		        	modulo:modulo,
+		        	comentario:comentario	
 		        },
 		        dataType : 'json',
 		        success : function(data) {	
@@ -98,7 +159,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 
 									        	
 												valor= jQuery.base64.encode(data.aprobado);
-												var url = "/pedido_compra_modal/"+valor+'/'+jQuery.base64.encode(movimiento);
+												var url = "/pedido_compra_modal/"+valor+'/'+jQuery.base64.encode(movimiento)+'/'+jQuery.base64.encode(modulo)+'/'+jQuery.base64.encode(retorno);
 											
 												jQuery('#modalMessage').modal({
 													  show:'true',
@@ -116,6 +177,23 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 		        
 	});						        
 });
+
+
+jQuery('body').on('click','#deleteUserSubmit[name="procesando_confirmar_pedido"]', function (e) {
+			jQuery.ajax({
+						        url : 'conteo_tienda',
+						        data : { 
+						        	tipo: 'tienda',
+						        } ,
+						        type : 'POST',
+						        dataType : 'json',
+						        success : function(data) {	
+						        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'proc_confirmar_pedido');
+									return false;	
+						        }
+			});	
+});
+
 ////////////////////////////Cancelar pedido de compra////////////////////////////
 
 jQuery('body').on('submit','#form_cancelar_pedido_compra', function (e) {
@@ -281,9 +359,15 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 				{
 	                "render": function ( data, type, row ) {
-						texto='<td><fieldset disabled>'; 
+						
+						modulo= jQuery("#modulo").val(); 
+						habilitar = ((modulo == 2) ? '': 'disabled'); //solo en almacen esta deshabilitado
+
+						texto='<td>'; 
+						  texto+='<fieldset '+habilitar+'>'; 
 							texto+='<input restriccion="entero"  identificador="'+row[9]+'" value="'+row[11]+'" type="text" class="form-control ttip pedido_compra cant_solicitada" title="Números enteros."  placeholder="entero">';							
-						texto+='</fieldset></td>';
+						  texto+='</fieldset>'; 
+						texto+='</td>';
 						return texto;	
 
 	                },
@@ -294,7 +378,8 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 	                "render": function ( data, type, row ) {
 						
 						modulo= jQuery("#modulo").val(); 
-						habilitar = ((modulo == 4) ? 'disabled' : '');
+
+						habilitar = ((modulo == 1) ? '': 'disabled'); //solo en admin esta deshabilitado
 
 						texto='<td>'; 
 
@@ -397,10 +482,41 @@ jQuery('#tabla_pedido_compra').dataTable( {
 		if  (data.length>0) {   
 
 				//invisible columna de revisar para el caso de cancelar						
-				if (jQuery("#modulo").val() == 4) {
+				if ( (jQuery("#modulo").val() == 4) || (jQuery("#modulo").val() == 5) || (jQuery("#modulo").val() == 3) ) {
 					api.column(9).visible(false);	
 				}
-			    
+
+				//si eres administrador			    
+				if ( (jQuery("#mi_perfil").val() == '1') ) {
+
+					switch(jQuery("#modulo").val()) {
+					    case '2':
+					    case '3':
+						    	//api.column(8).visible(false);
+						    	//api.column(9).visible(false);
+					        break;
+					    default:
+			              break;
+					}					
+				}
+
+
+				//si eres almacenista		
+				//alert(jQuery("#modulo").val());	    
+				if ( (jQuery("#mi_perfil").val() == '2') ) {
+
+
+					switch(jQuery("#modulo").val()) {
+					    case '1':
+						    	api.column(8).visible(false);
+						    	api.column(9).visible(false);
+					        break;
+					    default:
+			              break;
+					}					
+				}
+
+
 
 				//importe
 				
@@ -436,10 +552,18 @@ jQuery('#tabla_pedido_compra').dataTable( {
     			
   				{
 	                "render": function ( data, type, row ) {
+	                	if ( (row[8]==4) || (row[8]==5)) {
+	                		icono='eye-open';  	
+	                	} else {
+	                		icono='edit';	
+	                	}
+	                	
+	                	
+
 						texto='<td>';
 							texto+='<a href="detalle_revision/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+ '"'; 
 							texto+=' class="btn btn-warning btn-sm btn-block" >';
-								texto+=' <span class="glyphicon glyphicon-edit"></span>';
+								texto+=' <span class="glyphicon glyphicon-'+icono+'"></span>';
 							texto+=' </a>';
 						texto+='</td>';
 

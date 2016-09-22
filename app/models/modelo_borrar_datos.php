@@ -30,7 +30,13 @@
       $this->historico_pagos_realizados        = $this->db->dbprefix('historico_pagos_realizados');
       $this->historico_ctasxpagar        = $this->db->dbprefix('historico_ctasxpagar');
 
-      
+     
+      $this->temporal_pedido_compra        = $this->db->dbprefix('temporal_pedido_compra');
+      $this->historico_pedido_compra        = $this->db->dbprefix('historico_pedido_compra');
+      $this->historico_cancela_pedido_compra      = $this->db->dbprefix('historico_cancela_pedido_compra');
+      $this->historico_historial_compra      = $this->db->dbprefix('historico_historial_compra');
+
+
       
       
 
@@ -42,7 +48,7 @@
     //cuando se elimina un diseño en particular
     public function eliminar_todos(){
        
-        
+  /*      
         $this->db->empty_table( $this->registros_entradas);
         $this->db->empty_table( $this->registros_salidas);
         $this->db->empty_table( $this->registros_temporales);
@@ -54,6 +60,16 @@
         $this->db->empty_table( $this->historico_acceso);
         $this->db->empty_table( $this->historico_pagos_realizados);
         $this->db->empty_table( $this->historico_ctasxpagar);
+
+*/
+        //todo lo que tiene que ver con pedido de compra
+         $this->db->empty_table(  $this->temporal_pedido_compra );
+         $this->db->empty_table(  $this->historico_pedido_compra );
+         $this->db->empty_table(  $this->historico_cancela_pedido_compra);
+         $this->db->empty_table( $this->historico_historial_compra   );
+
+
+
         
         return "todo fue eliminado";
 

@@ -18,7 +18,7 @@
 
 <div class="container margenes">
 <div class="panel panel-primary">
-<div class="panel-heading">Registro Pedido de Compra</div>
+<div class="panel-heading">Detalles del Pedido de Compra</div>
 <div class="panel-body">		
 	
 	<div class="row">		
@@ -116,27 +116,29 @@
 				<div class="form-group">
 					<!--<label for="comentario" class="col-sm-4 col-md-4">Especificaciones</label>-->
 					<label for="factura">Comentarios</label>
-					<div class="col-sm-4 col-md-12">
+					<fieldset disabled>
+						<div class="col-sm-4 col-md-12">
 
-						<?php if ($val_compra) { ?>
-							<fieldset class="disabledme">							
-						<?php } else { ?>
-							<fieldset class="disabledme">						
-						<?php } ?>					
-									<?php 
+							<?php if ($val_compra) { ?>
+								<fieldset class="disabledme">							
+							<?php } else { ?>
+								<fieldset class="disabledme">						
+							<?php } ?>					
+										<?php 
 
-										$nomb_nom='';
-											if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
-												if (isset($val_compra->comentario)) 
-												 {	$nomb_nom = $val_compra->comentario;}
-											}
+											$nomb_nom='';
+												if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
+													if (isset($val_compra->comentario)) 
+													 {	$nomb_nom = $val_compra->comentario;}
+												}
 
-										
-									?>	
+											
+										?>	
 
-									<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
-							  </fieldset>		
-					</div>
+										<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
+								  </fieldset>		
+						</div>
+					</fieldset>	
 				</div>						
 		</div>	
 			<!-- -->		
