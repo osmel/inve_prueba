@@ -535,7 +535,7 @@ form > .container{
    /* clear:both; */
 }
 .dataTables_scrollBody{
-	height: auto !important;
+	/*height: auto !important;*/
 }
 
 

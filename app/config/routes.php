@@ -589,6 +589,8 @@ $route['pedido_compra_modal/(:any)/(:any)/(:any)/(:any)']					= 'pedido_compra/p
 
 $route['confirmar_pedido_compra']					= 'pedido_compra/confirmar_pedido_compra';
 
+$route['impresion_reporte_compra']					= 'pedido_compra/impresion_reporte_compra';
+$route['exportar_reportes_compra']					= 'pedido_compra/exportar_reportes_compra';
 
 /////////////////////////////////////////////Listado de todas las reportes
 $route['traspasos']								= 'traspaso/modulo_traspaso';

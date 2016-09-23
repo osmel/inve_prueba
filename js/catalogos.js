@@ -22,7 +22,43 @@ jQuery(document).ready(function($) {
 var target = document.getElementById('foo');
 
 
+/////////////////////////////////imprimir los detalles/////////////////////////////////////////////////////////////
 
+
+jQuery('body').on('click','#impresion_reporte_compra', function (e) {
+	  	       busqueda = jQuery('input[type=search]').val();
+	   		     modulo = jQuery("#modulo").val(); 
+    		 id_almacen = jQuery("#id_almacen_compra").val(); 
+     		 movimiento = jQuery("#movimiento").val(); 
+    abrir('POST', '/impresion_reporte_compra', {
+    			busqueda: busqueda,
+			      modulo: modulo,
+			  id_almacen: id_almacen,
+			  movimiento: movimiento,
+    }, '_blank' );
+});
+
+
+
+
+
+jQuery('body').on('click','#exportar_reportes_compra', function (e) {
+ busqueda = jQuery('input[type=search]').val();
+	   		     modulo = jQuery("#modulo").val(); 
+    		 id_almacen = jQuery("#id_almacen_compra").val(); 
+     		 movimiento = jQuery("#movimiento").val(); 
+
+
+    abrir('POST', '/exportar_reportes_compra', {
+    			busqueda: busqueda,
+			      modulo: modulo,
+			  id_almacen: id_almacen,
+			  movimiento: movimiento,
+    }, '_blank' );
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 jQuery('body').on('click','#proc_aprobado', function (e) {
 
@@ -289,6 +325,18 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 		},
 	},
 
+   "rowCallback": function( row, data ) {
+	    // Bold the grade for all 'A' grade browsers
+	    if ( (data[11] == 0) && ( data[12] == 0)) {
+	      jQuery('td', row).addClass( "danger" );
+	    }
+
+
+	
+
+
+	  },		
+
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 		
 		if (settings.json.totales_importe) {
@@ -299,6 +347,14 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 			jQuery('#total_total2').html('Total: 0.00');
 
 		}			
+
+
+		if (settings.json.totales_importe) {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', true);					
+		}
+
 
 	    return pre
   	} ,  	
@@ -503,7 +559,7 @@ jQuery('#tabla_pedido_compra').dataTable( {
 
 				//si eres almacenista		
 				//alert(jQuery("#modulo").val());	    
-				if ( (jQuery("#mi_perfil").val() == '2') ) {
+				if ( (jQuery("#mi_perfil").val() != '1') ) {
 
 
 					switch(jQuery("#modulo").val()) {
@@ -917,6 +973,18 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 jQuery('#tabla_salida_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
+
+	scroller:       true,
+    scrollY:        250,
+    scrollCollapse: false,
+  /*initComplete: function ()
+  	 { var api = this.api();
+  	    api.scroller().scrollToRow( 5 );
+  	     },*/
+
+
+
+
 	"ajax": {
             	"url" : "/procesando_salida_pedido_compra",
          		"type": "POST",
@@ -961,6 +1029,13 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 	},
 
 	"infoCallback": function( settings, start, end, max, total, pre ) {
+		/*
+		console.log(settings.oScroll.sY);
+		settings.oScroll.sY= 500;
+
+		var oTable =jQuery('#tabla_salida_pedido_compra').dataTable();
+		oTable._fnAjaxUpdate();
+		*/
 
 		if (settings.json.importe) {
 			jQuery('#total_total2').html('Total:'+ number_format(settings.json.importe, 2, '.', ','));

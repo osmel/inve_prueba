@@ -66,9 +66,6 @@ jQuery("#id_perfil").on('change', function(e) {
 		        dataType : 'json',
 		        success : function(midata) {
 
-
-		        		
-		        		
 						jQuery(".navbar-nav > li" ).each(function( index ) {
 							  if ('bar_'+midata == jQuery( this ).attr('id')) {
 							      jQuery(this).addClass('activo_bar');						  	
@@ -91,7 +88,7 @@ jQuery("#id_perfil").on('change', function(e) {
 							  	  jQuery('#bar_').removeClass('activo_bar');						  	
 						  };
 
-						  console.log(midata+'1');
+						  //console.log(midata+'1');
 		        		
 		            //return false;
 		        },
@@ -5456,6 +5453,7 @@ jQuery('table').on('click','.quitar', function (e) {
 
 //"modulo salida"
 jQuery('#tabla_salida').dataTable( {
+
 	"scrollY": "200px",
 	"paging": false,
 	"ordering": false,

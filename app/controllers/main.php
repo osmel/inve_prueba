@@ -94,6 +94,7 @@ class Main extends CI_Controller {
 			case '/devolucion':
 			case '/salidas':
 			case '/traspasos':
+			case '/pendiente_revision':
 			case '/listado_ctasxpagar':
 			case '/generar_pedidos':
 			case '/editar_inventario':

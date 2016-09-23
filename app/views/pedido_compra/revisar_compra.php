@@ -108,6 +108,19 @@
 
 							</div>
 					</div>		
+
+					<div class="col-xs-12 col-sm-6 col-md-8">
+						<fieldset id="disa_reportes" disabled>
+										<div class="col-sm-6 col-md-6">
+											<a id="impresion_reporte_compra" type="button" class="btn btn-success btn-block">Imprimir</a>
+										</div>
+
+										<div class="col-sm-6 col-md-6">
+											<a id="exportar_reportes_compra" type="button" class="btn btn-success btn-block">Exportar</a>
+										</div>
+						</fieldset>	
+					</div>
+					
 			</div>
 
 		</div>		
@@ -150,6 +163,12 @@
 
 		<!-- primera tabla-->				
 		<div class="col-md-12">	
+ 					<div class="col-md-12" style="display: block;" ><span> Productos cancelados en el pedido</span>
+                     <div style="margin-right: 15px;float:left;background-color:#14b80f;width:15px;height:15px;">
+                     </div>
+	                </div>
+					<br/>	
+				    <hr style="padding: 0px; margin: 8px;"/>	
 
 
 					<!-- Segunda tabla-->

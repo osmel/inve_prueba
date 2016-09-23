@@ -166,6 +166,13 @@
 		<!-- primera tabla-->				
 		<div class="col-md-12">	
 
+ 					<div class="col-md-12" style="display: block;" ><span> Productos cancelados en el pedido</span>
+                     <div style="margin-right: 15px;float:left;background-color:#14b80f;width:15px;height:15px;">
+                     </div>
+	                </div>
+					<br/>	
+				    <hr style="padding: 0px; margin: 8px;"/>	
+
 
 					<!-- Segunda tabla-->
 					<div class="col-md-12">		

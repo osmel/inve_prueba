@@ -417,7 +417,7 @@
 		<br>	
 		<div class="table-responsive">
 			<section>
-				<table id="tabla_salida" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+				<table id="tabla_salida" class="display table table-striped table-responsive" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th style="width:20%;">Código</th>

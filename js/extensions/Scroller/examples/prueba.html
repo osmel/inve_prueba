@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<script type="text/javascript" src="http://localhost/inventarios/js/jquery.js"></script>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="http://localhost/inventarios/js/media/css/jquery.dataTables.css">
+	
+	<link rel="stylesheet" type="text/css" href="http://localhost/inventarios/js/extensions/Scroller/css/dataTables.scroller.css">
+
+
+	
+	<!--
+	<script type="text/javascript" language="javascript" src="http://localhost/inventarios/js/jquery.form.min.js"></script> 
+	
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	-->
+
+	<script type="text/javascript" src="http:/localhost/inventarios/js/jquery.form.min.js"></script>
+	<script type="text/javascript" src="http:/localhost/inventarios/js/spin.min.js"></script>
+
+	 
+	<!-- componente fecha simple -->
+	<script type="text/javascript" src="http:/localhost/inventarios/js/bootstrap-datepicker.js"></script>
+
+	<!-- componente rango fecha -->
+	<script type="text/javascript" src="http:/localhost/inventarios/js/moment.js"></script>		
+	<script type="text/javascript" src="http:/localhost/inventarios/js/daterangepicker.js"></script>	
+
+
+
+
+
+	<script type="text/javascript" language="javascript" src="http://localhost/inventarios/js/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" language="javascript" src="http://localhost/inventarios/js/extensions/Scroller/js/dataTables.scroller.js"></script>
+
+
+
+<script type="text/javascript" src="http:/localhost/inventarios/js/sistema.js"></script>
+
+	<script type="text/javascript" src="http:/localhost/inventarios/js/catalogos.js"></script>
+
+	<script type="text/javascript" src="http:/localhost/inventarios/js/jquery.tablesorter.min.js"></script> 	
+
+	 <!-- <link href="//raw.github.com/jharding/typeahead.js-bootstrap.css/master/typeahead.js-bootstrap.css" rel="stylesheet" media="screen"> -->
+	
+	
+	<script type="text/javascript" src="http:/localhost/inventarios/js/typeahead/dist/typeahead.jquery.min.js"></script>	
+	
+	<script type="text/javascript" src="http:/localhost/inventarios/js/typeahead/dist/typeahead.bundle.js"></script>	
+	
+
+	<!-- Catalogo de colores -->	
+	<?php echo link_tag('css/colorpicker.css'); ?>
+	<?php echo link_tag('css/manager.css'); ?>
+	<script src="http:/localhost/inventarios/js/colorpicker.js" type="text/javascript"></script>
+	
+
+
+	<!--cascada -->
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+	<script type="text/javascript" src="http:/localhost/inventarios/js/cascada/jquery.mockjax.js"></script>
+	<script type="text/javascript" src="http:/localhost/inventarios/js/cascada/ajax-mocks.js"></script>
+	<script type="text/javascript" src="http:/localhost/inventarios/js/cascada/jquery.cascadingdropdown.js"></script>
+																			
+
+	<!--para conversion a base64.encode y base64.decode -->
+	<script src="http:/localhost/inventarios/js/base64/jquery.base64.js" type="text/javascript"></script>
+	<script src="http:/localhost/inventarios/js/base64/jquery.base64.min.js" type="text/javascript"></script>
+	
+
+     <script type="text/javascript" language="javascript" src="http:/localhost/inventarios/js/notificaciones/notify.min.js"></script>
+     <script type="text/javascript" language="javascript" src="http:/localhost/inventarios/js/notificaciones/notify-custom.js"></script>
+	<script src="http:/localhost/inventarios/js/notificaciones/notify.min.js" type="text/javascript"></script>
+
+	
+	<!--datatables para el caso de salidas -->
+	
+	<link rel="stylesheet" type="text/css" href="http:/localhost/inventarios/js/media/css/jquery.dataTables.css">
+	
+	<script type="text/javascript" language="javascript" src="http:/localhost/inventarios/js/media/js/jquery.dataTables.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="http:/localhost/inventarios/js/extensions/Scroller/css/dataTables.scroller.css">
+	
+    <script type="text/javascript" language="javascript" src="http:/localhost/inventarios/js/extensions/Scroller/js/dataTables.scroller.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="http:/localhost/inventarios/js/extensions/TableTools/css/dataTables.tableTools.css">
+	<script type="text/javascript" language="javascript" src="http:/localhost/inventarios/js/extensions/TableTools/js/dataTables.tableTools.js"></script>
+
+	
+	<script type="text/javascript" language="javascript">
+
+
+$(document).ready(function() {
+	$('#example').DataTable( {
+		serverSide: true,
+		//ordering: false,
+		//searching: false,
+
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},		
+		ajax: function ( data, callback, settings ) {
+			var out = [];
+
+			for ( var i=data.start, ien=data.start+data.length ; i<ien ; i++ ) {
+				out.push( [ i+'-1 osmel calderon bernal asdlkasdjkasdasd', i+'-2 osmel calderon bernal asdlkasdjkasdasd', i+'-3 osmel calderon bernal asdlkasdjkasdasd', i+'-4 osmel calderon bernal asdlkasdjkasdasd', i+'-5osmel calderon bernal asdlkasdjkasdasd' ] );
+			}
+
+			setTimeout( function () {
+				callback( {
+					draw: data.draw,
+					data: out,
+					recordsTotal: 5000000,
+					recordsFiltered: 5000000
+				} );
+			}, 50 );
+		},
+		dom: "rtiS",
+		scrollY: 200,
+		scroller: {
+			loadingIndicator: true
+		}
+	} );
+} );
+
+
+	</script>
+</head>
+
+<body class="dt-example">
+	
+<div class="container">
+
+	<div class="col-md-12">		
+				
+				<h4>Orden Pedido de Compra</h4>	
+				<br>	
+				<div class="table-responsive">
+					<section>
+						<table id="example" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+
+									<th >ID</th>
+									<th >First name</th>
+									<th >Last name</th>
+									<th >ZIP / Post code</th>
+									<th >Country</th>
+								</tr>
+							</thead>
+						</table>
+					</section>
+				</div>
+			</div>
+
+</div>
+</body>
+</html>
