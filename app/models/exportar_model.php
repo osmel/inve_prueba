@@ -403,7 +403,7 @@ class Exportar_model extends CI_Model
        
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+          //$this->db->order_by('m.factura', 'asc'); 
 
           $result = $this->db->get();
 
@@ -528,7 +528,10 @@ class Exportar_model extends CI_Model
 
           }    
 
-          $this->db->select('m.factura, m.num_partida'); //'d-m-Y'
+          if (($data['configuracion']->activo==1)) {  
+            $this->db->select('m.factura');
+          }  
+          $this->db->select('m.num_partida'); //'d-m-Y'
 
           $this->db->select("a.almacen");
 
@@ -637,7 +640,7 @@ class Exportar_model extends CI_Model
 
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+         // $this->db->order_by('m.factura', 'asc'); 
 
           $result = $this->db->get();
 
@@ -961,7 +964,11 @@ class Exportar_model extends CI_Model
           }    
 
 
-          $this->db->select('m.factura, m.num_partida'); //'d-m-Y'
+          if (($data['configuracion']->activo==1)) {  
+            $this->db->select('m.factura');
+          }  
+          $this->db->select('m.num_partida'); //'d-m-Y'
+
 
           $this->db->select("a.almacen");
           $this->db->from($this->registros.' as m');
@@ -1071,7 +1078,7 @@ class Exportar_model extends CI_Model
     
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+        //  $this->db->order_by('m.factura', 'asc'); 
           //paginacion
          // $this->db->limit($largo,$inicio); 
 
@@ -1318,7 +1325,12 @@ class Exportar_model extends CI_Model
           $this->db->select('p.nombre Cliente');
           $this->db->select('CONCAT(m.id_lote,"-",m.consecutivo) lote', false);
           $this->db->select('DATE_FORMAT((m.fecha_salida),"%d-%m-%Y") egreso', false); //'d-m-Y'
-          $this->db->select('m.factura, m.num_partida'); //'d-m-Y'
+          
+          if (($data['configuracion']->activo==1)) {  
+            $this->db->select('m.factura');
+          }  
+          $this->db->select('m.num_partida'); //'d-m-Y'
+
               
           $this->db->select("a.almacen");
 
@@ -1411,7 +1423,7 @@ class Exportar_model extends CI_Model
 
     
           //ordenacion
-          $this->db->order_by('m.factura', 'asc');
+          //$this->db->order_by('m.factura', 'asc');
 
           //paginacion
           $this->db->limit($largo,$inicio); 
@@ -1556,8 +1568,7 @@ class Exportar_model extends CI_Model
           $factura_reporte = addslashes($data['factura_reporte']);
           $id_almacen= $data['id_almacen'];
           
-                   //productos
-          //$id_descripcion= $data['id_descripcion'];
+                  
           $id_descripcion= addslashes($data['id_descripcion']);
           $id_color= $data['id_color'];
           $id_composicion= $data['id_composicion'];
@@ -1565,23 +1576,6 @@ class Exportar_model extends CI_Model
 
 
           $id_session = $this->db->escape($this->session->userdata('id'));
-
-/*
-          $this->db->select('p.referencia, p.comentario');
-       
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.precio');
-          $this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion", FALSE);  
-          $this->db->select("ca.calidad", FALSE);  
-
-          $this->db->select("COUNT(m.referencia) as 'suma'");
-
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-
-
-*/
-
 
 
           $this->db->select('p.referencia, p.descripcion producto');
@@ -1602,9 +1596,6 @@ class Exportar_model extends CI_Model
 
           $this->db->select("a.almacen");
 
-
-
-  //    $this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
 
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
@@ -1690,8 +1681,7 @@ class Exportar_model extends CI_Model
           }   
 
           if ($estatus=="baja") {
-              //$this->db->having('existencias < p.minimo');
-              //$where_total = 'existencias < p.minimo';
+              
 
               $this->db->having('((existencias>0) AND (existencias < p.minimo))');
               $where_total = '((existencias>0) AND (existencias < p.minimo))';

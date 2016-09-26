@@ -49,6 +49,8 @@ public function modulo_traspaso(){
 
            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+           $dato['id'] = 7;
+           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
            
 
@@ -100,7 +102,12 @@ public function modulo_traspaso(){
       } else {
 
 
-     $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      $d_conf['id'] = 7;
+      $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+      if (($d_conf['configuracion']->activo==1)) {  
+        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      }  
      $this->form_validation->set_rules( 'comentario', 'comentario', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
 
 
@@ -110,7 +117,9 @@ public function modulo_traspaso(){
             $data['id_almacen'] = $this->input->post('id_almacen');
             $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
-            $data['factura'] = $this->input->post('factura');
+            if (($d_conf['configuracion']->activo==1)) {  
+              $data['factura'] = $this->input->post('factura');
+            }  
             $data['comentario'] = $this->input->post('comentario');
 
 

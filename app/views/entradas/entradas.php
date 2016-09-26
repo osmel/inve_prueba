@@ -21,6 +21,10 @@
 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
 echo form_open('validar_agregar_producto', $attr);
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>		
 <div class="container">
 
@@ -85,31 +89,34 @@ echo form_open('validar_agregar_producto', $attr);
 			
 		</div>
 
-		<div class="col-xs-12 col-sm-6 col-md-2">
-			<?php if ($val_proveedor) { ?>
-				<fieldset class="disabledme" disabled>							
-			<?php } else { ?>
-				<fieldset class="disabledme">						
-			<?php } ?>
+<!-- si configuracion lo tiene activo y es(administrador o por el contrario tiene "permiso de ver y editar") -->
+		<?php if (($configuracion->activo==1)) {  ?> 
 
-				<div class="form-group">
-					<label for="factura" class="col-sm-12 col-md-12">Factura/Remisión</label>
-					<div class="col-sm-12 col-md-12">
-								<?php if ($val_proveedor) { ?>
-									<input value="<?php echo htmlspecialchars($val_proveedor->factura); ?>" type="text" class="form-control" id="factura" name="factura" placeholder="Factura">							
-								<?php } else { ?>
-									<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
-								<?php } ?>				
-					</div>
+				<div class="col-xs-12 col-sm-6 col-md-2">
+					<?php if ($val_proveedor) { ?>
+						<fieldset class="disabledme" disabled>							
+					<?php } else { ?>
+						<fieldset class="disabledme">						
+					<?php } ?>
+
+						<div class="form-group">
+							<label for="factura" class="col-sm-12 col-md-12">Factura/Remisión</label>
+							<div class="col-sm-12 col-md-12">
+										<?php if ($val_proveedor) { ?>
+											<input value="<?php echo htmlspecialchars($val_proveedor->factura); ?>" type="text" class="form-control" id="factura" name="factura" placeholder="Factura">							
+										<?php } else { ?>
+											<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+										<?php } ?>				
+							</div>
+						</div>
+					
+						</fieldset>							
 				</div>
-			
-				</fieldset>							
-			
-		
-		</div>
+		<?php }  ?> 		
+
 
 					<!--almacen Asociado -->
-					<div class="col-xs-12 col-sm-6 col-md-2">
+					<div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?> >
 					    
 							<label for="id_almacen" class="col-sm-3 col-md-3 control-label">Almacén</label>
 							<div class="col-sm-9 col-md-10">

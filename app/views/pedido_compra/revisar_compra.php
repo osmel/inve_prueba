@@ -11,6 +11,9 @@
       	$retorno ="";
     }
   $fecha_hoy = date('j-m-Y');
+  	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>	
 
 <input type="hidden" id="retorno" name="retorno" value="<?php echo $retorno; ?>">
@@ -46,33 +49,33 @@
 					</fieldset>			
 				</div>
 				
-
-				<div class="col-xs-12 col-sm-4 col-md-4">
-					<?php if ($val_compra) { ?>
-					<fieldset class="disabledme" disabled>							
-					<?php } else { ?>
-					<fieldset class="disabledme">						
-					<?php } ?>
-						<div class="form-group">
-						<label for="factura">Nro. Control</label>
-							<div>
-								<?php if ($val_compra) { ?>
-								<input value="<?php echo htmlspecialchars($val_compra->factura); ?>" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">							
-								<?php } else { ?>
-								<input type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Nro. Control">
-								<?php } ?>				
+				<?php if (($configuracion->activo==1)) {  ?> 
+					<div class="col-xs-12 col-sm-4 col-md-4">
+						<?php if ($val_compra) { ?>
+						<fieldset class="disabledme" disabled>							
+						<?php } else { ?>
+						<fieldset class="disabledme">						
+						<?php } ?>
+							<div class="form-group">
+							<label for="factura">Nro. Control</label>
+								<div>
+									<?php if ($val_compra) { ?>
+									<input value="<?php echo htmlspecialchars($val_compra->factura); ?>" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">							
+									<?php } else { ?>
+									<input type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Nro. Control">
+									<?php } ?>				
+								</div>
 							</div>
-						</div>
-					</fieldset>	
-				</div>
-
+						</fieldset>	
+					</div>
+				<?php }  ?> 	
 			</div>
 
 			<div class="row">
 
 
 					<!--almacen Asociado -->
-					<div class="col-xs-12 col-sm-6 col-md-4">
+					<div class="col-xs-12 col-sm-6 col-md-4" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 					    
 							<label for="id_almacen_compra" class="col-sm-3 col-md-3 control-label">Almacén</label>
 							<div class="col-sm-9 col-md-10">

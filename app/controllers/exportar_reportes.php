@@ -8,6 +8,8 @@ class Exportar_reportes extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('exportar_model','exportar_model');
+        $this->load->model('catalogo', 'catalogo');  
+
     }
     
 
@@ -39,6 +41,9 @@ class Exportar_reportes extends CI_Controller {
         $extra_search = ($this->input->post('extra_search'));
 
         $data=$_POST;
+        $dato['id'] = 7;
+        $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
 
         $nombre_completo=$this->session->userdata('nombre_completo');
 

@@ -96,7 +96,8 @@ class Salidas extends CI_Controller {
      		   $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
-		       
+			   $dato['id'] = 7;
+               $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -192,13 +193,20 @@ class Salidas extends CI_Controller {
 			  }
 
 
+		      		$d_conf['id'] = 7;
+			$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+			if (($d_conf['configuracion']->activo==1)) {  
 		      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+		    }  
 
 
-	 		if ( ($this->form_validation->run() === TRUE) and ($data['id_cliente']) and ($data['id_cargador']) ) {
+	 		if ( ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)) and ($data['id_cliente']) and ($data['id_cargador']) ) {
 
 				 		$data['id'] = $this->input->post('identificador');
-				 		$data['factura'] = $this->input->post('factura');
+				 		if (($d_conf['configuracion']->activo==1)) {  
+				 			$data['factura'] = $this->input->post('factura');
+				 		}	
 				 		$data['id_movimiento'] = $this->input->post('movimiento');
 				 		//$data['id_destino'] = $this->input->post('id_destino');
 				 		$data['id_almacen'] = $this->input->post('id_almacen');
@@ -330,10 +338,15 @@ class Salidas extends CI_Controller {
 				  }
 
 
+				$d_conf['id'] = 7;
+				$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+				if (($d_conf['configuracion']->activo==1)) {  			      
 			      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+			    }  
 
 			      
-				if ($this->form_validation->run() === TRUE) {			      
+				if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {			      
 					 if  (!($existe)) {
 					 	$errores= "Debe agregar al menos un producto";
 					 } else {  //si estan agregados los productos entonces checar si tienen el peso real
@@ -356,7 +369,7 @@ class Salidas extends CI_Controller {
 
 					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-			 		if (($existe) and ($this->form_validation->run() === TRUE) and ($data['id_cliente']) and ($data['id_cargador']) ) {
+			 		if (($existe) and ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) and ($data['id_cliente']) and ($data['id_cargador']) ) {
 			 					//verificar si los apartados estan siendo totales o parciales
 			 				  $dato['valor'] = $this->modelo_salida->cantidad_apartados($data);
 			 				  $dato['id_cliente'] = $data['id_cliente'];
@@ -417,9 +430,6 @@ class Salidas extends CI_Controller {
 	}
 
 
-public function validar_confirmar_salida_sino222(){
-	print_r("expression");
-}
 public function validar_confirmar_salida_sino(){
 
 		  if ( $this->session->userdata('session') !== TRUE ) {

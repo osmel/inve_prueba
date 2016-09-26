@@ -257,6 +257,11 @@ class Ctasxpagar extends CI_Controller {
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              
+              $dato['id'] = 7;
+              $data['config_factura'] = $this->catalogo->coger_configuracion($dato); 
+
+
 
 
 		      switch ($id_perfil) {    
@@ -345,6 +350,8 @@ class Ctasxpagar extends CI_Controller {
 
 		      $dato['id'] = 6;
     		  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+          $dato['id'] = 7;
+          $data['config_factura'] = $this->catalogo->coger_configuracion($dato); 
 		      switch ($id_perfil) {    
 		        case 1:          
 
@@ -406,11 +413,6 @@ class Ctasxpagar extends CI_Controller {
 				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
         		break;
             case "xpagar":
-                /*
-                
-                $data['totales'] = $this->informes_model->totales_entrada_devolucion($data);        
-                $html = $this->load->view('pdfs/informes/entrada', $data, true);
-                */
 
 				    $data['having'] = '(
 				                         ( monto_restante >0 ) OR ( monto_restante IS null )   
@@ -462,11 +464,7 @@ class Ctasxpagar extends CI_Controller {
 				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
         		break;
             case "xpagar":
-                /*
                 
-                $data['totales'] = $this->informes_model->totales_entrada_devolucion($data);        
-                $html = $this->load->view('pdfs/informes/entrada', $data, true);
-                */
 
 				    $data['having'] = '(
 				                         ( monto_restante >0 ) OR ( monto_restante IS null )   

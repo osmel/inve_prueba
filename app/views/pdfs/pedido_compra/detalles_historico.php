@@ -10,7 +10,10 @@
 
 									<span><b>Fecha: </b> <?php echo $movimientos[0]->fecha_entrada; ?></span><br>
 									<span><b>No. Movimiento: </b> <?php echo $movimientos[0]->movimiento; ?></span><br>
-									<span><b>Nro. Control: </b> <?php echo $movimientos[0]->factura; ?></span><br>
+									<?php if (($configuracion->activo==1)) {  ?> 
+										<span><b>Nro. Control: </b> <?php echo $movimientos[0]->factura; ?></span><br>
+									<?php }  ?> 	
+
 									<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
 		                            <span><b>Comentario: </b> <?php echo $movimientos[0]->movimiento; ?></span><br>
 							</p>

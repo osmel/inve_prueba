@@ -31,7 +31,9 @@
 						<th width="15%">Proveedor</th>
 						
 						<th width="10%">Fecha</th>
-						<th width="10%">Factura</th>
+						<?php if (($configuracion->activo==1)) {  ?>
+							<th width="10%">Factura</th>
+						<?php } ?>	
 						
 						<th width="10%">Subtotal</th>
 						<th width="10%">IVA</th>
@@ -52,7 +54,11 @@
 							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>
+							
+							<?php if (($configuracion->activo==1)) {  ?>
+								<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>
+							<?php } ?>	
+	
 							
 							
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->subtotal, 2, '.', ','); ?></td>

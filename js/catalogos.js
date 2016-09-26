@@ -1,6 +1,5 @@
 jQuery(document).ready(function($) {
 
-
 	var opts = {
 		lines: 13, 
 		length: 20, 
@@ -21,9 +20,7 @@ jQuery(document).ready(function($) {
 	};
 var target = document.getElementById('foo');
 
-
 /////////////////////////////////imprimir los detalles/////////////////////////////////////////////////////////////
-
 
 jQuery('body').on('click','#impresion_reporte_compra', function (e) {
 	  	       busqueda = jQuery('input[type=search]').val();
@@ -39,15 +36,11 @@ jQuery('body').on('click','#impresion_reporte_compra', function (e) {
 });
 
 
-
-
-
 jQuery('body').on('click','#exportar_reportes_compra', function (e) {
- busqueda = jQuery('input[type=search]').val();
+   busqueda = jQuery('input[type=search]').val();
 	   		     modulo = jQuery("#modulo").val(); 
     		 id_almacen = jQuery("#id_almacen_compra").val(); 
      		 movimiento = jQuery("#movimiento").val(); 
-
 
     abrir('POST', '/exportar_reportes_compra', {
     			busqueda: busqueda,
@@ -1372,8 +1365,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 			    if (settings.json.totales) {
 				    jQuery('#etiq_num_mov').val(  settings.json.totales.movimiento);
-					jQuery('#etiq_almacen').val( settings.json.totales.tipo_pago);
-					jQuery('#etiq_proveedor').val( settings.json.totales.almacen);
+					jQuery('#etiq_almacen').val( settings.json.totales.almacen); //
+					jQuery('#etiq_proveedor').val( settings.json.totales.nombre);
 
 					jQuery('#etiq_fecha').val( settings.json.totales.fecha);
 					jQuery('#etiq_factura').val( settings.json.totales.factura);
@@ -1628,6 +1621,11 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 
 
 		}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(5).visible(false);		
+			}			
+
     },
 
 
@@ -1808,6 +1806,10 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 
 			}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(5).visible(false);		
+			}			
 	    },
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
@@ -1978,6 +1980,9 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			}	
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(5).visible(false);		
+			}			
 	    },
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
@@ -2265,6 +2270,20 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(5).visible(false);		
+			}	
+
+
+			if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+				api.column(2).visible(false);		
+			}	else {
+				api.column(2).visible(true);		
+			}
+
+
+
 	    },
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
@@ -2450,6 +2469,18 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(4).visible(false);		
+			}		
+
+
+			if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+				api.column(1).visible(false);		
+			}	else {
+				api.column(1).visible(true);		
+			}
+
 	    },
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
@@ -2583,6 +2614,19 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			}	
+
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(6).visible(false);		
+			}			
+
+			if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+				api.column(1).visible(false);		
+			}	else {
+				api.column(1).visible(true);		
+			}
+
+
 	    },
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
@@ -3929,6 +3973,17 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	    	}
 	},	
 
+ "footerCallback": function( tfoot, data, start, end, display ) {
+ 		var api = this.api();
+		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+			api.column(3).visible(false);		
+		}	else {
+			api.column(3).visible(true);		
+		}
+		
+
+  },
+
 	"language": {  //tratamiento de lenguaje
 		"lengthMenu": "Mostrar _MENU_ registros por página",
 		"zeroRecords": "No hay registros",
@@ -4069,6 +4124,19 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 	    return pre
 	},    
+
+
+
+ "footerCallback": function( tfoot, data, start, end, display ) {
+ 		var api = this.api();
+		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+			api.column(3).visible(false);		
+		}	else {
+			api.column(3).visible(true);		
+		}
+		
+
+  },
 
    "columnDefs": [
 

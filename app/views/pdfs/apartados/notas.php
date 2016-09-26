@@ -5,7 +5,9 @@
 	<h4>Cargador: <?php echo $movimientos[0]->cargador; ?></h4>
 	<h4>Fecha: <?php echo $movimientos[0]->fecha; ?></h4>
 	<h4>Movimiento:<?php echo $movimientos[0]->mov_salida; ?></h4>
-	<h4>Factura: <?php echo $movimientos[0]->factura; ?></h4>
+	<?php if (($configuracion->activo==1)) {  ?>
+		<h4>Factura: <?php echo $movimientos[0]->factura; ?></h4>
+	<?php } ?>	
 
 
 	<div class="row">

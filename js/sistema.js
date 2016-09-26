@@ -2052,26 +2052,47 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
 
 
 
-
-
+if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 //home		
 		var existencia = ['Código', 'Producto', 'Color',  'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var devolucion = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var apartado = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha','Factura', 'No. de Partida','Almacén'];
-    	var cero = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura', 'No. de Partida','Almacén'];
-    	var baja = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura', 'No. de Partida','Almacén'];
+    	var cero = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
+    	var baja = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
 		
 //informe
+
 		var entrada = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso','Factura', 'No. de Partida','Almacén'];
 		var existencia_informe = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var devolucion_informe = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var apartado_informe = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha','Factura', 'No. de Partida','Almacén'];
-    	var cero_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura', 'No. de Partida','Almacén'];
-    	var baja_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura', 'No. de Partida','Almacén'];
-    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura', 'No. de Partida','Almacén'];
+    	var cero_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
+    	var baja_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
+    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
 
+} else { //sino tiene factura
 
+	//home		
+			var existencia = ['Código', 'Producto', 'Color',  'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+			var devolucion = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+			var apartado = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha', 'No. de Partida','Almacén'];
+	    	var cero = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+			var baja = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];	    	
+			
+	//informe
+
+			var entrada = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+			var salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso', 'No. de Partida','Almacén'];
+			var existencia_informe = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+			var devolucion_informe = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+			var apartado_informe = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha', 'No. de Partida','Almacén'];
+
+	    	var cero_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+	    	var baja_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+	    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+
+}
 
 
 
@@ -2769,7 +2790,15 @@ jQuery('#tabla_reporte').dataTable( {
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');			        
 
-		}	
+		}
+
+		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+			api.column(14).visible(false);		
+		}	else {
+			api.column(14).visible(true);		
+		}
+		
+	
     },
    "columnDefs": [
     			{ 
@@ -2844,6 +2873,34 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 
 		    default:
 		}
+
+		 var api = this.api();
+		if ( jQuery('#config_activo').val() == 0 ) {
+			api.column(12).visible(false);		
+		}	
+
+
+
+
+		switch(jQuery("#botones").val()) {
+		    case "cero":
+		    case "baja":
+		    case "top":
+		        
+		        //api.column(9).visible(false);		
+		        api.column(13).visible(false);		
+		        api.column(14).visible(false);		
+		        break;
+
+		    default:
+		    	//api.column(9).visible(true);		
+		        api.column(13).visible(true);		
+		        api.column(14).visible(true);		
+		      break;  
+
+		}
+
+
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
     		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
     	}
@@ -3583,6 +3640,16 @@ jQuery('#tabla_home').dataTable( {
 
 		}	
 
+		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+			api.column(16).visible(false);		
+		}	else {
+			api.column(16).visible(true);		
+		}
+		
+
+
+		
+
 
   },
 
@@ -3591,7 +3658,7 @@ jQuery('#tabla_home').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,4,5,6,7,8,11,13,14,16] //,11 //3,
+	                "targets": [0,1,2,4,5,6,7,8,12,13,14,16] //,11 //3,
 	            },
 
 	            
@@ -3635,6 +3702,28 @@ jQuery('#tabla_home').dataTable( {
 		    default:
 		        //default 
 		}
+
+		//quitar las columnas en cero y baja
+		 var api = this.api();
+		if ( jQuery('#config_activo').val() == 0 ) {
+			api.column(12).visible(false);		
+		}	
+		switch(jQuery("#botones").val()) {
+		    case "cero":
+		    case "baja":
+		        api.column(9).visible(false);		
+		        api.column(14).visible(false);		
+		        api.column(16).visible(false);		
+		        break;
+
+		    default:
+		    	api.column(9).visible(true);		
+		        api.column(14).visible(true);		
+		        api.column(16).visible(true);		
+		      break;  
+
+		}
+
 
 	for (var i=0; i<=arreglo.length-1; i++) { 
     		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
@@ -6476,6 +6565,11 @@ jQuery('#pedido_entrada').dataTable( {
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');	
 
+		}
+		if (( jQuery('#config_almacen').val() == 0 ) ) {
+			api.column(11).visible(false);		
+		}	else {
+			api.column(11).visible(true);		
 		}	
     },
 	"columnDefs": [
@@ -6625,6 +6719,11 @@ jQuery('#pedido_salida').dataTable( {
 					jQuery('#kg2').html('Total de kgs: 0.00');	
 
 		}	
+		if (( jQuery('#config_almacen').val() == 0 )  ) {
+			api.column(11).visible(false);		
+		}	else {
+			api.column(11).visible(true);		
+		}
     },
 	"columnDefs": [
 	    		{ 

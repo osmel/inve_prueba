@@ -21,6 +21,10 @@
 
  $id_almacen=$this->session->userdata('id_almacen');
 
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
   ?>
 
 <input type="hidden" id="id_proveedor" value="<?php echo $mi_proveedor; ?>">
@@ -86,24 +90,26 @@
 			</div>
 		</fieldset>	
 	</div>
-	<div class="col-xs-12 col-sm-4 col-md-2">
-		<?php if ($val_proveedor) { ?>
-		<fieldset class="disabledme" disabled>							
-		<?php } else { ?>
-		<fieldset class="disabledme">						
-		<?php } ?>
-			<div class="form-group">
-			<label for="factura">Factura/Remisión</label>
-				<div>
-					<?php if ($val_proveedor) { ?>
-					<input value="<?php echo htmlspecialchars($val_proveedor->factura); ?>" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">							
-					<?php } else { ?>
-					<input type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">
-					<?php } ?>				
+	<?php if (($configuracion->activo==1)) {  ?> 
+		<div class="col-xs-12 col-sm-4 col-md-2">
+			<?php if ($val_proveedor) { ?>
+			<fieldset class="disabledme" disabled>							
+			<?php } else { ?>
+			<fieldset class="disabledme">						
+			<?php } ?>
+				<div class="form-group">
+				<label for="factura">Factura/Remisión</label>
+					<div>
+						<?php if ($val_proveedor) { ?>
+						<input value="<?php echo htmlspecialchars($val_proveedor->factura); ?>" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">							
+						<?php } else { ?>
+						<input type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">
+						<?php } ?>				
+					</div>
 				</div>
-			</div>
-		</fieldset>	
-	</div>
+			</fieldset>	
+		</div>
+	<?php }  ?> 	
 </div>
 
 <div class="row">					
@@ -188,7 +194,7 @@
 
 
 	<!--almacen Asociado -->
-	<div class="col-xs-12 col-sm-6 col-md-3">
+	<div class="col-xs-12 col-sm-6 col-md-3"  <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 	    
 			<label for="id_almacen" class="col-sm-3 col-md-3 control-label">Almacén</label>
 			<div class="col-sm-9 col-md-10">

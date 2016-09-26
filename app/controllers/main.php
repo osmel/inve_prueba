@@ -574,6 +574,8 @@ class Main extends CI_Controller {
           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
           
+		  $dato['id'] = 7;
+		  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
           switch ($id_perfil) {    
             case 1:
@@ -708,9 +710,7 @@ class Main extends CI_Controller {
 	          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 	          $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
-
-
-
+	
 			      switch ($id_perfil) {    
 			        case 3:
 						       $data['val_proveedor']  = $this->modelo_inicio->valores_movimientos_temporal();
@@ -871,6 +871,8 @@ class Main extends CI_Controller {
                 $data['descripcion'] =$misdatos->descripcion;
 			    $data['movimientos'] = ($misdatos->movimientos);
                 $data['totales'] = ($misdatos->totales);
+			    $dato['id'] = 7;
+                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 
                 $html = $this->load->view('pdfs/apartados/informe_apartado', $data, true);

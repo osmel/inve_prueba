@@ -142,7 +142,10 @@ WHERE codigo =  "QkVR48700103062016124459_2"
  
               $this->db->set( 'id_user_devolucion', $id_session);
               $this->db->set( 'devolucion', 1);
-              $this->db->set( 'cod_devolucion', $data['cod_devolucion']);
+              
+              if  (isset($data['cod_devolucion'])) {  
+                $this->db->set( 'cod_devolucion', $data['cod_devolucion']);
+              }  
               $this->db->set( 'conse_devolucion', $data['consecutivo']);
               $this->db->set( 'comentario', $data['comentario']);
               $this->db->set( 'peso_real_devolucion', $data['peso_real_devolucion']);

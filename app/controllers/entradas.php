@@ -38,6 +38,9 @@ class Entradas extends CI_Controller {
     	        $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
     	        $data['pagos']   = $this->catalogo->listado_tipos_pagos();
 
+ 				$dato['id'] = 7;
+		      	$data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
 
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -84,8 +87,16 @@ class Entradas extends CI_Controller {
 	     }
 
 
+		$d_conf['id'] = 7;
+		$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+		if (($d_conf['configuracion']->activo==1)) {  
+			$this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');	
+		}	
+
       $this->form_validation->set_rules( 'editar_proveedor', 'Proveedor', 'required|xss_clean'); //callback_valid_option|
-      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      
+      
       $this->form_validation->set_rules( 'prod_entrada', 'Producto', 'required|xss_clean'); //callback_valid_option
       $this->form_validation->set_rules( 'color', 'Color', 'required|xss_clean'); 
       $this->form_validation->set_rules( 'composicion', 'Composición', 'required|xss_clean');
@@ -108,10 +119,14 @@ class Entradas extends CI_Controller {
 
       if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) ) {
           
+			if (($d_conf['configuracion']->activo==1)) {  
+				$data['factura']   = $this->input->post('factura');
+			}	
+
           $data['id_empresa']   = $data['id_proveedor'];
           $data['fecha']   = $this->input->post('fecha');
           $data['movimiento']   = $this->input->post('movimiento');
-          $data['factura']   = $this->input->post('factura');
+          
           $data['id_almacen']   = $this->input->post('id_almacen');
           $data['id_factura']   = $this->input->post('id_factura');
 
@@ -216,7 +231,7 @@ class Entradas extends CI_Controller {
 		}
 
 		$dato = $this->model_entrada->valores_reordenar($data );
-		//print_r($dato);
+		
 		$eliminado = $this->model_entrada->eliminar_prod_temporal(  $data );
 		$reordenar = $this->model_entrada->reordenar_prod_temporal( $dato );
 

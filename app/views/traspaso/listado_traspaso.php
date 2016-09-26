@@ -12,6 +12,8 @@
 
 
    $id_almacen=$this->session->userdata('id_almacen');
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
 
 
 ?>	
@@ -35,7 +37,7 @@
 
 
 
-		   <div class="col-md-5">
+		   <div class="col-md-5" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 

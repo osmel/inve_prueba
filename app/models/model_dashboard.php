@@ -1342,7 +1342,7 @@ CASE
                                       9=> date( 'd-m-Y', strtotime($row->fecha_entrada)),
                                       10=>$row->metros,
                                       11=>$row->kilogramos,
-                                      12=>$row->factura,
+                                      12=>"pwapsdpdodk", //$row->factura,
                                       13=>$row->color_devolucion,
                                       14=>$row->num_partida,
                                       15=>$row->imagen,

@@ -1,5 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-<?php $this->load->view( 'header' ); ?>
+<?php $this->load->view( 'header' ); 
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+?>
 <div class="container margenes">
 
 
@@ -62,7 +65,7 @@
 							</div>
 						</div>		
 						
-					    <div class="col-sm-4 col-md-2">
+					    <div class="col-sm-4 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 							<div class="form-group">
 								<label for="label_almacen" id="label_almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<input type="text" disabled class="form-control" id="etiq_almacen" name="etiq_almacen" placeholder="">

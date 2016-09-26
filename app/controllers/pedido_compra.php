@@ -33,10 +33,6 @@ impresion_reporte_compra
  public function impresion_reporte_compra() {
 
         $data = $_POST;
-        //print_r($data );
-        //die;
-
-
 
           switch ($data['modulo']) {
             case 1:          
@@ -58,6 +54,10 @@ impresion_reporte_compra
                break;
            }
 
+
+
+         $dato['id'] = 7;
+         $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
           //$data['movimientos'] = $this->model_traspaso->imprimir_detalle_general_traspaso_manual($data);        
           $html = $this->load->view('pdfs/pedido_compra/detalles_historico', $data, true);
@@ -144,10 +144,14 @@ public function proc_pedido_cambio(){
             $errores='';
 
         
+                $d_conf['id'] = 7;
+                $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
-                $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+                if (($d_conf['configuracion']->activo==1)) {  
+                  $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+                }  
 
-                if ($this->form_validation->run() === TRUE) {           
+                if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
                       //actualizar cantidad aprobada
                       $data['movimiento'] =   $this->input->post('movimiento');
                       $data['comentario'] =   $this->input->post('comentario');
@@ -280,7 +284,7 @@ public function detalle_revision($movimiento, $modulo){
            $data['modulo']  = base64_decode($modulo); 
            $data['movimiento']  = base64_decode($movimiento); 
 
-           //$data['retorno'] = base64_decode($modulo);
+           
 
            switch ($data['modulo']) {
              case 1:
@@ -314,14 +318,14 @@ public function detalle_revision($movimiento, $modulo){
                break;
            }
 
-           //no. movimiento
            
            //Aqui busca el encabezado del pedido de compra
-           
 
 
-
+          $dato['id'] = 7;
+          $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+
 
           switch ($id_perfil) {    
             case 1:          
@@ -531,6 +535,8 @@ public function nuevo_pedido_compra($url){
 
            $data['retorno'] = base64_decode($url);
 
+            $dato['id'] = 7;
+            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
            
            
@@ -646,14 +652,21 @@ function agregar_salida_compra(){
         redirect('');
       } else {
 
-      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+          $d_conf['id'] = 7;
+      $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+      if (($d_conf['configuracion']->activo==1)) {  
+        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      }  
 
 
-      if ( ($this->form_validation->run() === TRUE)  ) {
+      if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
 
             $data['id'] = $this->input->post('identificador');
             $data['movimiento'] = $this->input->post('movimiento');
-            $data['factura'] = $this->input->post('factura');
+            if (($d_conf['configuracion']->activo==1)) {  
+              $data['factura'] = $this->input->post('factura');
+            }  
             $data['comentario'] = $this->input->post('comentario');
             $data['id_almacen'] = $this->input->post('id_almacen');
 
@@ -734,10 +747,15 @@ function quitar_salida_compra(){
 
         
 
-        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+            $d_conf['id'] = 7;
+        $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+        if (($d_conf['configuracion']->activo==1)) {  
+          $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+        }  
 
             
-        if ($this->form_validation->run() === TRUE) {           
+        if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
            if  (!($existe)) {
             $errores= "Debe agregar al menos un producto";
            } else {  //si estan agregados los productos entonces checar si tienen el peso real
@@ -760,7 +778,7 @@ function quitar_salida_compra(){
 
           $data['consecutivo']  = ($this->catalogo->listado_consecutivo(26)->consecutivo)+1;
 
-          if ( ($existe) and ($this->form_validation->run() === TRUE) ) {
+          if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
                 //verificar si los apartados estan siendo totales o parciales
                     
                     $this->model_pedido_compra->enviar_historico_pedido_compra($data);

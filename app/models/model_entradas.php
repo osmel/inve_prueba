@@ -173,22 +173,6 @@
               $this->db->set( 'comentario', $data['comentario']);  //
 
 
-              //$this->db->set( 'referencia', $data['referencia']);
-              //$this->db->set( 'fecha_entrada', $data['fecha_entrada']  );  
-              //$this->db->set( 'movimiento', $data['movimiento']);  
-              //$this->db->set( 'id_almacen', $data['id_almacen']);  
-              //$this->db->set( 'codigo', $data['codigo']   );
-              //$this->db->set( 'id_empresa',  $data['id_empresa'] );    
-              //$this->db->set( 'factura', $data['factura']   );  
-              //$this->db->set( 'id_descripcion', $data['id_descripcion']);  
-              //$this->db->set( 'id_color', $data['id_color']);  
-              //$this->db->set( 'id_composicion', $data['id_composicion']  );  
-              //$this->db->set( 'id_calidad', $data['id_calidad']   );  
-              //$this->db->set( 'peso_real', $data['peso_real']  );  
-              //$this->db->set( 'iva', $data['iva']  );  
-              //$this->db->set( 'num_partida', $data['num_partida']  );  
-              //$this->db->set( 'id_lote', $data['id_lote']);     
-              //$this->db->set( 'id_estatus', $data['id_estatus']);
 
 
               $this->db->where('codigo',$data['codigo']);
@@ -231,18 +215,7 @@
           $id_session = $this->session->userdata('id');
           $fecha_hoy2 = date('Y-m-d H:i:s');  
           
-          //$nuevafecha = strtotime ( '+1 hour' , strtotime ($fecha_hoy2) ) ;
-
           $fecha_hoy= date ( 'Y-m-d H:i:s' , strtotime ( '+1 g' , strtotime ($fecha_hoy2) ) );
-
-          //$fecha ='2013-12-16';
- 
-          //$fecha10diasdespues = date('Y-m-d',strtotime('+10 days', strtotime($fecha)));
-
-
-          /*
-          $fecha_hoy2 =  date("Y-m-d h:ia"); 
-          $fecha_hoy = new DateTime($fecha_hoy);*/
 
           $cant=0;
 
@@ -267,7 +240,11 @@
               $this->db->set( 'id_empresa',  $data['id_empresa'] );    
               $this->db->set( 'fecha_entrada', $fecha_hoy  );  
               $this->db->set( 'movimiento', $data['movimiento']);  
-              $this->db->set( 'factura', $data['factura']   );  
+
+              if  (isset($data['factura'])) {
+                $this->db->set( 'factura', $data['factura']   );  
+              }
+
               $this->db->set( 'id_almacen', $data['id_almacen']   );  
               $this->db->set( 'id_factura', $data['id_factura']   );  
               $this->db->set( 'id_tipo_pago', $data['id_tipo_pago']   );  

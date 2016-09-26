@@ -4,9 +4,16 @@
 	  $id_session = $this->session->userdata('id');
 	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 
-	  //if (isset($params['level']) && in_array($params['level'], array('L','M','Q','H'))) $level = $params['level'];
-	  //if (!in_array($condition{0},array('>', '<', '='))) {
-	  //$colab_id_array =
+		$dato['id'] = 7;
+		$configuracion = $this->catalogo->coger_configuracion($dato); 
+
+		$dato['id'] = 8;
+		$this->session->set_userdata('config_almacen', $this->catalogo->coger_configuracion($dato));
+		
+
+		$config_almacen = $this->session->userdata('config_almacen');
+		$el_perfil = $this->session->userdata('id_perfil');
+
 
 	  if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) )  
 	  		{
@@ -41,29 +48,18 @@
          } else {
          	$dato['tienda'] ="0";
          }
-	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			
 			$conteos =  '<span title="Pedidos Vendedores." class="ttip">'.$dato['vendedor'].'</span><span> - </span><span title="Pedidos Tiendas." class="ttip">'.$dato['tienda'].'</span>';
 
 
 
 
 ?>	
+
+<input type="hidden" id="config_almacen" name="config_almacen" value="<?php echo $config_almacen->activo; ?>" >
+<input type="hidden" id="config_activo" name="config_activo" value="<?php echo $configuracion->activo; ?>">
+<input type="hidden" id="el_perfil" name="el_perfil" value="<?php echo $perfil; ?>">
+
 
 <div class="row-fluid">
 	<div class="navbar navbar-default navbar-custom" style="font-size: 12px;" role="navigation">

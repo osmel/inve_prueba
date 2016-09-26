@@ -111,21 +111,22 @@ echo form_open('validar_edicion_producto', $attr);
 
 		
 		
+		<?php if (($configuracion->activo==1)) {  ?> 
+			<div class="col-xs-12 col-sm-12 col-md-2">
+					<fieldset class="disabledme" disabled>							
 
-		<div class="col-xs-12 col-sm-12 col-md-2">
-				<fieldset class="disabledme" disabled>							
-
-				<div class="form-group">
-					<label for="factura" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Factura/Remisión</label>
-					<div class="col-sm-12 col-md-12">
-									<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+					<div class="form-group">
+						<label for="factura" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Factura/Remisión</label>
+						<div class="col-sm-12 col-md-12">
+										<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+						</div>
 					</div>
-				</div>
+				
+					</fieldset>							
+				
 			
-				</fieldset>							
-			
-		
-		</div>
+			</div>
+		<?php }  ?> 	
 
 
 		<div class="col-xs-12 col-sm-6 col-md-2">

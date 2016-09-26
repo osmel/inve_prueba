@@ -10,6 +10,8 @@
    }  
 
 	$id_almacen=$this->session->userdata('id_almacen');
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
 ?>
 <style>
 
@@ -28,7 +30,7 @@
 			<!--status 				
 			<div class="col-sm-0 col-md-3"></div>-->
 
-	   <div class="col-xs-12 col-sm-6 col-md-2">
+	   <div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0)  ) ? 'none':'block').'"'; ?>>
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
@@ -67,7 +69,7 @@
 
 		   </div>	
 
-		<div class="col-xs-12 col-sm-6 col-md-2">
+		<div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0)  ) ? 'none':'block').'"'; ?>>
 			<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
 			<select name="id_factura_inicio" id="id_factura_inicio" class="form-control">
 					<option value="0">Todos</option> 

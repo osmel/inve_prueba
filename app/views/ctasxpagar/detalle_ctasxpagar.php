@@ -67,12 +67,14 @@ if (ltrim($retorno)=="") {
 							</div>
 						</div>
 						
-						<div class="col-sm-4 col-md-2" >
-							<div class="form-group">
-								<label for="descripcion" class="col-sm-12 col-md-12">Factura</label>
-									<input type="text" disabled class="form-control" id="etiq_factura" name="etiq_hora" placeholder="">
-							</div>
-						</div>		
+						<?php if ($config_factura->activo==1) { ?>
+							<div class="col-sm-4 col-md-2" >
+								<div class="form-group">
+									<label for="descripcion" class="col-sm-12 col-md-12">Factura</label>
+										<input type="text" disabled class="form-control" id="etiq_factura" name="etiq_hora" placeholder="">
+								</div>
+							</div>		
+						<?php } ?>
 
 
 

@@ -8,6 +8,7 @@ class Pdf_reportes extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->model('informes_model','informes_model');
+        $this->load->model('catalogo', 'catalogo');  
     }
     
 
@@ -72,7 +73,8 @@ class Pdf_reportes extends CI_Controller {
 
         $data=$_POST;
 
-
+       $dato['id'] = 7;
+       $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
         switch($extra_search) {
 

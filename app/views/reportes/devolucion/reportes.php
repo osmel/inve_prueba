@@ -119,16 +119,16 @@
 		                     </div>
 
 
-		                     
-							<div class="col-xs-12 col-sm-6 col-md-3" id="bloque_factura">
-									<div class="form-group">
-									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
-										<div class="col-sm-12 col-md-12">
-											<input type="text" class="form-control" id="factura_reporte" name="factura_reporte" placeholder="Factura/Rem">
+		                    <fieldset <?php echo 'style="display:'.(($configuracion->activo==0) ? 'none':'block' ).'"'; ?> >
+								<div class="col-xs-12 col-sm-6 col-md-3" id="bloque_factura">
+										<div class="form-group">
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
+											<div class="col-sm-12 col-md-12">
+												<input type="text" class="form-control" id="factura_reporte" name="factura_reporte" placeholder="Factura/Rem">
+											</div>
 										</div>
-									</div>
-							</div>	
-
+								</div>	
+							</fieldset>		
 
 
 		            </div>     

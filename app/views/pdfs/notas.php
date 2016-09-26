@@ -12,7 +12,12 @@
 								<span><b>Proveedor: </b> <?php echo strtoupper($movimientos[0]->nombre); ?></span><br>
 								<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 								<span><b>Movimiento: </b><?php echo $movimientos[0]->movimiento; ?></span><br>
-								<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>
+								
+
+								<?php if (($configuracion->activo==1)) {  ?>
+									<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>
+								<?php } ?>
+
 								<span><b>Tipo de Operación: </b> <?php echo $etiq_mov; ?></span><br>
 								<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
 						</th>

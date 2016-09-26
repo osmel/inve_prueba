@@ -13,6 +13,9 @@
 
    $id_almacen=$this->session->userdata('id_almacen');
 
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 
 ?>	
 
@@ -35,14 +38,14 @@
 
 
 
-		   <div class="col-md-5">
+		   <div class="col-md-5" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
 					
 					    
 							<label for="id_almacen_pedido" class="col-sm-3 col-md-3 control-label">Almacén</label>
-							<div class="col-sm-9 col-md-8">
+							<div class="col-sm-9 col-md-8"  >
 							    <!--Los administradores o con permisos de entrada 
 							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
 							    	que no sean almacenista 

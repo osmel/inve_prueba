@@ -24,7 +24,7 @@
 					<tr><th> </th></tr>
 					<tr>
 
-						<th width="11%">Código</th>
+						<th width="<?php echo (($configuracion->activo==0)?17:11);  ?>%">Código</th>
 						<th width="16%">Descripción</th>
 						
 						<th width="8%">Color</th>
@@ -36,7 +36,9 @@
 						<th width="16%">Cliente</th>
 						<th width="6%">Lote</th>
 						<th width="8%">Egreso</th>
-						<th width="6%">Factura</th>			
+						<?php if (($configuracion->activo==1)) {  ?>
+							<th width="6%">Factura</th>			
+						<?php } ?>	
 						<th width="6%">Almacén</th>							
 						
 					</tr>
@@ -45,7 +47,7 @@
 				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
-							<td width="11%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
+							<td width="<?php echo (($configuracion->activo==0)?17:11);  ?>%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
 							<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
 							
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
@@ -56,7 +58,9 @@
 							<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo;  ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo date( 'd-m-Y', strtotime($movimiento->fecha_salida)); ?></td>
-							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>
+							<?php if (($configuracion->activo==1)) {  ?>
+								<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>
+							<?php } ?>		
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
 
 							 

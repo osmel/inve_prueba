@@ -84,6 +84,9 @@ class Inventario extends CI_Controller {
 
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $dato['id'] = 7;
+              $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
 
           switch ($id_perfil) {    
             case 1:          
@@ -214,7 +217,13 @@ class Inventario extends CI_Controller {
       $this->form_validation->set_rules( 'editar_prod_inven', 'Código Producto', 'required|xss_clean'); //callback_valid_option| 
 
       $this->form_validation->set_rules( 'proveedor', 'Proveedor', 'required|xss_clean'); //callback_valid_option|
-      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      
+      $d_conf['id'] = 7;
+      $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+      if (($d_conf['configuracion']->activo==1)) {  
+        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+      }  
 
       $this->form_validation->set_rules( 'producto', 'Producto', 'required|callback_valid_selector|xss_clean'); //callback_valid_option
       $this->form_validation->set_rules( 'color', 'Color', 'required|callback_valid_selector|xss_clean'); 
@@ -239,7 +248,9 @@ class Inventario extends CI_Controller {
           
           $data['codigo']   = $data['codigo'];
           $data['id_empresa']   = $data['id_proveedor'];
-          $data['factura']   = $this->input->post('factura');
+          if (($d_conf['configuracion']->activo==1)) {  
+              $data['factura']   = $this->input->post('factura');
+          }    
 
           
 

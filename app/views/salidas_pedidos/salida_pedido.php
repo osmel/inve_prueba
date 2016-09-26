@@ -13,6 +13,10 @@
 
   $fecha_hoy = date('j-m-Y');
      $id_almacen=$this->session->userdata('id_almacen');
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>	
 <div class="container margenes">
 <div class="panel panel-primary">
@@ -42,7 +46,7 @@
 
 
 
-		   <div class="col-xs-12 col-sm-6 col-md-3">
+		   <div class="col-xs-12 col-sm-6 col-md-3" <?php echo 'style="display:'.( (($config_almacen->activo==0) ) ? 'none':'block').'"'; ?> >
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
@@ -259,7 +263,7 @@
 		<section>
 
 
-		<div class="col-xs-12 col-sm-6 col-md-2">
+		<div class="col-xs-12 col-sm-6 col-md-2" style="display:none;">
 			<label for="descripcioon" class="col-sm-12 col-md-12">Filtro de Factura</label>
 			<select name="id_factura_filtro" id="id_factura_filtro" class="form-control">
 					<option value="0">Todos</option> 

@@ -10,6 +10,10 @@
 
  $id_almacen=$this->session->userdata('id_almacen');
 
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>
 
 
@@ -45,7 +49,7 @@
 				
 							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 							
-							<div id="almacen_id" class="col-xs-12 col-sm-6 col-md-2">
+							<div id="almacen_id" class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 								<div class="form-group">
 									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<div class="col-sm-12 col-md-12">
@@ -112,14 +116,16 @@
 
 
 			                     
-								<div class="col-xs-12 col-sm-6 col-md-2" id="bloque_factura">
-										<div class="form-group">
-										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
-											<div class="col-sm-12 col-md-12">
-												<input type="text" class="form-control" id="factura_costo" name="factura_costo" placeholder="Factura/Rem">
+								
+									<div style="display:none;" class="col-xs-12 col-sm-6 col-md-2" id="bloque_factura">
+											<div class="form-group">
+											<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
+												<div class="col-sm-12 col-md-12">
+													<input type="text" class="form-control" id="factura_costo" name="factura_costo" placeholder="Factura/Rem">
+												</div>
 											</div>
-										</div>
-								</div>	
+									</div>	
+								
 							</div>	
 
 

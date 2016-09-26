@@ -20,6 +20,10 @@
 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_editar_devolucion','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
 echo form_open('validar_devolucion_producto', $attr);
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>		
 <div class="container">
 
@@ -31,7 +35,9 @@ echo form_open('validar_devolucion_producto', $attr);
 <!--almacen Asociado -->
 					<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
-					<div class="col-xs-12 col-sm-6 col-md-3">
+					
+
+					<div class="col-xs-12 col-sm-6 col-md-3" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?> >
 					    
 							<label for="id_almacen" class="col-sm-3 col-md-3 control-label">Almacén</label>
 							<div class="col-sm-9 col-md-10">
@@ -120,17 +126,19 @@ echo form_open('validar_devolucion_producto', $attr);
 		UPDATE `inven_historico_registros_salidas` SET `devolucion`=0,`id_user_devolucion`='',`cod_devolucion`='' 
 		-->
 
-		<div class="col-xs-12 col-sm-6 col-md-2">
-			<fieldset class="disableddev">
-				<div class="form-group">
-					<label for="cod_devolucion" class="col-sm-12 col-md-12">Devolución</label>
-					<div class="col-sm-12 col-md-12">
-									<input type="text" class="form-control ttip" id="cod_devolucion" name="cod_devolucion" placeholder="Devolución" title="No. de Referencia.">
+		<?php if ($configuracion->activo==1) { ?>
+			<div class="col-xs-12 col-sm-6 col-md-2">
+				<fieldset class="disableddev">
+					<div class="form-group">
+						<label for="cod_devolucion" class="col-sm-12 col-md-12">Devolución</label>
+						<div class="col-sm-12 col-md-12">
+										<input type="text" class="form-control ttip" id="cod_devolucion" name="cod_devolucion" placeholder="Devolución" title="No. de Referencia.">
+						</div>
 					</div>
-				</div>
-			</fieldset>	
-		
-		</div>
+				</fieldset>	
+			
+			</div>
+		<?php } ?>	
 
 
 		<div class="col-xs-12 col-sm-6 col-md-3">
@@ -147,22 +155,22 @@ echo form_open('validar_devolucion_producto', $attr);
 
 		
 		
+		<?php if (($configuracion->activo==1)) {  ?> 
+			<div class="col-xs-12 col-sm-6 col-md-3">
+					<fieldset class="disabledme" disabled>							
 
-		<div class="col-xs-12 col-sm-6 col-md-3">
-				<fieldset class="disabledme" disabled>							
-
-				<div class="form-group">
-					<label for="factura" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Factura/Remisión</label>
-					<div class="col-sm-12 col-md-12">
-									<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+					<div class="form-group">
+						<label for="factura" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Factura/Remisión</label>
+						<div class="col-sm-12 col-md-12">
+										<input type="text" class="form-control" id="factura" name="factura" placeholder="Factura">
+						</div>
 					</div>
-				</div>
+				
+					</fieldset>							
+				
 			
-				</fieldset>							
-			
-		
-		</div>
-
+			</div>
+		<?php }  ?> 		
 </div>
 
 

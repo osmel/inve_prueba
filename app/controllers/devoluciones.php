@@ -84,8 +84,11 @@ class Devoluciones extends CI_Controller {
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
               $data['productos'] = $this->catalogo->listado_productos();
               $data['consecutivo']  = $this->catalogo->listado_consecutivo(23);
-              
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+  
+              $dato['id'] = 7;
+              $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
 
           switch ($id_perfil) {    
             case 1:          
@@ -143,8 +146,14 @@ class Devoluciones extends CI_Controller {
       $this->form_validation->set_rules( 'editar_prod_devolucion', 'Código Producto', 'required|xss_clean'); //callback_valid_option| 
 
       $this->form_validation->set_rules( 'proveedor', 'Proveedor', 'required|xss_clean'); //callback_valid_option|
-      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
-      $this->form_validation->set_rules( 'cod_devolucion', 'Devolución', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
+      $d_conf['id'] = 7;
+      $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
+
+      
+      if (($d_conf['configuracion']->activo==1)) {  
+        $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
+        $this->form_validation->set_rules( 'cod_devolucion', 'Devolución', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
+      }    
 
       $this->form_validation->set_rules( 'producto', 'Producto', 'required|xss_clean'); //callback_valid_option
       $this->form_validation->set_rules( 'color', 'Color', 'required|xss_clean'); 
@@ -165,7 +174,9 @@ class Devoluciones extends CI_Controller {
 
           $data['consecutivo']   = $this->input->post('consecutivo');
           $data['codigo']   = $data['codigo'];
-          $data['cod_devolucion']   = $this->input->post('cod_devolucion');
+          if ($d_conf['configuracion']->activo==1) {  
+            $data['cod_devolucion']   = $this->input->post('cod_devolucion');
+          }  
           $data['comentario']   = $this->input->post('comentario');
           $data['peso_real_devolucion']   = $this->input->post('peso_real');
        

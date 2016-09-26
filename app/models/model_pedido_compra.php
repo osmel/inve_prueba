@@ -1649,8 +1649,11 @@ public function totales_importes_salida($data){
              $this->db->select($data['id'].' AS id_producto',false);  
              $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
              $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
-             //$this->db->select('"'.$fecha_hoy.'" AS fecha_mac',false);
-             $this->db->select('"'.addslashes($data['factura']).'" AS factura',false); 
+             
+             if  (isset($data['factura'])) {
+               $this->db->select('"'.addslashes($data['factura']).'" AS factura',false); 
+             }
+               
              $this->db->select('"'.addslashes($data['movimiento']).'" AS movimiento',false); 
              $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
              $this->db->select('"'.addslashes($data['comentario']).'" AS comentario',false); 

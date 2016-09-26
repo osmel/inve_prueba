@@ -6,6 +6,10 @@
       	$retorno ="reportes";
     }
     $id_almacen=$this->session->userdata('id_almacen');
+
+	$config_almacen = $this->session->userdata( 'config_almacen' );
+	$el_perfil = $this->session->userdata( 'id_perfil' );
+
 ?>   
 <div class="container margenes">
 		<div class="container margenes">
@@ -60,7 +64,7 @@
 
 
 							<!--Tipos de almacen -->
-							<div class="col-xs-12 col-sm-6 col-md-2">
+							<div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 								<div class="form-group">
 									<label for="almacen" class="col-sm-12 col-md-12">Almacén</label>
 									<div class="col-sm-12 col-md-12">

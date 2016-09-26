@@ -1600,8 +1600,9 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                 //$this->db->set( 'fecha_pc',  gmt_to_local( $timestamp, $this->timezone, TRUE) );
             
                 
-                
-                $this->db->set( 'num_control', '"'.$data['factura'].'"', false);
+                if  (isset($data['factura'])) {
+                  $this->db->set( 'num_control', '"'.$data['factura'].'"', false);
+                }  
                 $this->db->set( 'comentario_traspaso', '"'.$data['comentario'].'"', false);
                 $this->db->set( 'id_usuario_traspaso', $id_session );
 
