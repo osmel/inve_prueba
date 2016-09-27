@@ -2219,6 +2219,22 @@ public function valores_movimientos_temporal(){
 
 
 
+
+       public function consecutivo_operacion( $id,$id_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
       public function procesando_traspaso_definitivo( $data ){
              $id_session = $this->session->userdata('id');
              $fecha_hoy = date('Y-m-d H:i:s');
@@ -2254,7 +2270,14 @@ public function valores_movimientos_temporal(){
                $this->db->insert($this->historico_registros_traspasos, $value); 
              }
 
-              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+              //$this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+
+              if ($data['id_factura']==1) {
+                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              } else {
+                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              }
+
               $this->db->set( 'id_usuario', $id_session );
               $this->db->where('id',26);
               $this->db->update($this->operaciones);  

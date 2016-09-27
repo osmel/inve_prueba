@@ -398,11 +398,13 @@ public function procesando_traspaso_general_detalle_manual(){
     echo $busqueda;
   } 
 
-
-
+ 
 
   public function procesando_traspaso_definitivo(){
-      $data['consecutivo']  = (($this->catalogo->listado_consecutivo(26)->consecutivo)+1);
+      //$data['consecutivo']  = (($this->catalogo->listado_consecutivo(26)->consecutivo)+1);
+
+      $data['id_factura'] = $this->input->post('id_factura');
+      $data['consecutivo']  =$this->model_traspaso->consecutivo_operacion(26,$data['id_factura']);
       $actualizar = $this->model_traspaso->procesando_traspaso_definitivo($data);
       $this->model_traspaso->eliminar_traspaso_definitivo($data);
       

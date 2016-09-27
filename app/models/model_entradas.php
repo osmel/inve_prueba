@@ -669,18 +669,6 @@ public function totales_importes($where){
 
 
 
-     public function consecutivo_operacion( $id ){
-              
-            $this->db->select("o.consecutivo");         
-            $this->db->from($this->operaciones.' As o');
-            $this->db->where('o.id',$id);
-            $result = $this->db->get( );
-                if ($result->num_rows() > 0)
-                    return $result->row()->consecutivo+1;
-                else 
-                    return FALSE;
-                $result->free_result();
-     }  
 
 
      public function actualizando_consecutivo_productos($id_operacion){
@@ -738,11 +726,7 @@ public function totales_importes($where){
 
           
           foreach ($objeto as $key => $value) {
-
-
-
                 $cant=0;
-
                 $cant = self::consecutivo_productos($value->referencia)->consecutivo;
 
                 if ($cant ==false) {
@@ -756,8 +740,6 @@ public function totales_importes($where){
 
                 $this->db->where('referencia',$value->referencia);
                 $this->db->where('id_usuario',$id_session);
-               // $this->db->where('id_operacion',$id_operacion);
-
                 $this->db->order_by("referencia", 'ASC');
                 $this->db->order_by("consecutivo", 'ASC');
 
@@ -775,37 +757,36 @@ public function totales_importes($where){
                   $this->db->where('id',$valor->id);
 
                   $this->db->update($this->registros_temporales);
-                  
 
                 }
-
-
            }     
-
-
-
-
-
         }
 
 
 
 
+       public function consecutivo_operacion( $id,$id_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
 
 
 
 
         //procesando operaciones
-        public function procesando_operacion( $id_operacion ){
-
-          $consecutivo = self::consecutivo_operacion(1); //cambio
-
-                    
-
+        public function procesando_operacion( $data ){
+          $consecutivo = self::consecutivo_operacion(1,$data['id_factura']); //cambio
           self::reordenar_new_temporal(); //cambio
-
-          self::actualizando_consecutivo_productos($id_operacion); //cambio
-          
+          self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
 
           $id_session = $this->session->userdata('id');
           $fecha_hoy = date('Y-m-d H:i:s');  
@@ -821,7 +802,7 @@ public function totales_importes($where){
           $this->db->from($this->registros_temporales);
 
           $this->db->where('id_usuario',$id_session);
-          $this->db->where('id_operacion',$id_operacion);
+          $this->db->where('id_operacion',$data['id_operacion']);
 
           $result = $this->db->get();
 
@@ -856,7 +837,7 @@ public function totales_importes($where){
           
                   $where = '(
                                  (m.id_usuario = "'.$id_session.'" ) AND
-                                 ( m.id_operacion = '.$id_operacion.' )    AND ( m.devolucion = 0 )
+                                 ( m.id_operacion = '.$data['id_operacion'].' )    AND ( m.devolucion = 0 )
                            )';
                    
 
@@ -879,13 +860,18 @@ public function totales_importes($where){
           //fin de  agregar "historico_ctasxpagar"
 
           //actualizar (consecutivo) en tabla "operacion" 
-          $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+          if ($data['id_factura']==1) {
+              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          } else {
+              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+          }
+
           $this->db->set( 'id_usuario', $id_session );
           $this->db->where('id',1);
           $this->db->update($this->operaciones);
 
           //eliminar los registros en "temporal_registros" del usuario 
-          $this->db->delete($this->registros_temporales, array('id_usuario'=>$id_session,'id_operacion'=>$id_operacion)); 
+          $this->db->delete($this->registros_temporales, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'])); 
 
           return $num_movimiento;
 
@@ -969,46 +955,7 @@ public function totales_importes($where){
 
 
 
-          //listado de la regilla
-        public function listado_movimientos_registros_old($data){
-
-          $id_session = $this->session->userdata('id');
-                    
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion,m.id_almacen, m.id_factura,m.id_tipo_pago, m.iva');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
-          $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y %H:%i") as fecha2', false);
-
-          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
           
-
-          $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
-
-          
-          $this->db->from($this->registros.' as m');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-
-          $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.id_operacion',1);
-          $this->db->where('m.movimiento',$data['num_mov']);
-
-          $this->db->order_by('m.id_lote', 'asc'); 
-          $this->db->order_by('m.codigo', 'asc'); 
-          $this->db->order_by('m.consecutivo', 'asc'); 
-
-           $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-        }        
-
-
 
 
 

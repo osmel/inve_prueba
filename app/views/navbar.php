@@ -147,13 +147,13 @@
 						</li>
 					<?php } ?>			
 
-					<?php if ( ( $perfil == 1 ) || (in_array(27, $coleccion_id_operaciones)) ) { ?>		 
+					<?php if ( ( $perfil == 1 ) || ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) ) { ?>		 
 						<li id="bar_listado_ctasxpagar"> 
 							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>listado_ctasxpagar" class="ttip color-blanco">Cuentas por Pagar</a>
 						</li>
 					 <?php } ?>	
 
-					<?php if ( ( $perfil == 1 ) || (in_array(29, $coleccion_id_operaciones)) ) { ?>		 
+					<?php if ( ( $perfil == 1 ) || (in_array(39, $coleccion_id_operaciones)) ) { ?>		 
 						<li id="bar_pendiente_revision"> 
 							<a title="Administración cuentas por Pagar." href="<?php echo base_url(); ?>pendiente_revision" class="ttip color-blanco">Compra</a>
 						</li>

@@ -2266,43 +2266,27 @@
             $result->free_result();
       }   
 
-    /*
-    public function valores_movimientos_temporal(){
+   
 
-          $id_session = $this->session->userdata('id');
-          
-          $this->db->distinct();          
-          $this->db->select('m.id, m.id_cliente, m.id_cargador, m.factura,m.id_tipo_pedido,m.id_tipo_factura');
-          $this->db->select('p.nombre, ca.nombre cargador');
-          
-          $this->db->from($this->registros_salidas.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+       public function consecutivo_operacion( $id,$id_tipo_pedido,$id_tipo_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
 
-          $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('id_operacion',2);
-           $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-        }   
-  */
 
-     public function consecutivo_operacion( $id ){
-              
-            $this->db->select("o.consecutivo");         
-            $this->db->from($this->operaciones.' As o');
-            $this->db->where('o.id',$id);
-            $result = $this->db->get( );
-                if ($result->num_rows() > 0)
-                    return $result->row()->consecutivo+1;
-                else 
-                    return FALSE;
-                $result->free_result();
-     }  
+                  $consecutivo_actual = (( ($id_tipo_pedido == 1) && ($id_tipo_factura==1) ) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                  $consecutivo_actual = ( ($id_tipo_pedido==2) ? $result->row()->conse_surtido : $consecutivo_actual);
+                       
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
 
         //cambiar estatus de unidad
         public function pedido_definitivamente( $data ){
@@ -2310,7 +2294,7 @@
               $id_session = $this->session->userdata('id');
               $fecha_hoy = date('Y-m-d H:i:s');  
 
-              $consecutivo = self::consecutivo_operacion(4); //cambio
+              $consecutivo = self::consecutivo_operacion(4,$data['id_tipo_pedido'],$data['id_tipo_factura']); //cambio
 
               $this->db->set( 'fecha_vencimiento', $fecha_hoy  );
               $this->db->set( 'fecha_apartado', $fecha_hoy  );  
@@ -2323,7 +2307,17 @@
               $this->db->update($this->registros );
 
               //actualizar (consecutivo) en tabla "operacion"   == "generar_pedido"
-              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+              //$this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
+
+              if ($data['id_tipo_pedido']==2) {
+                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+              }  else if ($data['id_tipo_factura']==1) {
+                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              } else {
+                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              }
+
+
               $this->db->set( 'id_usuario', $id_session );
               $this->db->where('id',4);
               $this->db->update($this->operaciones);

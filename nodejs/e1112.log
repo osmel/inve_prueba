@@ -1,0 +1,30 @@
+
+/var/www/html/inventarios/nodejs/node_modules/redis/index.js:602
+                throw err;
+                      ^
+TypeError: Cannot call method 'toString' of undefined
+    at /var/www/html/inventarios/nodejs/cisockServer.js:55:32
+    at try_callback (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:592:9)
+    at RedisClient.return_reply (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:685:13)
+    at ReplyParser.<anonymous> (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:321:14)
+    at ReplyParser.emit (events.js:95:17)
+    at ReplyParser.send_reply (/var/www/html/inventarios/nodejs/node_modules/redis/lib/parser/javascript.js:300:10)
+    at ReplyParser.execute (/var/www/html/inventarios/nodejs/node_modules/redis/lib/parser/javascript.js:203:22)
+    at RedisClient.on_data (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:547:27)
+    at Socket.<anonymous> (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:102:14)
+    at Socket.emit (events.js:95:17)
+
+/var/www/html/inventarios/nodejs/node_modules/redis/index.js:602
+                throw err;
+                      ^
+TypeError: Cannot call method 'toString' of undefined
+    at /var/www/html/inventarios/nodejs/cisockServer.js:55:32
+    at try_callback (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:592:9)
+    at RedisClient.return_reply (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:685:13)
+    at ReplyParser.<anonymous> (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:321:14)
+    at ReplyParser.emit (events.js:95:17)
+    at ReplyParser.send_reply (/var/www/html/inventarios/nodejs/node_modules/redis/lib/parser/javascript.js:300:10)
+    at ReplyParser.execute (/var/www/html/inventarios/nodejs/node_modules/redis/lib/parser/javascript.js:203:22)
+    at RedisClient.on_data (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:547:27)
+    at Socket.<anonymous> (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:102:14)
+    at Socket.emit (events.js:95:17)

@@ -555,7 +555,7 @@ public function buscador_pagosrealizados($data){
      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
           $coleccion_id_operaciones = array();
      }   
-     $activar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || ((in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones)))  ));
+     $activar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ));
 
 
 

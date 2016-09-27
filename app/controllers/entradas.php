@@ -16,7 +16,7 @@ class Entradas extends CI_Controller {
 //***********************Todos los recepciones**********************************//
 	
 
-
+	//mostrar las entradas
 	public function listado_entradas(){
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -69,7 +69,7 @@ class Entradas extends CI_Controller {
 
 
 
-   //esto es para agregar los productos a temporal
+  //esto es para agregar los productos a temporal
   function validar_agregar_producto(){
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
@@ -175,56 +175,53 @@ class Entradas extends CI_Controller {
   }
 
 
-	//1ra Regilla PARA "Pedidos de vendedores"
+	//Esta es la Regilla de los productos
 	public function procesando_productos_temporales(){
 		$data=$_POST;
 		$busqueda = $this->model_entrada->buscador_productos_temporales($data);
 		echo $busqueda;
 	}	
 
+/////////////////////
+	//Eliminar los productos desde la regilla
 	public function eliminar_prod_temporal($id = '', $nombrecompleto=''){
+	    if ( $this->session->userdata('session') !== TRUE ) {
+	      redirect('');
+	    } else {
+	      $id_perfil=$this->session->userdata('id_perfil');
 
+	      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+	            $coleccion_id_operaciones = array();
+	      }   
 
-    if ( $this->session->userdata('session') !== TRUE ) {
-      redirect('');
-    } else {
-      $id_perfil=$this->session->userdata('id_perfil');
+			$data['nombrecompleto'] 	= base64_decode($nombrecompleto);
+			$data['id'] 				= $id;
+	 
+	      switch ($id_perfil) {    
+	        case 1:
+					$this->load->view( 'entradas/temporales/eliminar_producto', $data );
 
-      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-            $coleccion_id_operaciones = array();
-      }   
+	          break;
+	        case 2:
+	        case 3:
+	        case 4:
+	             if  (in_array(1, $coleccion_id_operaciones))  { 
 
-		$data['nombrecompleto'] 	= base64_decode($nombrecompleto);
-		$data['id'] 				= $id;
- 
-      switch ($id_perfil) {    
-        case 1:
-				$this->load->view( 'entradas/temporales/eliminar_producto', $data );
-
-          break;
-        case 2:
-        case 3:
-        case 4:
-             if  (in_array(1, $coleccion_id_operaciones))  { 
-
-				$this->load->view( 'entradas/temporales/eliminar_producto', $data );
-                 
-              }  else  {
-                redirect('');
-              } 
-          break;
-        default:  
-          redirect('');
-          break;
-      }
-   }   
-
- 		
+					$this->load->view( 'entradas/temporales/eliminar_producto', $data );
+	                 
+	              }  else  {
+	                redirect('');
+	              } 
+	          break;
+	        default:  
+	          redirect('');
+	          break;
+	      }
+	   }   
 	}
 
-
-
+	//quien valida la eliminación
 	function validar_eliminar_prod_temporal(){
 		if (!empty($_POST['id'])){ 
 			$data['id'] = $_POST['id'];
@@ -243,52 +240,30 @@ class Entradas extends CI_Controller {
 		}
 	}	
 
-
-	function inf_ajax_temporal(){
-		$data['color'] = $_POST['color'];
-		$data['cant_royo'] = $_POST['cant_royo'];
-		$data['referencia'] =$_POST['referencia'];
-		$data['id_lote'] =$_POST['id_lote'];
-
-		$data['total']  = $this->model_entrada->cant_producto_temporal($data);
-		$data['movimientos']  = $this->model_entrada->listado_ajax($data);
-		echo json_encode($data);
-	}	
-
-
-
-
-	public function validar_proceso1(){
-
-			$existe = $this->model_entrada->existencia_temporales();
-			if (!$existe) {
-				echo 'No existen producto seleccionado.';	
-			} else {
-				echo true;	
-			}
-			
-
-	}	
-
+/////////////////////
+	//validando si se puede procesar la entrada
 
 	public function validar_proceso(){ 
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
+		      $data['id_factura']   = $this->input->post('id_factura');
 
-		    //  $id_movimiento= base64_decode($id_movimiento);
-		      $data['dev']= 0; 
+		      $data['dev'] = 0; 
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
 		            $coleccion_id_operaciones = array();
 		       }  
 
+		       //si existe elemento en la tabla temporal
 		      $existe = $this->model_entrada->existencia_temporales();
 		     
 		      if (($existe)) {
 
-	      			$data['num_mov'] = $this->model_entrada->procesando_operacion(1);
+		      		//copiar a tabla "registros" e "historico_registros_entradas"
+		      		$data['id_operacion'] =1;
+	      			$data['num_mov'] = $this->model_entrada->procesando_operacion($data);
 	      			
 			        $this->load->library('ciqrcode');
 			        //hacemos configuraciones
@@ -465,6 +440,32 @@ class Entradas extends CI_Controller {
 		    }  
 	}
 
+
+
+	//estos procedimientos creo que ya no sirven de nada
+
+	function inf_ajax_temporal(){
+		$data['color'] = $_POST['color'];
+		$data['cant_royo'] = $_POST['cant_royo'];
+		$data['referencia'] =$_POST['referencia'];
+		$data['id_lote'] =$_POST['id_lote'];
+
+		$data['total']  = $this->model_entrada->cant_producto_temporal($data);
+		$data['movimientos']  = $this->model_entrada->listado_ajax($data);
+		echo json_encode($data);
+	}	
+
+	public function validar_proceso1(){
+
+			$existe = $this->model_entrada->existencia_temporales();
+			if (!$existe) {
+				echo 'No existen producto seleccionado.';	
+			} else {
+				echo true;	
+			}
+			
+
+	}	
 
 
 /////////////////validaciones/////////////////////////////////////////	

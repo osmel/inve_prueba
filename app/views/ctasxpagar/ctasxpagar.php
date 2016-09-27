@@ -2,6 +2,11 @@
 <?php $this->load->view( 'header' ); ?>
 
 <?php
+  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+   if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+        $coleccion_id_operaciones = array();
+   }   
+
  	if (!isset($retorno)) {
       	$retorno ="";
       	$otro_retorno='listado_notas';
@@ -46,19 +51,24 @@
 							<!--Tipos de factura -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
 							    
-									<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo de factura</label>
-									<div class="col-sm-9 col-md-12">
-									    			
-													<select name="id_factura_historicos" vista="cuentas" id="id_factura_historicos" class="form-control">
-															<option value="0">Todos</option>	
-															<?php foreach ( $facturas as $factura ){ ?>
-																		<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
-															<?php } ?>
-														<!--rol de usuario -->
-													</select>
-										    
+								<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo de factura</label>
+								<div class="col-sm-9 col-md-12">
+								    			
+									<select name="id_factura_historicos" vista="cuentas" id="id_factura_historicos" class="form-control">
+										<?php if ( ( $perfil == 1 ) || ((in_array(29, $coleccion_id_operaciones)) 
+										 		&& (in_array(30, $coleccion_id_operaciones)) )														 ) { ?>
+											<option value="0">Todos</option>
+										<?php } ?>	
 
-									</div>
+										<?php foreach ( $facturas as $factura ){ ?>
+										<?php if ( ( $perfil == 1 ) || ( (in_array(29, $coleccion_id_operaciones) && ($factura->id==1) ) 	|| (in_array(30, $coleccion_id_operaciones) && ($factura->id==2) ) )) { ?>
+										   <option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
+											<?php } ?>
+											   
+										<?php } ?>
+										<!--rol de usuario -->
+									</select>
+								</div>
 							</div>	
 
 

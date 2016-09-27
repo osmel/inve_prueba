@@ -787,7 +787,7 @@ class Main extends CI_Controller {
 
 				////////Apartar definitivamente para un proveedor/// (INICIO)
 
-	public function apartado_definitivo(){
+	public function apartado_definitivo() {
 
 		
 
@@ -824,8 +824,7 @@ class Main extends CI_Controller {
 		 					$data['tipo_pedido'] = $this->input->post('tipo_pedido');
 		 					$data['tipo_factura'] = $this->input->post('tipo_factura');
 
-
-		 					$datos['consecutivo']  = ($this->catalogo->listado_consecutivo(16)->consecutivo)+1;
+		 					$datos['consecutivo'] = $this->modelo_inicio->consecutivo_operacion(16,$data['id_tipo_pedido'],$data['id_tipo_factura']);
 		 					
 		 					$datos['descripcion'] = $data['descripcion'];
 						    $datos['movimientos'] = $this->modelo_inicio->imprimir_apartar_definitivamente($data);

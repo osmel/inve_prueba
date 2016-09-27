@@ -17,7 +17,20 @@
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 
+	if ($val_proveedor) {
+
+		$consecutivo_actual = (( ($val_proveedor->id_tipo_pedido == 1) && ($val_proveedor->id_tipo_factura==1) ) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
+		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==2) ? $consecutivo->conse_surtido : $consecutivo_actual);
+	} else {
+		$consecutivo_actual = $consecutivo->conse_factura;
+	}	
+
 ?>	
+
+<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
+<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
+<input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>">
+
 <div class="container margenes">
 <div class="panel panel-primary">
 <div class="panel-heading">Generar Pedidos</div>
@@ -38,7 +51,7 @@
 			<div class="form-group">
 				<label for="movimiento">No. Movimiento</label>
 				<div>
-					<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+					<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 				</div>
 			</div>
 		</fieldset>			
@@ -108,7 +121,7 @@
 									<fieldset class="disabledme">						
 								<?php } ?>
 
-											<select name="id_tipo_pedido" id="id_tipo_pedido" class="form-control">
+											<select name="id_tipo_pedido" id="id_tipo_pedido"  pantalla="generar_pedidos"class="form-control">
 												<!--<option value="0">Selecciona una opción</option>-->
 													<?php foreach ( $pedidos as $pedido ){ ?>
 															<?php 
@@ -159,7 +172,7 @@
 									<fieldset class="disabledme">						
 								<?php } ?>
 
-											<select name="id_tipo_factura" id="id_tipo_factura" class="form-control">
+											<select name="id_tipo_factura" id="id_tipo_factura" pantalla="generar_pedidos" class="form-control">
 												<!--<option value="0">Selecciona una opción</option>-->
 													<?php foreach ( $facturas as $factura ){ ?>
 															<?php 

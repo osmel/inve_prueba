@@ -334,7 +334,7 @@ public function detalle_revision($movimiento, $modulo){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                  if  (in_array(39, $coleccion_id_operaciones))  {                 
                            $this->load->view( 'pedido_compra/'.$revisar,$data );
 
                  }   
@@ -492,7 +492,7 @@ public function modulo_pedido_compra($data){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                  if  (in_array(39, $coleccion_id_operaciones))  {                 
                            $this->load->view( 'pedido_compra/pedido_compra',$data );
                  }   
               break;
@@ -548,7 +548,7 @@ public function nuevo_pedido_compra($url){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                  if  (in_array(39, $coleccion_id_operaciones))  {                 
                            $this->load->view( 'pedido_compra/nuevo_pedido',$data );
                  }   
               break;
@@ -847,7 +847,7 @@ function quitar_salida_compra(){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(29, $coleccion_id_operaciones))  {                 
+                  if  (in_array(39, $coleccion_id_operaciones))  {                 
                          $this->load->view( 'pedido_compra/eliminar_pedido_compra',$data );
                  }   
             break;     

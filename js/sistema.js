@@ -1646,6 +1646,17 @@ jQuery('#editar_prod_devolucion, #editar_prod_inven').on('keyup keypress', funct
   }
 });
 
+
+//actualizar el consecutivo de la entrada. Cuando cambie la id_factura
+jQuery('#id_factura').on('change', function(e) {
+  consecutivo_actual = ( (jQuery(this).val()==1) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
+  jQuery("#movimiento").val(consecutivo_actual);
+});
+
+
+
+
+
 jQuery('body').on('click','#conf_entrada', function (e) {
 
 		jQuery('#foo').css('display','block');
@@ -1654,7 +1665,8 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 		jQuery.ajax({
 		        url : 'validar_proceso',
 		        data : { 
-		        	dato: "valor"
+		        		  dato: "valor",
+		        	id_factura: jQuery("#id_factura").val(),
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -4555,6 +4567,15 @@ jQuery("#id_tipo_pedido_inicio").on('change', function(e) {
 	}
 });
 
+
+jQuery('#id_tipo_pedido_inicio, #id_tipo_factura_inicio').on('change', function(e) {
+	consecutivo_actual = (( (jQuery("#id_tipo_pedido_inicio").val() == 1) && (jQuery("#id_tipo_factura_inicio").val()==1) ) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
+	consecutivo_actual = ( (jQuery("#id_tipo_pedido_inicio").val()==2) ? jQuery("#conse_surtido").val() : consecutivo_actual);
+
+	jQuery("#movimiento").val(consecutivo_actual);
+});
+
+
 jQuery('body').on('click','#conf_apartado', function (e) {
 
 	id_tipo_pedido = jQuery("#id_tipo_pedido_inicio").val();
@@ -5226,6 +5247,13 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	});						        
 });
 
+
+jQuery('#id_tipo_pedido_salida, #id_tipo_factura_salida').on('change', function(e) {
+	consecutivo_actual = (( (jQuery("#id_tipo_pedido_salida").val() == 1) && (jQuery("#id_tipo_factura_salida").val()==1) ) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
+	consecutivo_actual = ( (jQuery("#id_tipo_pedido_salida").val()==2) ? jQuery("#conse_surtido").val() : consecutivo_actual);
+
+	jQuery("#movimiento").val(consecutivo_actual);
+});
 
 
 //Agregar las estradas a salidas en el modulo de salida "agregar la regilla de arriba a la regilla inferior"
@@ -6303,6 +6331,9 @@ jQuery('#tabla_pedido').dataTable( {
 jQuery('body').on('click','#conf_pedido', function (e) {
 
 	num_mov=jQuery('#movimiento').val();
+	id_tipo_pedido = jQuery("#id_tipo_pedido").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
+
 
 	jQuery('#foo').css('display','block');
 	var spinner = new Spinner(opts).spin(target);
@@ -6311,6 +6342,8 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 		        url : 'pedido_definitivo',
 		        data : { 
 		        	num_mov: num_mov,
+		        	id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura,
 		        },
 		        type : 'POST',
 		       // dataType : 'json',
@@ -6786,12 +6819,17 @@ jQuery("#id_tipo_pedido").on('change', function(e) {
 });
 
 jQuery("#id_tipo_factura").on('change', function(e) {
-
 	jQuery('#pedido_entrada').dataTable().fnDraw();
 });
 
 
 
+jQuery('#id_tipo_pedido[pantalla="generar_pedidos"], #id_tipo_factura[pantalla="generar_pedidos"]').on('change', function(e) {
+	consecutivo_actual = (( (jQuery("#id_tipo_pedido").val() == 1) && (jQuery("#id_tipo_factura").val()==1) ) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
+	consecutivo_actual = ( (jQuery("#id_tipo_pedido").val()==2) ? jQuery("#conse_surtido").val() : consecutivo_actual);
+
+	jQuery("#movimiento").val(consecutivo_actual);
+});
 
 
 //Agregar las estradas a salidas
@@ -6971,27 +7009,7 @@ jQuery('.datepicker').datepicker({
 		return false;
 	});	
 
-	//input[name='coleccion_id_logo[]'][value=1]
-
-	//notificando cuando diga si en la salida
 	
-	 /*
-	 jQuery('body').on('click','#deleteUserSubmit[name="procesando_salida"]', function (e) {
-			jQuery.ajax({
-						        url : 'conteo_tienda',
-						        data : { 
-						        	tipo: 'tienda',
-						        } ,
-						        type : 'POST',
-						        dataType : 'json',
-						        success : function(data) {	
-						        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'proc_salida');
-									return false;	
-						        }
-			});	
-			
-	 });*/
-
 
     jQuery('body').on('submit','#form_prod', function (e) {
             
@@ -7359,10 +7377,7 @@ jQuery('#tabla_productos').dataTable( {
 	//Agregar entrada temporal 
 	jQuery("#form_entradas").submit(function(e){
 
-	jQuery(this).attr('disabled', true);				        
-	
-	
-
+		jQuery(this).attr('disabled', true);				        
 		jQuery('#foo').css('display','block');
 		var spinner = new Spinner(opts).spin(target);
 		jQuery(this).ajaxSubmit({
@@ -7415,15 +7430,7 @@ jQuery('#tabla_productos').dataTable( {
 					jQuery('#id_medida option:eq(0)').prop('selected', 'selected');
 					jQuery('#id_estatus option:eq(0)').prop('selected', 'selected');
 					jQuery('#id_lote option:eq(0)').prop('selected', 'selected');
-					
-					//para el caso en que no se hubiesen agredado productos antes. quitar ese primer tr del body
-
-
-					/*
-					if (jQuery(".table tbody .noproducto")) {
-						jQuery(".table tbody .noproducto > td").remove();
-					}	
-					*/
+			
 				}
 			} 
 		});

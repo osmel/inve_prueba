@@ -1429,6 +1429,24 @@ precio_nodisp
         }        
 
 
+        public function consecutivo_operacion( $id,$id_tipo_pedido,$id_tipo_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+
+
+                  $consecutivo_actual = (( ($id_tipo_pedido == 1) && ($id_tipo_factura==1) ) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                  $consecutivo_actual = ( ($id_tipo_pedido==2) ? $result->row()->conse_surtido : $consecutivo_actual);
+                       
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
 
         //cambiar estatus de unidad
         public function apartar_definitivamente( $data ){
@@ -1455,7 +1473,17 @@ precio_nodisp
 
               //actualizar (consecutivo) en tabla "operacion"   == "generar_pedido"
               
-              $this->db->set( 'consecutivo', $data['consecutivo'], FALSE  );
+              //$this->db->set( 'consecutivo', $data['consecutivo'], FALSE  );
+
+              if ($data['id_tipo_pedido']==2) {
+                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+              }  else if ($data['id_tipo_factura']==1) {
+                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              } else {
+                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              }
+
+
               $this->db->set( 'id_usuario', $id_session );
               $this->db->where('id',16);
               $this->db->update($this->operaciones);

@@ -155,7 +155,7 @@ if (ltrim($retorno)=="") {
 
 
 									<!-- si configuracion lo tiene activo y es(administrador o por el contrario tiene "permiso de ver y editar") -->
-									<?php if (($configuracion->activo==1) and ( ( $perfil == 1 ) || ((in_array(27, $coleccion_id_operaciones)) && (in_array(28, $coleccion_id_operaciones)))  ))
+									<?php if (($configuracion->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ))
 									 { ?> 
 										<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
 											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>

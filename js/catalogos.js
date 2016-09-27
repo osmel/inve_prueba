@@ -3288,6 +3288,11 @@ jQuery('#id_tipo_factura_traspaso').change(function(e) {
 
 });
 
+jQuery('#id_tipo_factura_traspaso').on('change', function(e) {
+  consecutivo_actual = ( (jQuery(this).val()==1) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
+  jQuery("#movimiento").val(consecutivo_actual);
+});
+
 
 jQuery('#tabla_entrada_traspaso').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
@@ -3803,6 +3808,9 @@ jQuery('body').on('click','#proc_traspaso', function (e) {
 		        url : 'procesando_traspaso_definitivo',
 		        type : 'POST',
 		        dataType : 'json',
+ 				data:{ 
+		        	id_factura: jQuery("#id_tipo_factura_traspaso").val(),
+		        },		        
 		        success : function(datos) {	
 		        
 						if(datos.exito != true){
@@ -3811,7 +3819,7 @@ jQuery('body').on('click','#proc_traspaso', function (e) {
 								jQuery('#foo').css('display','none');
 								jQuery('#messages').css('display','block');
 								jQuery('#messages').addClass('alert-danger');
-								jQuery('#messages').html(datos);
+								jQuery('#messages').html(datos.error);
 								jQuery('html,body').animate({
 									'scrollTop': jQuery('#messages').offset().top
 								}, 1000);

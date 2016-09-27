@@ -1865,7 +1865,7 @@
   //-----------consecutivo------------------
         public function listado_consecutivo($id=-1){
 
-          $this->db->select('o.id, o.operacion, o.consecutivo');
+          $this->db->select('o.id, o.operacion, o.consecutivo, o.conse_factura,o.conse_remision,o.conse_surtido');
           $this->db->from($this->operaciones .' as o');
 
           if ($id!=-1) {

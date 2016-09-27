@@ -36,10 +36,6 @@
       $this->historico_cancela_pedido_compra      = $this->db->dbprefix('historico_cancela_pedido_compra');
       $this->historico_historial_compra      = $this->db->dbprefix('historico_historial_compra');
 
-
-      
-      
-
     }
 
 

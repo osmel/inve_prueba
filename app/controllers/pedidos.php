@@ -538,6 +538,8 @@ function agregar_prod_pedido(){
 		        $id_perfil=$this->session->userdata('id_perfil');
  
   		        $data['num_mov'] = $this->input->post('num_mov');
+  		        $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+  		        $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
 			    $actualizar = $this->modelo_pedido->pedido_definitivamente($data);
 

@@ -441,6 +441,9 @@ public function validar_confirmar_salida_sino(){
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
 		            $coleccion_id_operaciones = array();
 		       }   
+
+		       	$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');	
 		       
 		       $data['id_cliente'] 			= $this->input->post('id_cliente');
 		       //$data['id_destino'] 			= $this->input->post('id_destino');
@@ -450,8 +453,7 @@ public function validar_confirmar_salida_sino(){
 		        $data['movimientos']  		= $this->modelo_salida->listado_movimientos_registros($data); //1013
 		        $data['id_almacen'] 		= $this->input->post('id_almacen');
 
-				$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');		        
+		        
 
 		       if (($data['valor']==1) || ($data['valor']==2) ) {
 		       		$this->modelo_salida->traspaso_quitar_apartados($data);

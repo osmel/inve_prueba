@@ -25,7 +25,19 @@ echo form_open('validar_agregar_producto', $attr);
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 
+//para determinar el consecutivo
+
+if ($val_proveedor) {
+	 $consecutivo_actual = ( ($val_proveedor->id_factura==1) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
+} else {
+	$consecutivo_actual = $consecutivo->conse_factura;
+}	
+
+
 ?>		
+<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
+<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
+
 <div class="container">
 
 	<br>
@@ -55,7 +67,7 @@ echo form_open('validar_agregar_producto', $attr);
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
 					<div class="col-sm-12 col-md-12">
-						<input type="text" title="Movimiento" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+						<input type="text" title="Movimiento" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 					</div>
 				</div>
 			</fieldset>			
