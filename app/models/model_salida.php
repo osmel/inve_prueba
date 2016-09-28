@@ -1054,6 +1054,12 @@
         }   
 
 
+
+        
+  
+
+
+
         public function existencia_temporales(){
 
               $id_session = $this->session->userdata('id');
@@ -1210,6 +1216,162 @@ public function valores_movimientos_temporal(){
                return False;
             $result->free_result();
         }   
+
+
+
+
+
+
+
+
+
+
+
+
+ /////////////////////////////////////////////////////////////nuevo/////////////////
+
+//salida del pedido nuevo
+        public function existencia_pedido_salida($data){
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+              
+                  if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                        (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return true;
+              else
+                 return false;              
+        }  
+
+        public function actualizar_peso_real_salida_pedido( $data ){
+           
+            $id_session = ($this->session->userdata('id'));
+
+
+            foreach ($data['pesos'] as $key => $value) {
+
+                if(!is_numeric($value['peso_real'])) {  //caso cuando el peso viene vacio
+                  $value['peso_real'] = 0;
+                  
+                } 
+                $this->db->set( 'peso_real', $value['peso_real'], FALSE  );
+                $this->db->where('codigo',$value['codigo']);                
+                $this->db->update($this->registros_entradas);
+              }
+            
+            return TRUE;       
+        }
+
+       public function existencia_salida_peso_real($data){
+
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+
+           if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                       (m.peso_real=0) AND (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+             
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }            
+
+               //cambiar estatus de unidad
+        public function traspaso_pedido( $data ){
+                
+                //$id_almacen= $data['id_almacen'];
+                
+                if ($data['id_tipo_factura']==1){
+                    $porciento_aplicar =16;  
+                } else {
+                     $porciento_aplicar = 0;  
+                }
+                
+                $this->db->set( 'id_factura_original', 'id_factura', false);
+                $this->db->set( 'id_factura', 'id_tipo_factura', false);
+               
+                
+                if ($data['id_tipo_factura']==1){
+                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
+                }
+                
+
+
+                $this->db->set( 'incluir', 1);
+                
+                /*
+                if ($id_almacen!=0) {
+                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
+                } else {
+                    $id_almacenid = '';
+                } */
+
+                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
+
+                //$id_almacenid.
+                $where = '(
+                          (
+                            ( id_apartado <>0    ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
+                          )'.$cond_traspaso.' 
+
+                      )';   
+
+                $this->db->where($where);
+                $this->db->update($this->registros );
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;
+
+        }
+
+        /////////////////////////////////////////////////////////////fin de nuevo/////////////////
+
+
+
 
 
 

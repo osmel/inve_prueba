@@ -18,33 +18,9 @@
 	<!-- SCRIPTS -->
 	<?php  echo link_tag('css/fontello.css');  ?>
 
-	<!-- ****quitar -->
-	<!--
-	   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	-->   
 
 	
-
-	<!--para el efecto de notificaciones -->
-	<!--***************** -->
-
-<!--efecto de notificaciones -->
-
-	<!--
-
-	<?php //echo link_tag('css/notificaciones/ui.notify.css'); ?>
-	<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery-ui.js"></script>
-
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js" type="text/javascript"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js" type="text/javascript"></script>
-	
-	-->
-     
-
-
-
-
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="<?php echo base_url(); ?>js/bootstrap-3.3.1/dist/js/bootstrap.min.js"></script>
 	 
 
 
@@ -65,18 +41,6 @@
 	<!-- componente rango fecha -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/moment.js"></script>		
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/daterangepicker.js"></script>		
-	
- 
-<!--
-    
-     <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/notificaciones/notify.min.js"></script>
-     <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/notificaciones/notify-custom.js"></script>
--->
-
-	<!-- nuestro js principal -->
-
-	<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/catalogos.js"></script> -->
-
 
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/sistema.js"></script>
 
@@ -84,8 +48,11 @@
 
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.tablesorter.min.js"></script> 	
 
+	<!--
 	 <link href="//raw.github.com/jharding/typeahead.js-bootstrap.css/master/typeahead.js-bootstrap.css" rel="stylesheet" media="screen">
+	-->
 	
+	<link rel="stylesheet" href="<?php echo base_url(); ?>js/bootstrap-3.3.1/dist/css/typeahead.js-bootstrap.css">
 	
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/typeahead/dist/typeahead.jquery.min.js"></script>	
 	
@@ -100,7 +67,11 @@
 
 
 	<!--cascada -->
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+	<!--
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout/2.3.0/knockout-min.js"></script>
+
+	-->
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/cascada/knockout-min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/cascada/jquery.mockjax.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/cascada/ajax-mocks.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/cascada/jquery.cascadingdropdown.js"></script>

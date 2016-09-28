@@ -9,6 +9,12 @@
 
 		$dato['id'] = 8;
 		$this->session->set_userdata('config_almacen', $this->catalogo->coger_configuracion($dato));
+
+		$dato['id'] = 9;
+        $data['config_salida'] = $this->catalogo->coger_configuracion($dato); 
+     	$this->session->set_userdata('config_salida', $this->catalogo->coger_configuracion($dato)->activo);
+
+
 		
 
 		$config_almacen = $this->session->userdata('config_almacen');
@@ -56,6 +62,10 @@
 
 ?>	
 
+
+
+<input type="hidden" id="config_salida" name="config_salida" value="<?php echo $this->session->userdata('config_salida'); ?>">		
+
 <input type="hidden" id="config_almacen" name="config_almacen" value="<?php echo $config_almacen->activo; ?>" >
 <input type="hidden" id="config_activo" name="config_activo" value="<?php echo $configuracion->activo; ?>">
 <input type="hidden" id="el_perfil" name="el_perfil" value="<?php echo $perfil; ?>">
@@ -101,7 +111,7 @@
 					<?php } ?>	
 
 
-					 <?php if ( ( $perfil == 1 ) || (in_array(2, $coleccion_id_operaciones)) ) { ?>
+					 <?php if  ( ( ( $perfil == 1 ) || (in_array(2, $coleccion_id_operaciones)) ) && ($this->session->userdata('config_salida')==1) ) { ?>
 						<li id="bar_salidas">
 							<a title="Generar Salidas del Almacén." href="<?php echo base_url(); ?>salidas" class="ttip color-blanco">Salidas</a> 
 						</li>

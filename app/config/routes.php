@@ -366,6 +366,14 @@ $route['confirmar_salida_sino']    = 'salidas/confirmar_salida_sino';
 $route['validar_confirmar_salida_sino']    = 'salidas/validar_confirmar_salida_sino';
 
 
+///para el caso de salida por pedidos
+
+$route['confirmar_proc_pedido_sino']    = 'salidas/confirmar_proc_pedido_sino';
+$route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3';
+$route['validar_salida_pedido']    = 'salidas/validar_salida_pedido';
+
+
+
 /////////////////////////////////////////HOME///////////////////
 $route['procesando_home']    		= 'main/procesando_home';
 $route['procesando_inicio']    		= 'main/procesando_inicio';

@@ -261,7 +261,7 @@
 
               $this->db->set( 'id_medida', $data['id_medida']  );  
 
-              $this->db->set( 'peso_real', $data['peso_real']  );  
+              //$this->db->set( 'peso_real', $data['peso_real']  );  
               $this->db->set( 'cantidad_um', $data['cantidad_um']  );  
               $this->db->set( 'cantidad_royo', $data['cantidad_royo']);  
               $this->db->set( 'ancho', $data['ancho']   );   

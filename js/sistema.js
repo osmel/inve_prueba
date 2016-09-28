@@ -2113,18 +2113,39 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
     	
     	//hasta aqui reporte
 
-    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
-    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
-    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
-		
-		var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-		var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
-		var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
+    	if ( jQuery('#config_salida').val() == 1 ) { //si tiene factura
 
-		var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
+	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura','Borrar'];
+	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura','Borrar'];
+	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
+			
+			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
-        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
-        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
+			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
+
+	        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
+	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
+	    } else {
+	    	
+	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso','Quitar'];
+	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso','Quitar'];
+	    	
+	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
+
+			
+			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
+
+			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
+
+	        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
+	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
+
+
+	    }    
     	
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -4998,18 +5019,54 @@ jQuery('#tabla_detalle').dataTable( {
 	    return pre
 	},    
 
-   "columnDefs": [
+  "columnDefs": [
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,10,14],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,10],
 	            },
+
+	            {
+	                "render": function ( data, type, row ) {
+						if ( jQuery('#config_salida').val() == 0 ) {
+							texto='<td>'; 
+								texto+='<input restriccion="decimal" value="'+row[15]+'" codigo="'+row[0]+'" type="text" class="form-control ttip peso_real" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='</td>';
+						} else {
+							texto=row[14];
+						}	
+						return texto;	
+
+	                },
+	                "targets": 11
+	            },
+
+	            
+	            {
+	                "render": function ( data, type, row ) {
+	                	if ( jQuery('#config_salida').val() == 0 ) {
+							texto='<td><button'; 
+								texto+='type="button" identificador="'+row[0]+'" class="btn btn-danger btn-block quitar">'; 
+								 texto+='Quitar';
+							texto+='</button></td>';
+							
+						} else {
+							texto='-';
+						}	
+						return texto;	
+
+
+	                },
+	                "targets": 12
+	            },
+
+
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [11,12,13],
+	                "targets": [13], //12,
 	            }	            
 
 	],	
@@ -5027,6 +5084,21 @@ jQuery('#tabla_detalle').dataTable( {
 	 },	
  
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		
+		var api = this.api();
+
+		if ( jQuery('#config_salida').val() == 0 ) {
+
+			api.column(6).visible(false);	
+			api.column(7).visible(false);	
+			//api.column(12).visible(true);	
+		} else {
+			
+			api.column(6).visible(true);	
+			api.column(7).visible(true);	
+			//api.column(11).visible(false);	
+		}
+
 		var arreglo =arr_apartado_detalle;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
@@ -5156,6 +5228,111 @@ jQuery('body').on('click','#excluir_salida', function (e) {
 
 
 /////////////////////////////Modulo de salida////////////////////////////////////////////////////
+
+
+jQuery('body').on('click','#proc_salida_pedido', function (e) {
+
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	 		/*
+	 		jQuery('#etiq_num_mov').val(  settings.json.datos.num_mov);
+		    jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
+			jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);
+		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
+		    jQuery('#etiq_hora').val(  settings.json.datos.mi_hora);
+
+		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
+		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
+			
+		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+
+		    if (settings.json.datos.tipo_factura!=null) {
+		    	jQuery('.panel-heading > span').text(settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
+		    }else {
+		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
+		    }*/
+
+	 id_cargador = jQuery('.buscar_cargador').typeahead("val");
+	 num_mov = jQuery('#etiq_num_mov').val();
+	 dependencia= jQuery('#etiq_dependencia').val( );
+	 id_almacen = jQuery('#id_almacen_pedido').val( );
+	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
+
+	 var url = '/confirmar_proc_pedido_sino';
+
+	    var arreglo_peso = [];
+	    var arreglo = {};
+
+	   jQuery("#pedido_detalle tbody tr td input.peso_real").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["codigo"] = jQuery(this).attr('codigo') ;  
+	   		arreglo['peso_real'] = jQuery(this).val();
+	   		arreglo_peso.push( arreglo);
+	   });
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	id_cargador: id_cargador,
+		        	arreglo_peso:arreglo_peso,
+		        	num_mov:num_mov,
+		        	dependencia: dependencia,
+		        	id_almacen:id_almacen,
+
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('#messages').append(data.errores);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+							//alert('ok');
+
+								
+
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+
+												valor= jQuery.base64.encode(data.valor);
+
+												//var url = "/proc_salida_pedido_definitivo/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
+												var url = "/proc_salida_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_factura);
+												//alert(url);
+												
+												jQuery('#modalMessage').modal({
+													  show:'true',
+													remote:url,
+												}); 									        	
+												
+									        }
+								});	
+
+
+						}
+		        }
+
+		        
+	});						        
+});
 
 
 jQuery('body').on('click','#proc_salida', function (e) {
@@ -6107,13 +6284,49 @@ jQuery('#pedido_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,10,14],
+	                "targets": [0,1,2,3,4,5,6,7,8,9,10],
 	            },
+
+	            {
+	                "render": function ( data, type, row ) {
+						if ( jQuery('#config_salida').val() == 0 ) {
+							texto='<td>'; 
+								texto+='<input restriccion="decimal" value="'+row[15]+'" codigo="'+row[0]+'" type="text" class="form-control ttip peso_real" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='</td>';
+						} else {
+							texto=row[14];
+						}	
+						return texto;	
+
+	                },
+	                "targets": 11
+	            },
+
+	            
+	            {
+	                "render": function ( data, type, row ) {
+	                	if ( jQuery('#config_salida').val() == 0 ) {
+							texto='<td><button'; 
+								texto+='type="button" identificador="'+row[0]+'" class="btn btn-danger btn-block quitar">'; 
+								 texto+='Quitar';
+							texto+='</button></td>';
+							
+						} else {
+							texto='-';
+						}	
+						return texto;	
+
+
+	                },
+	                "targets": 12
+	            },
+
+
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [11,12,13],
+	                "targets": [13,14,15], //12,
 	            }	            
 
 	],	
@@ -6130,11 +6343,43 @@ jQuery('#pedido_detalle').dataTable( {
 
 	 },	
  
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		/*
+		var api = this.api();
+
+		if ( jQuery('#config_salida').val() == 0 ) {
+
+			api.column(6).visible(false);	
+			api.column(7).visible(false);	
+			api.column(14).visible(false);	
+		} else {
+
+			api.column(6).visible(true);	
+			api.column(7).visible(true);	
+			api.column(14).visible(true);	
+		}*/	
+
+	},	
 
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+
+		var api = this.api();
+
+		if ( jQuery('#config_salida').val() == 0 ) {
+
+			api.column(6).visible(false);	
+			api.column(7).visible(false);	
+			//api.column(12).visible(true);	
+		} else {
+			
+			api.column(6).visible(true);	
+			api.column(7).visible(true);	
+			//api.column(11).visible(false);	
+		}
+
 		var arreglo =arr_pedido_detalle;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
-	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+					nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 	
 	    	}
 	},	
 
@@ -7825,7 +8070,7 @@ jQuery('body').on('click','#impresion', function (e) {
 	var consulta_cargador = new Bloodhound({
 	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
 	   queryTokenizer: Bloodhound.tokenizers.whitespace,
-	   remote:'catalogos/buscador?key=%QUERY&nombre='+jQuery('.buscar_cargador').attr("name"),
+	   remote:'/catalogos/buscador?key=%QUERY&nombre='+jQuery('.buscar_cargador').attr("name"),
 	});
 
 	consulta_cargador.initialize();

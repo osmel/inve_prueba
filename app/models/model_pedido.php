@@ -1467,7 +1467,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           //,m.movimiento,m.consecutivo
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_usuario_apartado,m.peso_real, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('p.nombre comprador ');  
           $this->db->select('pr.nombre cliente ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
@@ -1581,6 +1581,7 @@
                                       12=>$row->id_tipo_factura,
                                       13=>$row->id_tipo_pedido,
                                       14=>$row->t_factura,    
+                                      15=>$row->peso_real,
                                       
                                                                      
                                     );
@@ -1683,7 +1684,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_usuario_apartado, m.peso_real, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('pr.nombre dependencia ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
@@ -1802,6 +1803,7 @@
                                       12=>$row->id_tipo_factura,
                                       13=>$row->id_tipo_pedido,
                                       14=>$row->t_factura,
+                                      15=>$row->peso_real,
                                       
                                       
                                                                         

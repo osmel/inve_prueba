@@ -64,7 +64,10 @@
 								</div>		
 
 
-								<div class="col-sm-4 col-md-4" style="padding-left: 0px;">
+						
+
+						<?php if ( ( $this->session->userdata('config_salida') == 1 ) ) { ?>
+							<div class="col-sm-4 col-md-4" style="padding-left: 0px;">
 									<div class="col-sm-12 col-md-12" style="height: 33px;"> </div>
 										<div class="col-sm-1 col-md-1" id="etiq_color_apartado">
 									    </div>
@@ -74,7 +77,28 @@
 
 										</label>
 									
-								</div>									
+							</div>									
+						<?php } else { ?>
+							<div class="col-xs-12 col-sm-4 col-md-3">
+								
+									<div class="form-group">
+										<label for="descripcion">Cargador</label>
+										<div class="input-group col-md-12 col-sm-12 col-xs-12">
+											
+											<input  type="text" name="editar_cargador" class="buscar_cargador form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cargador y seleccione una opción para poder continuar." autocomplete="off" spellcheck="false" placeholder="Buscar Cargador...">
+											
+										</div>
+									</div>
+								
+							</div>
+						<?php }  ?>	
+
+
+
+
+
+
+
 
 						</div>		
 						<br/>
@@ -117,19 +141,31 @@
 									</a>
 								</div>
 
+								<?php if ( ( $this->session->userdata('config_salida') == 1 ) ) { ?>
+									<?php if ( ( $perfil != 3 ) ) { ?>			
+										<div class="col-sm-3 col-md-3 marginbuttom">
+											<button type="button"  class="btn btn-success btn-block" id="excluir_salida">
+												<span>Excluir de la Salida</span>
+											</button>
+										</div>	
+										<div class="col-sm-3 col-md-3 marginbuttom">
+											<button type="button"  class="btn btn-success btn-block" id="incluir_salida">
+												<span>Incluir en la Salida</span>
+											</button>
+										</div>			
+									<?php } ?>	
+								<?php } else { ?>			
 
-								<?php if ( ( $perfil != 3 ) ) { ?>			
-									<div class="col-sm-3 col-md-3 marginbuttom">
-										<button type="button"  class="btn btn-success btn-block" id="excluir_salida">
-											<span>Excluir de la Salida</span>
-										</button>
-									</div>	
-									<div class="col-sm-3 col-md-3 marginbuttom">
-										<button type="button"  class="btn btn-success btn-block" id="incluir_salida">
-											<span>Incluir en la Salida</span>
-										</button>
-									</div>			
-								<?php } ?>		
+
+									<?php if ( ( $perfil != 4 ) ) { ?>
+										<div class="col-sm-3 col-md-3 marginbuttom">
+											<button type="button"  class="btn btn-success btn-block ttip" title="Procesar la salida." id="proc_salida_pedido">
+												<span>Procesar Salida</span>
+											</button>
+										</div>			
+									<?php } ?>		
+
+								<?php }  ?>												
 
 								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a href="<?php echo base_url(); ?>pedidos" type="button" class="btn btn-danger btn-block">Regresar</a>
