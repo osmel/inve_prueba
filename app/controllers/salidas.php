@@ -715,6 +715,7 @@ public function validar_salida_pedido(){
 	    		$this->modelo_salida->traspaso_pedido($data);
 	}
 
+	procesando_operacion_pedido_salida
 	print_r($data);
 
 
@@ -722,30 +723,6 @@ public function validar_salida_pedido(){
 }	
 
 
-	function incluir_pedido($data){
-
-	    if ($this->session->userdata('session') !== TRUE) {
-	      redirect('');
-	    } else {
-
-	    	$data['num_mov'] = $this->input->post('num_mov');
-	    	//$data['id_almacen'] = $this->input->post('id_almacen');
-	    	//$data['id_apartado'] = 6;
-
-	    	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-
-	    	//$actualizar = $this->modelo_pedido->incluir_pedido($data);
-
-	    	if ($data['id_tipo_factura']!=0) {
-	    		$this->model_salida->traspaso_pedido($data);
-	    	}
-	    	
-	    	
-
-	    	echo  json_encode($actualizar);
-
-		}	
-   }
 
 /////////////////validaciones/////////////////////////////////////////	
 
