@@ -369,8 +369,15 @@ $route['validar_confirmar_salida_sino']    = 'salidas/validar_confirmar_salida_s
 ///para el caso de salida por pedidos
 
 $route['confirmar_proc_pedido_sino']    = 'salidas/confirmar_proc_pedido_sino';
-$route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3';
+$route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3/$4/$5';
 $route['validar_salida_pedido']    = 'salidas/validar_salida_pedido';
+$route['detalles_salidas/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3';
+
+
+///para el caso de salida por pedidos "apartados" VENDEDOR
+$route['confirmar_proc_apartado_sino']    = 'salidas/confirmar_proc_apartado_sino';
+$route['proc_apartado_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_apartado_pedido_definitivo/$1/$2/$3/$4/$5';
+$route['validar_apartado_pedido']    = 'salidas/validar_apartado_pedido';
 
 
 

@@ -16,7 +16,11 @@
 <div class="container margenes">
 	<div class="panel panel-primary">
 			<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">
+			<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="">		
 			<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
+			<input type="hidden" id="etiq_num_mov" name="etiq_num_mov" value="">		
+			<input type="hidden" id="etiq_dependencia" name="etiq_dependencia" value="">		
+
 
 			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
 			<div class="panel-body">
@@ -159,7 +163,7 @@
 
 									<?php if ( ( $perfil != 4 ) ) { ?>
 										<div class="col-sm-3 col-md-3 marginbuttom">
-											<button type="button"  class="btn btn-success btn-block ttip" title="Procesar la salida." id="proc_salida_pedido">
+											<button type="button"  class="btn btn-success btn-block ttip" title="Procesar la salida." id="proc_salida_apartado">
 												<span>Procesar Salida</span>
 											</button>
 										</div>			
@@ -180,3 +184,10 @@
 </div>
 </div>
 <?php $this->load->view( 'footer' ); ?>
+
+
+<div class="modal fade bs-example-modal-lg" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+        <div class="modal-content"></div>
+    </div>
+</div>	

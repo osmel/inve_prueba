@@ -65,6 +65,7 @@ class Main extends CI_Controller {
 					if (is_array($login_check))
 						foreach ($login_check as $login_element) {
 							$this->session->set_userdata('id', $login_element->id);
+							$this->session->set_userdata('id_cliente_asociado', $login_element->id_cliente);
 							$this->session->set_userdata('id_perfil', $login_element->id_perfil);
 							$this->session->set_userdata('perfil', $login_element->perfil);
 							$this->session->set_userdata('operacion', $login_element->operacion);

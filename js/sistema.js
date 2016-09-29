@@ -4994,10 +4994,13 @@ jQuery('#tabla_detalle').dataTable( {
      },   
 
 
+
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 	    if (settings.json.datos) {
+	    	jQuery('#etiq_num_mov').val(  jQuery('#consecutivo_venta').val());
 		    jQuery('#etiq_usuario').val(  settings.json.datos.usuario);
 		    jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
+		    jQuery('#etiq_dependencia').val(  settings.json.datos.cliente);
 			jQuery('#etiq_comprador').val(  settings.json.datos.comprador+'  Nro.'+jQuery('#consecutivo_venta').val());
 
 		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
@@ -5005,6 +5008,7 @@ jQuery('#tabla_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 
+		    jQuery('#id_tipo_pedido').val(settings.json.datos.id_tipo_pedido);
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
 
  			if (settings.json.datos.tipo_factura!=null) {
@@ -5230,6 +5234,90 @@ jQuery('body').on('click','#excluir_salida', function (e) {
 /////////////////////////////Modulo de salida////////////////////////////////////////////////////
 
 
+jQuery('body').on('click','#proc_salida_apartado', function (e) {
+
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	 id_cargador = jQuery('.buscar_cargador').typeahead("val");
+	 num_mov = jQuery('#etiq_num_mov').val(); 
+	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
+	 id_almacen = jQuery('#id_almacen_pedido').val( );
+	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
+	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
+
+	 var url = '/confirmar_proc_apartado_sino';
+
+	    var arreglo_peso = [];
+	    var arreglo = {};
+
+	   jQuery("#tabla_detalle tbody tr td input.peso_real").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["codigo"] = jQuery(this).attr('codigo') ;  
+	   		arreglo['peso_real'] = jQuery(this).val();
+	   		arreglo_peso.push( arreglo);
+	   });
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	id_cargador: id_cargador,
+		        	arreglo_peso:arreglo_peso,
+		        	num_mov:num_mov,
+		        	dependencia: dependencia,
+		        	id_almacen:id_almacen,
+
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('#messages').append(data.errores);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+							//alert('ok');
+
+								
+
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+
+												valor= jQuery.base64.encode(data.valor);
+												var url = "/proc_apartado_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura)+'/'+jQuery.base64.encode(id_almacen);
+												jQuery('#modalMessage').modal({
+													  show:'true',
+													remote:url,
+												}); 									        	
+												
+									        }
+								});	
+
+
+						}
+		        }
+
+		        
+	});						        
+});
+
+
 jQuery('body').on('click','#proc_salida_pedido', function (e) {
 
 	jQuery('#foo').css('display','block');
@@ -5254,10 +5342,11 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 		    }*/
 
 	 id_cargador = jQuery('.buscar_cargador').typeahead("val");
-	 num_mov = jQuery('#etiq_num_mov').val();
-	 dependencia= jQuery('#etiq_dependencia').val( );
+	 num_mov = jQuery('#etiq_num_mov').val(); 
+	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
 	 id_almacen = jQuery('#id_almacen_pedido').val( );
 	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
+	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
 
 	 var url = '/confirmar_proc_pedido_sino';
 
@@ -5313,11 +5402,7 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
 
 												valor= jQuery.base64.encode(data.valor);
-
-												//var url = "/proc_salida_pedido_definitivo/"+valor+'/'+data.id_cliente+'/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura);
-												var url = "/proc_salida_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_factura);
-												//alert(url);
-												
+												var url = "/proc_salida_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura)+'/'+jQuery.base64.encode(id_almacen);
 												jQuery('#modalMessage').modal({
 													  show:'true',
 													remote:url,
@@ -5347,8 +5432,8 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	id_destino = jQuery("#id_destino").val();
 	id_almacen = jQuery('#id_almacen').val();
 
-	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
-	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+	id_tipo_pedido = jQuery("#id_tipo_pedido").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
 
 
 	 var url = 'confirmar_salida_sino';
@@ -6260,7 +6345,9 @@ jQuery('#pedido_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 			
+		    jQuery('#id_tipo_pedido').val(settings.json.datos.id_tipo_pedido);
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+
 
 		    if (settings.json.datos.tipo_factura!=null) {
 		    	jQuery('.panel-heading > span').text(settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		

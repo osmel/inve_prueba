@@ -10,7 +10,6 @@
 	  			$coleccion_id_operaciones = array();
 	  		} 	
 
-
 ?>	
 
 
@@ -18,6 +17,7 @@
 	
 
 	<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
+	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="">		
 	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
 
 		<div class="panel panel-primary">

@@ -29,7 +29,9 @@
 	
 	<input type="hidden" id="id_cargador" name="id_cargador" value="<?php echo $id_cargador; ?>">
 	<input type="hidden" id="num_mov" name="num_mov" value="<?php echo $num_mov; ?>">
+	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="<?php echo $id_tipo_pedido; ?>">
 	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">
+	<input type="hidden" id="id_almacen" name="id_almacen" value="<?php echo $id_almacen; ?>">
 	
 	
 	

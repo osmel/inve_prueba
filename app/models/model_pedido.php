@@ -1494,7 +1494,7 @@
          ',False);          
 
           $this->db->select("a.almacen");
-          $this->db->select("m.id_factura,m.id_tipo_factura, ,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_tipo_factura,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1587,6 +1587,7 @@
                                     );
                             $tipo_pedido=$row->tipo_pedido;
                             $tipo_factura=$row->tipo_factura; 
+                            $id_tipo_pedido=$row->id_tipo_pedido; 
                             $id_tipo_factura=$row->id_tipo_factura; 
                             
                       }
@@ -1598,7 +1599,9 @@
                         "data"            =>  $dato,
                          "datos"            =>  array("usuario"=>$mi_usuario, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "comprador"=>$mi_comprador, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora, "tipo_pedido"=>$tipo_pedido,
                             "tipo_factura"=>$tipo_factura,
+                             "id_tipo_pedido"=>$id_tipo_pedido,
                               "id_tipo_factura"=>$id_tipo_factura,
+                              
                              ),
                       ));
               }   
@@ -1711,7 +1714,7 @@
          ',False);
           
           $this->db->select("a.almacen");
-          $this->db->select("m.id_factura,m.id_tipo_factura, ,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1813,7 +1816,7 @@
                             
                             $tipo_pedido=$row->tipo_pedido;
                             $tipo_factura=$row->tipo_factura; 
-
+                            $id_tipo_pedido=$row->id_tipo_pedido;   
                             $id_tipo_factura=$row->id_tipo_factura;   
 
                       }
@@ -1826,7 +1829,9 @@
                             
                             "tipo_pedido"=>$tipo_pedido,
                             "tipo_factura"=>$tipo_factura, 
+                            "id_tipo_pedido"=>$id_tipo_pedido, 
                             "id_tipo_factura"=>$id_tipo_factura, 
+
 
 
 
