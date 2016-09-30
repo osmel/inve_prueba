@@ -79,20 +79,25 @@
 		   </div>
 
 
+			<?php if  ($config_almacen->activo==1) { ?>
+			    <div class="col-md-7">
 
-		    <div class="col-md-7">
+					<div class="col-md-4 ttip" title="Producto en espera de confirmación total del apartado."><span> Apartado Individual</span><div style="margin-right: 15px;float:left;background-color:#ab1d1d;width:15px;height:15px;"></div> </div>
+					<div class="col-md-4 ttip" title="El apartado ha sido generado."><span> Apartado Confirmado</span><div style="margin-right: 15px;float:left;background-color:#f1a914;width:15px;height:15px;"></div></div>
+					<div class="col-md-4 ttip" title="Indica que se puede procesar la salida del apartado."><span> Disponibilidad Salida</span><div style="margin-right: 15px;float:left;background-color:#14b80f;width:15px;height:15px;"></div></div>
+				</div>			
+				<hr/>
+			<?php } else { ?>
+				<div class="col-md-7"></div>
+				<hr/>
 
-				<div class="col-md-4 ttip" title="Producto en espera de confirmación total del apartado."><span> Apartado Individual</span><div style="margin-right: 15px;float:left;background-color:#ab1d1d;width:15px;height:15px;"></div> </div>
-				<div class="col-md-4 ttip" title="El apartado ha sido generado."><span> Apartado Confirmado</span><div style="margin-right: 15px;float:left;background-color:#f1a914;width:15px;height:15px;"></div></div>
-				<div class="col-md-4 ttip" title="Indica que se puede procesar la salida del apartado."><span> Disponibilidad Salida</span><div style="margin-right: 15px;float:left;background-color:#14b80f;width:15px;height:15px;"></div></div>
-			</div>			
-
+			<?php } ?>	
 				
 					    
 						
 					
 
-			<hr/>
+			
 
 		<?php if ( ( $perfil != 4 ) ) { ?>		 
 			<div class="table-responsive">

@@ -293,8 +293,11 @@
                              AS color_devolucion", FALSE);   
                       
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable");  
+
 
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -463,6 +466,7 @@
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
                                       15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
 
                                     );                    
                       }
@@ -739,8 +743,10 @@
                              AS color_devolucion", FALSE);   
           
           $this->db->select("a.almacen");
-
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -924,7 +930,8 @@
                                       12=>$row->factura,
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
-                                      15=>$row->proceso_traspaso
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
 
                                       
 
@@ -1151,8 +1158,11 @@
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
 
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable");  
+          
          
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
@@ -1298,7 +1308,8 @@
                                       12=>$row->factura,
                                       13=>$row->num_partida,
                                       14=>$row->almacen,
-                                      15=>$row->proceso_traspaso
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
 
                                       
                                     );                    
@@ -1472,7 +1483,9 @@
             $id_facturaid = '';
           }   
 
+          $this->db->select("p.codigo_contable");  
           $this->db->from($this->productos.' as p');
+
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
@@ -1622,6 +1635,7 @@
                                       13=>"--", 
                                       14=>$row->almacen,
                                       15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
 
 
 
@@ -1804,6 +1818,7 @@
           } else {
             $id_facturaid = '';
           }   
+          $this->db->select("p.codigo_contable");  
 
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
@@ -1888,6 +1903,7 @@
                                       13=>"--",
                                       14=>$row->almacen,
                                       15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
 
                                     );                    
 

@@ -13,6 +13,7 @@
   $fecha_hoy = date('j-m-Y');
   	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
+	$id_almacen=$this->session->userdata('id_almacen');
 
 ?>	
 
@@ -113,17 +114,20 @@
 
 																
 					</div>		
+
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<fieldset id="disa_reportes" disabled>
 										<div class="col-sm-6 col-md-6">
-											<a id="impresion_reporte_costo" type="button" class="btn btn-success btn-block">Imprimir</a>
+											<a id="impresion_reporte_compra" type="button" class="btn btn-success btn-block">Imprimir</a>
 										</div>
 
 										<div class="col-sm-6 col-md-6">
-											<a id="exportar_reportes_costo" type="button" class="btn btn-success btn-block">Exportar</a>
+											<a id="exportar_reportes_compra" type="button" class="btn btn-success btn-block">Exportar</a>
 										</div>
 						</fieldset>	
 					</div>
+
+					
 			</div>
 
 		</div>		

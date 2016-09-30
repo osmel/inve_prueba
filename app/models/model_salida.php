@@ -497,7 +497,11 @@
           $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
           $this->db->select('m.id_medida, m.ancho, m.id_estatus, m.id_lote, m.id,consecutivo_cambio,u.medida,m.comentario ');
          
+          $this->db->select("prod.codigo_contable");  
+
+
           $this->db->from($this->registros_cambios.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
           $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
@@ -541,6 +545,7 @@
                                       6=>$row->consecutivo_cambio,
                                       7=>$row->comentario,
                                       8=>$row->num_partida,
+                                      9=>$row->codigo_contable,            
                                       
                                     );
                       }
@@ -1154,8 +1159,9 @@
           $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
           $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
 
-
+            $this->db->select("prod.codigo_contable");  
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
@@ -1190,8 +1196,6 @@
 
 
 //////////////////////////////Procesando apartados pendientes
-     
-
 
 public function valores_movimientos_temporal(){
 
@@ -1216,17 +1220,6 @@ public function valores_movimientos_temporal(){
                return False;
             $result->free_result();
         }   
-
-
-
-
-
-
-
-
-
-
-
 
  /////////////////////////////////////////////////////////////nuevo/////////////////
 
@@ -1412,6 +1405,8 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
           $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
           $this->db->select('u.id_cliente AS id_cliente',false); 
+          $this->db->select('"6" AS id_apartado',false); 
+          
           
           $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
           $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
@@ -1419,7 +1414,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('fecha_entrada,consecutivo_venta');
 
-          $this->db->select('id_apartado, id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
+          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
           $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
            
@@ -1711,6 +1706,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
           $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
           $this->db->select('u.id_cliente AS id_cliente',false); 
+          $this->db->select('"3" AS id_apartado',false); 
           
           $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
           $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
@@ -1718,7 +1714,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('fecha_entrada,consecutivo_venta');
 
-          $this->db->select('id_apartado, id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
+          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
           $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
            

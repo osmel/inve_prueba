@@ -322,7 +322,7 @@
 
           $this->db->select("a.almacen");
           
-
+          $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
@@ -501,6 +501,7 @@
                                       15=>$row->imagen,
                                       16=>$row->almacen,
                                       17=>$row->proceso_traspaso,
+                                      18=>$row->codigo_contable,
 
 
 
@@ -1110,23 +1111,6 @@
                                     WHEN  (m.id_apartado <> 0)  THEN 'morado' 
                                     ELSE 'black' END )
                              AS color_devolucion", FALSE);         
-
-/*
-CASE 
-
-        WHEN CreditRating <= 2  THEN 'NO TRADE'
-        WHEN CreditRating  <= 4 THEN 'POOR'
-        WHEN CreditRating  <= 6 THEN 'AVARAGE'
-        WHEN CreditRating  = 7 THEN 'GOOD'
-
-        ELSE 'PERFECT' 
-
-        END AS RATING
-
-*/
-
-
-
           
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia', FALSE);
@@ -1154,7 +1138,7 @@ CASE
           $this->db->select("prod.imagen", FALSE);
           
 
-         
+         $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
@@ -1347,7 +1331,8 @@ CASE
                                       14=>$row->num_partida,
                                       15=>$row->imagen,
                                       16=>$row->almacen,
-                                      17=>$row->proceso_traspaso
+                                      17=>$row->proceso_traspaso,
+                                      18=>$row->codigo_contable,
                                       
                                     );                    
                       }
@@ -1516,7 +1501,7 @@ CASE
           } else {
             $id_facturaid = '';
           }    
-
+          $this->db->select("p.codigo_contable");  
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -1649,6 +1634,7 @@ CASE
                                       15=>$row->imagen,
                                       16=>$row->almacen,
                                       17=>$row->proceso_traspaso,
+                                      18=>$row->codigo_contable,
 
                                     );                    
                       }

@@ -12,6 +12,8 @@ class Pedido_compra extends CI_Controller {
     $this->load->model('model_traspaso', 'model_traspaso'); 
     $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
     $this->load->model('model_impresion_compra', 'model_impresion_compra'); 
+    $this->load->model('model_exportar_compra', 'model_exportar_compra'); 
+    
     
     
 
@@ -28,6 +30,34 @@ impresion_reporte_compra
 */
 
 
+
+ public function exportar_reportes_compra() {
+      $this->load->library('export');
+        $data = $_POST;
+
+          switch ($data['modulo']) {
+            case 1:          
+            case 2:   
+            case 3:   
+                  $data['movimientos'] = $this->model_exportar_compra->buscador_revisar_pedido_compra($data);
+              break;
+            case 4:
+                   $data['movimientos'] =  $this->model_exportar_compra->buscador_revisar_cancela_compra($data);
+              break;
+            case 5:   
+                   $data['movimientos'] =  $this->model_exportar_compra->buscador_revisar_historial_compra($data);
+              break;              
+            default:  
+                  $data['movimientos'] =  $this->model_exportar_compra->buscador_revisar_pedido_compra($data);
+              break;             
+             default:
+                   $data['movimientos'] = $this->model_exportar_compra->buscador_revisar_pedido_compra($data);
+               break;
+           }
+
+          $this->export->to_excel($data['movimientos'], 'reporte_compras_'.date("Y-m-d_H-i-s")); 
+
+}
 
 
  public function impresion_reporte_compra() {

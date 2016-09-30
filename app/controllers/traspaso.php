@@ -364,7 +364,7 @@ public function modulo_traspaso(){
 
 
 
-  public function traspaso_historico_detalle(){
+  public function traspaso_historico_detalle(){ //ok
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_historico_detalle($data);
       echo $busqueda;
@@ -372,13 +372,13 @@ public function modulo_traspaso(){
 
 
 
-  public function procesando_traspaso_general_detalle(){
+  public function procesando_traspaso_general_detalle(){ //ok
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle($data);
       echo $busqueda;
   }
 
-public function procesando_traspaso_general_detalle_manual(){
+public function procesando_traspaso_general_detalle_manual(){ //ok
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle_manual($data);
       echo $busqueda;
@@ -388,13 +388,13 @@ public function procesando_traspaso_general_detalle_manual(){
   //1ra Regilla PARA "Pedidos de vendedores"
   public function procesando_general_traspaso(){
     $data=$_POST;
-    $busqueda = $this->model_traspaso->buscador_general_traspaso($data);
+    $busqueda = $this->model_traspaso->buscador_general_traspaso($data); //ok no
     echo $busqueda;
   } 
 
   public function procesando_traspaso_historico(){
     $data=$_POST;
-    $busqueda = $this->model_traspaso->buscador_traspaso_historico($data);
+    $busqueda = $this->model_traspaso->buscador_traspaso_historico($data); //ok no
     echo $busqueda;
   } 
 

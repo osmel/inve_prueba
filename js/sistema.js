@@ -2115,8 +2115,8 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 
     	if ( jQuery('#config_salida').val() == 1 ) { //si tiene factura
 
-	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura','Borrar'];
-	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura','Borrar'];
+	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
+	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 			
 			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
@@ -2129,14 +2129,14 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
 	    } else {
 	    	
-	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso','Quitar'];
-	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso','Quitar'];
+	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
+	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
 	    	
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 			
-			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
@@ -2383,6 +2383,17 @@ jQuery('#tabla_devolucion').dataTable( {
 
 		"columnDefs": [
 
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        }, 
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return 'A'+data;
@@ -2393,7 +2404,7 @@ jQuery('#tabla_devolucion').dataTable( {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [1,2,3,4,5] //6,7
+		                "targets": [2,3,4,5] //6,7
 		            },
 
 	    			{ 
@@ -2834,17 +2845,30 @@ jQuery('#tabla_reporte').dataTable( {
 	
     },
    "columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[16]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[16];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
+
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,12,13,14]
+	                "targets": [0,2,3,4,5,6,7,8,12,13,14]
 	            },
 
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [9,10,11,15]
+	                "targets": [9,10,11,15,16]
 	            }
 	],
 /*
@@ -3687,11 +3711,22 @@ jQuery('#tabla_home').dataTable( {
   },
 
    "columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[18]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[18];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	   
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,4,5,6,7,8,12,13,14,16] //,11 //3,
+	                "targets": [0,2,4,5,6,7,8,12,13,14,16] //,11 //3,
 	            },
 
 	            
@@ -3709,7 +3744,7 @@ jQuery('#tabla_home').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,13,15,17]
+	                "targets": [10,11,13,15,17,18]
 	            }
 
 	            ],
@@ -4504,8 +4539,14 @@ jQuery('#tabla_inicio').dataTable( {
 
 										};    
 
+										if (data[4]!='') {
+				                			prod+=       '<span class="col-xs-12 col-md-12 col-lg-12 nombre">'+data[1]+'</span>'
+				                			+'<br/><b style="color:red;">Cód: </b>'+data[4];
+				                		} else {
+				                			prod+=       '<span class="col-xs-12 col-md-12 col-lg-12 nombre">'+data[1]+'</span>';
+				                		}
+                                        
 
-                                        prod+=       '<span class="col-xs-12 col-md-12 col-lg-12 nombre">'+data[1]+'</span>';
                                         prod+=       '<span class="col-xs-12 col-md-12 col-lg-12 text-right cantidadtotal">'+data[3]+'</span>';
                                         prod+='</a>';
                                         prod+= '</div>';
@@ -4517,7 +4558,12 @@ jQuery('#tabla_inicio').dataTable( {
 							return "";
 	                },
 	                "targets": [ 0,1,2,3 ],
-	            }
+	            },
+
+		        { 
+		                 "visible": false,
+		                "targets": [4]
+		            }
 	],
 
 	"language": {  //tratamiento de lenguaje
@@ -4831,6 +4877,17 @@ jQuery('#tabla_apartado').dataTable({
 	],	
 
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var api = this.api();
+
+		if ( jQuery('#config_salida').val() == 0 ) {
+			api.column(4).visible(false);	
+			api.column(5).visible(false);	
+		} else {
+			api.column(4).visible(true);	
+			api.column(5).visible(true);	
+		}
+
+
 		var arreglo =apartado_pendiente;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
@@ -4993,9 +5050,57 @@ jQuery('#tabla_detalle').dataTable( {
 
      },   
 
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		console.log(data);
 
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 17)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+
+				total_pieza = (end-start);	
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+		}	
+    },	
 
 	"infoCallback": function( settings, start, end, max, total, pre ) {
+
+
+		if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}
 	    if (settings.json.datos) {
 	    	jQuery('#etiq_num_mov').val(  jQuery('#consecutivo_venta').val());
 		    jQuery('#etiq_usuario').val(  settings.json.datos.usuario);
@@ -5024,11 +5129,22 @@ jQuery('#tabla_detalle').dataTable( {
 	},    
 
   "columnDefs": [
+  				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[18]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[18];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,10],
+	                "targets": [1,2,3,4,5,6,7,8,9,10],
 	            },
 
 	            {
@@ -5046,7 +5162,7 @@ jQuery('#tabla_detalle').dataTable( {
 	                "targets": 11
 	            },
 
-	            
+/*	            
 	            {
 	                "render": function ( data, type, row ) {
 	                	if ( jQuery('#config_salida').val() == 0 ) {
@@ -5064,13 +5180,13 @@ jQuery('#tabla_detalle').dataTable( {
 	                },
 	                "targets": 12
 	            },
-
+*/
 
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [13], //12,
+	                "targets": [12,13,16,17,18], 
 	            }	            
 
 	],	
@@ -5432,8 +5548,8 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	id_destino = jQuery("#id_destino").val();
 	id_almacen = jQuery('#id_almacen').val();
 
-	id_tipo_pedido = jQuery("#id_tipo_pedido").val();
-	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
+	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
 
 
 	 var url = 'confirmar_salida_sino';
@@ -6018,10 +6134,54 @@ jQuery('#pedido_completo_detalle').dataTable( {
     			 } 
 
      },   
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		console.log(data);
 
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
 
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 15 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 16)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+
+				total_pieza = (end-start);	
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+		}	
+    },	
 	"infoCallback": function( settings, start, end, max, total, pre ) {
-	    
+		if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	    
 	    if (settings.json.datos) {
 			
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
@@ -6077,18 +6237,29 @@ jQuery('#pedido_completo_detalle').dataTable( {
 		    }
 	 },		   
    "columnDefs": [
+   				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[17]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
 	                //"targets": [0,1,2,3,4,5,6,7,8,12],
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [1,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14],
+	                "targets": [10,11,12,14,15,16,17],
 	            }		            
 
 	],	
@@ -6331,9 +6502,57 @@ jQuery('#pedido_detalle').dataTable( {
 
      },   
 
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		console.log(data);
 
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 17)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+
+				total_pieza = (end-start);	
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+		}	
+    },	
 	"infoCallback": function( settings, start, end, max, total, pre ) {
+		
 	    
+ 		if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+
 	    if (settings.json.datos) {
 
 			jQuery('#etiq_num_mov').val(  settings.json.datos.num_mov);
@@ -6367,11 +6586,22 @@ jQuery('#pedido_detalle').dataTable( {
 	},    
 
    "columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[18]!='') {
+		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[18];	
+		                		} else {
+		                			return row[0];
+		                		}
+		                		
+		                },
+		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,10],
+	                "targets": [1,2,3,4,5,6,7,8,9,10],
 	            },
 
 	            {
@@ -6389,7 +6619,7 @@ jQuery('#pedido_detalle').dataTable( {
 	                "targets": 11
 	            },
 
-	            
+	            /*	
 	            {
 	                "render": function ( data, type, row ) {
 	                	if ( jQuery('#config_salida').val() == 0 ) {
@@ -6407,13 +6637,13 @@ jQuery('#pedido_detalle').dataTable( {
 	                },
 	                "targets": 12
 	            },
-
+	            */
 
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [13,14,15], //12,
+	                "targets": [12,13,14,15,16,17,18], //12,
 	            }	            
 
 	],	
@@ -6430,23 +6660,7 @@ jQuery('#pedido_detalle').dataTable( {
 
 	 },	
  
-	"footerCallback": function( tfoot, data, start, end, display ) {
-		/*
-		var api = this.api();
-
-		if ( jQuery('#config_salida').val() == 0 ) {
-
-			api.column(6).visible(false);	
-			api.column(7).visible(false);	
-			api.column(14).visible(false);	
-		} else {
-
-			api.column(6).visible(true);	
-			api.column(7).visible(true);	
-			api.column(14).visible(true);	
-		}*/	
-
-	},	
+	
 
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
 
@@ -6626,8 +6840,17 @@ jQuery('#tabla_pedido').dataTable( {
 	],	
 
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var api = this.api();
+
+		if ( jQuery('#config_salida').val() == 0 ) {
+			api.column(4).visible(false);	
+			api.column(5).visible(false);	
+		} else {
+			api.column(4).visible(true);	
+			api.column(5).visible(true);	
+		}
+
 		var arreglo =pedido_pendiente;
-		// ['Cliente', 'Dependencia','Consecutivo', 'Fecha','Tipo Apartado','Detalles','Cancelar']; 
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 	    	}
@@ -6938,11 +7161,23 @@ jQuery('#pedido_entrada').dataTable( {
 		}	
     },
 	"columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[16]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[16];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,3,4,5,6,7,8]
+	                "targets": [0,3,4,5,6,7,8]
 	            },
 
 				{ 
@@ -6985,7 +7220,7 @@ jQuery('#pedido_entrada').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,14]
+	                "targets": [12,13,14,15,16]
 	            }	            
 	        ],
 });	
@@ -7091,11 +7326,23 @@ jQuery('#pedido_salida').dataTable( {
 		}
     },
 	"columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,3,4,5,6,7,8]
+	                "targets": [0,3,4,5,6,7,8]
 	            },	
 
 				{ 
@@ -7135,7 +7382,7 @@ jQuery('#pedido_salida').dataTable( {
 	            },	            
 				{ 
 	                 "visible": false,
-	                "targets": [12,13]
+	                "targets": [12,13,14,15]
 	            }		            
 	        ],
 });	
@@ -7596,11 +7843,22 @@ jQuery('#tabla_productos').dataTable( {
     },	
 
    "columnDefs": [
+   				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[17]!='') {
+		                			return row[2]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                		} else {
+		                			return row[2];
+		                		}
+		                		
+		                },
+		                "targets": [2]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },  
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [1,2,3,4,5]
+	                "targets": [1,3,4,5]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
@@ -7667,7 +7925,7 @@ jQuery('#tabla_productos').dataTable( {
 	            },
     			{ 
 	                 "visible": false,
-	                "targets": [0,14,15,16] //11,12
+	                "targets": [0,14,15,16,17] //11,12
 	            }
 
 	],	
@@ -7882,15 +8140,33 @@ jQuery('body').on('click','#impresion', function (e) {
 
 
 		"columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[9]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[9];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
 			    	
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8]
+		                "targets": [0,2,3,4,5,6,7,8]
 		            },
+		            { 
+		                 "visible": false,
+		                "targets": [9]
+		            }
 		            
 		        ],
+
 	});	
 
 

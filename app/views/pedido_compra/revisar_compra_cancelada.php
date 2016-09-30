@@ -13,6 +13,7 @@
   $fecha_hoy = date('j-m-Y');
   	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
+	$id_almacen=$this->session->userdata('id_almacen');
 
 ?>	
 

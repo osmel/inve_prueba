@@ -396,16 +396,18 @@
           $this->db->select('m.peso_real');
           $this->db->select('m.precio, m.iva');
 
-           $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
-           $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);
+           $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+           $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);
 
 
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
 
 
           $this->db->from($this->registros_temporales.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -469,6 +471,8 @@
                                       14=>$row->iva, 
                                       15=>$row->sum_iva, 
                                       16=>$row->sum_total, 
+                                      17=>$row->codigo_contable, 
+
                                                                           
                                     );
                    }
@@ -919,9 +923,12 @@ public function totales_importes($where){
           $this->db->select("(m.precio)+(((m.precio*m.iva))/100) as sum_total", FALSE);
 
 
-          
+          $this->db->select("prod.codigo_contable");            
           
           $this->db->from($this->historico_registros_entradas.' as m');
+
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');

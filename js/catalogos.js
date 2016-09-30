@@ -38,6 +38,7 @@ jQuery('body').on('click','#impresion_reporte_compra', function (e) {
 
 jQuery('body').on('click','#exportar_reportes_compra', function (e) {
    busqueda = jQuery('input[type=search]').val();
+   			  busqueda = jQuery('input[type=search]').val();
 	   		     modulo = jQuery("#modulo").val(); 
     		 id_almacen = jQuery("#id_almacen_compra").val(); 
      		 movimiento = jQuery("#movimiento").val(); 
@@ -541,8 +542,8 @@ jQuery('#tabla_pedido_compra').dataTable( {
 					switch(jQuery("#modulo").val()) {
 					    case '2':
 					    case '3':
-						    	//api.column(8).visible(false);
-						    	//api.column(9).visible(false);
+						    	api.column(8).visible(false);
+						    	api.column(9).visible(false);
 					        break;
 					    default:
 			              break;
@@ -3186,17 +3187,30 @@ jQuery('#tabla_costo_inventario').dataTable( {
 		}	
     },
    "columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[19]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[19];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,11,]
+	                "targets": [0,2,3,4,5,6,7,8,9,11]
 	            },
 
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [10,12,13,14,18, 15,16,17]
+	                "targets": [10,12,13,14,18, 15,16,17,18,19]
 	            }
 	],
 
@@ -3438,11 +3452,23 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 		}	
     },  		  
 	"columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[17]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9]
+	                "targets": [0,2,3,4,5,6,7,8,9]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
@@ -3463,7 +3489,7 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [12,13,14,15,16]
+	                 "targets": [12,13,14,15,16,17]
 	            }		            
 	        ],
 });	
@@ -3692,11 +3718,23 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 		}	
     },  		  
 	"columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[17]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   		
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9]
+	                "targets": [0,2,3,4,5,6,7,8,9]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
@@ -3717,7 +3755,7 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [12,13,14,15,16]
+	                 "targets": [12,13,14,15,16,17]
 	            }		            
 	        ],
 });	
@@ -4066,17 +4104,30 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 	}, 
 	
    "columnDefs": [
+
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	   
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14],
+	                "targets": [10,11,12,14,15],
 	            }		            
 
 	],	
@@ -4311,17 +4362,31 @@ jQuery('#traspaso_general_detalle').dataTable( {
 	
    "columnDefs": [
 
+
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	   
+
 			   { 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14],
+	                "targets": [10,11,12,14,15],
 	            }			            
 
 	],	
@@ -4407,18 +4472,31 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 	}, 
 	
    "columnDefs": [
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
+
 
 				{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4,5,6,7,8,9,13],
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14],
+	                "targets": [10,11,12,14,15],
 	            }		
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
@@ -4530,12 +4608,22 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 
 		"columnDefs": [
-			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[9]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[9];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        	},   
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6] //
+		                "targets": [0,2,3,4,5,6] //
 		            },
 
 
@@ -4559,7 +4647,12 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 							return row[8];	
 		                },
 		                "targets": 8
-		            },		            
+		            },		 
+
+		        	{ 	
+		                 "visible": false,
+		                "targets": [9]
+		            }           
 		           
 		            
 		        ],

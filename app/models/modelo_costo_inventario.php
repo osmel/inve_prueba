@@ -224,7 +224,13 @@
           
           $this->db->select("a.almacen");
 
+          $this->db->select("prod.codigo_contable");  
+
+
+
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -365,7 +371,8 @@
                                       15=>$row->factura,
                                       16=>$row->num_partida,
                                       17=>$row->almacen,
-                                      18=>$row->proceso_traspaso
+                                      18=>$row->proceso_traspaso,
+                                      19=>$row->codigo_contable,
 
                                       
 

@@ -165,7 +165,9 @@
 
 
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
@@ -224,6 +226,7 @@
                                       6=>$row->id_lote.'-'.$row->consecutivo,
                                       7=>$row->id,
                                       8=>$row->almacen,
+                                      9=>$row->codigo_contable,          
                                     );
                       }
 
@@ -946,6 +949,7 @@ precio_nodisp
           } 
 
           //$this->db->select("a.almacen");
+          $this->db->select("p.codigo_contable");  
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -1025,7 +1029,7 @@ precio_nodisp
                            $j= $j+ ((intval(($i % 4) ==0))*1); 
                            $x= intval($i % 4) ; 
                            if ($x==0) {
-                              $dato[0]="";$dato[1]="";$dato[2]="";$dato[3]="";
+                              $dato[0]="";$dato[1]="";$dato[2]="";$dato[3]="";$dato[4]="";
                            }
 
 
@@ -1038,6 +1042,7 @@ precio_nodisp
                            $dato[$x][1]=  $row->descripcion;
                            $dato[$x][2]=  $row->grupo;
                            $dato[$x][3]=  ( self::cantidad_metro_agrupando($row->grupo) );  
+                           $dato[$x][4]=  $row->codigo_contable;
                            $datas[$j] = $dato;
                         $i++;
                       }

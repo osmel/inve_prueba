@@ -475,33 +475,38 @@ public function validar_confirmar_salida_sino(){
 
 			   
 			  $data['etiq_mov'] ="de Salida";
-		      if ($this->session->userdata('config_salida')==1) {
-			      switch ($id_perfil) {    
-			        case 1:		               
-			                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+			  /*
+				if ($this->session->userdata('config_salida')==1) {
+				      switch ($id_perfil) {    
+				        case 1:		               
+				                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 
-				        break;
-			        case 2:
-			        case 3:
-			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones) )  {    
-			                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-			              }  else  {
-			                redirect('');
-			              } 
-			          break;
-			        default:  
-			          redirect('');
-			          break;
-			      }
-			 } else {
-			 	redirect('');	
-			 }  
+					        break;
+				        case 2:
+				        case 3:
+				        case 4:
+				             if  (in_array(2, $coleccion_id_operaciones) )  {    
+				                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+				              }  else  {
+				                redirect('');
+				              } 
+				          break;
+				        default:  
+				          redirect('');
+				          break;
+				      }
+				 } else {
+				 	redirect('');	
+				 } 
+				 */
+
+			redirect('detalles_salidas/'.base64_encode($data['encabezado']['num_movimiento']).'/'.base64_encode($data['encabezado']['cliente']).'/'.base64_encode($data['encabezado']['cargador'])) ;
+ 
 		   }   	
 
 }	
 
-
+	
 
 	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1){
 

@@ -294,6 +294,9 @@
           $this->db->select("prod.imagen", FALSE);
 
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable");  
+          
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
@@ -476,6 +479,7 @@
                                       13=>$row->kilogramos,                                      
                                       14=>$row->imagen,
                                       15=>$row->almacen,
+                                      16=>$row->codigo_contable,
                                     );
                       }
 
@@ -591,6 +595,7 @@
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
           $this->db->select("prod.imagen", FALSE);
+          $this->db->select("prod.codigo_contable");  
 
          
           $this->db->select("a.almacen");
@@ -690,6 +695,7 @@
                                       12=>$row->kilogramos,        
                                       13=>$row->imagen,                              
                                       14=>$row->almacen,
+                                      15=>$row->codigo_contable,
                                     );
                       }
 
@@ -1245,7 +1251,7 @@
                         CASE m.tipo_salida
                            WHEN 1 THEN "Salida Parcial"
                            WHEN 2 THEN "Salida Total"
-                           ELSE "xxxx"
+                           ELSE "Salida Total"
                         END AS tipo_apartado
          ',False);  
 
@@ -1398,18 +1404,7 @@
 
    //procesando los detalles de un apartado especifico
 
-   public function total_apartado_detalle($where){
-              $id_session = $this->session->userdata('id');
-              $this->db->from($this->registros.' as m');
-
-              $this->db->where($where);
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
+       
 
    public function buscador_apartados_detalle($data){
           $cadena = addslashes($data['search']['value']);
@@ -1498,8 +1493,13 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
           
           $this->db->from($this->registros.' as m');
+
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
 
@@ -1535,8 +1535,10 @@
                          (m.precio LIKE  "%'.$cadena.'%")
                        )
             )';   
-
+/*
           $where_total = '( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" )  AND ( m.consecutivo_venta = '.$consecutivo_venta.' ) '.$id_almacenid;
+*/
+          $where_total =$where;
 
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
@@ -1582,6 +1584,10 @@
                                       13=>$row->id_tipo_pedido,
                                       14=>$row->t_factura,    
                                       15=>$row->peso_real,
+                                      16=>$row->metros,
+                                      17=>$row->kilogramos,   
+                                      18=>$row->codigo_contable,   
+
                                       
                                                                      
                                     );
@@ -1601,8 +1607,12 @@
                             "tipo_factura"=>$tipo_factura,
                              "id_tipo_pedido"=>$id_tipo_pedido,
                               "id_tipo_factura"=>$id_tipo_factura,
-                              
                              ),
+                          "totales"            =>  array(
+                            "pieza"=>intval( self::totales_campos_apartado($where_total)->pieza ),
+                            "metro"=>floatval( self::totales_campos_apartado($where_total)->metros ),
+                            "kilogramo"=>floatval( self::totales_campos_apartado($where_total)->kilogramos ), 
+                           ), 
                       ));
               }   
               else {
@@ -1610,7 +1620,12 @@
                   "draw" =>  intval( $data['draw'] ),
                   "recordsTotal" => 0, //intval( self::total_apartado_detalle($where_total) ), 
                   "recordsFiltered" =>0,
-                  "aaData" => array()
+                  "aaData" => array(),
+                  "totales"            =>  array(
+                              "pieza"=>intval( self::totales_campos_apartado($where_total)->pieza ),
+                              "metro"=>floatval( self::totales_campos_apartado($where_total)->metros ),
+                              "kilogramo"=>floatval( self::totales_campos_apartado($where_total)->kilogramos ), 
+                             ),                  
                   );
                   $array[]="";
                   return json_encode($output);
@@ -1619,12 +1634,54 @@
       }        
 
  
-    //"Regilla detalle" de la 2da PARA  "Pedidos de tiendas" 
-    //http://inventarios.dev.com/pedido_detalle/MjQ=
+ public function totales_campos_apartado($where){
 
-  public function total_pedido_especifico($where){
-              $id_session = $this->session->userdata('id');
+           $this->db->select("SUM((m.id_medida =1) * cantidad_um) as metros", FALSE);
+              $this->db->select("SUM((m.id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("COUNT(m.id_medida) as 'pieza'");
+             
               $this->db->from($this->registros.' as m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+              $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+              $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+              
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+              $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+              $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+              $this->db->where($where);
+
+             $result = $this->db->get();
+          
+              if ( $result->num_rows() > 0 )
+                 return $result->row();
+              else
+                 return False;
+              $result->free_result();              
+
+       }  
+
+ public function total_apartado_detalle($where){
+              $id_session = $this->session->userdata('id');
+              
+              $this->db->from($this->registros.' as m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+              $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+              $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+              
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+              $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+              $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');              
 
               $this->db->where($where);
               $cant = $this->db->count_all_results();          
@@ -1633,7 +1690,11 @@
                  return $cant;
               else
                  return 0;         
-       }     
+       }
+
+    //"Regilla detalle" de la 2da PARA  "Pedidos de tiendas" 
+    //http://inventarios.dev.com/pedido_detalle/MjQ=
+
 
     public function buscador_pedido_especifico($data){
           $cadena = addslashes($data['search']['value']);
@@ -1718,10 +1779,15 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
-          
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
+
+ 
 
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
@@ -1759,7 +1825,8 @@
 
           $this->db->order_by($columna, $order); 
 
-          $where_total ='(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.id_cliente_apartado = "'.$num_mov.'" )'.$id_almacenid;
+          /*$where_total ='(( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.id_cliente_apartado = "'.$num_mov.'" )'.$id_almacenid;*/
+          $where_total =$where;
 
           //paginacion
           $this->db->limit($largo,$inicio); 
@@ -1807,11 +1874,10 @@
                                       13=>$row->id_tipo_pedido,
                                       14=>$row->t_factura,
                                       15=>$row->peso_real,
-                                      
-                                      
-                                                                        
-                                      
-                                                                        
+                                      16=>$row->metros,
+                                      17=>$row->kilogramos,                                         
+                                      18=>$row->codigo_contable,    
+                                                                       
                                     );
                             
                             $tipo_pedido=$row->tipo_pedido;
@@ -1831,12 +1897,12 @@
                             "tipo_factura"=>$tipo_factura, 
                             "id_tipo_pedido"=>$id_tipo_pedido, 
                             "id_tipo_factura"=>$id_tipo_factura, 
-
-
-
-
-
                          ),
+                          "totales"            =>  array(
+                            "pieza"=>intval( self::totales_campos_pedido($where_total)->pieza ),
+                            "metro"=>floatval( self::totales_campos_pedido($where_total)->metros ),
+                            "kilogramo"=>floatval( self::totales_campos_pedido($where_total)->kilogramos ), 
+                           ),                        
                       ));
                     
               }   
@@ -1845,7 +1911,12 @@
                   "draw" =>  intval( $data['draw'] ),
                   "recordsTotal" => 0, //intval( self::total_pedido_especifico($where_total) ), 
                   "recordsFiltered" =>0,
-                  "aaData" => array()
+                  "aaData" => array(),
+                  "totales"            =>  array(
+                            "pieza"=>intval( self::totales_campos_pedido($where_total)->pieza ),
+                            "metro"=>floatval( self::totales_campos_pedido($where_total)->metros ),
+                            "kilogramo"=>floatval( self::totales_campos_pedido($where_total)->kilogramos ), 
+                           ),
                   );
                   $array[]="";
                   return json_encode($output);
@@ -1854,13 +1925,52 @@
       }    
 
   
-    //"Regilla detalle" de la 3ra PARA "Historico de Pedidos"
-    //http://inventarios.dev.com/pedido_completado_detalle/NTA=/Ng==
+ public function totales_campos_pedido($where){
 
+           $this->db->select("SUM((m.id_medida =1) * cantidad_um) as metros", FALSE);
+              $this->db->select("SUM((m.id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("COUNT(m.id_medida) as 'pieza'");
+             
+              $this->db->from($this->registros.' as m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
 
-  public function total_completo_especifico($where){
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+              $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+              $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
               
-              $this->db->from($this->historico_registros_salidas.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+              $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+              $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+              $this->db->where($where);
+
+             $result = $this->db->get();
+          
+              if ( $result->num_rows() > 0 )
+                 return $result->row();
+              else
+                 return False;
+              $result->free_result();              
+
+       }  
+
+  public function total_pedido_especifico($where){
+              $id_session = $this->session->userdata('id');
+                    
+                $this->db->from($this->registros.' as m');
+                $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+                $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+                $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+                $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+                $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+                $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+                $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
 
               $this->db->where($where);
               $cant = $this->db->count_all_results();          
@@ -1870,6 +1980,12 @@
               else
                  return 0;         
        }     
+
+    //"Regilla detalle" de la 3ra PARA "Historico de Pedidos"
+    //http://inventarios.dev.com/pedido_completado_detalle/NTA=/Ng==
+
+
+ 
 
 
     public function buscador_completo_especifico($data){
@@ -1950,7 +2066,7 @@
                         CASE m.tipo_salida
                            WHEN 1 THEN "(Salida Parcial)"
                            WHEN 2 THEN "(Salida Total)"
-                           ELSE "xxxx"
+                           ELSE "(Salida Total)"
                         END AS tipo_pedido
          ',False);  
 
@@ -1970,9 +2086,15 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
+
+
 
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
@@ -2009,7 +2131,8 @@
 
           $this->db->where($where);
 
-          $where_total = '( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida = '.$mov_salida.' )'.$id_almacenid;
+          //$where_total = '( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida = '.$mov_salida.' )'.$id_almacenid;
+          $where_total =$where;
 
           $this->db->order_by($columna, $order); 
 
@@ -2063,7 +2186,10 @@
                                       11=>$row->id_tipo_factura,
                                       12=>$row->id_tipo_pedido,
                                       13=>$row->t_factura,  
-                                      14=>$row->id_factura_original,                                    
+                                      14=>$row->id_factura_original,       
+                                      15=>$row->metros,
+                                      16=>$row->kilogramos,     
+                                      17=>$row->codigo_contable,                           
 
                                                                    
                                     );
@@ -2080,9 +2206,13 @@
                         "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                           "tipo_pedido"=>$tipo_pedido,
                           "tipo_factura"=>$tipo_factura,  
-
-
                          ),
+                        "totales"            =>  array(
+                              "pieza"=>intval( self::totales_campos_completo($where_total)->pieza ),
+                              "metro"=>floatval( self::totales_campos_completo($where_total)->metros ),
+                              "kilogramo"=>floatval( self::totales_campos_completo($where_total)->kilogramos ), 
+                             ),                  
+                        
                       ));
                     
               }   
@@ -2091,13 +2221,77 @@
                   "draw" =>  intval( $data['draw'] ),
                   "recordsTotal" => 0, //intval( self::total_completo_especifico($where_total) ), 
                   "recordsFiltered" =>0,
-                  "aaData" => array()
+                  "aaData" => array(),
+                  "totales"            =>  array(
+                              "pieza"=>intval( self::totales_campos_completo($where_total)->pieza ),
+                              "metro"=>floatval( self::totales_campos_completo($where_total)->metros ),
+                              "kilogramo"=>floatval( self::totales_campos_completo($where_total)->kilogramos ), 
+                             ),                  
+                  
+
                   );
                   $array[]="";
                   return json_encode($output);
               }
               $result->free_result();           
       }  
+
+
+
+ 
+ public function totales_campos_completo($where){
+
+           $this->db->select("SUM((m.id_medida =1) * cantidad_um) as metros", FALSE);
+              $this->db->select("SUM((m.id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("COUNT(m.id_medida) as 'pieza'");
+             
+              $this->db->from($this->historico_registros_salidas.' as m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+              $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+              $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+              $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+              $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+              $this->db->where($where);
+
+             $result = $this->db->get();
+          
+              if ( $result->num_rows() > 0 )
+                 return $result->row();
+              else
+                 return False;
+              $result->free_result();              
+
+       }  
+  public function total_completo_especifico($where){
+              
+              
+          $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+          $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+          $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+
+              $this->db->where($where);
+              $cant = $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

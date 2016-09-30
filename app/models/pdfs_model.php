@@ -451,7 +451,7 @@ class Pdfs_model extends CI_Model
                         CASE m.tipo_salida
                            WHEN 1 THEN "(Salida Parcial)"
                            WHEN 2 THEN "(Salida Total)"
-                           ELSE "xxxx"
+                           ELSE "(Salida Total)"
                         END AS tipo_pedido
          ',False);  
 

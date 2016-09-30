@@ -128,7 +128,9 @@
           $this->db->select("tp.tipo_pedido tip_pedido", false);          
           $this->db->select("tf.tipo_factura");          
 
+          
           $this->db->from($this->historico_registros_traspasos.' as m');
+          
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
@@ -215,6 +217,7 @@
                                       
                                       8=>$row->vendedor, //responsable
                                       9=>$row->dependencia,//dependencia a la cual pertenece responsable que aparto  
+
                                       
                                     );
                       }
@@ -345,7 +348,7 @@
                         CASE m.tipo_salida
                            WHEN 1 THEN "(Salida Parcial)"
                            WHEN 2 THEN "(Salida Total)"
-                           ELSE "xxxx"
+                           ELSE "(Salida Total)"
                         END AS tipo_pedido
          ',False);  
 
@@ -360,6 +363,7 @@
          ',False);  
 
           $this->db->select("a.almacen");
+
           
           $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
@@ -369,9 +373,13 @@
           $this->db->select("m.consecutivo_traspaso");  
           $this->db->select("m.id_apartado apartado,m.comentario_traspaso");  
           $this->db->select('m.mov_salida', FALSE);
+          $this->db->select("prod.codigo_contable");  
+
+        
 
 
           $this->db->from($this->historico_registros_traspasos.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
@@ -448,6 +456,7 @@
                                       12=>$row->id_tipo_pedido,
                                       13=>$row->t_factura,  
                                       14=>$row->id_factura_original,
+                                      15=>$row->codigo_contable,                                      
                                       
 
                                               
@@ -613,8 +622,11 @@
           $this->db->select("tf_manual.tipo_factura tipo_factura_manual");          
 
           $this->db->select('m.id_usuario_traspaso,m.comentario_traspaso comentario,m.num_control factura');
-
+          
           $this->db->from($this->registros_entradas.' as m');
+          
+          
+
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
 
@@ -723,7 +735,8 @@
                                       12=>$row->comentario,  
                                       13=>$row->comentario,
                                       14=>$row->tipo_factura_manual,
-                                      15=>$row->id_usuario_traspaso
+                                      15=>$row->id_usuario_traspaso,
+                                      
 
 
                                     );
@@ -870,8 +883,11 @@
           $this->db->select("m.id_apartado apartado");  
           //$this->db->select('m.mov_salida', FALSE);
 
-
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros_entradas.' as m');
+
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
@@ -964,6 +980,7 @@
                                       12=>$row->id_tipo_pedido,
                                       13=>$row->t_factura,  
                                       14=>$row->id_factura_original,
+                                      15=>$row->codigo_contable,
 
                                                                    
                                     );
@@ -1131,9 +1148,11 @@
           //$this->db->select("m.consecutivo_traspaso");  
           $this->db->select("m.id_apartado apartado");  
           //$this->db->select('m.mov_salida', FALSE);
+          $this->db->select("prod.codigo_contable");  
 
 
           $this->db->from($this->registros_entradas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
@@ -1211,7 +1230,8 @@
                                       11=>$row->id_tipo_factura,
                                       12=>$row->id_tipo_pedido,
                                       13=>$row->tipo_factura_manual,  
-                                      14=>$row->id_factura_original        
+                                      14=>$row->id_factura_original,
+                                      15=>$row->codigo_contable,        
                              
                                     );
 
@@ -1506,7 +1526,7 @@
                         CASE m.tipo_salida
                            WHEN 1 THEN "(Salida Parcial)"
                            WHEN 2 THEN "(Salida Total)"
-                           ELSE "xxxx"
+                           ELSE "(Salida Total)"
                         END AS tipo_pedido
          ',False);  
 
@@ -1723,11 +1743,12 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-          $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
-          $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);          
-
+          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);          
+          $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -1816,7 +1837,8 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
                                       15=>$row->sum_iva,
-                                      16=>$row->sum_total
+                                      16=>$row->sum_total,
+                                      17=>$row->codigo_contable,   
 
                                       
                                     );
@@ -1999,12 +2021,15 @@ public function valores_movimientos_temporal(){
          
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-          $this->db->select("((precio*iva))/100 as sum_iva", FALSE);
-          $this->db->select("(precio)+((precio*iva))/100 as sum_total", FALSE);          
+          $this->db->select("((m.precio*iva))/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);          
           
           $this->db->select("num_control, comentario_traspaso, id_usuario_traspaso", FALSE);
+          $this->db->select("prod.codigo_contable");  
+
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -2093,7 +2118,9 @@ public function valores_movimientos_temporal(){
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
                                       15=>$row->sum_iva,
-                                      16=>$row->sum_total                                      
+                                      16=>$row->sum_total,                                      
+                                      17=>$row->codigo_contable
+
                                     );
                       }
 

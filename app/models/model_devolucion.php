@@ -254,9 +254,11 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
 
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
           $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
@@ -309,6 +311,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
                                       12=>$row->peso_real,    
                                       13=>$row->peso_real_devolucion,   
                                       14=>$row->id_almacen,  
+                                      15=>$row->codigo_contable,   
                                                                      
 
 
@@ -497,10 +500,11 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
 
           
-
+          $this->db->select("prod.codigo_contable");  
           
           //$this->db->from($this->registros_entradas.' as m');
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');

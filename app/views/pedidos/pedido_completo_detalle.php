@@ -84,7 +84,51 @@
 								</table>
 							</section>
 						</div>		
-						<br/>
+<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="pieza"></span>			
+					</div>	
+						
+					<div class="col-sm-3 col-md-2">	
+						<span id="metro"></span>			
+					</div>	
+	
+					<div class="col-sm-3 col-md-2">	
+						<span id="kg" ></span>				
+					</div>	
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Existencias Totales</b>			
+					</div>									
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_pieza"></span>			
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_metro"></span>			
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_kg" ></span>				
+					</div>	
+				</div>
+							
+						<hr/>
 						<div class="col-md-12">	
 							<div class="row">
 								<div class="col-sm-6 col-md-6"></div>

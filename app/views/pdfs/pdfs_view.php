@@ -90,7 +90,8 @@ echo form_open('pdfs/generar', $attr,$hidden );
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr style="color:<?php echo $movimiento->color_devolucion?>">
 									<td class="text-center"><?php echo $movimiento->codigo; ?></td>								
-									<td class="text-center"><?php echo $movimiento->id_descripcion; ?></td>
+									
+									<td class="text-center"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?> </td>
 
 									<td class="text-center">
 										<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
