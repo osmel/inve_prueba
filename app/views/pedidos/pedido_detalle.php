@@ -79,6 +79,7 @@
 								
 							</div>									
 						<?php } else { ?>
+							<?php if ( ( $perfil == 2 ) OR ( $perfil == 1 )) { ?>
 							<div class="col-xs-12 col-sm-4 col-md-3">
 								
 									<div class="form-group">
@@ -91,6 +92,7 @@
 									</div>
 								
 							</div>
+							<?php }  ?>	
 						<?php }  ?>	
 
 

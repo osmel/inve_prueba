@@ -83,18 +83,20 @@
 									
 							</div>									
 						<?php } else { ?>
-							<div class="col-xs-12 col-sm-4 col-md-3">
-								
-									<div class="form-group">
-										<label for="descripcion">Cargador</label>
-										<div class="input-group col-md-12 col-sm-12 col-xs-12">
-											
-											<input  type="text" name="editar_cargador" class="buscar_cargador form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cargador y seleccione una opción para poder continuar." autocomplete="off" spellcheck="false" placeholder="Buscar Cargador...">
-											
+							<?php if ( ( $perfil == 2 ) OR ( $perfil == 1 )) { ?>
+								<div class="col-xs-12 col-sm-4 col-md-3">
+									
+										<div class="form-group">
+											<label for="descripcion">Cargador</label>
+											<div class="input-group col-md-12 col-sm-12 col-xs-12">
+												
+												<input  type="text" name="editar_cargador" class="buscar_cargador form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cargador y seleccione una opción para poder continuar." autocomplete="off" spellcheck="false" placeholder="Buscar Cargador...">
+												
+											</div>
 										</div>
-									</div>
-								
-							</div>
+									
+								</div>
+							<?php }  ?>		
 						<?php }  ?>	
 
 

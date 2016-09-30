@@ -56,8 +56,8 @@ jQuery("#id_perfil").on('change', function(e) {
 		//console.log("data");
 
 		jQuery.ajax({
-		        //url : 'http://www.almacen-it.com/establecer_modulo',
-		        url : 'http://inventarios.dev.com/establecer_modulo',
+		        url : 'http://104.236.91.215/establecer_modulo',
+		        //url : 'http://inventarios.dev.com/establecer_modulo',
 		        //url : 'establecer_modulo',
 		        data:{
 		        	hash_url:hash_url
@@ -2129,8 +2129,15 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
 	    } else {
 	    	
-	    	var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
-	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
+	    	
+	    	if ( ( jQuery('#el_perfil').val() == 3 ) || ( jQuery('#el_perfil').val() == 4 ) ) {
+	    		var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén'];
+	    		var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén'];
+	    	} else {
+	    		var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
+	    		var arr_apartado_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Lote','No. de Partida','Almacén','Peso'];
+	    	}
+	    		
 	    	
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
@@ -2143,7 +2150,7 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 
 	        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
 	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
-
+	   
 
 	    }    
     	
@@ -5186,7 +5193,7 @@ jQuery('#tabla_detalle').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,16,17,18], 
+	                "targets": [12,13,14,15,16,17,18], 
 	            }	            
 
 	],	
@@ -5211,11 +5218,19 @@ jQuery('#tabla_detalle').dataTable( {
 
 			api.column(6).visible(false);	
 			api.column(7).visible(false);	
+			if ( ( jQuery('#el_perfil').val() == 3 ) || ( jQuery('#el_perfil').val() == 4 ) ) {
+				api.column(11).visible(false);	
+			}
+
 			//api.column(12).visible(true);	
 		} else {
 			
 			api.column(6).visible(true);	
 			api.column(7).visible(true);	
+			if ( ( jQuery('#el_perfil').val() == 3 ) || ( jQuery('#el_perfil').val() == 4 ) ) {
+				api.column(11).visible(true);	
+			}
+
 			//api.column(11).visible(false);	
 		}
 
@@ -6670,12 +6685,18 @@ jQuery('#pedido_detalle').dataTable( {
 
 			api.column(6).visible(false);	
 			api.column(7).visible(false);	
-			//api.column(12).visible(true);	
+			if ( ( jQuery('#el_perfil').val() == 3 ) || ( jQuery('#el_perfil').val() == 4 ) ) {
+				api.column(11).visible(false);	
+			}
 		} else {
 			
 			api.column(6).visible(true);	
 			api.column(7).visible(true);	
-			//api.column(11).visible(false);	
+			if ( ( jQuery('#el_perfil').val() == 3 ) || ( jQuery('#el_perfil').val() == 4 ) ) {
+				api.column(11).visible(true);	
+			}
+
+			//api.column(11).visible(true);	
 		}
 
 		var arreglo =arr_pedido_detalle;
