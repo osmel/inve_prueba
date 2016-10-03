@@ -59,7 +59,7 @@
 										</span>
 
 										
-										<span class="col-xs-12 col-sm-4 col-md-3 col-lg-3 preciocatalogo"></span> <!--Precio: $<?php //echo $el_producto->precio?>-->
+										<span class="col-xs-12 col-sm-4 col-md-3 col-lg-3 preciocatalogo" style="display:none;"></span> <!--Precio: $<?php //echo $el_producto->precio?>-->
 		
 
 

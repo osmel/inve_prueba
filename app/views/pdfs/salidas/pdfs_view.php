@@ -30,12 +30,19 @@ echo form_open('pdfs/generar', $attr,$hidden );
 ?>		
 <div class="container margenes">
 			<div class="panel panel-primary">
-			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php echo $encabezado['num_movimiento']; ?></div>
+			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php echo $encabezado['num_movimiento']; ?> </div>
 			<div class="panel-body">
 
-				<div class="col-sm-3 col-md-3">
+
+				<div class="col-sm-2 col-md-2">
 						<h4>Almacén: <?php echo $movimientos[0]->almacen; ?></h4>
 				</div>
+
+
+				<div class="col-sm-2 col-md-2">
+						<h4>Mov. de pedido: <?php echo $movimientos[0]->mov_pedido; ?></h4>
+				</div>
+				 
 
 				<div class="col-sm-3 col-md-3">		
 						<h4>Vendedor: <?php echo $encabezado['cliente']; ?></h4>
@@ -45,7 +52,9 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				</div>
 
 
-				<div class="col-sm-3 col-md-3">
+				 
+
+				<div class="col-sm-2 col-md-2">
 						<?php if ($movimientos[0]->id_tipo_factura!=0) { ?>
 								<h4>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?><h4>
 						<?php } else { ?>
@@ -68,11 +77,12 @@ echo form_open('pdfs/generar', $attr,$hidden );
 					<thead>	
 						<tr>
 							<th class="text-center cursora" style="width:20%">Código<i class="glyphicon glyphicon-sort"></i></th>
-							<th class="text-center cursora" style="width:19%">Descripción <i class="glyphicon glyphicon-sort"></i></th>
-							<th class="text-center cursora" style="width:10%">Color<i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" style="width:18%">Descripción <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" style="width:7%">Color<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:4%">Medida<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:10%">Ancho <i class="glyphicon glyphicon-sort"></i></th>
-							<th class="text-center cursora" style="width:9%">Peso Real <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" style="width:6%">Peso Entrada <i class="glyphicon glyphicon-sort"></i></th>
+							<th class="text-center cursora" style="width:6%">Peso Salida <i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:9%">Lote<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:9%">No. de Partida<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:10%">Vendedor<i class="glyphicon glyphicon-sort"></i></th>
@@ -93,6 +103,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 								</td>
 								<td class="text-center"><?php echo $movimiento->cantidad_um; ?> <?php echo $movimiento->medida; ?></td>
 								<td class="text-center"><?php echo $movimiento->ancho; ?> cm</td>
+								<td class="text-center"><?php echo $movimiento->peso_entrada; ?> Kgs</td>
 								<td class="text-center"><?php echo $movimiento->peso_real; ?> Kgs</td>
 								<td class="text-center"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
 								<td class="text-center"><?php echo $movimiento->num_partida; ?></td>

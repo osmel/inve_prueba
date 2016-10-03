@@ -261,7 +261,7 @@
 
               $this->db->set( 'id_medida', $data['id_medida']  );  
 
-              //$this->db->set( 'peso_real', $data['peso_real']  );  
+              $this->db->set( 'peso_real', $data['peso_real']  );  
               $this->db->set( 'cantidad_um', $data['cantidad_um']  );  
               $this->db->set( 'cantidad_royo', $data['cantidad_royo']);  
               $this->db->set( 'ancho', $data['ancho']   );   
@@ -814,8 +814,9 @@ public function totales_importes($where){
           $objeto = $result->result();
           //copiar a tabla "registros" e "historico_registros_entradas"
           foreach ($objeto as $key => $value) {
-            $this->db->insert($this->registros, $value); 
             $this->db->insert($this->historico_registros_entradas, $value); 
+            $value->peso_real = 0;
+            $this->db->insert($this->registros, $value);
             $num_movimiento = $value->movimiento;
           }
 

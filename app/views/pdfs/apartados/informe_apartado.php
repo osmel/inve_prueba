@@ -43,9 +43,9 @@
 						<th width="25%">Código</th>
 						<th width="25%">Descripción</th>
 						<th width="10%">Color</th>
-						<th width="10%">Cantidad</th>
-						<th width="10%">Ancho</th>
-						<th width="10%">Precio</th>
+						<th width="15%">Cantidad</th>
+						<th width="15%">Ancho</th>
+						<!--<th width="10%">Precio</th>-->
 						<th width="10%">Lote</th>
 					</tr>
 				</thead>
@@ -56,9 +56,9 @@
 							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
 							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um.' '.$movimiento->medida; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho.' cm'; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um.' '.$movimiento->medida; ?></td>
+							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho.' cm'; ?></td>
+							<!-- <td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>-->
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo;  ?></td>
 
 						</tr>
@@ -82,7 +82,7 @@
 									<?php } ?>	
 
 									<span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span><br>
-									<span><b>Importe Total: </b><?php echo $totales->precio; ?></span>
+									<!-- <span><b>Importe Total: </b><?php echo $totales->precio; ?></span> -->
 							</td>
 						</tr>
 				</tfooter>

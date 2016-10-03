@@ -2628,6 +2628,7 @@ public function buscador_historico_salida($data){
           $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
           $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
 
+        $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
@@ -2722,17 +2723,25 @@ public function buscador_historico_salida($data){
                               }
 
 
+                              if ($row->apartado==3) {
+                                 $num=$row->consecutivo_venta;
+                              } else  {
+                                 $num= $row->id_cliente_apartado;
+                              }   
+
                                $dato[]= array(
                                       0=>$row->mov_salida,
-                                      1=>$row->almacen,
-                                      2=>$row->cliente,
-                                      3=>$row->cargador,
-                                      4=>$row->fecha,
-                                      5=>$tipo_salida, //'tf.tipo_factura,tp.tipo_pedido';
-                                      6=>$row->factura,
-                                      7=>number_format($row->sum_precio, 2, '.', ','),
-                                      8=>number_format($row->sum_iva, 2, '.', ','),
-                                      9=>number_format($row->sum_total, 2, '.', ','),
+                                      1=>$num,
+                                      2=>$row->almacen,
+                                      3=>$row->cliente,
+                                      4=>$row->cargador,
+                                      5=>$row->fecha,
+                                      6=>$tipo_salida, //'tf.tipo_factura,tp.tipo_pedido';
+                                      7=>$row->factura,
+                                      8=>number_format($row->sum_precio, 2, '.', ','),
+                                      9=>number_format($row->sum_iva, 2, '.', ','),
+                                      10=>number_format($row->sum_total, 2, '.', ','),
+
                                     );
                       }
 

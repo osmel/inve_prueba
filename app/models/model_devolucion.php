@@ -450,8 +450,10 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           //copiar a tabla "registros"
           foreach ($objeto as $key => $value) {
-            $this->db->insert($this->registros_entradas, $value); 
+            
             $this->db->insert($this->historico_registros_entradas, $value); 
+            $value->peso_real = 0;
+            $this->db->insert($this->registros_entradas, $value); 
             $num_movimiento = $value->movimiento;  //OJO
           }
 

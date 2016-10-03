@@ -170,18 +170,21 @@ class Pdfs_model extends CI_Model
 
           $this->db->select('c.hexadecimal_color,c.color, u.medida,p.nombre cliente, ca.nombre cargador');
 
-          $this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
-          $this->db->select('m.peso_real');
+          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
+          
 
           
           $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
           $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
 
+          $this->db->select("( CASE WHEN m.id_apartado = 3 THEN m.consecutivo_venta ELSE m.id_cliente_apartado END ) AS mov_pedido", FALSE);
 
           $this->db->select('a.almacen');
           $this->db->select("prod.codigo_contable");  
+          $this->db->select("m.peso_real, m1.peso_real peso_entrada");          
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');

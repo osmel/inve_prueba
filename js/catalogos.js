@@ -2580,7 +2580,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 					
 
 				total_subtotal = api
-						.column( 7)
+						.column( 8)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -2588,14 +2588,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 					
 					total_iva = api
-						.column( 8)
+						.column( 9)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
 						} );	
 					
 					total = api
-						.column( 9)
+						.column( 10)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -2618,13 +2618,13 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(6).visible(false);		
+				api.column(7).visible(false);		
 			}			
 
-			if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
-				api.column(1).visible(false);		
+			if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==3) ) {
+				api.column(2).visible(false);		
 			}	else {
-				api.column(1).visible(true);		
+				api.column(2).visible(true);		
 			}
 
 
@@ -2676,7 +2676,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
 		            },
 
 
@@ -2687,14 +2687,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[2])+'/'+jQuery.base64.encode(row[3])+'"'; //
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 11
 		            },
 
 
@@ -4606,6 +4606,11 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 			},
 		},
 
+		"footerCallback": function( tfoot, data, start, end, display ) {
+			var api = this.api();
+			api.column(5).visible(false);		
+
+		},	
 
 		"columnDefs": [
 			    	{ 
@@ -4664,12 +4669,12 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 			    jQuery('#total_pieza').html( 'Total de Piezas: '+ settings.json.totales.pieza);
 				jQuery('#total_kg').html( 'Total de Kgs: '+number_format(settings.json.totales.kilogramo, 2, '.', ','));
 				jQuery('#total_metro').html('Total de Mts: '+ number_format(settings.json.totales.metro, 2, '.', ','));
-				jQuery('#total_precio').html('Importe Total: '+ number_format(settings.json.totales.precio, 2, '.', ','));
+				//jQuery('#total_precio').html('Importe Total: '+ number_format(settings.json.totales.precio, 2, '.', ','));
 			} else 	{
 			    jQuery('#total_pieza').html( 'Total de Piezas: 0.00');
 				jQuery('#total_kg').html( 'Total de Kgs: 0.00');
 				jQuery('#total_metro').html('Total de Mts: 0.00');
-				jQuery('#total_precio').html('Importe Total: 0.00');
+				//jQuery('#total_precio').html('Importe Total: 0.00');
 			}	
 
 		    return pre

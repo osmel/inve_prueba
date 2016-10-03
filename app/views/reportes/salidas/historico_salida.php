@@ -129,7 +129,8 @@
 							<table id="tabla_historico_salida" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 								<thead>
 									<tr>
-											<th class="text-center cursora" width="10%">Movimiento  </th>
+											<th class="text-center cursora" width="5%">Movimiento  </th>
+											<th class="text-center cursora" width="5%">Mov.Pedido  </th>
 											
 											<th class="text-center cursora" width="5%">Almacén  </th>
 											<th class="text-center cursora" width="35%">Vendedor </th>

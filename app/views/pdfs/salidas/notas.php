@@ -13,14 +13,13 @@
 								<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 								<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 								<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida; ?></span><br>
+								<span><b>Mov Pedido: </b><?php echo $movimientos[0]->mov_pedido; ?></span><br>
 								<?php if (($configuracion->activo==1)) {  ?>
 									<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>
 								<?php } ?>
 								<span><b>Tipo de Operación: </b> <?php echo $etiq_mov; ?></span><br> 
 
 								<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br> 
-								
-								
 								<?php if ($movimientos[0]->id_tipo_factura!=0) { ?>
 										<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?></span> 
 								<?php } else { ?>
@@ -64,12 +63,13 @@
 					</tr>
 					<tr>
 						<th width="20%">Código</th>
-						<th width="19%">Descripción</th>
-						<th width="10%">Color</th>
+						<th width="18%">Descripción</th>
+						<th width="8%">Color</th>
 						<th width="4%">UM</th>
 						<th width="10%">Cant.</th>
 						<th width="9%">Ancho</th>
-						<th width="9%">Peso Real</th>
+						<th width="6%">Peso entrada</th>
+						<th width="6%">Peso Real</th>
 						<th width="9%">Lote</th>
 						<th width="10%">Vendedor</th>
 
@@ -81,12 +81,13 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="19%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
+							<td width="18%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
+							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
 							<td width="4%" style="border-top: 1px solid #222222;"><?php echo $movimiento->medida; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?></td>
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?></td>
-							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_real; ?></td>
+							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_entrada; ?></td>
+							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_real; ?></td>
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nom_vendedor; ?></td>
 						</tr>
