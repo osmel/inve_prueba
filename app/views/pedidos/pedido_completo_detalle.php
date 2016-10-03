@@ -20,7 +20,7 @@
 
 						<div class="col-sm-4 col-md-4">
 							<div class="form-group">
-								<label for="label_cliente" id="label_cliente" class="col-sm-12 col-md-12">Cliente</label>
+								<label for="label_cliente" id="label_cliente" class="col-sm-12 col-md-12">Vendedor</label>
 									<input type="text" disabled class="form-control" id="etiq_cliente" name="etiq_cliente" placeholder="34534534554">
 							</div>
 						</div>							

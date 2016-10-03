@@ -9,7 +9,7 @@
 					<tr>
 						<th width="70%" style="font-size:10px; line-height: 15px;">
 
-								<span><b>Cliente: </b> <?php echo $movimientos[0]->cliente; ?></span><br>
+								<span><b>Vendedor: </b> <?php echo $movimientos[0]->cliente; ?></span><br>
 								<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 								<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 								<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida; ?></span><br>
@@ -81,7 +81,7 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="19%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
+							<td width="19%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
 							<td width="4%" style="border-top: 1px solid #222222;"><?php echo $movimiento->medida; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?></td>
@@ -119,7 +119,24 @@
 
 	</div>
 	<br/><br/><br/>
-	<hr style="padding: 0px; margin: 60px; width: 200px;"/>	
+		
+	<table style="width:100%">
+	  <tr>
+	  	<td>
+			<hr style="padding: 0px; margin: 30px; width: 200px;"/>	
+			<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
+		</td>	
+	
+	    <td>
+			<hr style="padding: 0px; margin: 30px; width: 200px;"/>	
+			<span><b>Recibe: </b> </span><br>
+		</td>
+	    
+	  </tr>
+	</table>
 
-	<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
+
+
+
+
 </div>

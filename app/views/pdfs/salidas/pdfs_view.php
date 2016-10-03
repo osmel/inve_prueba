@@ -38,7 +38,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				</div>
 
 				<div class="col-sm-3 col-md-3">		
-						<h4>Cliente: <?php echo $encabezado['cliente']; ?></h4>
+						<h4>Vendedor: <?php echo $encabezado['cliente']; ?></h4>
 				</div>
 				<div class="col-sm-3 col-md-3">
 						<h4>Cargador: <?php echo $encabezado['cargador']; ?></h4>

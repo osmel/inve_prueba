@@ -72,7 +72,7 @@
 
 							
 							<td width="30%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;">
 								<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
 							</td>

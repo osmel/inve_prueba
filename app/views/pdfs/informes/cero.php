@@ -45,7 +45,7 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->referencia; ?></td>								
-							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->descripcion; ?></td>
+							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo 'Optimo:'.$movimiento->minimo.'<br/>  Reales:'. $movimiento->suma; ?></td>
 							

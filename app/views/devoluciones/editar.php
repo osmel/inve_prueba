@@ -316,7 +316,10 @@ echo form_open('validar_devolucion_producto', $attr);
 					<fieldset class="col-xs-12 col-sm-6 col-md-3" disabled >
 								<fieldset disabled>
 									<div class="form-group">
-										<label for="codigo" class="col-sm-12 col-md-12">Código</label>
+										<label for="codigo" class="col-sm-12 col-md-12">
+											<b style="color:red;">Cód: </b>
+												<span id="codigo_contable"></span>
+										</label>
 											<div class="col-sm-12 col-md-12">
 												<input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código">
 

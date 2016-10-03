@@ -1555,9 +1555,10 @@ precio_nodisp
                 $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
 
                 $this->db->select('c.hexadecimal_color, u.medida');
-
+                $this->db->select("prod.codigo_contable");  
 
                 $this->db->from($this->registros.' as m');
+                $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
                 $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
                 $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
 

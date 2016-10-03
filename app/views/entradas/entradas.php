@@ -403,7 +403,10 @@ if ($val_proveedor) {
 							<div class="col-sm-3 col-md-3">
 								<fieldset disabled>
 									<div class="form-group">
-										<label for="codigo" class="col-sm-12 col-md-12">Código</label>
+										<label for="codigo" class="col-sm-12 col-md-12"><b style="color:red;">Cód: </b>
+												<span id="codigo_contable"></span>
+										</label>
+
 										
 											<div class="col-sm-12 col-md-12">
 												<input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código">

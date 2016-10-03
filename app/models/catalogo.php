@@ -1716,8 +1716,9 @@
         public function refe_producto($data){
             //distinct
 
-            $this->db->select("p.referencia,p.comentario,p.imagen,p.precio,p.ancho", FALSE);  
+            $this->db->select("p.referencia,p.comentario,p.imagen,p.precio,p.ancho,p.codigo_contable", FALSE);  
             $this->db->from($this->productos.' as p');
+
             
             //$this->db->where('p.descripcion', $data['val_prod']);
             $this->db->where('p.descripcion', ($data['val_prod']) );
@@ -3634,12 +3635,16 @@
             $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
             $this->db->select('m.id_medida, m.ancho,m.precio, m.id_estatus, m.id_lote, m.id ');
             $this->db->select('m.peso_real, m.peso_real_devolucion');
+            $this->db->select("prod.codigo_contable");  
 
             $this->db->from($this->historico_registros_salidas.' as m');
             $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
             $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
             $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
             $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+            
+            $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
             //$this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT'); //um.medida
 
             //OR (m.referencia LIKE  "%'.$data['key'].'%") 
@@ -3688,6 +3693,7 @@
                                        "num_partida"=>$row->num_partida,
                                        "peso_real"=>$row->peso_real,
                                        "peso_real_devolucion"=>$row->peso_real_devolucion,
+                                       "codigo_contable"=>$row->codigo_contable,
                                        
                                        
                                     );
@@ -3713,12 +3719,14 @@
             $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
             $this->db->select('m.id_medida, m.ancho,m.precio,m.iva, m.id_estatus, m.id_lote, m.id ');
             $this->db->select('m.peso_real');
-
+            $this->db->select("prod.codigo_contable");  
             $this->db->from($this->registros_entradas.' as m');
             $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
             $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
             $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
             $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+            
+            $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
             //$this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT'); //um.medida
 
             
@@ -3764,6 +3772,7 @@
                                        "iva"=>$row->iva,
                                        "id_factura"=>$row->id_factura,
                                        "id_tipo_pago"=>$row->id_tipo_pago,
+                                       "codigo_contable"=>$row->codigo_contable,
                                        
 
                                     );

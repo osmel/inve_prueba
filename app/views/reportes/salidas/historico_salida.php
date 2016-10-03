@@ -132,7 +132,7 @@
 											<th class="text-center cursora" width="10%">Movimiento  </th>
 											
 											<th class="text-center cursora" width="5%">Almacén  </th>
-											<th class="text-center cursora" width="35%">Cliente </th>
+											<th class="text-center cursora" width="35%">Vendedor </th>
 											<th class="text-center cursora" width="35%">Cargador  </th>
 											
 											<th class="text-center cursora" width="10%">Fecha  </th>

@@ -117,8 +117,11 @@ class Informes_model extends CI_Model
           $this->db->select('m.movimiento');
           $this->db->select('p.nombre');
           $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as fecha',false);
+          $this->db->select("prod.codigo_contable");  
+
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -340,11 +343,17 @@ class Informes_model extends CI_Model
             $id_almacenid = '';
           }
 
+          if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
+
           
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       ( ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
@@ -356,7 +365,7 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
 
 
@@ -894,10 +903,15 @@ class Informes_model extends CI_Model
         $id_almacenid = '';
         }
          
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          }          
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (
@@ -909,7 +923,7 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -1094,7 +1108,10 @@ class Informes_model extends CI_Model
           
           $this->db->select("a.almacen");
 
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->historico_registros_entradas.' as m');
+          
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -1123,11 +1140,16 @@ class Informes_model extends CI_Model
             $id_almacenid = '';
           }
 
-         
+          if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
+
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (
@@ -1139,7 +1161,7 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -1332,9 +1354,21 @@ class Informes_model extends CI_Model
           } else {
             $id_almacenid = '';
           }
+
+          if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
+
+
+ 
+
+          //SELECT * FROM `inven_registros_entradas` WHERE codigo="wPLt92500130092016112934_150" or codigo="AebwT1940013009201685322_72" 
+
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (
@@ -1346,7 +1380,8 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
+
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -1355,11 +1390,12 @@ class Informes_model extends CI_Model
 
           if ($estatus=="apartado") {
               $where .= ' AND ( m.id_apartado != 0 ) ' ;   
-              $where_total .= ' AND ( m.id_apartado != 0 ) ' ;      
-          }    else {
+              $where_total .= ' AND ( m.id_apartado != 0 ) ' ;   
+          }    elseif ($estatus!="existencia") {
               $where .= ' AND ( m.id_apartado = 0 ) ' ;   
               $where_total .= ' AND ( m.id_apartado = 0 ) ' ;   
-          }
+          } 
+
 
 
           if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
@@ -1527,8 +1563,10 @@ class Informes_model extends CI_Model
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
 
           $this->db->select("a.almacen");
-         
+          $this->db->select("prod.codigo_contable");  
+
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -1559,10 +1597,14 @@ class Informes_model extends CI_Model
             $id_almacenid = '';
           }
 
-
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
                       ) 
                        AND
                       (
@@ -1574,7 +1616,7 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
 
           if ($estatus=="devolucion") {
               $where .= ' AND ( m.id_estatus = "13" ) ' ;   
@@ -1745,9 +1787,15 @@ class Informes_model extends CI_Model
           } else {
             $id_almacenid = ''; 
           }
+
+          if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'
+                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'
                       ) 
                        AND
                       (
@@ -1761,7 +1809,7 @@ class Informes_model extends CI_Model
 
 
 
-          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid;
+          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid;
 
            if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
@@ -1916,7 +1964,10 @@ class Informes_model extends CI_Model
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
           
           $this->db->select("a.almacen");         
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
@@ -1944,9 +1995,16 @@ class Informes_model extends CI_Model
               $id_almacenid = '';
           }
 
+
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
+
           $where = '(
                       (
-                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'
+                         ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'
                       ) 
                        AND
                       (
@@ -1960,7 +2018,7 @@ class Informes_model extends CI_Model
 
 
 
-          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid;
+          $where_total = '( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid;
 
            if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
@@ -2074,18 +2132,23 @@ class Informes_model extends CI_Model
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-          $this->db->select("a.almacen");
+          $this->db->select("a.almacen,p.codigo_contable");
 
           if ($id_almacen!=0) {
             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
           } else {
             $id_almacenid = '';
           } 
+         if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          }            
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid,'LEFT');
+          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
           $where = '(
@@ -2174,12 +2237,21 @@ class Informes_model extends CI_Model
             $id_almacenid = '';
           }   
 
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          }           
+
           $this->db->select("a.almacen");
+          $this->db->select("p.codigo_contable");  
+
+
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid.$id_facturaid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
           if ($estatus=="cero") {

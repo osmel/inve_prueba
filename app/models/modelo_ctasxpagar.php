@@ -217,7 +217,7 @@ public function buscador_ctasxpagar($data){
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
 
           
           $this->db->select('p.dias_ctas_pagar');   

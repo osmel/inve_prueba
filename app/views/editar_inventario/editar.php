@@ -320,7 +320,9 @@ echo form_open('validar_edicion_producto', $attr);
 								<div class="col-xs-12 col-sm-12 col-md-12">				
 									<fieldset disabled>
 										<div class="form-group">
-												<label for="codigo" class="col-sm-12 col-md-12">Código</label>
+												<label for="codigo" class="col-sm-12 col-md-12"><b style="color:red;">Cód: </b>
+												<span id="codigo_contable"></span>
+												</label>
 														<input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código">
 										</div>
 									</fieldset>		

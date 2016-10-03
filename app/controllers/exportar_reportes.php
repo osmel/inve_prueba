@@ -56,7 +56,7 @@ class Exportar_reportes extends CI_Controller {
             case "reportes_costo":
                 $data['movimientos'] = $this->exportar_model->exportar_reportes_costo($data);
                 if ($data['movimientos']) {
-                    $this->export->to_excel($data['movimientos'], 'reporte_entrada_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
+                    $this->export->to_excel($data['movimientos'], 'reporte_costo_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
                 }    
                 break;
 
@@ -75,7 +75,8 @@ class Exportar_reportes extends CI_Controller {
                 }    
                 break;
 
-              ////////////////                  
+              ////////////////    
+                        
 
 
             case "salida":

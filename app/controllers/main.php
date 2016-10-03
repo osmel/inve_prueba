@@ -870,6 +870,7 @@ class Main extends CI_Controller {
 		 		$data['consecutivo'] =$misdatos->consecutivo;			    
                 $data['descripcion'] =$misdatos->descripcion;
 			    $data['movimientos'] = ($misdatos->movimientos);
+
                 $data['totales'] = ($misdatos->totales);
 			    $dato['id'] = 7;
                 $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 

@@ -65,7 +65,15 @@ class Pdf_reportes extends CI_Controller {
         $pdf->Output($nombre_archivo, 'I');
         
     }
+/*
 
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          } 
+
+*/
 
     public function imprimir_reportes() {
         

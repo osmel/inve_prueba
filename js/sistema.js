@@ -56,8 +56,8 @@ jQuery("#id_perfil").on('change', function(e) {
 		//console.log("data");
 
 		jQuery.ajax({
-		        url : 'http://104.236.91.215/establecer_modulo',
-		        //url : 'http://inventarios.dev.com/establecer_modulo',
+		        //url : 'http://104.236.91.215/establecer_modulo',
+		        url : 'http://inventarios.dev.com/establecer_modulo',
 		        //url : 'establecer_modulo',
 		        data:{
 		        	hash_url:hash_url
@@ -1112,6 +1112,7 @@ abrir = function(verb, url, data, target) {
 jQuery('body').on('click','#exportar_reportes', function (e) {
 
 	  	  busqueda      = jQuery('input[type=search]').val();
+
 	   extra_search = jQuery("#botones").val(); 
 	   id_estatus = jQuery("#id_estatuss").val(); 
 	   id_almacen = jQuery("#id_almacen_reporte").val(); 
@@ -1144,6 +1145,7 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
     abrir('POST', 'exportar_reportes', {
     			busqueda:busqueda,
 			extra_search:extra_search,
+			id_factura:id_factura,
 			id_estatus:id_estatus,
 			id_almacen: id_almacen,
 
@@ -1206,6 +1208,7 @@ jQuery('body').on('click','#impresion_reporte', function (e) {
 
     abrir('POST', 'imprimir_reportes', {
     			busqueda:busqueda,
+    			id_factura:id_factura,
 			extra_search:extra_search,
 			id_estatus:id_estatus,
 			id_almacen: id_almacen,
@@ -1959,6 +1962,7 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 							jQuery('#ancho').val(ancho);
 								//precio
 							jQuery('#precio').val(precio);
+							jQuery('#codigo_contable').text(dato.ref_prod.codigo_contable);
 						}	
 							
 								//comentario
@@ -1996,7 +2000,6 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 		        	val_color:val_color,
 		        	val_comp:val_comp,
 		        	val_calida:val_calida,
-
 		        	dependencia:dependencia
 		        },
 
@@ -2120,7 +2123,7 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 			
 			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
@@ -2143,7 +2146,7 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 
 			
 			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-			var pedido_pendiente = ['Cliente', 'Dependencia','Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Dependencia','Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
@@ -2225,7 +2228,7 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 	    jQuery('#oculto_producto').val('si');
 	    jQuery('#producto').change();
 
-
+	    jQuery("#codigo_contable").text(datum.codigo_contable);
 
 	   	jQuery('#movimiento').val(datum.id_movimiento);
 	   	jQuery('#proveedor').val(datum.proveedor);
@@ -2490,6 +2493,7 @@ jQuery('#tabla_devolucion').dataTable( {
 
 					jQuery("#proveedor").val('');
 					jQuery("#factura").val('');
+					jQuery("#codigo_contable").text('');
 					//jQuery("#cod_devolucion").val('');
 
 					jQuery("fieldset.disableddev").attr('disabled', true);					
@@ -6204,7 +6208,7 @@ jQuery('#pedido_completo_detalle').dataTable( {
 				jQuery('#label_vendedor').text("Vendedor");
 				
 			} else {
-				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_cliente').text("Vendedor");
 				jQuery('#label_vendedor').text("Num. Mov");
 			}
 				
@@ -8022,6 +8026,7 @@ jQuery('#tabla_productos').dataTable( {
 
 					//
 					jQuery("#codigo").val('');
+					jQuery("#codigo_contable").text('');
 					jQuery("#cantidad_um").val('');
 					jQuery("#cantidad_royo").val('');
 					jQuery("#ancho").val('');
@@ -8268,7 +8273,6 @@ jQuery('body').on('click','#impresion', function (e) {
 	    jQuery('#codigo_original').val(datum.key);
 
 
-
 	    jQuery('#oculto_producto').attr('color',datum.id_color );
 	    jQuery('#oculto_producto').attr('composicion',datum.id_composicion );
 	    jQuery('#oculto_producto').attr('calidad',datum.id_calidad );
@@ -8277,7 +8281,7 @@ jQuery('body').on('click','#impresion', function (e) {
 	    jQuery('#oculto_producto').val('si');
 	    jQuery('#producto').change();
 
-
+	    jQuery("#codigo_contable").text(datum.codigo_contable);
 
 	   	jQuery('#movimiento').val(datum.id_movimiento);
 	   	jQuery('#proveedor').val(datum.proveedor);

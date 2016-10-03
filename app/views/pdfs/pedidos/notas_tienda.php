@@ -9,10 +9,14 @@
 							<p style="font-size: 15px; line-height: 20px; padding: 0px; margin-bottom: 0px;">
 
 								<span><b>Vendedor: </b> <?php echo $movimientos[0]->vendedor; ?></span><br>
-								<span><b>Dependencia: </b> <?php echo $movimientos[0]->cliente; ?> <b>Nro.</b><?php echo $consecutivo_venta; ?></span><br>
+								<!--<span><b>Dependencia: </b> <?php echo $movimientos[0]->cliente; ?> <b>Nro.</b><?php echo $consecutivo_venta; ?></span><br>-->
 								<span><b>Movimiento: </b> <?php echo $movimientos[0]->comprador; ?></span><br>
 								<span><b>Fecha: </b> <?php echo $movimientos[0]->fecha_apartado; ?></span><br>
 								<span><b>Almacén: </b> <?php echo $almacen; ?></span><br>
+								<?php
+								$consecutivo_actual = (( ($movimientos[0]->id_tipo_pedido == 1)) ? $movimientos[0]->tipo_factura : $movimientos[0]->tipo_pedido );
+								?>	
+								<span><b>Tipo de Pedido: </b> <?php echo $consecutivo_actual; ?></span><br>								
 
 							</p>
 						</td>
@@ -53,7 +57,7 @@
 
 
 							<td width="30%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion; ?></td>
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;">
 								<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
 							</td>

@@ -55,13 +55,14 @@
 								<div class="col-sm-9 col-md-12">
 								    			
 									<select name="id_factura_historicos" vista="cuentas" id="id_factura_historicos" class="form-control">
-										<?php if ( ( $perfil == 1 ) || ((in_array(29, $coleccion_id_operaciones)) 
+
+										<?php if ( ( $el_perfil == 1 ) || ((in_array(29, $coleccion_id_operaciones)) 
 										 		&& (in_array(30, $coleccion_id_operaciones)) )														 ) { ?>
 											<option value="0">Todos</option>
 										<?php } ?>	
 
 										<?php foreach ( $facturas as $factura ){ ?>
-										<?php if ( ( $perfil == 1 ) || ( (in_array(29, $coleccion_id_operaciones) && ($factura->id==1) ) 	|| (in_array(30, $coleccion_id_operaciones) && ($factura->id==2) ) )) { ?>
+										<?php if ( ( $el_perfil == 1 ) || ( (in_array(29, $coleccion_id_operaciones) && ($factura->id==1) ) 	|| (in_array(30, $coleccion_id_operaciones) && ($factura->id==2) ) )) { ?>
 										   <option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
 											<?php } ?>
 											   

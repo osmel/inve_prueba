@@ -179,6 +179,7 @@ class Pdfs_model extends CI_Model
 
 
           $this->db->select('a.almacen');
+          $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
@@ -191,6 +192,7 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
 
           //$this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.id_operacion',2);
@@ -268,7 +270,7 @@ class Pdfs_model extends CI_Model
           //$this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
-          $this->db->select('pr.nombre dependencia ');  
+          $this->db->select('pr.nombre dependencia,m.id_tipo_pedido,m.id_tipo_factura');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado,m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida, m.cantidad_um');
@@ -293,12 +295,23 @@ class Pdfs_model extends CI_Model
                         END AS color_apartado
          ',False);  
           $this->db->select("a.almacen");
+
+          
+          $this->db->select("prod.codigo_contable");  
+
+          $this->db->select("tp.tipo_pedido");          
+          $this->db->select("tf.tipo_factura");          
+
+
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+         
           
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
@@ -341,7 +354,7 @@ class Pdfs_model extends CI_Model
           $consecutivo_venta = $data['consecutivo_venta'];
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
-          $this->db->select('p.nombre comprador ');  
+          $this->db->select('p.nombre comprador,m.id_tipo_pedido,m.id_tipo_factura');  
           $this->db->select('pr.nombre cliente ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado,m.consecutivo');  
@@ -367,7 +380,15 @@ class Pdfs_model extends CI_Model
          ',False);          
 
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable");  
+
+          $this->db->select("tp.tipo_pedido");          
+          $this->db->select("tf.tipo_factura");  
           $this->db->from($this->registros.' as m');
+          
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
+
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
 
@@ -377,6 +398,8 @@ class Pdfs_model extends CI_Model
           //filtro de busqueda
           
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
 
           if ($id_almacen!=0) {
@@ -426,7 +449,7 @@ class Pdfs_model extends CI_Model
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
-          $this->db->select('pr.nombre dependencia ');  
+          $this->db->select('pr.nombre dependencia,m.id_tipo_pedido,m.id_tipo_factura');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
@@ -466,12 +489,22 @@ class Pdfs_model extends CI_Model
          ',False);  
 
           $this->db->select("a.almacen");
+          $this->db->select("prod.codigo_contable"); 
+
+          $this->db->select("tp.tipo_pedido");          
+          $this->db->select("tf.tipo_factura"); 
+          
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
+
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
           
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
 
