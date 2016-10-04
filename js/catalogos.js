@@ -1550,6 +1550,13 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 
 /////////////////////////////////////////////////ctas por pagar/////////////////////////////////////////////////////////////////
 
+/*
+ctas_vencida
+ctas_ctasxpagar
+ctas_pagadas
+cuentas
+*/
+
 	jQuery('#tabla_ctas_vencidas').dataTable( {
 	
 	  "pagingType": "full_numbers",
@@ -1561,10 +1568,16 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
-	         		 	
-						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_vencida"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];
+
+
+						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];
+
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 	
 
@@ -1587,7 +1600,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 				
 
 			total_subtotal = api
-					.column( 6)
+					.column( 7)
 					.data()
 					.reduce( function (a, b) {
 						return intVal(a) + intVal(b);
@@ -1595,14 +1608,14 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 
 				
 				total_iva = api
-					.column( 7)
+					.column( 8)
 					.data()
 					.reduce( function (a, b) {
 						return intVal(a) + intVal(b);
 					} );	
 				
 				total = api
-					.column( 8)
+					.column( 9)
 					.data()
 					.reduce( function (a, b) {
 						return intVal(a) + intVal(b);
@@ -1624,7 +1637,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 		}	
 
 			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(5).visible(false);		
+				api.column(6).visible(false);		
 			}			
 
     },
@@ -1683,7 +1696,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
 		            },
 
      				 {
@@ -1696,7 +1709,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
-							texto+=row[10];
+							texto+=row[11];
 							texto+='</a>';
 						texto+='</td>';
 
@@ -1704,7 +1717,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 11
 		            },
 		            {
 		                "render": function ( data, type, row ) {
@@ -1723,7 +1736,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 
 							return texto;	
 		                },
-		                "targets": 11
+		                "targets": 12
 		            },
   					/*
   					{ 
@@ -1749,8 +1762,11 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion = 1;
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_ctasxpagar"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];
 
-	         		 	var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+	         		 	var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];	      
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
@@ -1772,7 +1788,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 					
 
 				total_subtotal = api
-						.column( 6)
+						.column( 7)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -1780,14 +1796,14 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 					
 					total_iva = api
-						.column( 7)
+						.column( 8)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
 						} );	
 					
 					total = api
-						.column( 8)
+						.column( 9)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -1809,7 +1825,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 			}	
 
 			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(5).visible(false);		
+				api.column(6).visible(false);		
 			}			
 	    },
 
@@ -1865,7 +1881,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
 		            },
      				 {
 		                "render": function ( data, type, row ) {
@@ -1876,12 +1892,12 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
-							texto+=row[10];
+							texto+=row[11];
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 11
 		            },
 		            {
 		                "render": function ( data, type, row ) {
@@ -1900,7 +1916,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 							return texto;	
 		                },
-		                "targets": 11
+		                "targets": 12
 		            },
   					/*
   					{ 
@@ -1925,7 +1941,11 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
-						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_pagadas"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];	
+							         		 	
+						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];	
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
@@ -1946,7 +1966,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 					
 
 				total_subtotal = api
-						.column( 6)
+						.column( 7)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -1954,14 +1974,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 					
 					total_iva = api
-						.column( 7)
+						.column( 8)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
 						} );	
 					
 					total = api
-						.column( 8)
+						.column( 9)
 						.data()
 						.reduce( function (a, b) {
 							return intVal(a) + intVal(b);
@@ -1982,7 +2002,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 			}	
 			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(5).visible(false);		
+				api.column(6).visible(false);		
 			}			
 	    },
 
@@ -2037,7 +2057,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8] 
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
 		            },
 
      				 {
@@ -2046,7 +2066,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 						$otro_retorno="listado_ctasxpagar";
 		        		
-						if (row[11]!=2) {
+						if (row[12]!=2) {
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
 								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
@@ -2069,7 +2089,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 							return texto;	
 		                },
-		                "targets": 9
+		                "targets": 10
 		            },
 		            {
 		                "render": function ( data, type, row ) {
@@ -2088,7 +2108,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 11
 		            },
   					/*
   					{ 
@@ -2108,8 +2128,21 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 /////////////////////////////////////////////////Historico de entradas/////////////////////////////////////////////////////////////////
 
 
-		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos').change(function(e) {
+
+		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+					    case "listado_traspaso":
+					    
+							etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";
+							etiqueta = (jQuery(this).val()==0) ? "" : etiqueta;
+							jQuery('#label_factura_traspaso').text(etiqueta+jQuery('#id_tipo_factura_historicos option:selected').text());
+ 						    var oTable =jQuery('#tabla_general_traspaso').dataTable();
+					    	oTable._fnAjaxUpdate();
+					    	var oTable =jQuery('#tabla_traspaso_historico').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+
 					    case "pedido_compra":
 					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
 					    	oTable._fnAjaxUpdate();
@@ -2162,10 +2195,29 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 			  }
 		  );
 
-
 		jQuery('.fecha_historicos').on('apply.daterangepicker', function(ev, picker) {
 
 					switch(jQuery(this).attr('vista')) {
+
+ 						case "ctas_vencida":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+ 						case "ctas_ctasxpagar":
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+ 						case "ctas_pagadas":
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+ 						case "listado_traspaso":
+					 		var oTable =jQuery('#tabla_general_traspaso').dataTable();
+					    	oTable._fnAjaxUpdate();
+					    	var oTable =jQuery('#tabla_traspaso_historico').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;						
 					    case "pedido_compra":
 					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
 					    	oTable._fnAjaxUpdate();
@@ -2199,6 +2251,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 					}
 
 		});
+
 
 
 	jQuery('#tabla_historico_entrada').dataTable( {
@@ -3272,7 +3325,12 @@ jQuery('#tabla_costo_inventario').dataTable( {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////TRASPASO///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Detalle']; //
+//var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Detalle']; //
+/*
+var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Total Metro','Total Kgs','Detalle']; //
+var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Total Metro','Total Kgs','Detalle']; //
+*/
+var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Total Metro','Total Kgs','Pieza','Subtotal','Iva','Detalle']; //
 var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 
@@ -3287,15 +3345,12 @@ jQuery('#id_almacen_modulo').change(function(e) {
 
 
 
-
-	jQuery('#label_tipo_factura_traspaso').text(((jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ")+jQuery('#id_tipo_factura_traspaso option:selected').text());
+//modulo traspaso
+jQuery('#label_tipo_factura_traspaso').text(((jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ")+jQuery('#id_tipo_factura_traspaso option:selected').text());
 
 jQuery('#id_tipo_factura_traspaso').change(function(e) {
-	//alert('ass');
 	comienzo=true; //para indicar que start comience en 0;
-
 	etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";
-
 	jQuery('#label_tipo_factura_traspaso').text(etiqueta+jQuery('#id_tipo_factura_traspaso option:selected').text());
 	var oTable =jQuery('#tabla_entrada_traspaso').dataTable();
 	oTable._fnAjaxUpdate();		
@@ -3930,6 +3985,26 @@ jQuery('#id_almacen_traspaso').change(function(e) {
 });
 
 
+
+jQuery('body').on('click','#impresion_traspaso_historico', function (e) {
+	  	       busqueda = jQuery('input[type=search]').val();
+	   		 	id_almacen = jQuery('#id_almacen_traspaso').val();	
+				var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+				fecha_inicial = fecha[0];
+				fecha_final = fecha[1];
+				id_factura = jQuery("#id_tipo_factura_historicos").val(); 
+
+    abrir('POST', '/impresion_traspaso_historico', {
+    			   busqueda: busqueda,
+			     id_almacen: id_almacen,
+			  fecha_inicial: fecha_inicial,
+			    fecha_final: fecha_final,
+			     id_factura:id_factura
+    }, '_blank' );
+});
+
+
+
 jQuery('#tabla_traspaso_historico').dataTable( {
 	
 	  "pagingType": "full_numbers",
@@ -3940,12 +4015,17 @@ jQuery('#tabla_traspaso_historico').dataTable( {
          		"type": "POST",
     			"data": function ( d ) {
 						    d.id_almacen = jQuery('#id_almacen_traspaso').val();	
+							var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+							d.fecha_inicial = fecha[0];
+							d.fecha_final = fecha[1];
+							d.id_factura = jQuery("#id_tipo_factura_historicos").val(); 
+							//id_factura_inversa = (jQuery("#id_tipo_factura_historicos").val()==2) ? 1: 2;
+							//d.id_factura_inversa = (jQuery("#id_tipo_factura_historicos").val()==0) ? 0: id_factura_inversa;
+
     			 }          		
 
      },   
-	"infoCallback": function( settings, start, end, max, total, pre ) {
-	    return pre
-	},    
+	   
 
    "columnDefs": [
 
@@ -3987,12 +4067,44 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	                "targets": [7]
 	            },
 
-				{ 
+				{
 	                "render": function ( data, type, row ) {
 						return row[9];										
 	                },
 	                "targets": [8]
 	            },   	         		               	         	               	            
+
+				{  //metro
+	                "render": function ( data, type, row ) {
+						return row[10];										
+	                },
+	                "targets": [9]
+	            },   	         		               	         	               	            
+				{ //kg
+	                "render": function ( data, type, row ) {
+						return row[11];										
+	                },
+	                "targets": [10]
+	            },
+				{ //pieza
+	                "render": function ( data, type, row ) {
+						return row[12];										
+	                },
+	                "targets": [11]
+	            },     
+				{  //suma de precio subtotal
+	                "render": function ( data, type, row ) {
+						return row[13];										
+	                },
+	                "targets": [12]
+	            },     
+				{ //iva
+	                "render": function ( data, type, row ) {
+						return row[14];										
+	                },
+	                "targets": [13]
+	            },     	            
+
 	            
     			{ 
 	                "render": function ( data, type, row ) {
@@ -4004,7 +4116,7 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 
 						return texto;	
 	                },
-	                "targets": [9]
+	                "targets": [14]
 	            },
     			{ 
 	                 "visible": false,
@@ -4019,16 +4131,121 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	    	}
 	},	
 
- "footerCallback": function( tfoot, data, start, end, display ) {
- 		var api = this.api();
+
+"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza2').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg2').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro2').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza2').html( 'Total de piezas: 0');
+			jQuery('#total_kg2').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro2').html('Total de mts: 0.00');
+
+		}	
+		
+		if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal2').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva2').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total2').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal2').html( 'Subtotal: 0.00');
+			jQuery('#total_iva2').html( 'IVA: 0.00');
+			jQuery('#total_total2').html('Total de mts: 0.00');
+
+		}			
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 10 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 11 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				//total_pieza = (end-start);	
+
+				total_pieza = api
+					.column( 12 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+				} );
+	
+				total_subtotal = api
+					.column( 13)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 14)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+						
+
+			        jQuery('#pieza2').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg2').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro2').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal2').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva2').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					//jQuery('#total2').html('Total:'+ number_format( (total_subtotal+total_iva), 2, '.', ','));						
+					jQuery('#total2').html('Total:'+ number_format( parseFloat(total_subtotal)+parseFloat(total_iva), 2, '.', ','));						
+
+		} else 	{
+			        jQuery('#pieza2').html('Total de piezas: 0');
+			        jQuery('#metro2').html('Total de mts: 0.00');
+					jQuery('#kg2').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal2').html('SubTotal: 0.00');	
+					jQuery('#iva2').html('IVA: 0.00');	
+					jQuery('#total2').html('Total: 0.00');										
+
+		}	
+
+
 		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
 			api.column(3).visible(false);		
 		}	else {
 			api.column(3).visible(true);		
 		}
-		
 
-  },
+    },  		
+
 
 	"language": {  //tratamiento de lenguaje
 		"lengthMenu": "Mostrar _MENU_ registros por página",
@@ -4127,10 +4344,86 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15],
+	                "targets": [10,11,12,14,15,16,17],
 	            }		            
 
 	],	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 17 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				total_pieza = (end-start);	
+
+				
+	
+				total_subtotal = api
+					.column( 5)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 6)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+						
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format( parseFloat(total_subtotal)+parseFloat(total_iva), 2, '.', ','));						
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+
+
+
+    },  	
+
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
 		var arreglo =arr_traspaso_historico_detalle;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum //
@@ -4176,26 +4469,15 @@ jQuery('#tabla_general_traspaso').dataTable( {
             	"url" : "procesando_general_traspaso",
          		"type": "POST",
     			"data": function ( d ) {
-						    d.id_almacen = jQuery('#id_almacen_traspaso').val();	
+							d.id_almacen = jQuery('#id_almacen_traspaso').val();	
+							var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+							d.fecha_inicial = fecha[0];
+							d.fecha_final = fecha[1];
+							d.id_factura = jQuery("#id_tipo_factura_historicos").val(); 						    
     			 }          		
 
      },   
-	"infoCallback": function( settings, start, end, max, total, pre ) {
-	    return pre
-	},    
 
-
-
- "footerCallback": function( tfoot, data, start, end, display ) {
- 		var api = this.api();
-		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
-			api.column(3).visible(false);		
-		}	else {
-			api.column(3).visible(true);		
-		}
-		
-
-  },
 
    "columnDefs": [
 
@@ -4251,7 +4533,40 @@ jQuery('#tabla_general_traspaso').dataTable( {
 						return row[9];										
 	                },
 	                "targets": [8]
+	            },   	         		
+
+				{  //metro
+	                "render": function ( data, type, row ) {
+						return row[16];										
+	                },
+	                "targets": [9]
 	            },   	         		               	         	               	            
+				{ //kg
+	                "render": function ( data, type, row ) {
+						return row[17];										
+	                },
+	                "targets": [10]
+	            },     
+
+				{ //pieza
+	                "render": function ( data, type, row ) {
+						return row[18];										
+	                },
+	                "targets": [11]
+	            },     
+				{  //suma de precio subtotal
+	                "render": function ( data, type, row ) {
+						return row[19];										
+	                },
+	                "targets": [12]
+	            },     
+				{ //iva
+	                "render": function ( data, type, row ) {
+						return row[20];										
+	                },
+	                "targets": [13]
+	            },     	            
+
 	            
     			{ 
 	                "render": function ( data, type, row ) {
@@ -4271,11 +4586,13 @@ jQuery('#tabla_general_traspaso').dataTable( {
 
 						return texto;	
 	                },
-	                "targets": [9]
+	                "targets": [14]
 	            },
+
+
     			{ 
 	                 "visible": false,
-	                "targets": [1,10,11,12,13,14,15]
+	                "targets": [1,15,16,17,18,19,20,21]
 	            }	            
 	],	
 
@@ -4285,6 +4602,125 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 	    	}
 	},	
+
+"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+		
+		if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+		}			
+
+	    return pre
+  	} ,  	
+
+
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 17 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				//total_pieza = (end-start);	
+
+				total_pieza = api
+					.column( 18 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+				} );
+	
+				total_subtotal = api
+					.column( 19)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 20)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+						
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format( parseFloat(total_subtotal)+parseFloat(total_iva), 2, '.', ','));						
+
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+
+
+		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
+			api.column(3).visible(false);		
+		}	else {
+			api.column(3).visible(true);		
+		}
+
+
+
+    },  	
 
 	"language": {  //tratamiento de lenguaje
 		"lengthMenu": "Mostrar _MENU_ registros por página",
@@ -4327,6 +4763,80 @@ jQuery('#traspaso_general_detalle').dataTable( {
 
      },   
 
+
+"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 17 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				total_pieza = (end-start);	
+
+				
+	
+				total_subtotal = api
+					.column( 5)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 6)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+						
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format( parseFloat(total_subtotal)+parseFloat(total_iva), 2, '.', ','));						
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+
+
+
+    },  	
 
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 		    
@@ -4386,7 +4896,7 @@ jQuery('#traspaso_general_detalle').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15],
+	                "targets": [10,11,12,14,15,16,17],
 	            }			            
 
 	],	
@@ -4438,7 +4948,79 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 
      },   
 
+"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+	   
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
 
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 16 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				
+				total_kilogramo = api
+					.column( 17 )
+					.data()
+					.reduce( function (c, d) {
+						return intVal(c) + intVal(d);
+					} );
+
+				total_pieza = (end-start);	
+
+				
+	
+				total_subtotal = api
+					.column( 5)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 6)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+						
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format( parseFloat(total_subtotal)+parseFloat(total_iva), 2, '.', ','));						
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+		}	
+
+
+
+    },  	
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 		    
 	    if (settings.json.datos) {
@@ -4496,7 +5078,7 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15],
+	                "targets": [10,11,12,14,15,16,17],
 	            }		
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {

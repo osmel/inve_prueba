@@ -292,13 +292,29 @@ class Ctasxpagar extends CI_Controller {
  public function procesando_ctas_vencidas(){
 
     $data=$_POST;
-    
+      
+          $data['tipo']='vencidas';
+
+
+          if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                          
+                          $data['fecha_especifica'] =  ' AND ( ( fecha_ven  >=  "'.$fecha_inicial.'" )  AND  ( fecha_ven  <=  "'.$fecha_final.'" ) )'; 
+
+
+          } else {
+            $data['fecha_especifica'] = '';
+          }
+
+
 
     $data['having'] = '(
-                         ( monto_restante >0 ) OR ( monto_restante IS null )   
+                         (( monto_restante >0 ) OR ( monto_restante IS null ) )'.$data['fecha_especifica'].'  
                       )';    
     $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
     					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
+
 	$busqueda  = $this->modelo_ctasxpagar->buscador_ctasxpagar($data);
     echo $busqueda;
   } 
@@ -307,9 +323,22 @@ class Ctasxpagar extends CI_Controller {
  public function procesando_ctasxpagar(){
 
     $data=$_POST;
+    $data['tipo']='porpagar';
+
+          if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                          
+                                 
+                          $data['fecha_especifica'] =  ' AND ( ( fecha_ven  >=  "'.$fecha_inicial.'" )  AND  ( fecha_ven  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $data['fecha_especifica'] = '';
+          }
+
     
      $data['having'] = '(
-                         ( monto_restante >0 ) OR ( monto_restante IS null )   
+                         (( monto_restante >0 ) OR ( monto_restante IS null )) '.$data['fecha_especifica'].'
                       )';  
     $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
     					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
@@ -317,15 +346,32 @@ class Ctasxpagar extends CI_Controller {
     echo $busqueda;
   } 
 
+/*
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
 
+*/
  public function procesando_ctas_pagadas(){
 
     $data=$_POST;
-    
+    $data['tipo']='pagadas';
+
+    if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                     $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                     $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                    
+
+                      $data['fecha_especifica'] =  ' AND ( ( fecha_pago  >=  "'.$fecha_inicial.'" )  AND  ( fecha_pago  <=  "'.$fecha_final.'" ) )'; 
+
+    } else {
+     $data['fecha_especifica'] = '';
+    }
+
+
     //OR ( monto_restante NOT IS null )   
     //( monto_restante <=0 ) OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) )
      $data['having'] = '(
-                         ( monto_restante <=0 )  OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) )
+                         (( monto_restante <=0 )  OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) ) )'.$data['fecha_especifica'].'
                       )';  
 
     $data["condicion"]=' AND ((m.id_tipo_pago=2) OR (m.id_tipo_pago<>2)) ';   //or ya esta pagado

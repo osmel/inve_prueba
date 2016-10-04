@@ -218,10 +218,16 @@ public function buscador_ctasxpagar($data){
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
-
-          
           $this->db->select('p.dias_ctas_pagar');   
           $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
+          
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);                    
+          //$this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%Y-%m-%d') as fecha_ven", false);                    
+
+
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
           $this->db->select("total", FALSE);
@@ -230,8 +236,7 @@ public function buscador_ctasxpagar($data){
 
 
 
-          
-
+           
           $this->db->from($this->historico_ctasxpagar.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
@@ -321,19 +326,25 @@ public function buscador_ctasxpagar($data){
 
 
                   foreach ($result->result() as $row) {
+                        if ($data['tipo']=='pagadas') {
+                          $fecha_filtro=$row->fecha_pagada;
+                        } else {
+                          $fecha_filtro=$row->fecha_vencimiento;
+                        }
                                $dato[]= array(
                                       0=>$row->movimiento,
                                       1=>$row->tipo_pago,
                                       2=>$row->almacen,
                                       3=>$row->nombre,
                                       4=>$row->fecha,
-                                      5=>$row->factura,
-                                      6=>number_format($row->subtotal, 2, '.', ','),
-                                      7=>number_format($row->iva, 2, '.', ','),
-                                      8=>number_format($row->total, 2, '.', ','),
-                                      9=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
-                                      10=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
-                                      11=>$row->id_tipo_pago,
+                                      5=>$fecha_filtro, //dife
+                                      6=>$row->factura,
+                                      7=>number_format($row->subtotal, 2, '.', ','),
+                                      8=>number_format($row->iva, 2, '.', ','),
+                                      9=>number_format($row->total, 2, '.', ','),
+                                      10=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
+                                      11=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
+                                      12=>$row->id_tipo_pago,
                                       
 
                                     );
@@ -387,6 +398,12 @@ select sum(total) from
 
 public function totales_importes($where,$having){
            
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);        
+          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
+
+
            $this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
            $this->db->select("(m.id_tipo_pago) AS id_tipo_pago", FALSE);
            $this->db->select("(subtotal) as subtotal", FALSE);
@@ -436,7 +453,12 @@ public function totales_importes($where,$having){
               $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
              
               $this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
- 
+  
+    $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);        
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
+
 
             $this->db->from($this->historico_ctasxpagar.' as m');
             $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');

@@ -150,8 +150,18 @@
 								<div class="col-sm-4 col-md-4 marginbuttom">
 									<a id="exportar_vencidas" type="button" class="btn btn-success btn-block exportar_ctas" tipo="vencidas" >Exportar</a>
 								</div>
-
-							</fieldset>			
+	
+			                </fieldset>	
+							
+							
+								<!--Rango de fecha -->
+								<div class="col-xs-12 col-sm-6 col-md-3">
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
+				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+											<input id="foco_historicos" vista="ctas_vencida" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+										</div>	
+				                </div>								
 							<br>
 
 
@@ -164,7 +174,8 @@
 											<th class="text-center cursora" width="5%">Almacén  </th>
 											<th class="text-center cursora" width="35%">Proveedor  </th>
 											
-											<th class="text-center cursora" width="10%">Fecha  </th>
+											<th class="text-center cursora" width="10%">Fecha Creación </th>
+											<th class="text-center cursora" width="10%">Fecha Vencida</th>
 											<th class="text-center cursora" width="10%">Factura  </th>
 											
 											<th class="text-center cursora" width="10%">Subtotal  </th>
@@ -235,6 +246,16 @@
 								</div>
 
 							</fieldset>			
+
+								<!--Rango de fecha -->
+								<div class="col-xs-12 col-sm-6 col-md-3">
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
+				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+											<input id="foco_historicos" vista="ctas_ctasxpagar" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+										</div>	
+				                </div>								
+
 							<br>
 
 						<section>
@@ -246,7 +267,8 @@
 											<th class="text-center cursora" width="5%">Almacén  </th>
 											<th class="text-center cursora" width="35%">Proveedor  </th>
 											
-											<th class="text-center cursora" width="10%">Fecha  </th>
+											<th class="text-center cursora" width="10%">Fecha Creación </th>
+											<th class="text-center cursora" width="10%">Fecha Vencimiento</th>
 											<th class="text-center cursora" width="10%">Factura  </th>
 											
 											<th class="text-center cursora" width="10%">Subtotal  </th>
@@ -318,6 +340,15 @@
 								</div>
 
 							</fieldset>			
+								<!--Rango de fecha -->
+								<div class="col-xs-12 col-sm-6 col-md-3">
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
+				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+											<input id="foco_historicos" vista="ctas_pagadas" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+										</div>	
+				                </div>								
+
 							<br>						
 
 
@@ -330,7 +361,8 @@
 											<th class="text-center cursora" width="5%">Almacén  </th>
 											<th class="text-center cursora" width="35%">Proveedor  </th>
 											
-											<th class="text-center cursora" width="10%">Fecha  </th>
+											<th class="text-center cursora" width="10%">Fecha Creación </th>
+											<th class="text-center cursora" width="10%">Fecha Pagada</th>
 											<th class="text-center cursora" width="10%">Factura  </th>
 											
 											<th class="text-center cursora" width="10%">Subtotal  </th>

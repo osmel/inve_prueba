@@ -201,6 +201,7 @@ public function modulo_traspaso(){
                 $coleccion_id_operaciones = array();
            }   
          $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+         $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            
           switch ($id_perfil) {    
             case 1:          
@@ -478,6 +479,7 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
           $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
 
           $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_historico_detalle($data);        
+          $data['totales'] = $this->model_traspaso->totales_imprimir_traspaso_historico_detalle($data);        
           $html = $this->load->view('pdfs/traspasos/detalles_historicos', $data, true);
 
 
@@ -536,6 +538,7 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
           $data['configuracion'] = $this->catalogo->coger_configuracion($dato);
 
           $data['movimientos'] = $this->model_traspaso->imprimir_detalle_general_traspaso_manual($data);        
+          $data['totales'] = $this->model_traspaso->total_imprimir_detalle_general_traspaso_manual($data); 
           $html = $this->load->view('pdfs/traspasos/detalles_generales_manual', $data, true);
 
 
@@ -611,6 +614,65 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
 
 
 
+////////////////////////impresion resumen///////////////////////////////////////////////////
+
+
+ public function impresion_traspaso_historico() {
+
+        $data=$_POST;
+     
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M');         
+       
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+        $pdf->SetFont('freemono', '', 14, '', true);
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+        
+          $data['movimientos'] = $this->model_traspaso->imprimir_traspaso_historico($data);        
+
+          $data['totales'] = $this->model_traspaso->totales_imprimir_traspaso_historico($data);
+
+        
+          $html = $this->load->view('pdfs/traspasos/resumen_historico', $data, true);
+
+
+// Imprimimos el texto con writeHTMLCell()
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+ 
+// ---------------------------------------------------------
+// Cerrar el documento PDF y preparamos la salida
+// Este método tiene varias opciones, consulte la documentación para más información.
+        $nombre_archivo = utf8_decode("traspaso_resumen".".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+}    
 
 
 

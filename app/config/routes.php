@@ -642,6 +642,9 @@ $route['quitar_prod_salida_traspaso']			= 'traspaso/quitar_prod_salida_traspaso'
 $route['imprimir_detalle_traspaso_post']			= 'traspaso/imprimir_detalle_traspaso_post';
 $route['procesando_traspaso_definitivo']			= 'traspaso/procesando_traspaso_definitivo';
 
+$route['impresion_traspaso_historico']			= 'traspaso/impresion_traspaso_historico';
+
+
 /////////////////////////////Costo de Inventarios////////////////////////
 
 $route['costo_inventario']						= 'reportes/costo_inventario';

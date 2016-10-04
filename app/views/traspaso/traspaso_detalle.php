@@ -97,6 +97,56 @@
 							</section>
 						</div>		
 						<br/>
+
+<br/>
+
+		<div class="row bloque_totales">						
+			<div class="col-sm-0 col-md-4">	
+			  
+			</div>	
+			<div class="col-sm-3 col-md-2">	
+			  <b>Existencias por Página</b>
+			</div>	
+
+			<div class="col-sm-3 col-md-2">	
+				<span id="pieza"></span>			
+			</div>	
+			<div class="col-sm-3 col-md-2">	
+				<span id="metro"></span>			
+			</div>	
+			<div class="col-sm-3 col-md-2">	
+				<span id="kg" ></span>				
+			</div>	
+		</div>			
+
+
+
+
+	<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Importes por Página</b>
+					</div>	
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="subtotal"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="iva"></span>			
+					</div>				
+					<div class="col-sm-3 col-md-2">	
+						<span id="total"></span>			
+					</div>	
+				</div>			
+
+	
+
+	
+
 						
 						<div class="col-md-12">	
 							<div class="row">
