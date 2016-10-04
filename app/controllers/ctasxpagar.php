@@ -300,7 +300,7 @@ class Ctasxpagar extends CI_Controller {
                            $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
                            $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
                           
-                          $data['fecha_especifica'] =  ' AND ( ( fecha_ven  >=  "'.$fecha_inicial.'" )  AND  ( fecha_ven  <=  "'.$fecha_final.'" ) )'; 
+                          $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
 
 
           } else {
@@ -330,7 +330,7 @@ class Ctasxpagar extends CI_Controller {
                            $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
                           
                                  
-                          $data['fecha_especifica'] =  ' AND ( ( fecha_ven  >=  "'.$fecha_inicial.'" )  AND  ( fecha_ven  <=  "'.$fecha_final.'" ) )'; 
+                          $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
 
           } else {
            $data['fecha_especifica'] = '';
@@ -361,7 +361,7 @@ class Ctasxpagar extends CI_Controller {
                      $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
                     
 
-                      $data['fecha_especifica'] =  ' AND ( ( fecha_pago  >=  "'.$fecha_inicial.'" )  AND  ( fecha_pago  <=  "'.$fecha_final.'" ) )'; 
+                      $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
 
     } else {
      $data['fecha_especifica'] = '';
