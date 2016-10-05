@@ -1885,6 +1885,12 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 
         //reportes
 		
+		if  ( (hash_url=="/costo_rollo") )   {  
+
+				//comienzo=true; //para indicar que start comience en 0;
+				var oTable =jQuery('#tabla_costo_rollo').dataTable();
+				oTable._fnAjaxUpdate();
+    	}	
 
 		if  ( (hash_url=="/reportes") )   {  
 

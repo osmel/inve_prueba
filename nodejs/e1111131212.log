@@ -13,3 +13,4 @@ TypeError: Cannot read property 'sala' of null
     at RedisClient.on_data (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:547:27)
     at Socket.<anonymous> (/var/www/html/inventarios/nodejs/node_modules/redis/index.js:102:14)
     at Socket.emit (events.js:95:17)
+

@@ -160,6 +160,10 @@ if (ltrim($retorno)=="") {
 										<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
 											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
 										</div>
+										<div class="col-sm-4 col-md-4 marginbuttom">
+											<a id="impresion_ctas_detalle" type="button" class="btn btn-success btn-block impresion_ctas_detalle">Imprimir</a>
+										</div>
+
 									<?php } else { ?> 	
 										<fieldset disabled>
 											<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">

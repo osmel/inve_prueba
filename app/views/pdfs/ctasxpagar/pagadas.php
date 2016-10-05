@@ -28,12 +28,11 @@
 						<th width="5%">Mov.</th>
 						<th width="10%">Tipo Pago  </th>
 						<th width="10%">Almacén</th>
-						<th width="21%">Proveedor</th>
+						<th width="25%">Proveedor</th>
 						
-						<th width="13%">Fecha</th>
-						<?php if (($configuracion->activo==1)) {  ?>
-							<th width="11%">Factura</th>
-						<?php } ?>	
+						<th width="10%">Fecha Creación</th>
+						<th width="10%">Fecha Vencimiento</th>
+							
 						<th width="10%">Subtotal</th>
 						<th width="10%">IVA</th>
 						<th width="10%">Total</th>
@@ -48,13 +47,12 @@
 							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_pago; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
-							<td width="21%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 
-							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha; ?></td>
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha; ?></td>
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha_pagada; ?></td>
 							
-							<?php if (($configuracion->activo==1)) {  ?>	
-								<td width="11%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>
-							<?php } ?>	
+							
 							
 							
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->subtotal, 2, '.', ','); ?></td>

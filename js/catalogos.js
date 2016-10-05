@@ -20,6 +20,264 @@ jQuery(document).ready(function($) {
 	};
 var target = document.getElementById('foo');
 
+
+
+
+
+
+jQuery('#tabla_costo_rollo').dataTable( {
+		
+	  "pagingType": "full_numbers",
+ 	  "order": [[ 9, "asc" ]],
+
+
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_costo_rollo",
+         		"type": "POST",
+         		 "data": function ( d ) {
+         		 	   /*if (comienzo) {
+         		 	   	 d.start=0;	 //comienza en cero siempre q cambia de botones
+         		 	   	 d.draw =0;
+         		 	   }*/
+
+     				   	 d.id_almacen = jQuery("#id_almacen_historicos[vista='costo_rollo']").val(); 
+     				   	 d.id_factura = jQuery("#id_factura_historicos[vista='costo_rollo']").val(); 
+     				     d.id_estatus = jQuery("#id_estatuss_historicos[vista='costo_rollo']").val(); 
+      					 d.factura_reporte = jQuery('#factura_historicos[vista="costo_rollo"]').val();					
+					     d.proveedor = jQuery("#editar_proveedor_historico[vista='costo_rollo']").val(); 	   
+ 				     
+						var fecha = (jQuery('.fecha_historicos[vista="costo_rollo"]').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];
+
+
+     				   //datos del producto
+     				   d.id_descripcion = jQuery("#producto").val(); 
+     				   if (d.id_descripcion !='') {
+     				   	  d.id_descripcion = jQuery('#producto option:selected').text();
+     				   }
+
+     				   d.id_color = jQuery("#color").val(); 
+     				   d.id_composicion = jQuery("#composicion").val(); 
+     				   d.id_calidad = jQuery("#calidad").val(); 
+	
+	
+     				   
+    			 }
+     },   
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+			//costos
+			jQuery('#total_costom').html( 'Costo de mts:'+number_format((parseFloat(settings.json.totales_importe.subtotal)/parseFloat(settings.json.totales.metro)), 2, '.', ','));
+			jQuery('#total_costokg').html( 'Costo de kgs:'+number_format( (parseFloat(settings.json.totales_importe.subtotal)/parseFloat(settings.json.totales.kilogramo)), 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+			//costos	
+			jQuery('#total_costom').html('Costo de mts: 0.00');
+			jQuery('#total_costokg').html('Costo de kgs: 0.00');
+
+		}	
+
+		if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+
+
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+
+		}	
+
+
+
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+
+	    return pre
+  	} ,    
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+		if  (data.length>0) {   
+				total_metro = api
+					.column( 12 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 13)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_pieza = (end-start);	
+
+
+			total_subtotal = api
+					.column( 5)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 6)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+
+				//importe
+				
+				total_total = api
+					.column( 6 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );				
+
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total_subtotal+total_iva, 2, '.', ','));	
+
+					//costos
+					jQuery('#costokg').html( 'Costo de kgs:'+number_format( (parseFloat(total_subtotal)/parseFloat(total_kilogramo)), 2, '.', ','));
+					jQuery('#costom').html( 'Costo de mts:'+number_format( (parseFloat(total_subtotal)/parseFloat(total_metro)), 2, '.', ','));
+
+
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');			        
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+					//costos
+					jQuery('#costokg').html('Total de kgs: 0.00');										
+					jQuery('#costom').html('Total de mts: 0.00');										
+
+
+		}	
+    },
+   "columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[19]!='') {
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[19];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [0,2,3,4,5,6,7,8,9,11]
+	            },
+
+	            
+    			{ 
+	                 "visible": false,
+	                "targets": [10,12,13,14,18, 15,16,17,18,19]
+	            }
+	],
+
+ "rowCallback": function( row, data ) {
+	    // Bold the grade for all 'A' grade browsers
+	    if ( data[14] == "red" ) {
+	      jQuery('td', row).addClass( "danger" );
+	    }
+
+	    if ( data[14] == "morado" ) {
+	      jQuery('td', row).addClass( "success" );
+	    }
+
+	    if ( data[18] == 1 ) {
+	      jQuery('td', row).addClass( "warning" );
+	    }
+
+
+
+	  },		
+
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+						var arreglo =existencia_costo_inventario;
+						for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+					    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+					    	}
+	},
+
+
+	"language": {  
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
 /////////////////////////////////imprimir los detalles/////////////////////////////////////////////////////////////
 
 jQuery('body').on('click','#impresion_reporte_compra', function (e) {
@@ -1279,15 +1537,12 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 
     jQuery('body').on('submit','#form_pago', function (e) {
-            
-           
 			jQuery('#foo').css('display','block');
 			var spinner = new Spinner(opts).spin(target);
 			
 			jQuery(this).ajaxSubmit({
 				success: function(data){
 					if(data != true){
-						
 						spinner.stop();
 						jQuery('#foo').css('display','none');
 						jQuery('#messages').css('display','block');
@@ -1296,8 +1551,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						jQuery('html,body').animate({
 							'scrollTop': jQuery('#messages').offset().top
 						}, 1000);
-					
-
 					}else{
 						    
 						    $catalogo = e.target.name;
@@ -1310,12 +1563,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 			});
 			return false;
 	});	
-
-
-
-
-
-
 
 	jQuery('#tabla_pagos_realizados').dataTable( {
 	
@@ -1451,13 +1698,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 								texto+=' </td></fieldset>';									
 
 						}
-
-
-
-
-
-
-
 							return texto;	
 		                },
 		                "targets": 6
@@ -1468,29 +1708,17 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		                "targets": [9]
 		            }
 		            */
-		          
-		           
-		            
 		        ],
 	});	
 
-
-
-
-
-
-
-
-
-
-//Agregar las estradas a salidas
-jQuery('body').on('click','.impresion1', function (e) {
-	console.log(  jQuery(this).attr('tipo') );
-	//id_estatus = jQuery("#id_estatuss").val(); 
-	   //id_almacen = jQuery("#id_almacen_reporte").val(); 
-
+jQuery('body').on('click','.impresion_ctas_detalle', function (e) {
+  	    busqueda    = jQuery('input[type=search]').val();
+		movimiento  = jQuery("#movimiento").val();
+    abrir('POST', '/impresion_ctas_detalle', {
+    		busqueda  :busqueda,
+		  movimiento:movimiento,   			
+    }, '_blank' );
 });
-
 
 
 jQuery('body').on('click','.impresion_ctas', function (e) {
@@ -1498,11 +1726,16 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 	    id_almacen = jQuery("#id_almacen_historicos").val(); 
 	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
 
     abrir('POST', 'impresion_ctasxpagar', {
     			busqueda:busqueda,
@@ -1513,6 +1746,9 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
 			fecha_final: fecha_final,
 			id_almacen:id_almacen,
 			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
 
     }, '_blank' );
 		        
@@ -1525,11 +1761,17 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
 		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 	    id_almacen = jQuery("#id_almacen_historicos").val(); 
 	    id_factura = jQuery("#id_factura_historicos").val(); 
+		
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+		
 
     abrir('POST', 'exportar_ctasxpagar', {
     			busqueda:busqueda,
@@ -1540,6 +1782,10 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
 			fecha_final: fecha_final,
 			id_almacen:id_almacen,
 			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
 
     }, '_blank' );
 		        
@@ -1580,6 +1826,8 @@ cuentas
 
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+				  
 
 
 	         		 }
@@ -1771,6 +2019,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						d.fecha_final = fecha[1];	      
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 	   		 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
 	         		 }
 	         		
 	     },   
@@ -1950,6 +2199,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						d.fecha_final = fecha[1];	
 						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 	         		 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
 	         		 }
 	         		
 	     },   
@@ -2005,6 +2255,9 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 				api.column(6).visible(false);		
 			}			
 	    },
+
+
+
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
 			if (settings.json.totales_importe) {
@@ -2071,7 +2324,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
 								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
 								texto+='type="button" class="btn btn-warning btn-block">';
-								texto+="Pagado"; //"row[10];
+								texto+=row[13]; //"Pagado"; //"row[10];
 								texto+='</a>';
 							texto+='</td>';
 						} else {
@@ -2110,27 +2363,151 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                },
 		                "targets": 11
 		            },
-  					/*
+  					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [12,13]
 		            }
-		            */
-		          
-		           
-		            
 		        ],
+
+	 "rowCallback": function( row, data ) {
+		    
+		    if ( data[13] == data[9] ) { //monto=total -->normal
+		      //jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( data[11] < 0 ) { //se pago de mas
+		      jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( (data[11] == 0 ) &&  ( data[13] != data[9] ) ) { //se pago de mas
+		      jQuery('td', row).addClass( "warning" );
+		    }
+
+
+
+		    /*if ( data[11] == "morado" ) {
+		      jQuery('td', row).addClass( "success" );
+		    }
+
+		    if ( data[15] == 1 ) {
+		      jQuery('td', row).addClass( "warning" );
+		    }*/
+
+
+
+		  },		
+
+
+
 	});	
 
 
 
 
+/////////////////////////buscar proveedores historico
+
+	// busqueda de proveedors reportes
+	var consulta_proveedor_historico = new Bloodhound({
+	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
+	   queryTokenizer: Bloodhound.tokenizers.whitespace,
+	   //remote:'catalogos/buscador?key=%QUERY&nombre='+jQuery('.buscar_proveedor_historico').attr("name")+'&idproveedor='+jQuery('.buscar_proveedor_historico').attr("idproveedor"),
+
+	  remote: {
+	        url: 'catalogos/buscador?key=%QUERY',
+	        replace: function () {
+	            var q = 'catalogos/buscador?key='+encodeURIComponent(jQuery('.buscar_proveedor_historico').typeahead("val"));
+					q += '&nombre='+encodeURIComponent(jQuery('.buscar_proveedor_historico.tt-input').attr("name"));
+				    q += '&idproveedor='+encodeURIComponent(jQuery('.buscar_proveedor_historico.tt-input').attr("idproveedor"));
+	            
+	            return  q;
+	        }
+	    },   
+
+	});
+
+
+
+	consulta_proveedor_historico.initialize();
+
+	jQuery('.buscar_proveedor_historico').typeahead(
+		{
+			  hint: true,
+		  highlight: true,
+		  minLength: 1
+		},
+
+		 {
+	  
+	  name: 'buscar_proveedor_historico',
+	  displayKey: 'descripcion', //
+	  source: consulta_proveedor_historico.ttAdapter(),
+	   templates: {
+	   			//header: '<h4>'+jQuery('.buscar_proveedor_historico').attr("name")+'</h4>',
+			    suggestion: function (data) {  
+					return '<p><strong>' + data.descripcion + '</strong></p>'+
+					 '<div style="background-color:'+ '#'+data.hexadecimal_color + ';display:block;width:15px;height:15px;margin:0 auto;"></div>';
+
+		   }
+	    
+	  }
+	});
+
+	jQuery('.buscar_proveedor_historico').on('typeahead:selected', function (e, datum,otro) {
+				switch(jQuery(this).attr('vista')) {
+					    case "cuentas":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+
+					    default:
+					        //
+
+			              break;
+					}		
+
+
+	});	
+
+	jQuery('.buscar_proveedor_historico').on('typeahead:closed', function (e) {
+				switch(jQuery(this).attr('vista')) {
+						case "costo_rollo":
+							var oTable =jQuery('#tabla_costo_rollo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+					    case "cuentas":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+					    default:
+					        //
+			              break;
+					}		
+	});	
+
 /////////////////////////////////////////////////Historico de entradas/////////////////////////////////////////////////////////////////
 
 
 
-		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos').change(function(e) {
+		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+
+						case "costo_rollo":
+							var oTable =jQuery('#tabla_costo_rollo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+
 					    case "listado_traspaso":
 					    
 							etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";
@@ -2198,6 +2575,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		jQuery('.fecha_historicos').on('apply.daterangepicker', function(ev, picker) {
 
 					switch(jQuery(this).attr('vista')) {
+
+						case "costo_rollo":
+							var oTable =jQuery('#tabla_costo_rollo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
 
  						case "ctas_vencida":
 							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();

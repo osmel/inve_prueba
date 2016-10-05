@@ -119,12 +119,24 @@
 
 							<!--Rango de fecha -->
 							<div class="col-xs-12 col-sm-6 col-md-3">
-									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+									<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha de creación</label>
 									<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
 			                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
 										<input id="foco_historicos" vista="cuentas" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
 									</div>	
 			                </div>
+
+							<div id="proveedor_id" class="col-xs-12 col-sm-6 col-md-3">
+
+											<div class="form-group">
+												<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Proveedor</label>
+												<div class="col-sm-12 col-md-12">
+													 <input  type="text" name="editar_proveedor_historico" id="editar_proveedor_historico" vista="cuentas" idproveedor="1" class="form-control buscar_proveedor_historico ttip" title="Campo predictivo. Comience a escribir y seleccione una opción para agregar un filtro de selección." autocomplete="off" spellcheck="false" placeholder="Buscar...">
+												</div>
+											</div>
+									
+								</div>		
+
 
 		            </div>     
 
@@ -156,10 +168,10 @@
 							
 								<!--Rango de fecha -->
 								<div class="col-xs-12 col-sm-6 col-md-3">
-										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha vencida</label>
 										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
 				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-											<input id="foco_historicos" vista="ctas_vencida" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+											<input id="foco_historicos" tipo="vencidas" vista="ctas_vencida" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
 										</div>	
 				                </div>								
 							<br>
@@ -249,10 +261,10 @@
 
 								<!--Rango de fecha -->
 								<div class="col-xs-12 col-sm-6 col-md-3">
-										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha de vencimiento</label>
 										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
 				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-											<input id="foco_historicos" vista="ctas_ctasxpagar" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+											<input id="foco_historicos" tipo="xpagar" vista="ctas_ctasxpagar" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
 										</div>	
 				                </div>								
 
@@ -342,12 +354,21 @@
 							</fieldset>			
 								<!--Rango de fecha -->
 								<div class="col-xs-12 col-sm-6 col-md-3">
-										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha</label>
+										<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Rango de fecha pagadas</label>
 										<div class="input-prepend input-group  form-group" style="padding-left:15px !important;padding-right:15px !important;">
 				                       		<span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-											<input id="foco_historicos" vista="ctas_pagadas" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
+											<input id="foco_historicos" tipo="pagadas" vista="ctas_pagadas" type="text" name="permisos"  class="form-control col-sm-12 col-md-12 fecha_historicos ttip" title="Seleccione un rango de fechas para filtrar los resultados." value="" format = "DD-MM-YYYY"/> 
 										</div>	
-				                </div>								
+				                </div>		
+
+							<div class="col-md-7">		
+							   
+							   <div class="col-md-5 leyen_home"  style="display: block;"><span> Recargos o Descuentos</span><div style="border: 1px solid black; margin-right: 15px;float:left;background-color:#fcf8e3;width:15px;height:15px;"></div> </div>
+
+
+							   <div class="col-md-4 leyen_home"  style="display: block;"><span> Exceso de pago</span><div style="border: 1px solid black; margin-right: 15px;float:left;background-color:#f2dede;width:15px;height:15px;"></div> </div>
+						   </div>
+
 
 							<br>						
 

@@ -452,27 +452,66 @@ class Ctasxpagar extends CI_Controller {
          $nombre_completo=$this->session->userdata('nombre_completo');
         switch($extra_search) {
         	case "vencidas":
-				    $data['having'] = '(
-				                         ( monto_restante >0 ) OR ( monto_restante IS null )   
-				                      )';    
-				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
-				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
-        		break;
+                 $data['tipo']='vencidas';
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+                                  $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+
+                  } else {
+                    $data['fecha_especifica'] = '';
+                  }
+
+    				    $data['having'] = '(
+    				                        ( ( monto_restante >0 ) OR ( monto_restante IS null ) ) '.$data['fecha_especifica'].'
+    				                      )';    
+    				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
+    				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
+          		break;
             case "xpagar":
 
-				    $data['having'] = '(
-				                         ( monto_restante >0 ) OR ( monto_restante IS null )   
-				                      )';  
-				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
-				    					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
+                $data['tipo']='porpagar';
 
-                 
+                if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                 $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                 $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                
+                                       
+                                $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+                } else {
+                 $data['fecha_especifica'] = '';
+                }
+
+
+    				    $data['having'] = '(
+    				                         ( ( monto_restante >0 ) OR ( monto_restante IS null ) )  '.$data['fecha_especifica'].'
+    				                      )';  
+    				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
+    				    					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
+
+                     
                 break;
             case "pagadas":    
-					 $data['having'] = '(
-					                         ( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) )
-					                      )';  
-					    $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+
+                  $data['tipo']='pagadas';
+
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+
+                                    $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+                  } else {
+                   $data['fecha_especifica'] = '';
+                  }            
+      					 $data['having'] = '(
+      					                         ( ( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ) ) '.$data['fecha_especifica'].'
+      					                      )';  
+      					  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
 
             	break;
          
@@ -500,32 +539,67 @@ class Ctasxpagar extends CI_Controller {
         
         $extra_search = ($this->input->post('extra_search'));
         $data=$_POST;
+          
 
         switch($extra_search) {
-        	case "vencidas":
-				    $data['having'] = '(
-				                         ( monto_restante >0 ) OR ( monto_restante IS null )   
-				                      )';    
-				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
-				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
-        		break;
+          	case "vencidas":
+         $data['tipo']='vencidas';
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+                                  $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+
+                  } else {
+                    $data['fecha_especifica'] = '';
+                  }            
+
+      				    $data['having'] = '(
+      				                         (( monto_restante >0 ) OR ( monto_restante IS null )  )'.$data['fecha_especifica'].'
+      				                      )';    
+      				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
+      				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
+              		break;
             case "xpagar":
-                
+                  
+                  $data['tipo']='porpagar';
 
-				    $data['having'] = '(
-				                         ( monto_restante >0 ) OR ( monto_restante IS null )   
-				                      )';  
-				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
-				    					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+                                         
+                                  $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
 
-                 
+                  } else {
+                   $data['fecha_especifica'] = '';
+                  }
+
+
+      				    $data['having'] = '(
+      				                         ( ( monto_restante >0 ) OR ( monto_restante IS null ) ) '.$data['fecha_especifica'].'
+      				                      )';  
+      				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
+      				    					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
                 break;
             case "pagadas":    
-					 $data['having'] = '(
-					                         ( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) )
-					                      )';  
-					    $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                  $data['tipo']='pagadas';
 
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+
+                                    $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_pago,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+                  } else {
+                   $data['fecha_especifica'] = '';
+                  }            
+      					 $data['having'] = '(
+    					                         (( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ))'.$data['fecha_especifica'].'
+    					                      )';  
+    					    $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
             	break;
          
 
@@ -591,7 +665,64 @@ class Ctasxpagar extends CI_Controller {
 
 
 
+    public function impresion_ctas_detalle() {
+        
+        $extra_search = ($this->input->post('extra_search'));
+        $data=$_POST;
 
+          //  $data['totales'] = $this->modelo_ctasxpagar->totales_impresion_pagosrealizados($data);
+        $data['movimientos'] = $this->modelo_ctasxpagar->impresion_pagosrealizados($data);
+        $html = $this->load->view('pdfs/ctasxpagar/detalle', $data, true);
+        //print_r($data['totales']) ;
+        //die;
+
+        /////////////
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M'); 
+
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+
+        //http://www.tcpdf.org/fonts.php
+        //$pdf->SetFont('freemono', '', 14, '', true);
+        //$pdf->SetFont('freemono', '', 11, '', 'true');
+        $pdf->SetFont('Times', '', 8,'','true');
+
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+
+
+        
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+        $nombre_archivo = utf8_decode("informe".$data['movimiento'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+    }
 
 
 

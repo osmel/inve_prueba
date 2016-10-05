@@ -1,50 +1,150 @@
- //eliminar los registros en "registros_entradas"
-          //$this->db->delete($this->registros, array('id_usuario'=>$id_session,'estatus_salida'=>'1')); 
 
-          //actualizar a registros_salidas el "mov_salida" al consecutivo q le toque
-          /*
-          $this->db->set('mov_salida', $consecutivo, FALSE  );
-          $this->db->where('id_usuario',$id_session);
-          $this->db->where('id_operacion',$data['id_operacion']); //2
-          $this->db->update($this->registros_salidas);
-          */
+     //$cadena = addslashes($data['search']['value']);
+     
+     //activar nuevo, editar  y eliminar
+     //<!-- si configuracion lo tiene activo y es(administrador o por el contrario tiene "permiso de ver y editar") -->     
+  /*
+     $perfil= $this->session->userdata('id_perfil'); 
+     $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+     if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+          $coleccion_id_operaciones = array();
+     }   
+     $activar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ));
+
+ 0=>$row->documento_pago,
+                                      1=>$row->instrumento_pago,
+                                      2=>$row->fecha_pago,
+                                      3=>number_format($row->importe, 2, '.', ','),
+                                      4=>$row->comentario,
+                                      5=>$row->id,
+                                      6=>$activar,  
+                                      7=>( (($row->pagos_tardios-$row->dias_ctas_pagar)<0) ? 1:0), //0->son tardios los pagos
+                                      8=>$row->movimiento, 
 
 
-          //registros de salidas    
-         /*
-          $this->db->select('m.id id_salida, m.id_entrada, m.mov_salida, m.fecha_entrada, m.fecha_salida, m.movimiento, m.id_empresa, m.id_cliente, m.factura, m.factura_salida,m.devolucion, m.num_partida');
-          $this->db->select('m.id_descripcion, m.id_color, m.id_composicion, m.id_calidad, m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,  m.codigo');
-          $this->db->select('m.comentario, m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.id_usuario_salida, m.fecha_mac, m.id_operacion, m.estatus_salida');
+      "movimiento"=>$row->movimiento, 
+                                          "tipo_pago"=>$row->tipo_pago,
+                                          "almacen"=>$row->almacen,
+                                          "nombre"=>$row->nombre,
+                                          "fecha"=>$row->fecha,
+                                          "factura"=>$row->factura,
+                                          "subtotal"=>number_format($row->subtotal, 2, '.', ','),
+                                          "iva"=>number_format($row->iva, 2, '.', ','),
+                                          "total"=>number_format($row->total, 2, '.', ','),
+                                          "dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
+                                          "monto_restante"=>(($row->monto_restante==null) ? $row->total : $row->monto_restante)
+*/
+
+
+          //$this->db->select(' m.factura,tp.tipo_pago,pr.id_documento_pago');
+          //$this->db->select("DATEDIFF( pr.fecha_pago ,  m.fecha_entrada ) as pagos_tardios", false);                    
           
-          $this->db->select('ca.nombre cargador, p.nombre cliente');
 
-          $this->db->select('m.id_apartado, m.id_usuario_apartado, m.id_cliente_apartado,m.fecha_apartado');
-
-          $this->db->select('m.precio_anterior, m.precio_cambio, m.id_prorroga, m.fecha_vencimiento, m.consecutivo_cambio');
           
-          //$this->db->select($data['valor'].' as tipo_salida', FALSE);                 
-          //$this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);
-          $this->db->select('"'.$data['valor'].'" AS tipo_salida',FALSE);
-
-          $this->db->select('m.peso_real');
-          //$this->db->select('m.id_destino,de.nombre destino');
-          $this->db->select('m.id_almacen');
-          $this->db->select('m.consecutivo_venta');
-        
-          $this->db->select('m.precio, m.iva, m.id_pedido, m.id_factura, m.id_tipo_pedido,m.id_tipo_factura, m.id_factura_original,m.incluir');
 
 
-          $this->db->from($this->registros_salidas.' As m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          //$this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
 
 
-          $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.id_operacion',$data['id_operacion']); //2
+
+
+
+
+
+//paginacion
+          $this->db->limit($largo,$inicio); 
+
 
           $result = $this->db->get();
 
+              if ( $result->num_rows() > 0 ) {
 
-          $objeto = $result->result();
-          */
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                  $retorno= " ";  
+
+
+             
+
+                  foreach ($result->result() as $row) {
+                              $totales =array(
+                                          "movimiento"=>$row->movimiento, 
+                                          "tipo_pago"=>$row->tipo_pago,
+                                          "almacen"=>$row->almacen,
+                                          "nombre"=>$row->nombre,
+                                          "fecha"=>$row->fecha,
+                                          "factura"=>$row->factura,
+                                          "subtotal"=>number_format($row->subtotal, 2, '.', ','),
+                                          "iva"=>number_format($row->iva, 2, '.', ','),
+                                          "total"=>number_format($row->total, 2, '.', ','),
+                                          "dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
+                                          "monto_restante"=>(($row->monto_restante==null) ? $row->total : $row->monto_restante)           
+                                      );
+
+                               $dato[]= array(
+                                      
+                                      0=>$row->documento_pago,
+                                      1=>$row->instrumento_pago,
+                                      2=>$row->fecha_pago,
+                                      3=>number_format($row->importe, 2, '.', ','),
+                                      4=>$row->comentario,
+                                      5=>$row->id,
+                                      6=>$activar,  
+                                      7=>( (($row->pagos_tardios-$row->dias_ctas_pagar)<0) ? 1:0), //0->son tardios los pagos
+                                      8=>$row->movimiento, 
+                                    );
+                      }
+
+
+
+
+
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_pagosrealizados($where_total) ), 
+                        "recordsFiltered" =>   $registros_filtrados, 
+                        "data"            =>  $dato,
+
+                                      0=>$row->movimiento,
+                                      1=>$row->tipo_pago,
+                                      2=>$row->almacen,
+                                      3=>$row->nombre,
+                                      4=>$row->fecha,
+                                      5=>$row->factura,
+                                      6=>number_format($row->subtotal, 2, '.', ','),
+                                      7=>number_format($row->iva, 2, '.', ','),
+                                      8=>number_format($row->total, 2, '.', ','),
+                                      9=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
+                                      10=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
+
+                      "totales"     =>  $totales   
+                      ));
+                                      
+
+
+                    
+              }   
+              else {
+
+
+                  $totales = json_decode(self::encabezado_pagosrealizados($data));
+
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array(),
+                  "totales"     =>  $totales  
+
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();        
+          //ordenacion
+         //$this->db->order_by($columna, $order); 
