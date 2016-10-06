@@ -15,10 +15,11 @@
 
 <div class="container margenes">
 	
+	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="<?php echo $id_tipo_pedido; ?>">		
+	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">		
 
 	<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
-	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="">		
-	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
+		
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
@@ -171,7 +172,7 @@
 							<div class="row">
 								<div class="col-sm-3 col-md-3 marginbuttom">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode(1); ?>/<?php echo base64_encode(0); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode(0); ?>"  
+									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode(1); ?>/<?php echo base64_encode(0); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode(0); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>" 
 										type="button" class="btn btn-success btn-block ttip" target="_blank" title="Generar un PDF del pedido para impresión.">Imprimir
 									</a>
 								</div>

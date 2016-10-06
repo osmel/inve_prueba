@@ -28,6 +28,7 @@ if (ltrim($retorno)=="") {
 
 
 <input type="hidden" id="movimiento" name="movimiento" value="<?php echo $movimiento; ?>">
+<input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
 
 <div class="container margenes">
 

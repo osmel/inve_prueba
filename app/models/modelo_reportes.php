@@ -2002,7 +2002,7 @@
 
 
           $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
+          $this->db->select('a.almacen,m.id_factura');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
@@ -2075,7 +2075,7 @@
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
+          $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura');
 
           
           //ordenacion
@@ -2106,6 +2106,7 @@
                                       7=>number_format($row->sum_iva, 2, '.', ','),
                                       8=>number_format($row->sum_total, 2, '.', ','),
                                       9=>$row->devolucion,
+                                      10=>$row->id_factura,
                                       
 
                                     );
@@ -2187,7 +2188,7 @@ public function totales_importes($where){
 
 
               $this->db->where($where);          
-              $this->db->group_by('m.movimiento,a.almacen,p.nombre,m.factura');
+              $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura');
               //$this->db->having($where);
 
              $result = $this->db->get();
@@ -2319,7 +2320,7 @@ public function buscador_historico_devolucion($data){
           $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
 
           
-          $this->db->select('a.almacen');
+          $this->db->select('a.almacen,m.id_factura');
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
@@ -2405,6 +2406,7 @@ public function buscador_historico_devolucion($data){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>number_format($row->sum_total, 2, '.', ','),
                                       8=>$row->devolucion,
+                                      9=>$row->id_factura,
                                       
 
                                     );
@@ -2693,7 +2695,7 @@ public function buscador_historico_salida($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
+          $this->db->group_by('m.mov_salida,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.factura');
 
           
           //ordenacion
@@ -2741,6 +2743,8 @@ public function buscador_historico_salida($data){
                                       8=>number_format($row->sum_precio, 2, '.', ','),
                                       9=>number_format($row->sum_iva, 2, '.', ','),
                                       10=>number_format($row->sum_total, 2, '.', ','),
+                                      11=>$row->id_tipo_pedido,
+                                      12=>$row->id_tipo_factura,
 
                                     );
                       }

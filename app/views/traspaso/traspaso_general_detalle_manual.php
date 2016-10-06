@@ -10,6 +10,7 @@
 
 <input type="hidden" id="id_usuario" name="id_usuario" value="<?php echo $id_usuario; ?>">
 <input type="hidden" id="id_almacen_traspaso" name="id_almacen_traspaso" value="<?php echo $id_almacen; ?>">
+<input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">Detalles de traspaso</div>
@@ -154,7 +155,7 @@
 
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href="<?php echo base_url(); ?>imprimir_detalle_general_traspaso_manual/<?php echo base64_encode($id_usuario); ?>/<?php echo base64_encode($id_almacen); ?>"
+									<a href="<?php echo base_url(); ?>imprimir_detalle_general_traspaso_manual/<?php echo base64_encode($id_usuario); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($id_factura); ?>"  
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 									</a>
 								</div>

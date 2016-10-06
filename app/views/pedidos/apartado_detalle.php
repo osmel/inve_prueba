@@ -12,12 +12,15 @@
 
 
 ?>	
+	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="<?php echo $id_tipo_pedido; ?>">		
+	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">		
+
 
 <div class="container margenes">
 	<div class="panel panel-primary">
+
 			<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">
-			<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="">		
-			<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="">		
+	
 			<input type="hidden" id="etiq_num_mov" name="etiq_num_mov" value="">		
 			<input type="hidden" id="etiq_dependencia" name="etiq_dependencia" value="">		
 
@@ -189,7 +192,7 @@
 								
 								<div class="col-sm-3 col-md-3 marginbuttom">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($id_usuario); ?>/<?php echo base64_encode(2); ?>/<?php echo base64_encode($id_cliente); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($consecutivo_venta); ?>" 
+									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($id_usuario); ?>/<?php echo base64_encode(2); ?>/<?php echo base64_encode($id_cliente); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($consecutivo_venta); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>" 
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 									</a>
 								</div>

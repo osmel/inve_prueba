@@ -78,7 +78,9 @@
 
 				<tfooter>	
 						<tr>
-							<td width="100%" style="border-top: 1px solid #222222; line-height: 10px;">
+								<!--
+								<td width="100%" style="border-top: 1px solid #222222; line-height: 10px;">
+									
 									<?php  if ($totales->metros>0) { ?>	
 										<p><span><b>Total Metros: </b> <?php echo $totales->metros; ?></span></p>
 									<?php } ?>		
@@ -92,10 +94,41 @@
 
 									<p><span><b>IVA: </b><?php echo number_format($totales->sum_iva, 2, '.', ','); ?></span></p><br>
 									<p><span><b>Total: </b><?php echo number_format($totales->sum_total, 2, '.', ','); ?></span></p><br>
+									</td>
+									-->
 
 
 
+								<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
+								<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span> 
+
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->sum_iva, 2, '.', ','); ?></span>
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->sum_total, 2, '.', ','); ?></span><br>
+									
+									<?php  if ($totales->metros>0) { ?>	
+										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>
+									<?php } ?>		
+									<?php  if ($totales->kilogramos>0) { ?>	
+										<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span>
+									<?php } ?>	
+
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
+								
 							</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+							
 						</tr>
 				</tfooter>			
 			</table>

@@ -29,7 +29,7 @@ if (ltrim($retorno)=="") {
 
     //print_r($retorno);
   
-$hidden = array('id_movimiento'=>$num_mov); 
+$hidden = array('id_movimiento'=>$num_mov,'id_factura'=>$id_factura); 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas1','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
 echo form_open('pdfs/generar', $attr,$hidden );
 ?>		
@@ -46,7 +46,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
 					<!-- <a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>"  -->
-					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>" 
+					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>" 
 					
 
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
@@ -55,7 +55,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				</div>
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>"  
+					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>

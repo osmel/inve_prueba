@@ -255,7 +255,6 @@ class Devoluciones extends CI_Controller {
 ///////////////////////////////////////////////////////////////////////////////////////////  
 
   public function validar_conf_devolucion(){
-
       $existe = $this->modelo_devolucion->existencia_temporales();
 
       if (!$existe) {
@@ -263,8 +262,6 @@ class Devoluciones extends CI_Controller {
       } else {
         echo true;  
       }
-      
-
   } 
 
 
@@ -283,6 +280,7 @@ class Devoluciones extends CI_Controller {
    
     
           $data['num_mov'] = $this->modelo_devolucion->procesando_operacion();
+          $data['id_factura'] = 0; //porque pdfs_views espera un valor
 
           $this->load->library('ciqrcode');
           $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);

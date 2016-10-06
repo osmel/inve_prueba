@@ -461,7 +461,7 @@
                               $columna6= $row->dependencia.$tip_apart;
                               $columna7= 
                               '<div style="background-color:#'.$row->apartado.';display:block;width:15px;height:15px;margin:0 auto;"></div>';
-                          }  else {
+                          }  else  {
                               $columna7=$row->id_lote.'-'.$row->consecutivo;  
                               $columna6= $row->nombre;
                           }  

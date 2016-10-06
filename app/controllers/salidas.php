@@ -305,6 +305,12 @@ class Salidas extends CI_Controller {
 			 if($this->session->userdata('session') === TRUE ){
 			      $id_perfil=$this->session->userdata('id_perfil');
 
+
+					$data['id_almacen'] = $this->input->post('id_almacen');
+					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+								      
+
 			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
 			            $coleccion_id_operaciones = array();
@@ -370,10 +376,6 @@ class Salidas extends CI_Controller {
 					 
 				}	 
 				
-					$data['id_almacen'] = $this->input->post('id_almacen');
-
-					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 			 		if (($existe) and ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) and ($data['id_cliente']) and ($data['id_cargador']) ) {
 			 					//verificar si los apartados estan siendo totales o parciales
 			 				  $dato['valor'] = $this->modelo_salida->cantidad_apartados($data);
@@ -500,7 +502,8 @@ public function validar_confirmar_salida_sino(){
 				 } 
 				 */
 
-			redirect('detalles_salidas/'.base64_encode($data['encabezado']['num_movimiento']).'/'.base64_encode($data['encabezado']['cliente']).'/'.base64_encode($data['encabezado']['cargador'])) ;
+			redirect('detalles_salidas/'.base64_encode($data['encabezado']['num_movimiento']).'/'.base64_encode($data['encabezado']['cliente']).'/'.base64_encode($data['encabezado']['cargador']).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+
  
 		   }   	
 
@@ -508,13 +511,15 @@ public function validar_confirmar_salida_sino(){
 
 	
 
-	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1){
+	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
 
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
 		      $id_movimiento= base64_decode($id_movimiento);
+		      $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
+		      $data["id_tipo_factura"] = base64_decode($id_tipo_factura);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -606,6 +611,8 @@ public function confirmar_proc_apartado_sino(){
 			       $data['id_almacen'] = $this->input->post('id_almacen');
 			       $data['num_mov'] = $this->input->post('num_mov');
 			       $data['dependencia'] = $this->input->post('dependencia');
+			       $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');				
 
 			      $existe = $this->modelo_salida->existencia_apartado_salida($data);
 
@@ -674,6 +681,8 @@ public function confirmar_proc_pedido_sino(){
 			       $data['id_almacen'] = $this->input->post('id_almacen');
 			       $data['num_mov'] = $this->input->post('num_mov');
 			       $data['dependencia'] = $this->input->post('dependencia');
+				   $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
 
 			      $existe = $this->modelo_salida->existencia_pedido_salida($data);
 
@@ -794,7 +803,7 @@ public function validar_salida_pedido(){
 
 	$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador)) ;
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 
 }	
 
@@ -810,7 +819,7 @@ public function validar_salida_pedido(){
 
 
 
-	public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1){
+	public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
 
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -820,6 +829,9 @@ public function validar_salida_pedido(){
 		            $coleccion_id_operaciones = array();
 		       }  
 
+				   $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
+		      		$data["id_tipo_factura"] = base64_decode($id_tipo_factura);
+	
 	      			$data['encabezado']['num_movimiento']  = base64_decode($id_movimiento);
 	      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
 	      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
@@ -925,7 +937,7 @@ public function validar_apartado_pedido(){
 	//aqui me quede
 	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador)) ;
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 
 }		
 

@@ -938,6 +938,7 @@ public function totales_importes($where){
 
           $where = '(
                       (
+                        (( m.id_factura = '.$data['id_factura'].' ) OR ('.$data['dev'].'=1) )  AND
                         ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 )
                       ) 
 

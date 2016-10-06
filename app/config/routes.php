@@ -334,15 +334,15 @@ $route['validar_eliminar_prod_temporal']    = 'entradas/validar_eliminar_prod_te
 $route['inf_ajax_temporal']    = 'entradas/inf_ajax_temporal';
 
 //procesamiento de entrada
-$route['procesar_entradas/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3';
+$route['procesar_entradas/(:any)/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3/$4';
 
-$route['procesar_entrar/(:any)']    = 'entradas/procesar_entrar/$1';
+$route['procesar_entrar/(:any)/(:any)']    = 'entradas/procesar_entrar/$1/$2';
 
 $route['validar_proceso']    = 'entradas/validar_proceso';
 
 
-$route['generar_etiquetas/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2';
-$route['generar_notas/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2';
+$route['generar_etiquetas/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3';
+$route['generar_notas/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3';
 
 $route['pdfs']    = 'pdfs/index';
 
@@ -355,11 +355,13 @@ $route['agregar_prod_salida']    		= 'salidas/agregar_prod_salida';
 $route['procesando_servidor_salida']    = 'salidas/procesando_servidor_salida';
 $route['quitar_prod_salida']		    = 'salidas/quitar_prod_salida';
 
-$route['generar_salida/(:any)']    = 'pdfs/generar_salida/$1';
+$route['generar_salida/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3';
 
 
 
-$route['detalle_salidas/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3';
+
+$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5';
+
 $route['procesar_salidas']    = 'salidas/procesar_salidas';
 
 $route['confirmar_salida_sino']    = 'salidas/confirmar_salida_sino';
@@ -371,7 +373,7 @@ $route['validar_confirmar_salida_sino']    = 'salidas/validar_confirmar_salida_s
 $route['confirmar_proc_pedido_sino']    = 'salidas/confirmar_proc_pedido_sino';
 $route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3/$4/$5';
 $route['validar_salida_pedido']    = 'salidas/validar_salida_pedido';
-$route['detalles_salidas/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3';
+$route['detalles_salidas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3/$4/$5';
 
 
 ///para el caso de salida por pedidos "apartados" VENDEDOR
@@ -424,9 +426,9 @@ $route['conteo_tienda']   			= 'pedidos/conteo_tienda';
 
 $route['pedidos']						= 'pedidos/listado_apartados';
 
-$route['apartado_detalle/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4';
-$route['pedido_detalle/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2';
-$route['pedido_completado_detalle/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_completado_detalle/$1/$2/$3/$4';
+$route['apartado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4/$5/$6';
+$route['pedido_detalle/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2/$3/$4';
+$route['pedido_completado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_completado_detalle/$1/$2/$3/$4/$5/$6';
 
 
 $route['eliminar_apartado_detalle/(:any)/(:any)/(:any)/(:any)']    	= 'pedidos/eliminar_apartado_detalle/$1/$2/$3/$4';
@@ -497,7 +499,7 @@ $route['marcando_prorroga_venta']    			= 'pedidos/marcando_prorroga_venta';
 $route['marcando_prorroga_tienda']    			= 'pedidos/marcando_prorroga_tienda';
 
 
-$route['generar_pedido_especifico/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_pedido_especifico/$1/$2/$3/$4/$5';
+$route['generar_pedido_especifico/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_pedido_especifico/$1/$2/$3/$4/$5/$6/$7';
 
 
 //////////****************Aqui para las impresiones**************////////////////////
@@ -620,7 +622,7 @@ $route['procesando_salida_traspaso']			= 'traspaso/procesando_salida_traspaso';
 $route['listado_traspaso']						= 'traspaso/listado_traspaso';
 $route['procesando_general_traspaso']			= 'traspaso/procesando_general_traspaso';
 $route['procesando_traspaso_historico']			= 'traspaso/procesando_traspaso_historico';
-$route['traspaso_detalle/(:any)']				= 'traspaso/traspaso_detalle/$1';
+$route['traspaso_detalle/(:any)/(:any)']				= 'traspaso/traspaso_detalle/$1/$2';
 $route['traspaso_historico_detalle']			= 'traspaso/traspaso_historico_detalle';
 $route['procesando_traspaso_general_detalle']					= 'traspaso/procesando_traspaso_general_detalle';
 $route['procesando_traspaso_general_detalle_manual']					= 'traspaso/procesando_traspaso_general_detalle_manual';
@@ -629,12 +631,12 @@ $route['traspaso_general_detalle/(:any)/(:any)/(:any)']			= 'traspaso/traspaso_g
 
 $route['traspaso_general_detalle_manual/(:any)/(:any)']	= 'traspaso/traspaso_general_detalle_manual/$1/$2';
 
-$route['imprimir_detalle_general_traspaso/(:any)/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso/$1/$2/$3';
-$route['imprimir_detalle_general_traspaso_manual/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso_manual/$1/$2';
+$route['imprimir_detalle_general_traspaso/(:any)/(:any)/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso/$1/$2/$3/$4';
+$route['imprimir_detalle_general_traspaso_manual/(:any)/(:any)/(:any)']	= 'traspaso/imprimir_detalle_general_traspaso_manual/$1/$2/$3';
 
 
 
-$route['imprimir_detalle_historico_traspaso/(:any)']	= 'traspaso/imprimir_detalle_historico_traspaso/$1';
+$route['imprimir_detalle_historico_traspaso/(:any)/(:any)']	= 'traspaso/imprimir_detalle_historico_traspaso/$1/$2';
 
 $route['agregar_prod_salida_traspaso']			= 'traspaso/agregar_prod_salida_traspaso';
 $route['quitar_prod_salida_traspaso']			= 'traspaso/quitar_prod_salida_traspaso';
@@ -665,7 +667,7 @@ $route['listado_ctasxpagar']						= 'ctasxpagar/listado_ctasxpagar';
 $route['procesando_ctas_vencidas']			= 'ctasxpagar/procesando_ctas_vencidas';
 $route['procesando_ctasxpagar']			= 'ctasxpagar/procesando_ctasxpagar';
 $route['procesando_ctas_pagadas']			= 'ctasxpagar/procesando_ctas_pagadas';
-$route['procesar_ctasxpagar/(:any)/(:any)']    = 'ctasxpagar/procesar_ctasxpagar/$1/$2';
+$route['procesar_ctasxpagar/(:any)/(:any)/(:any)']    = 'ctasxpagar/procesar_ctasxpagar/$1/$2/$3';
 $route['procesando_pagos_realizados']			= 'ctasxpagar/procesando_pagos_realizados';
 
 $route['editar_pago_realizado/(:any)/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1/$2';

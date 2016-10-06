@@ -130,10 +130,11 @@ public function impresion_etiquetas1($codigo) {
         $pdf->Output($nombre_archivo, 'I');
     }
 
-  public function generar_salida($id_movimiento) {
+  public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura){
 
-        $data['id_movimiento']= base64_decode($id_movimiento);
-
+        $data['id_movimiento']       = base64_decode($id_movimiento);
+        $data['id_tipo_pedido']      = base64_decode($id_tipo_pedido);
+        $data['id_tipo_factura']     = base64_decode($id_tipo_factura);
         /////////////
 
         set_time_limit(0); 
@@ -203,10 +204,11 @@ public function impresion_etiquetas1($codigo) {
     }
 
 
-  public function generar_notas($id_movimiento,$dev) {
+  public function generar_notas($id_movimiento,$dev,$id_factura) {
 
         $data['dev']= base64_decode($dev);    
         $data['id_movimiento']= base64_decode($id_movimiento);
+        $data['id_factura']= base64_decode($id_factura);
 
            
         /////////////
@@ -281,9 +283,10 @@ public function impresion_etiquetas1($codigo) {
     }
 
  
-    public function generar_etiquetas($id_movimiento,$dev) {
+    public function generar_etiquetas($id_movimiento,$dev,$id_factura) {
         $data['dev']= base64_decode($dev);    
         $data['id_movimiento']= base64_decode($id_movimiento);
+        $data['id_factura']= base64_decode($id_factura);
 
         /////////////
 
@@ -383,7 +386,7 @@ public function impresion_etiquetas1($codigo) {
 /////////////////////////Pedidos/////////////////////////////////////
 
 
- public function generar_pedido_especifico($num_mov,$id_generar,$id_cliente,$id_almacen,$consecutivo_venta) {
+ public function generar_pedido_especifico($num_mov,$id_generar,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
 
 
 
@@ -392,6 +395,9 @@ public function impresion_etiquetas1($codigo) {
         $data['id_cliente']= base64_decode($id_cliente);
         $data['id_almacen']= base64_decode($id_almacen);
         $data['consecutivo_venta']= base64_decode($consecutivo_venta);
+        $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+        $data['id_tipo_factura'] = base64_decode($id_tipo_factura);             
+
         
 
         

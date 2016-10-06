@@ -7,6 +7,7 @@
 
 
 <input type="hidden" id="consecutivo_traspaso" name="consecutivo_traspaso" value="<?php echo $consecutivo_traspaso; ?>">
+<input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">Detalles de traspaso</div>
@@ -154,7 +155,7 @@
 
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href="<?php echo base_url(); ?>imprimir_detalle_historico_traspaso/<?php echo base64_encode($consecutivo_traspaso); ?>"  
+									<a href="<?php echo base_url(); ?>imprimir_detalle_historico_traspaso/<?php echo base64_encode($consecutivo_traspaso); ?>/<?php echo base64_encode($id_factura); ?>"    
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 									</a>
 								</div>

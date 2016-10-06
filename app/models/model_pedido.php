@@ -734,7 +734,7 @@
               $this->db->from($this->registros.' as m');
               $this->db->where($where);
         
-              $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado");
+              $this->db->group_by("m.id_usuario_apartado, m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado");
               $result = $this->db->get();
               $cant = $result->num_rows();
      
@@ -819,6 +819,7 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");          
 
+          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
@@ -866,7 +867,7 @@
 
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
-          $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.id_usuario_apartado, m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado,m.consecutivo_venta");
 
           //ordenacion
 
@@ -919,6 +920,8 @@
                                       12=>$row->tipo_pedido,
                                       13=>$row->tipo_factura,                                      
                                       14=>$row->id_apartado, 
+                                      15=>$row->id_tipo_pedido,   
+                                      16=>$row->id_tipo_factura,   
 
                                     );
                       }
@@ -963,7 +966,7 @@
               $this->db->from($this->registros.' as m');
               $this->db->where($where);
         
-              $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado");
+              $this->db->group_by("m.id_usuario_apartado,m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado");
               $result = $this->db->get();
               $cant = $result->num_rows();
      
@@ -1051,6 +1054,8 @@
           
           $this->db->select("tf.tipo_factura");          
 
+          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
@@ -1100,7 +1105,7 @@
 
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
-          $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado");
+          $this->db->group_by("m.id_usuario_apartado,m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado");
 
           //ordenacion
 
@@ -1150,7 +1155,10 @@
                                       8=>$row->almacen,
                                       9=>$row->tipo_pedido,
                                       10=>$row->tipo_factura,
-                                      11=>$row->id_apartado
+                                      11=>$row->id_apartado,
+                                      12=>$row->id_tipo_pedido,   
+                                      13=>$row->id_tipo_factura,   
+
                                     );
                       }
 
@@ -1188,7 +1196,7 @@
               $this->db->from($this->historico_registros_salidas.' as m');
               $this->db->where($where);
         
-              $this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_cliente_apartado");
+              $this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado");
               $result = $this->db->get();
               $cant = $result->num_rows();
      
@@ -1245,7 +1253,8 @@
           $this->db->select('p.nombre comprador, m.id_apartado apartado, m.mov_salida ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('pr.nombre as dependencia', FALSE);
-
+          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
+          
  
           $this->db->select('
                         CASE m.tipo_salida
@@ -1328,7 +1337,7 @@
 
           $this->db->order_by($columna, $order); 
 
-          $this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_cliente_apartado");
+          $this->db->group_by("m.mov_salida, m.id_usuario_apartado,m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado");
 
 
           //paginacion
@@ -1363,7 +1372,11 @@
                                       7=>$row->almacen,
                                       8=>$row->consecutivo_venta,
                                       9=>$row->tip_pedido,
-                                      10=>$row->tipo_factura,                                         
+                                      10=>$row->tipo_factura,   
+                                      11=>$row->id_tipo_pedido,   
+                                      12=>$row->id_tipo_factura,   
+
+                                                                            
                                     );
                       }
 
@@ -1524,6 +1537,8 @@
           } 
           
           $where = '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                       (
                         ( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" ) AND ( m.consecutivo_venta = '.$consecutivo_venta.' )
                       )'.$id_almacenid .'  
@@ -1810,6 +1825,8 @@
 
           $where = '(
                       (
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                         (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.id_cliente_apartado = "'.$num_mov.'" )
                       )'.$id_almacenid .' 
                        AND
@@ -2116,6 +2133,8 @@
 
           $where = '(
                       (
+                        ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                         ( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida = '.$mov_salida.' )
                       )'.$id_almacenid.'  
                    AND
@@ -2551,8 +2570,13 @@
                 } else {
                     //no porque se eliminaran "todos"
                 }                 
+                
+                $this->db->where('id_tipo_pedido',$data['id_tipo_pedido']);
+                $this->db->where('id_tipo_factura',$data['id_tipo_factura']);
+
                 $this->db->where('id_usuario_apartado',$data['id_usuario']);
                 $this->db->where('id_cliente_apartado',$data['id_cliente']);
+
                 $this->db->where('id_apartado', 2 );
                 $this->db->where('consecutivo_venta',$data['consecutivo_venta']);
 
@@ -2594,6 +2618,8 @@
                     //no porque se eliminaran "todos"
                 }                 
 
+                $this->db->where('id_tipo_pedido',$data['id_tipo_pedido']);
+                $this->db->where('id_tipo_factura',$data['id_tipo_factura']);
                 $this->db->where('id_usuario_apartado',$data['id_usuario']);
                 $this->db->where('id_cliente_apartado',$data['id_cliente']);
                 $this->db->where('id_apartado', 2 );
@@ -2745,6 +2771,7 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
 
                 $where = '(
+                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                           (
                             (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
                           )'.$id_almacenid.$cond_traspaso.' 
@@ -2774,6 +2801,7 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 } 
 
                 $where = '(
+                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                           (
                             (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
                           )'.$id_almacenid.' 
@@ -2826,6 +2854,8 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
 
                 $where = '(
                           (
+                           ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                             (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
                           )'.$id_almacenid.$cond_traspaso.' 
 
@@ -2873,6 +2903,8 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 } 
 
                 $where = '(
+                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                          
                           (
                             (( id_apartado = 5 ) or ( id_apartado = 6 ) ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
                           )'.$id_almacenid.' 

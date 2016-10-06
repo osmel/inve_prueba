@@ -278,7 +278,7 @@ public function totales_importes_historica($where){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia,m.id_factura');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color, p.nombre');
@@ -452,7 +452,7 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
@@ -465,6 +465,7 @@ public function totales_importes_historica($where){
                                       17=>$row->almacen,
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
+                                      20=>$row->id_factura,
 
                                       
 
@@ -650,7 +651,7 @@ public function totales_importes_historica($where){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia,m.id_factura');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio,  m.codigo, m.comentario');
           //$this->db->select('m.iva');
           $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
@@ -826,7 +827,7 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
@@ -839,6 +840,7 @@ public function totales_importes_historica($where){
                                       17=>$row->almacen,
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
+                                      20=>$row->id_factura,
 
                                       
 

@@ -105,7 +105,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso');  
+          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso,m.id_factura');  
           $this->db->select('p.nombre comprador, m.id_apartado apartado');   
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('pr.nombre as dependencia', FALSE);
@@ -204,7 +204,7 @@
           $this->db->order_by($columna, $order); 
 
 
-          $this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
           //paginacion
           $this->db->limit($largo,$inicio); 
 
@@ -253,6 +253,7 @@
                                       13=>number_format($row->subtotal, 2, '.', ','), //total
                                       14=>number_format($row->iva, 2, '.', ','), //total
                                       15=>number_format($row->total, 2, '.', ','), //total
+                                      16=>$row->id_factura, //responsable
 
                                     );
                       }
@@ -309,7 +310,7 @@ public function totales_importes_traspaso($where){
            $this->db->from($this->historico_registros_traspasos.' as m');
           $this->db->where($where);
     
-          //$this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          //$this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
 
           $result = $this->db->get();
@@ -333,7 +334,7 @@ public function totales_importes_traspaso($where){
                $this->db->from($this->historico_registros_traspasos.' as m');
               $this->db->where($where);
         
-             // $this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+             // $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
 
              $result = $this->db->get();
@@ -357,7 +358,7 @@ public function totales_importes_traspaso($where){
               $this->db->from($this->historico_registros_traspasos.' as m');
               $this->db->where($where);
         
-              $this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+              $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
               $result = $this->db->get();
               $cant = $result->num_rows();
@@ -499,7 +500,7 @@ public function totales_importes_traspaso($where){
 
           $where = '(
                       (
-                        ( m.consecutivo_traspaso =  '.$consecutivo_traspaso.' )
+                        ( m.consecutivo_traspaso =  '.$consecutivo_traspaso.' ) AND ( m.id_factura =  '.$data["id_factura"].' )
                       )
                    AND
                       (
@@ -706,7 +707,7 @@ public function totales_importes_traspaso($where){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado');  
-          $this->db->select('p.nombre comprador, m.id_apartado apartado'); 
+          $this->db->select('p.nombre comprador, m.id_apartado apartado, m.id_factura'); 
           
           
 
@@ -820,7 +821,7 @@ public function totales_importes_traspaso($where){
           $this->db->order_by($columna, $order); 
 
 
-          $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.id_usuario_apartado, m.id_factura, m.id_cliente_apartado,m.consecutivo_venta");
           //paginacion
           $this->db->limit($largo,$inicio); 
 
@@ -879,6 +880,7 @@ public function totales_importes_traspaso($where){
                                       19=>number_format($row->subtotal, 2, '.', ','), //total
                                       20=>number_format($row->iva, 2, '.', ','), //total
                                       21=>number_format($row->total, 2, '.', ','), //total
+                                      22=>$row->id_factura,
 
                                       
 
@@ -938,7 +940,7 @@ public function totales_importes_traspaso_especifico($where){
            $this->db->from($this->registros_entradas.' as m');
           $this->db->where($where);
     
-          //$this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          //$this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
 
           $result = $this->db->get();
@@ -962,7 +964,7 @@ public function totales_importes_traspaso_especifico($where){
                $this->db->from($this->registros_entradas.' as m');
               $this->db->where($where);
         
-             // $this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+             // $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
 
              $result = $this->db->get();
@@ -985,7 +987,7 @@ public function totales_importes_traspaso_especifico($where){
               $this->db->where($where);
         
               //$this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_cliente_apartado");
-              $this->db->group_by("m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+              $this->db->group_by("m.id_usuario_apartado,m.id_factura, m.id_cliente_apartado,m.consecutivo_venta");
 
               $result = $this->db->get();
               $cant = $result->num_rows();
@@ -1134,7 +1136,7 @@ public function totales_importes_traspaso_especifico($where){
 
           $where = '(
                       (
-                        ( m.id_apartado = '.$id_apartado.' ) 
+                        ( m.id_apartado = '.$id_apartado.' ) AND ( m.id_factura =  '.$data["id_factura"].' )
                       )'.$id_almacenid.$filtro.$num_mov.' 
                        AND          
                       (
@@ -1399,7 +1401,7 @@ public function totales_importes_traspaso_especifico($where){
 
 
 
-          $where = '(
+          $where = '( 
                       '.$filtro.$id_almacenid.' 
                        AND          
                       (
@@ -1407,7 +1409,7 @@ public function totales_importes_traspaso_especifico($where){
                         ( m.codigo LIKE  "%'.$cadena.'%" ) OR (m.id_descripcion LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
                          (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") OR 
                          (m.precio LIKE  "%'.$cadena.'%")
-                       )
+                       )  AND ( m.id_factura =  '.$data["id_factura"].' )
             )';   
 
           $this->db->where($where);
@@ -1587,7 +1589,7 @@ public function totales_importes_traspaso_especifico($where){
 
           $filtro = '( m.proceso_traspaso = 1 )  AND ( m.id_usuario_traspaso = "'.$id_usuario.'" )';  
 
-          $where = '(
+          $where = '( ( m.id_factura =  '.$data["id_factura"].' ) AND
                       '.$filtro.$id_almacenid.' 
             )';   
 
@@ -1622,7 +1624,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
           $filtro = '( m.proceso_traspaso = 1 )  AND ( m.id_usuario_traspaso = "'.$data['id_usuario'].'" )';  
 
-          $where = '(
+          $where = '( ( m.id_factura =  '.$data["id_factura"].' ) AND
                       '.$filtro.$id_almacenid.' 
           )';   
 
@@ -1744,7 +1746,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
 
           $where = '(
-                      (
+                      ( ( m.id_factura =  '.$data["id_factura"].' ) AND
                         ( m.id_apartado = '.$id_apartado.' ) 
                       )'.$id_almacenid.$filtro.$num_mov.' 
                        
@@ -1847,7 +1849,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
           //filtro de busqueda
 
           $where = '(
-                      (
+                      ( ( m.id_factura =  '.$data["id_factura"].' ) AND
                         ( m.consecutivo_traspaso =  '.$consecutivo_traspaso.' )
                       )
             )';   
@@ -1876,7 +1878,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 public function totales_imprimir_traspaso_historico_detalle($data){
 
           $where = '(
-                      (
+                      ( ( m.id_factura =  '.$data["id_factura"].' ) AND
                         ( m.consecutivo_traspaso =  '.$data['consecutivo_traspaso'].' )
                       )
             )';   
@@ -2753,7 +2755,7 @@ public function valores_movimientos_temporal(){
           $where_total = '('.$filtro.$id_almacenid.$id_facturaid.$fechas.')'; 
           //$this->db->order_by($columna, $order); 
           
-          $this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
             $result = $this->db->get();
 
 

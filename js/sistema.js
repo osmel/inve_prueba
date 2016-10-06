@@ -1702,7 +1702,7 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
 						
 												$catalogo = e.target.name;
-												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov);
+												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
 									        	
 									        }
 								});			
@@ -4825,7 +4825,7 @@ jQuery('#tabla_apartado').dataTable({
 
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="apartado_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[11])+'" '; 
+    					 texto='<td><a href="apartado_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(row[16])+'" '; 
 						 	texto+=' class="btn btn-success  btn-block">';
 						 	texto+=' Detalles';
 						 texto+='</a></td>';
@@ -4839,7 +4839,7 @@ jQuery('#tabla_apartado').dataTable({
     			{ 
 	                "render": function ( data, type, row ) {
 	                	if (row[14]!=3) {
-							texto='<td><a href="eliminar_apartado_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[11])+'" '; 
+							texto='<td><a href="eliminar_apartado_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(row[16])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
 								texto+='<span class="glyphicon glyphicon-remove"></span>';
 							texto+='</a></td>';
@@ -5063,6 +5063,10 @@ jQuery('#tabla_detalle').dataTable( {
      				   d.id_cliente = jQuery("#id_cliente_apartado").val();  //3; //
      				   d.id_almacen = jQuery('#id_almacen_pedido').val();	
      				   d.consecutivo_venta = jQuery('#consecutivo_venta').val();	
+         			   
+         			   d.id_tipo_pedido = jQuery('#id_tipo_pedido').val();	
+	   				   d.id_tipo_factura = jQuery('#id_tipo_factura').val();	
+
     			 } 
 
      },   
@@ -5130,8 +5134,10 @@ jQuery('#tabla_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 
+		    /*
 		    jQuery('#id_tipo_pedido').val(settings.json.datos.id_tipo_pedido);
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+		    */
 
  			if (settings.json.datos.tipo_factura!=null) {
 		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
@@ -5384,8 +5390,8 @@ jQuery('body').on('click','#proc_salida_apartado', function (e) {
 	 num_mov = jQuery('#etiq_num_mov').val(); 
 	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
 	 id_almacen = jQuery('#id_almacen_pedido').val( );
-	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
 	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
+	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
 
 	 var url = '/confirmar_proc_apartado_sino';
 
@@ -5408,6 +5414,8 @@ jQuery('body').on('click','#proc_salida_apartado', function (e) {
 		        	num_mov:num_mov,
 		        	dependencia: dependencia,
 		        	id_almacen:id_almacen,
+		        	 id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura,
 
 		        },
 		        dataType : 'json',
@@ -5486,8 +5494,8 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 	 num_mov = jQuery('#etiq_num_mov').val(); 
 	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
 	 id_almacen = jQuery('#id_almacen_pedido').val( );
-	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
 	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
+	 id_tipo_factura = jQuery('#id_tipo_factura').val( );
 
 	 var url = '/confirmar_proc_pedido_sino';
 
@@ -5510,6 +5518,9 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 		        	num_mov:num_mov,
 		        	dependencia: dependencia,
 		        	id_almacen:id_almacen,
+		        	 id_tipo_pedido:id_tipo_pedido,
+		        	id_tipo_factura:id_tipo_factura,
+
 
 		        },
 		        dataType : 'json',
@@ -6156,6 +6167,10 @@ jQuery('#pedido_completo_detalle').dataTable( {
      				   d.mov_salida = jQuery("#mov_salida").val();  //numero_mov del pedido
      				   d.id_apartado = jQuery("#id_apartado").val();  //numero_mov del pedido
      				   d.id_almacen = jQuery('#id_almacen_pedido').val();	
+
+     				   d.id_tipo_pedido = jQuery('#id_tipo_pedido').val();	
+     				   d.id_tipo_factura = jQuery('#id_tipo_factura').val();	
+
     			 } 
 
      },   
@@ -6372,7 +6387,7 @@ jQuery('#tabla_pedido_completado').dataTable( {
 
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="pedido_completado_detalle/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[8])+'" ';  //+jQuery.base64.encode(row[6])+'" '; 
+    					 texto='<td><a href="pedido_completado_detalle/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'" '; 
 						 	texto+=' class="btn btn-success btn-block">';
 						 	texto+=' Detalles';
 						 texto+='</a></td>';
@@ -6437,6 +6452,7 @@ jQuery('body').on('click','#incluir_pedido', function (e) {
 		        data : { 
 		        	num_mov: num_mov,
 		        id_almacen:jQuery('#id_almacen_pedido').val(),	
+		        id_tipo_pedido:jQuery('#id_tipo_pedido').val(),
 		        id_tipo_factura:jQuery('#id_tipo_factura').val()
 		        },
 		        type : 'POST',
@@ -6523,6 +6539,9 @@ jQuery('#pedido_detalle').dataTable( {
          		 "data": function ( d ) {
      				   d.num_mov = jQuery("#num_mov").val();  //numero_mov del pedido
      				   d.id_almacen = jQuery('#id_almacen_pedido').val();	
+
+     				   d.id_tipo_pedido = jQuery('#id_tipo_pedido').val();	
+     				   d.id_tipo_factura = jQuery('#id_tipo_factura').val();	
     			 } 
 
      },   
@@ -6589,8 +6608,10 @@ jQuery('#pedido_detalle').dataTable( {
 		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
 		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
 			
+		    /*
 		    jQuery('#id_tipo_pedido').val(settings.json.datos.id_tipo_pedido);
 		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
+		    */
 
 
 		    if (settings.json.datos.tipo_factura!=null) {
@@ -6809,7 +6830,7 @@ jQuery('#tabla_pedido').dataTable( {
 	            }, 	            
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'" '; 
+    					 texto='<td><a href="pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode(row[13])+'" '; 
 						 	texto+=' class="btn btn-success btn-block">';
 						 	texto+=' Detalles';
 						 texto+='</a></td>';
@@ -6822,7 +6843,7 @@ jQuery('#tabla_pedido').dataTable( {
     			{ 
 	                "render": function ( data, type, row ) {
 	                	if ( (row[11]!=6) ) { //|| ( (row[11]==6) && (jQuery("#mi_perfil").val() !='4')  )  
-							texto='<td><a href="eliminar_pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'" '; 
+							texto='<td><a href="eliminar_pedido_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(jQuery('#id_almacen_pedido option:selected').val())+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode(row[13])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
 								texto+='<span class="glyphicon glyphicon-remove"></span>';
 							texto+='</a></td>';

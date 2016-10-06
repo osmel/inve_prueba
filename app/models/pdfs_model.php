@@ -61,6 +61,11 @@ class Pdfs_model extends CI_Model
 
           $this->db->where('m.movimiento',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
+          
+          if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
+            $this->db->where('m.id_factura',$data['id_factura']);
+          }  
+
 
           $result = $this->db->get();
 
@@ -137,6 +142,10 @@ class Pdfs_model extends CI_Model
           $this->db->where('m.movimiento',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
 
+          if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
+            $this->db->where('m.id_factura',$data['id_factura']);
+          }  
+
 
           $this->db->order_by('m.id_lote', 'asc'); 
           $this->db->order_by('m.codigo', 'asc'); 
@@ -200,6 +209,8 @@ class Pdfs_model extends CI_Model
           //$this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.id_operacion',2);
           $this->db->where('m.mov_salida',$data['id_movimiento']);
+          $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
+          $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
 
           $this->db->order_by('m.id_lote', 'asc'); 
           $this->db->order_by('m.codigo', 'asc'); 
@@ -326,6 +337,7 @@ class Pdfs_model extends CI_Model
           } 
 
           $where = '(
+                    ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                       (
                         (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.id_cliente_apartado = "'.$num_mov.'" )
                       ) '.$id_almacenid.'
@@ -413,7 +425,8 @@ class Pdfs_model extends CI_Model
  
 
           $where = '(
-                      (
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                      ( 
                         ( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" ) AND ( m.consecutivo_venta = '.$data['consecutivo_venta'].' ) '.$id_almacenid.'
                       ) 
             )';   
@@ -519,6 +532,7 @@ class Pdfs_model extends CI_Model
           } 
 
           $where = '(
+                    ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                       (
                         ( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida = '.$mov_salida.' )
                       )'.$id_almacenid.'

@@ -214,7 +214,7 @@ public function buscador_ctasxpagar($data){
 
 
           $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
+          $this->db->select('a.almacen,m.id_factura');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
@@ -359,6 +359,7 @@ public function buscador_ctasxpagar($data){
                                       11=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
                                       12=>$row->id_tipo_pago,
                                       13=>(($row->sepago==null) ? 0 : $row->sepago),
+                                      14=>$row->id_factura,
                                       
 
                                     );
@@ -685,7 +686,7 @@ public function buscador_pagosrealizados($data){
 
           $where = '(
                       (
-                         ( m.movimiento = '.$data["movimiento"].' )
+                         ( m.movimiento = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )
                          
                       ) 
 
@@ -706,7 +707,7 @@ public function buscador_pagosrealizados($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )   
+                         ( m.id_operacion = '.$data["id_operacion"].' )   AND ( m.id_factura = '.$data["id_factura"].' )
                       )';
            
 

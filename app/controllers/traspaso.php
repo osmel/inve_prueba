@@ -229,7 +229,7 @@ public function modulo_traspaso(){
 
 
 
-  public function traspaso_detalle($consecutivo_traspaso){
+  public function traspaso_detalle($consecutivo_traspaso,$id_factura){
         if($this->session->userdata('session') === TRUE ){
               
               $id_perfil=$this->session->userdata('id_perfil');
@@ -240,6 +240,7 @@ public function modulo_traspaso(){
                }   
     
             $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);       
+            $data['id_factura'] = base64_decode($id_factura);       
            
               switch ($id_perfil) {    
                 case 1:          
@@ -266,7 +267,7 @@ public function modulo_traspaso(){
 
 ////////////////////////// (Histórico de pedidos)
 
-  public function traspaso_general_detalle_manual($id_usuario,$id_almacen){ 
+  public function traspaso_general_detalle_manual($id_usuario,$id_almacen,$id_factura){ 
 
 
      if($this->session->userdata('session') === TRUE ){
@@ -280,6 +281,7 @@ public function modulo_traspaso(){
                //no. movimiento $data
             $data['id_usuario'] = base64_decode($id_usuario);
             $data['id_almacen'] = base64_decode($id_almacen);
+            $data['id_factura'] = base64_decode($id_factura);
 
             $data['id']=$data['id_almacen'];
             if ($data['id']==0){
@@ -312,7 +314,7 @@ public function modulo_traspaso(){
         }         
 
   }  
-  public function traspaso_general_detalle($num_movimiento,$id_apartado,$id_almacen){ 
+  public function traspaso_general_detalle($num_movimiento,$id_apartado,$id_almacen,$id_factura){ 
 
     if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
@@ -326,6 +328,7 @@ public function modulo_traspaso(){
         $data['num_movimiento'] = base64_decode($num_movimiento);
         $data['id_apartado'] = base64_decode($id_apartado);
         $data['id_almacen'] = base64_decode($id_almacen);
+        $data['id_factura'] = base64_decode($id_factura);
 
         $data['id']=$data['id_almacen'];
         if ($data['id']==0){
@@ -364,8 +367,8 @@ public function modulo_traspaso(){
 
 
 
-
-  public function traspaso_historico_detalle(){ //ok
+//////////////////// detalles
+  public function traspaso_historico_detalle(){ //**
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_historico_detalle($data);
       echo $busqueda;
@@ -373,20 +376,20 @@ public function modulo_traspaso(){
 
 
 
-  public function procesando_traspaso_general_detalle(){ //ok
+  public function procesando_traspaso_general_detalle(){ //**
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle($data);
       echo $busqueda;
   }
 
-public function procesando_traspaso_general_detalle_manual(){ //ok
+public function procesando_traspaso_general_detalle_manual(){ //**
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle_manual($data);
       echo $busqueda;
   }
 
-
-  //1ra Regilla PARA "Pedidos de vendedores"
+///////////////////////////////////
+  
   public function procesando_general_traspaso(){
     $data=$_POST;
     $busqueda = $this->model_traspaso->buscador_general_traspaso($data); //ok no
@@ -399,7 +402,7 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
     echo $busqueda;
   } 
 
- 
+ //UPDATE `inven_catalogo_operaciones` SET `consecutivo`=0,`conse_factura`=0,`conse_remision`=0,`conse_surtido`=0 WHERE 1
 
   public function procesando_traspaso_definitivo(){
       //$data['consecutivo']  = (($this->catalogo->listado_consecutivo(26)->consecutivo)+1);
@@ -430,16 +433,18 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
           $misdatos = json_decode($this->input->post('datos'));
           
         $data['consecutivo'] =base64_encode($misdatos->consecutivo);         
+        $data['id_factura'] =base64_encode($misdatos->id_factura);         
 
-        $this->imprimir_detalle_historico_traspaso($data['consecutivo']);
+        $this->imprimir_detalle_historico_traspaso($data['consecutivo'],$data['id_factura']);
 
     }
   } 
 
 
- public function imprimir_detalle_historico_traspaso($consecutivo_traspaso) {
+ public function imprimir_detalle_historico_traspaso($consecutivo_traspaso,$id_factura) {
 
         $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);
+        $data['id_factura'] = base64_decode($id_factura);
 
         set_time_limit(0); 
         ignore_user_abort(1);
@@ -495,10 +500,11 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
 
 
 
- public function imprimir_detalle_general_traspaso_manual($id_usuario,$id_almacen) {
+ public function imprimir_detalle_general_traspaso_manual($id_usuario,$id_almacen,$id_factura) {
 
            $data['id_usuario'] = base64_decode($id_usuario);
             $data['id_almacen'] = base64_decode($id_almacen);
+            $data['id_factura'] = base64_decode($id_factura);
 
         set_time_limit(0); 
         ignore_user_abort(1);
@@ -553,11 +559,12 @@ public function procesando_traspaso_general_detalle_manual(){ //ok
 
  }
 
- public function imprimir_detalle_general_traspaso($num_movimiento,$id_apartado,$id_almacen) {
+ public function imprimir_detalle_general_traspaso($num_movimiento,$id_apartado,$id_almacen,$id_factura) {
 
         $data['num_movimiento'] = base64_decode($num_movimiento);
            $data['id_apartado'] = base64_decode($id_apartado);
             $data['id_almacen'] = base64_decode($id_almacen);
+            $data['id_factura'] = base64_decode($id_factura);
 
          set_time_limit(0); 
         ignore_user_abort(1);

@@ -216,6 +216,18 @@ class Pedidos extends CI_Controller {
 		$busqueda = $this->modelo_pedido->buscador_pedidos_completo($data);
 		echo $busqueda;
 	}
+/*
+                                      11=>$row->id_tipo_pedido,   
+                                      12=>$row->id_tipo_factura,   
+                                      $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
+
+                                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
+                        			$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+										$data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+
+
+*/
 
 
 ////////////////////////Registros de cada detalle de  "http://inventarios.dev.com/pedidos"//////////////////////////
@@ -261,7 +273,7 @@ class Pedidos extends CI_Controller {
 ////////////////////////// (pedidos vendedores)
 		
 
-	public function apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta){
+	public function apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -276,6 +288,8 @@ class Pedidos extends CI_Controller {
 		       	$data['id_usuario'] = base64_decode($id_usuario);
 				$data['id_cliente'] = base64_decode($id_cliente);
 				$data['id_almacen'] = base64_decode($id_almacen);
+				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
 
 				$data['id']=$data['id_almacen'];
 				if ($data['id']==0){
@@ -316,7 +330,7 @@ class Pedidos extends CI_Controller {
 
 ////////////////////////// (pedidos tiendas)
 
-	public function pedido_detalle($num_mov,$id_almacen){
+	public function pedido_detalle($num_mov,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -330,6 +344,9 @@ class Pedidos extends CI_Controller {
 		       //no. movimiento $data
 				$data['num_mov'] = base64_decode($num_mov);
 				$data['id_almacen'] = base64_decode($id_almacen);
+				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+
 
 				$data['id']=$data['id_almacen'];
 				if ($data['id']==0){
@@ -367,7 +384,7 @@ class Pedidos extends CI_Controller {
 
 ////////////////////////// (Histórico de pedidos)
 
-	public function pedido_completado_detalle($mov_salida,$id_apartado,$id_almacen,$consecutivo_venta){
+	public function pedido_completado_detalle($mov_salida,$id_apartado,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -382,6 +399,9 @@ class Pedidos extends CI_Controller {
 				$data['mov_salida'] = base64_decode($mov_salida);
 				$data['id_apartado'] = base64_decode($id_apartado);
 				$data['id_almacen'] = base64_decode($id_almacen);
+
+				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);
 
 				$data['id']=$data['id_almacen'];
 				if ($data['id']==0){
@@ -575,6 +595,7 @@ function agregar_prod_pedido(){
 	    	$data['id_almacen'] = $this->input->post('id_almacen');
 	    	$data['id_apartado'] = 6;
 
+	    	$data['id_tipo_pedido']  = $this->input->post('id_tipo_pedido');
 	    	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
 	    	$actualizar = $this->modelo_pedido->incluir_pedido($data);
@@ -613,7 +634,7 @@ function agregar_prod_pedido(){
 
 //////////////////////////eliminar pedido detalle//////////////////////////////
 
-	public function eliminar_pedido_detalle($num_mov,$id_almacen){
+	public function eliminar_pedido_detalle($num_mov,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
 
 
 	    if ($this->session->userdata('session') === TRUE ){
@@ -621,6 +642,9 @@ function agregar_prod_pedido(){
 
            $data['num_mov'] = base64_decode($num_mov);
            $data['id_almacen'] = base64_decode($id_almacen);
+           $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+		   $data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+				
 		   
 
 
@@ -657,6 +681,8 @@ function agregar_prod_pedido(){
 	function validar_eliminar_pedido_detalle(){
 		$data['num_mov'] = $this->input->post('num_mov');
 		$data['id_almacen'] = $this->input->post('id_almacen');
+		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 		
 				$this->modelo_pedido->cancelar_traspaso_pedido_detalle($data);
 				
@@ -676,7 +702,7 @@ function agregar_prod_pedido(){
 
 //////////////////////////eliminar apartado detalle//////////////////////////////
 
-	public function eliminar_apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta){
+	public function eliminar_apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
 
 
 	    if ($this->session->userdata('session') === TRUE ){
@@ -685,6 +711,9 @@ function agregar_prod_pedido(){
            $data['id_usuario'] = base64_decode($id_usuario);
 		   $data['id_cliente'] = base64_decode($id_cliente);
 		   $data['id_almacen'] = base64_decode($id_almacen);
+		   $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
+		   $data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+				
 
 
           $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
@@ -725,6 +754,9 @@ function agregar_prod_pedido(){
 		$data['id_cliente'] = $this->input->post('id_cliente');
 		$data['id_almacen'] = $this->input->post('id_almacen');
 		$data['consecutivo_venta'] = $this->input->post('consecutivo_venta');
+
+		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
 		$this->modelo_pedido->cancelar_traspaso_apartado_detalle($data);
 

@@ -261,6 +261,7 @@ class Entradas extends CI_Controller {
 		     
 		      if (($existe)) {
 
+
 		      		//copiar a tabla "registros" e "historico_registros_entradas"
 		      		$data['id_operacion'] =1;
 	      			$data['num_mov'] = $this->model_entrada->procesando_operacion($data);
@@ -303,12 +304,13 @@ class Entradas extends CI_Controller {
 
 
 
-	public function procesar_entrar($num_mov){ 
+	public function procesar_entrar($num_mov,$id_factura){ 
 
 		 if($this->session->userdata('session') === TRUE ){
 
 			$data['dev'] = 0;
 			$data['num_mov'] = base64_decode($num_mov);
+			$data['id_factura'] = base64_decode($id_factura);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -345,13 +347,15 @@ class Entradas extends CI_Controller {
 
 
 
-	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno){
+	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura){
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
 		      $id_movimiento= base64_decode($id_movimiento);
 		      $data['dev']= base64_decode($dev);
+		      $data['id_factura']= base64_decode($id_factura);
+
 		      
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 

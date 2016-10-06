@@ -1576,6 +1576,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 	         		 "data": function ( d ) {
 	         		 	d.id_operacion=1;
 	         		 	d.movimiento=jQuery("#movimiento").val();
+	         		 	d.id_factura=jQuery("#id_factura").val();
 	         		 }
 	    },   
 		"language": {  //tratamiento de lenguaje
@@ -1955,7 +1956,7 @@ cuentas
 
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
 							texto+=row[11];
 							texto+='</a>';
@@ -1974,7 +1975,7 @@ cuentas
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; 							
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; // 
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -1986,12 +1987,12 @@ cuentas
 		                },
 		                "targets": 12
 		            },
-  					/*
+  					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [13,14]
 		            }
-		            */
+		            
 		          
 		           
 		            
@@ -2139,7 +2140,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
 							texto+=row[11];
 							texto+='</a>';
@@ -2155,7 +2156,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -2167,12 +2168,12 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 		                },
 		                "targets": 12
 		            },
-  					/*
+  					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [13,14]
 		            }
-		            */
+		            
 		          
 		           
 		            
@@ -2322,7 +2323,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						if (row[12]!=2) {
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 								texto+='type="button" class="btn btn-warning btn-block">';
 								texto+=row[13]; //"Pagado"; //"row[10];
 								texto+='</a>';
@@ -2351,7 +2352,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -2366,7 +2367,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [12,13]
+		                "targets": [12,13,14]
 		            }
 		        ],
 
@@ -2780,7 +2781,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_notas";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -2792,12 +2793,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                },
 		                "targets": 9
 		            },
-  					/*
+  					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [10]
 		            }
-		            */
+		            
 		          
 		           
 		            
@@ -2953,7 +2954,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -2962,12 +2963,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		                },
 		                "targets": 8
 		            },
-  					/*
+  					
   					{ 
 		                 "visible": false,
 		                "targets": [9]
 		            }
-		            */
+		            
 		          
 		           
 		            
@@ -3123,7 +3124,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'"'; //
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -3138,12 +3139,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 									
 
 
-  					/*
+  					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [12]
 		            }
-		            */
+		            
 		          
 		           
 		            
@@ -4491,7 +4492,7 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	            
     			{ 
 	                "render": function ( data, type, row ) {
-    					 texto='<td><a href="traspaso_detalle/'+jQuery.base64.encode(row[7])+'" ';  
+    					 texto='<td><a href="traspaso_detalle/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode(row[16])+'" ';  
 						 	texto+=' class="btn btn-success btn-block">';
 						 	texto+=' Detalles';
 						 texto+='</a></td>';
@@ -4666,6 +4667,7 @@ jQuery('#traspaso_historico_detalle').dataTable( {
          		"type": "POST",
          		 "data": function ( d ) {
          		 	d.consecutivo_traspaso = jQuery("#consecutivo_traspaso").val();
+         		 	d.id_factura = jQuery("#id_factura").val();
     			 } 
 
      },   
@@ -4954,12 +4956,12 @@ jQuery('#tabla_general_traspaso').dataTable( {
     			{ 
 	                "render": function ( data, type, row ) {
     					 if (row[11]!=0) {
-	    					 texto='<td><a href="traspaso_general_detalle_manual/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
+	    					 texto='<td><a href="traspaso_general_detalle_manual/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'/'+jQuery.base64.encode(row[22])+'" ';  
 							 	texto+=' class="btn btn-success btn-block">';
 							 	texto+=' Detalles';
 							 texto+='</a></td>';
 						 } else {
-	    					 texto='<td><a href="traspaso_general_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'" ';  
+	    					 texto='<td><a href="traspaso_general_detalle/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery('#id_almacen_traspaso option:selected').val())+'/'+jQuery.base64.encode(row[22])+'" ';  
 							 	texto+=' class="btn btn-success btn-block">';
 							 	texto+=' Detalles';
 							 texto+='</a></td>';						 	
@@ -4975,7 +4977,7 @@ jQuery('#tabla_general_traspaso').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [1,15,16,17,18,19,20,21]
+	                "targets": [1,15,16,17,18,19,20,21,22]
 	            }	            
 	],	
 
@@ -5142,6 +5144,7 @@ jQuery('#traspaso_general_detalle').dataTable( {
          		 		d.id_almacen = jQuery('#id_almacen_traspaso').val();	
          		 		d.num_movimiento = jQuery("#num_movimiento").val();  //numero_mov del pedido
      				   d.id_apartado = jQuery("#id_apartado").val();  //numero_mov del pedido
+     				   d.id_factura = jQuery("#id_factura").val();
     			 } 
 
      },   
@@ -5327,6 +5330,7 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
          		 "data": function ( d ) {
          		 		d.id_almacen = jQuery('#id_almacen_traspaso').val();	
      				    d.id_usuario = jQuery("#id_usuario").val();  //numero_mov del pedido
+     				    d.id_factura = jQuery("#id_factura").val();
     			 } 
 
      },   

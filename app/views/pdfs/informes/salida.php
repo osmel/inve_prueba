@@ -77,6 +77,7 @@
 
 				<tfooter>	
 						<tr>
+							<!--
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 									<?php  if ($totales->metros>0) { ?>	
 										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span><br>
@@ -87,6 +88,19 @@
 
 									<span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
 							</td>
+							-->
+							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
+									
+									<?php  if ($totales->metros>0) { ?>	
+										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>
+									<?php } ?>		
+									<?php  if ($totales->kilogramos>0) { ?>	
+										<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span>
+									<?php } ?>	
+
+									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
+
+							</td>							
 						</tr>
 				</tfooter>			
 					

@@ -914,18 +914,22 @@
 
           $this->db->where('id_usuario_salida',$id_session);
           $this->db->where('estatus_salida','1');
+          $this->db->where('id_tipo_pedido',$data["id_tipo_pedido"]);
+          $this->db->where('id_tipo_factura',$data["id_tipo_factura"]);
 
           $result = $this->db->get();
 
           $objeto = $result->result();
           
           //eliminar los registros en "registros_entradas"
-          $this->db->delete($this->registros, array('id_usuario'=>$id_session,'estatus_salida'=>'1')); 
+          $this->db->delete($this->registros, array('id_usuario'=>$id_session,'estatus_salida'=>'1', 'id_tipo_pedido'=>$data["id_tipo_pedido"], 'id_tipo_factura'=>$data["id_tipo_factura"])); 
 
           //actualizar a registros_salidas el "mov_salida" al consecutivo q le toque
           $this->db->set('mov_salida', $consecutivo, FALSE  );
           $this->db->where('id_usuario',$id_session);
           $this->db->where('id_operacion',$data['id_operacion']); //2
+          $this->db->where('id_tipo_pedido',$data["id_tipo_pedido"]);
+          $this->db->where('id_tipo_factura',$data["id_tipo_factura"]);
           $this->db->update($this->registros_salidas);
 
 
@@ -961,6 +965,9 @@
 
           $this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.id_operacion',$data['id_operacion']); //2
+          $this->db->where('m.id_tipo_pedido',$data["id_tipo_pedido"]);
+          $this->db->where('m.id_tipo_factura',$data["id_tipo_factura"]);
+
 
           $result = $this->db->get();
 
@@ -1019,7 +1026,7 @@
           $this->db->update($this->operaciones);
 
           //eliminar los registros en "registros_salidas"
-          $this->db->delete($this->registros_salidas, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'])); 
+          $this->db->delete($this->registros_salidas, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'], 'id_tipo_pedido'=>$data["id_tipo_pedido"], 'id_tipo_factura'=>$data["id_tipo_factura"])); 
 
           return $dato;
 
@@ -1181,7 +1188,8 @@
 
 
 
-          //$this->db->where('m.id_usuario',$id_session);
+          $this->db->where('m.id_tipo_pedido',$data["id_tipo_pedido"]);
+          $this->db->where('m.id_tipo_factura',$data["id_tipo_factura"]);
           $this->db->where('m.id_operacion',2);
           $this->db->where('m.mov_salida',$data['encabezado']['num_movimiento']);
 
@@ -1245,6 +1253,7 @@ public function valores_movimientos_temporal(){
                   //( us.id_cliente = '.$data['id_cliente'].' ) 
                   //'id_operacion'=2
                   $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                         (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
                          
                       )';
@@ -1298,6 +1307,7 @@ public function valores_movimientos_temporal(){
                   //( us.id_cliente = '.$data['id_cliente'].' ) 
                   //'id_operacion'=2
                   $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                        (m.peso_real=0) AND (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
                          
                       )';
@@ -1359,6 +1369,7 @@ public function valores_movimientos_temporal(){
 
                 //$id_almacenid.
                 $where = '(
+                           ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                           (
                             ( id_apartado <>0    ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
                           )'.$cond_traspaso.$id_almacenid.' 
@@ -1576,6 +1587,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
                   //( us.id_cliente = '.$data['id_cliente'].' ) 
                   //'id_operacion'=2
                   $where=  '(
+                        ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                         (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
                          
                       )';
@@ -1611,6 +1623,8 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
                   //( us.id_cliente = '.$data['id_cliente'].' ) 
                   //'id_operacion'=2
                   $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                        (m.peso_real=0) AND (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
                          
                       )';
@@ -1673,6 +1687,8 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
 
                 //$id_almacenid.
                 $where = '(
+                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
                           (
                             ( id_apartado <>0    ) AND ( consecutivo_venta = "'.$data['num_mov'].'" )
                           )'.$cond_traspaso.$id_almacenid.' 

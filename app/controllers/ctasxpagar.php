@@ -381,13 +381,14 @@ class Ctasxpagar extends CI_Controller {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function procesar_ctasxpagar($movimiento,$retorno){
+	public function procesar_ctasxpagar($movimiento,$retorno,$id_factura){
 
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 		      $data['movimiento'] = base64_decode($movimiento);
 		      $data['retorno'] = base64_decode($retorno);
+          $data['id_factura'] = base64_decode($id_factura);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -398,6 +399,8 @@ class Ctasxpagar extends CI_Controller {
     		  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
           $dato['id'] = 7;
           $data['config_factura'] = $this->catalogo->coger_configuracion($dato); 
+
+
 		      switch ($id_perfil) {    
 		        case 1:          
 
