@@ -17,10 +17,11 @@ class Ctasxpagar extends CI_Controller {
 	}
 
 
- 	function nuevo_pago($movimiento){
+ 	function nuevo_pago($movimiento,$id_factura){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
       $data['movimiento']= base64_decode($movimiento);
+      $data['id_factura']= base64_decode($id_factura);
 
       $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
       if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -28,7 +29,7 @@ class Ctasxpagar extends CI_Controller {
        }   
 
        $data['doc_pagos'] =  $this->catalogo->listado_documentos_pagos();
-       $data['retorno']='procesar_ctasxpagar/'.base64_encode($data["movimiento"]).'/'.base64_encode("listado_ctasxpagar"); 
+       $data['retorno']='procesar_ctasxpagar/'.base64_encode($data["movimiento"]).'/'.base64_encode("listado_ctasxpagar").'/'.base64_encode($data['id_factura']); 
 
       switch ($id_perfil) {    
         case 1:
@@ -96,7 +97,7 @@ class Ctasxpagar extends CI_Controller {
 
 
 
-  function editar_pago_realizado( $id = '',$movimiento = '' ){
+  function editar_pago_realizado( $id = '',$movimiento = '',$id_factura  ){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
 
@@ -106,13 +107,13 @@ class Ctasxpagar extends CI_Controller {
        }   
 
       $data['id']  =  base64_decode($id);
-      
+      $data['id_factura'] =  base64_decode($id_factura);
 
       $dato['id'] = 6;
       $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
       $data['doc_pagos'] =  $this->catalogo->listado_documentos_pagos();
       $data['pago'] =  $this->modelo_ctasxpagar->editar_pago_realizado($data);
-      $data['retorno']='procesar_ctasxpagar/'.$movimiento.'/'.base64_encode("listado_ctasxpagar"); 
+      $data['retorno']='procesar_ctasxpagar/'.$movimiento.'/'.base64_encode("listado_ctasxpagar").'/'.base64_encode($data['id_factura']); 
       
       switch ($id_perfil) {    
         case 1:
@@ -187,7 +188,7 @@ class Ctasxpagar extends CI_Controller {
 
 
 
- function eliminar_pago($id = '', $instrumento_pago='',$movimiento){
+ function eliminar_pago($id = '', $instrumento_pago='',$movimiento,$id_factura){
       if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
 
@@ -198,7 +199,8 @@ class Ctasxpagar extends CI_Controller {
 
             $data['instrumento_pago']   = base64_decode($instrumento_pago);
             $data['id']   = base64_decode($id);
-            $data['retorno']='procesar_ctasxpagar/'.$movimiento.'/'.base64_encode("listado_ctasxpagar"); 
+            $data['id_factura']   = base64_decode($id_factura);
+            $data['retorno']='procesar_ctasxpagar/'.$movimiento.'/'.base64_encode("listado_ctasxpagar").'/'.base64_encode($data['id_factura']); 
 
       switch ($id_perfil) {    
         case 1:

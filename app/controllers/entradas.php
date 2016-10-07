@@ -97,10 +97,11 @@ class Entradas extends CI_Controller {
       $this->form_validation->set_rules( 'editar_proveedor', 'Proveedor', 'required|xss_clean'); //callback_valid_option|
       
       
-      $this->form_validation->set_rules( 'prod_entrada', 'Producto', 'required|xss_clean'); //callback_valid_option
-      $this->form_validation->set_rules( 'color', 'Color', 'required|xss_clean'); 
-      $this->form_validation->set_rules( 'composicion', 'Composición', 'required|xss_clean');
-      $this->form_validation->set_rules( 'calidad', 'Calidad', 'required|xss_clean');
+      //$this->form_validation->set_rules( 'prod_entrada', 'Producto', 'required|xss_clean'); //callback_valid_option
+      $this->form_validation->set_rules( 'producto', 'Producto', 'required|callback_check_default'); //callback_valid_option
+      $this->form_validation->set_rules( 'color', 'Color', 'required|callback_check_default'); 
+      $this->form_validation->set_rules( 'composicion', 'Composición', 'required|callback_check_default');
+      $this->form_validation->set_rules( 'calidad', 'Calidad', 'required|callback_check_default');
       
       $this->form_validation->set_rules( 'peso_real', 'Peso Real',  'required|callback_valid_cero|callback_importe_valido|xss_clean');
       $this->form_validation->set_rules( 'cantidad_um', 'Cantidad',  'required|callback_valid_cero|callback_importe_valido|xss_clean');
@@ -348,6 +349,16 @@ class Entradas extends CI_Controller {
 
 
 	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura){
+/*
+print_r($id_movimiento);
+echo '<br/>';
+print_r($dev);
+echo '<br/>';
+print_r($retorno);
+echo '<br/>';
+print_r($id_factura);
+echo '<br/>';
+die;*/
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
@@ -474,6 +485,27 @@ class Entradas extends CI_Controller {
 
 /////////////////validaciones/////////////////////////////////////////	
 
+	function check_default1($post_string)
+	{
+		print_r("-> ".$post_string.'</br>');
+	  return  (($post_string == '') || ($post_string == 0)) ? FALSE : TRUE;
+	}
+
+
+	function check_default($str)
+	{
+		//print_r("-> ".$post_string.'</br>');
+
+		 if ( (trim($str)=="0") || (trim($str)=="") || (empty($str ) ) ) {	
+				$this->form_validation->set_message( 'check_default','<b class="requerido">*</b> El <b>%s</b> es obligatorio.' );
+				return FALSE;
+	     } else {
+	     	return TRUE;
+	     }
+		  //return  (($post_string == '') || ($post_string == 0)) ? FALSE : TRUE;
+
+
+	}
 
 
 	public function valid_cero($str)

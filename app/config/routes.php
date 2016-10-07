@@ -670,13 +670,13 @@ $route['procesando_ctas_pagadas']			= 'ctasxpagar/procesando_ctas_pagadas';
 $route['procesar_ctasxpagar/(:any)/(:any)/(:any)']    = 'ctasxpagar/procesar_ctasxpagar/$1/$2/$3';
 $route['procesando_pagos_realizados']			= 'ctasxpagar/procesando_pagos_realizados';
 
-$route['editar_pago_realizado/(:any)/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1/$2';
-$route['nuevo_pago/(:any)']			= 'ctasxpagar/nuevo_pago/$1';
+$route['editar_pago_realizado/(:any)/(:any)/(:any)']			= 'ctasxpagar/editar_pago_realizado/$1/$2/$3';
+$route['nuevo_pago/(:any)/(:any)']			= 'ctasxpagar/nuevo_pago/$1/$2';
 
 $route['validacion_nuevo_ctasxpagar']			= 'ctasxpagar/validacion_nuevo_ctasxpagar';
 $route['validacion_edicion_ctasxpagar']			= 'ctasxpagar/validacion_edicion_ctasxpagar';
 
-$route['eliminar_pago/(:any)/(:any)/(:any)']			= 'ctasxpagar/eliminar_pago/$1/$2/$3';
+$route['eliminar_pago/(:any)/(:any)/(:any)/(:any)']			= 'ctasxpagar/eliminar_pago/$1/$2/$3/$4';
 $route['validar_eliminar_pago']			= 'ctasxpagar/validar_eliminar_pago';
 
 $route['impresion_ctasxpagar']			= 'ctasxpagar/impresion_ctasxpagar';

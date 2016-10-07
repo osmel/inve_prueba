@@ -320,7 +320,7 @@
 
           $this->db->select("prod.imagen", FALSE);
 
-          $this->db->select("a.almacen");
+          $this->db->select("a.almacen,m.id_factura,m.id_fac_orig");
           
           $this->db->select("prod.codigo_contable");  
 
@@ -488,7 +488,7 @@
                                       4=>$row->cantidad_um.' '.$row->medida,
                                       5=>$row->ancho.' cm',
                                       6=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'" 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       7=>$columna6,
                                       8=>$columna7,
@@ -1135,7 +1135,7 @@
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-          $this->db->select("prod.imagen", FALSE);
+          $this->db->select("prod.imagen,m.id_factura,m.id_fac_orig", FALSE);
           
 
          $this->db->select("prod.codigo_contable");  
@@ -1319,7 +1319,7 @@
                                       4=>$row->cantidad_um.' '.$row->medida,
                                       5=>$row->ancho.' cm',
                                       6=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'" 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       7=>$columna6,
                                       8=>$columna7,

@@ -282,7 +282,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -439,14 +439,12 @@
 
 
                   
-                  $retorno= " ";  
+                  $retorno= "generar_pedidos";  
                   foreach ($result->result() as $row) {
 
-                          if  (in_array(9, $coleccion_id_operaciones))  {            
-                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>';  
-                          } else {
-                                $mov_entrada=$row->movimiento;  
-                          } 
+                         
+                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>';  
+                          
 
 
                           $fechaSegundos = time(); 
@@ -585,7 +583,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura, m.id_fac_orig,m.id_descripcion, m.id_operacion, m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -644,10 +642,7 @@
                     $found_rows = $cantidad_consulta->row(); 
                     $registros_filtrados =  ( (int) $found_rows->cantidad);
 
-                   $retorno= " ";   
-
-
-
+                   $retorno= "generar_pedidos";   
 
 
                   $id_perfil = $this->session->userdata('id_perfil');
@@ -660,11 +655,9 @@
 
                   foreach ($result->result() as $row) {
 
-                          if  (in_array(9, $coleccion_id_operaciones))  {            
-                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>'; 
-                          } else {
-                                $mov_entrada=$row->movimiento;  
-                          } 
+
+                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>'; 
+
 
 
                           $fechaSegundos = time(); 
@@ -1502,7 +1495,7 @@
          ',False);          
 
           $this->db->select("a.almacen");
-          $this->db->select("m.id_factura,m.id_tipo_factura,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig,m.id_tipo_factura,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1569,8 +1562,10 @@
                     $registros_filtrados =  ( (int) $found_rows->cantidad);
 
 
-                  $retorno= "apartado_detalle/".base64_encode($id_usuario)."/".base64_encode($id_cliente).'/'.base64_encode($id_almacen).'/'.base64_encode($consecutivo_venta);  //apartado detalle
                   foreach ($result->result() as $row) {
+
+                  $retorno= "apartado_detalle/".base64_encode($id_usuario)."/".base64_encode($id_cliente).'/'.base64_encode($id_almacen).'/'.base64_encode($consecutivo_venta).'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura);
+                    
                           $mi_usuario = $row->vendedor;
                           $mi_cliente = $row->cliente;
                           $mi_comprador = $row->comprador;
@@ -1586,7 +1581,7 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'" 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" 
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
@@ -1602,6 +1597,7 @@
                                       16=>$row->metros,
                                       17=>$row->kilogramos,   
                                       18=>$row->codigo_contable,   
+                                      19=>$row->id_fac_orig,   
 
                                       
                                                                      
@@ -1763,7 +1759,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.peso_real, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_usuario_apartado, m.peso_real, m.id_cliente_apartado, m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('pr.nombre dependencia ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
@@ -1790,7 +1786,7 @@
          ',False);
           
           $this->db->select("a.almacen");
-          $this->db->select("m.id_factura,m.id_tipo_factura, m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1858,10 +1854,12 @@
 
                   //$retorno= " ";    //pedido_detalle
 
-                  $retorno= "pedido_detalle/".base64_encode($num_mov).'/'.base64_encode($id_almacen);  //apartado detalle
 
 
                   foreach ($result->result() as $row) {
+
+                            $retorno= "pedido_detalle/".base64_encode($num_mov).'/'.base64_encode($id_almacen).'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura);  //apartado detalle
+
 
                             $mi_cliente = $row->cliente;
                             $mi_dependencia = $row->dependencia;
@@ -1878,7 +1876,7 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
@@ -2099,7 +2097,7 @@
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, ,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig,m.id_factura_original,m.id_tipo_factura, ,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  

@@ -3654,7 +3654,7 @@
                         (
                           
 
-                          (( m.id_apartado = 0 ) OR ( m.id_apartado = 3 ) OR ( m.id_apartado = 6 ) ) AND  ( m.estatus_salida = "0" ) AND  ( m.devolucion != 2 ) 
+                          (( m.id_apartado = 0 ) OR ( m.id_apartado = 3 ) OR ( m.id_apartado = 6 ) ) AND  ( m.estatus_salida = "0" ) AND  (( m.devolucion != 2 ) AND  ( m.id_user_devolucion = "" )) 
                           AND  ( m.cod_devolucion = "" ) 
                         ) AND (m.id_almacen = '.$data['id_almacen'].' )  
                          AND
@@ -3712,7 +3712,7 @@
      public function buscador_prod_inven($data){
             $this->db->select('m.codigo');
             $this->db->select('m.referencia');
-            $this->db->select('m.num_partida,m.id_factura, m.id_tipo_pago');
+            $this->db->select('m.num_partida,m.id_factura,m.id_fac_orig, m.id_tipo_pago');
             $this->db->select('m.id_descripcion,c.color,m.id_color, co.composicion, ca.calidad');
             $this->db->select('m.id_composicion,m.id_calidad'); //m.id_color,
             
@@ -3771,6 +3771,8 @@
                                        "peso_real"=>$row->peso_real,
                                        "iva"=>$row->iva,
                                        "id_factura"=>$row->id_factura,
+                                       "id_fac_orig"=>$row->id_fac_orig,
+                                       
                                        "id_tipo_pago"=>$row->id_tipo_pago,
                                        "codigo_contable"=>$row->codigo_contable,
                                        

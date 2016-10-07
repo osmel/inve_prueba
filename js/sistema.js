@@ -7232,6 +7232,8 @@ jQuery('#pedido_entrada').dataTable( {
 	                "targets": [0,3,4,5,6,7,8]
 	            },
 
+
+
 				{ 
 	                "render": function ( data, type, row ) {
                             //prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[14])+'" data-toggle="modal" data-target="#myModaldashboard">';

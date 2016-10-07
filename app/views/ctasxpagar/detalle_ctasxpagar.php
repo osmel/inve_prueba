@@ -159,11 +159,13 @@ if (ltrim($retorno)=="") {
 									<?php if (($configuracion->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ))
 									 { ?> 
 										<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
-											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
+											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento).'/'.base64_encode($id_factura); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
 										</div>
-										<div class="col-sm-4 col-md-4 marginbuttom">
-											<a id="impresion_ctas_detalle" type="button" class="btn btn-success btn-block impresion_ctas_detalle">Imprimir</a>
-										</div>
+										<fieldset id="disa_pagosrealizado"	>
+											<div class="col-sm-4 col-md-4 marginbuttom">
+												<a id="impresion_ctas_detalle" type="button" class="btn btn-success btn-block impresion_ctas_detalle">Imprimir</a>
+											</div>
+										</fieldset>
 
 									<?php } else { ?> 	
 										<fieldset disabled>

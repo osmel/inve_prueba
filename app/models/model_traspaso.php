@@ -105,7 +105,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso,m.id_factura');  
+          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso,m.id_factura,m.id_fac_orig');  
           $this->db->select('p.nombre comprador, m.id_apartado apartado');   
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('pr.nombre as dependencia', FALSE);
@@ -204,7 +204,7 @@
           $this->db->order_by($columna, $order); 
 
 
-          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
           //paginacion
           $this->db->limit($largo,$inicio); 
 
@@ -358,7 +358,7 @@ public function totales_importes_traspaso($where){
               $this->db->from($this->historico_registros_traspasos.' as m');
               $this->db->where($where);
         
-              $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+              $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
 
               $result = $this->db->get();
               $cant = $result->num_rows();
@@ -470,7 +470,7 @@ public function totales_importes_traspaso($where){
           $this->db->select("a.almacen");
 
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -707,7 +707,7 @@ public function totales_importes_traspaso($where){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado');  
-          $this->db->select('p.nombre comprador, m.id_apartado apartado, m.id_factura'); 
+          $this->db->select('p.nombre comprador, m.id_apartado apartado, m.id_factura,m.id_fac_orig'); 
           
           
 
@@ -821,7 +821,7 @@ public function totales_importes_traspaso($where){
           $this->db->order_by($columna, $order); 
 
 
-          $this->db->group_by("m.id_usuario_apartado, m.id_factura, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.id_usuario_apartado, m.id_factura,m.id_fac_orig, m.id_cliente_apartado,m.consecutivo_venta");
           //paginacion
           $this->db->limit($largo,$inicio); 
 
@@ -987,7 +987,7 @@ public function totales_importes_traspaso_especifico($where){
               $this->db->where($where);
         
               //$this->db->group_by("m.mov_salida, m.id_usuario_apartado, m.id_cliente_apartado");
-              $this->db->group_by("m.id_usuario_apartado,m.id_factura, m.id_cliente_apartado,m.consecutivo_venta");
+              $this->db->group_by("m.id_usuario_apartado,m.id_factura,m.id_fac_orig, m.id_cliente_apartado,m.consecutivo_venta");
 
               $result = $this->db->get();
               $cant = $result->num_rows();
@@ -1090,7 +1090,7 @@ public function totales_importes_traspaso_especifico($where){
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1360,7 +1360,7 @@ public function totales_importes_traspaso_especifico($where){
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           
           $this->db->select("tf_manual.tipo_factura tipo_factura_manual");          
@@ -1553,7 +1553,7 @@ public function totales_importes_traspaso_especifico($where){
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           
           $this->db->select("tf_manual.tipo_factura tipo_factura_manual");          
@@ -1701,7 +1701,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura, ,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_tipo_factura, ,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -1819,7 +1819,7 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
           $this->db->select("a.almacen");
           
-          $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura,m.consecutivo_venta ,m.id_tipo_pedido");
+          $this->db->select("m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_tipo_factura,m.consecutivo_venta ,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -2039,15 +2039,12 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                        $columna = 'm.codigo';
                      break;
                  }                 
-          
  
-
-
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -2141,7 +2138,7 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       5=>$row->precio,
                                       6=>$row->iva,
                                       7=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       8=>$row->nombre,
                                       9=>$row->id_lote.'-'.$row->consecutivo,
@@ -2152,9 +2149,7 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       14=>$row->kilogramos,
                                       15=>$row->sum_iva,
                                       16=>$row->sum_total,
-                                      17=>$row->codigo_contable,   
-
-                                      
+                                      17=>$row->codigo_contable,                                         
                                     );
                       }
 
@@ -2249,7 +2244,7 @@ public function valores_movimientos_temporal(){
           
           $this->db->distinct();          
           $this->db->select('m.id, m.id_usuario_traspaso, m.id_almacen, m.comentario_traspaso comentario,m.num_control factura');
-           $this->db->select('m.id_factura');
+           $this->db->select('m.id_factura,m.id_fac_orig');
           
           $this->db->from($this->registros.' as m');
 
@@ -2326,7 +2321,7 @@ public function valores_movimientos_temporal(){
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_factura_original,m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -2410,7 +2405,7 @@ public function valores_movimientos_temporal(){
                     $found_rows = $cantidad_consulta->row(); 
                     $registros_filtrados =  ( (int) $found_rows->cantidad);
 
-                  $retorno= " ";  
+                  $retorno= "traspasos";  
                   foreach ($result->result() as $row) {
                             $dato[]= array(
                                       0=>$row->codigo,
@@ -2422,7 +2417,7 @@ public function valores_movimientos_temporal(){
                                       5=>$row->precio,
                                       6=>$row->iva,
                                       7=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       8=>$row->nombre,
                                       9=>$row->id_lote.'-'.$row->consecutivo,
@@ -2595,7 +2590,7 @@ public function valores_movimientos_temporal(){
              $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
              $this->db->select('fecha_entrada,estatus_salida');
              $this->db->select('id_apartado, id_cliente_apartado, consecutivo_venta');
-             $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
+             $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
              
              $this->db->select('id_usuario_traspaso, proceso_traspaso,comentario_traspaso,num_control');
 
@@ -2633,7 +2628,7 @@ public function valores_movimientos_temporal(){
                 $this->db->set( 'num_control', '');
                 $this->db->set( 'comentario_traspaso', '');
                 $this->db->set( 'proceso_traspaso', 0);
-                $this->db->set( 'incluir', 1);
+                $this->db->set( 'incluir', 0);
                 $this->db->set( 'id_factura_original', 0, false);
                 $this->db->set( 'id_tipo_factura', 0, false);
                 $this->db->set( 'id_tipo_pedido', 0, false);
@@ -2755,7 +2750,7 @@ public function valores_movimientos_temporal(){
           $where_total = '('.$filtro.$id_almacenid.$id_facturaid.$fechas.')'; 
           //$this->db->order_by($columna, $order); 
           
-          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.consecutivo_traspaso,m.id_factura, m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
             $result = $this->db->get();
 
 

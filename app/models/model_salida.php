@@ -262,7 +262,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -378,7 +378,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -593,7 +593,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.peso_real');
 
@@ -650,7 +650,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -790,7 +790,7 @@
              $this->db->select('"'.$data['id_tipo_pedido'].'" AS id_tipo_pedido',false); 
 
              //id_tipo_pedido,id_tipo_factura, 
-             $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
+             $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
 
              
             
@@ -905,7 +905,7 @@
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
 
           $this->db->select('id_almacen');
-          $this->db->select('precio, iva, id_pedido, id_factura, id_tipo_pedido,id_tipo_factura, id_factura_original,incluir');
+          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig id_tipo_pedido,id_tipo_factura, id_factura_original,incluir');
 
           //$this->db->select('0 incluir',false);
          
@@ -954,7 +954,7 @@
           $this->db->select('m.id_almacen');
           $this->db->select('m.consecutivo_venta');
         
-          $this->db->select('m.precio, m.iva, m.id_pedido, m.id_factura, m.id_tipo_pedido,m.id_tipo_factura, m.id_factura_original,m.incluir');
+          $this->db->select('m.precio, m.iva, m.id_pedido, m.id_factura,m.id_fac_orig, m.id_tipo_pedido,m.id_tipo_factura, m.id_factura_original,m.incluir');
 
 
           $this->db->from($this->registros_salidas.' As m');
@@ -1431,7 +1431,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('fecha_entrada,consecutivo_venta');
 
           $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
-          $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
+          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
            
           $this->db->from($this->registros_entradas.' As m');
@@ -1736,7 +1736,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           $this->db->select('fecha_entrada,consecutivo_venta');
 
           $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
-          $this->db->select('precio, iva, id_pedido, id_factura, id_factura_original,incluir');
+          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
           $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
            
           $this->db->from($this->registros_entradas.' As m');

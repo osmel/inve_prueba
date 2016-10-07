@@ -214,7 +214,7 @@ public function buscador_ctasxpagar($data){
 
 
           $this->db->select('m.movimiento');
-          $this->db->select('a.almacen,m.id_factura');
+          $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
@@ -313,7 +313,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+          $this->db->group_by('m.movimiento,m.id_factura, m.id_almacen,m.id_empresa,m.factura');
 
           
           $this->db->having($data['having']);
@@ -436,7 +436,7 @@ public function totales_importes($where,$having){
            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
 
            $this->db->where($where);          
-           $this->db->group_by('m.movimiento'); //,m.id_almacen,m.id_empresa,m.factura
+           $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
            $this->db->having($having);
 
            $result = $this->db->get();
@@ -488,7 +488,7 @@ public function totales_importes($where,$having){
 
           
               $this->db->where($where);          
-              $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+              $this->db->group_by('m.movimiento,m.id_factura,m.id_almacen,m.id_empresa,m.factura');
               $this->db->having($having);
              $result = $this->db->get();
 
@@ -644,7 +644,7 @@ public function buscador_pagosrealizados($data){
 
           $this->db->select('pr.id,pr.movimiento, pr.id_documento_pago, pr.instrumento_pago,  pr.importe, pr.comentario');
           $this->db->select("(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pago",false);
-          $this->db->select('dp.documento_pago');
+          $this->db->select('dp.documento_pago,m.id_factura,m.id_fac_orig');
           
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago');
@@ -672,24 +672,17 @@ public function buscador_pagosrealizados($data){
 
           
           $this->db->from($this->historico_pagos_realizados.' as pr');
-
-          
           $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
           $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento','LEFT');
-          
-          
-          
 
           $where = '(
                       (
                          ( m.movimiento = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )
-                         
                       ) 
-
                        AND
                       (  
                         (  dp.documento_pago LIKE  "%'.$cadena.'%" ) OR 
@@ -697,18 +690,19 @@ public function buscador_pagosrealizados($data){
                         ((DATE_FORMAT((pr.fecha_pago),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
                         (pr.comentario LIKE  "%'.$cadena.'%")                         
                        )
-
-
-
             )';   
 
 
 
 
 
-          $where_total= '(
+          $where_total= $where;
+
+          /*
+          '(
                          ( m.id_operacion = '.$data["id_operacion"].' )   AND ( m.id_factura = '.$data["id_factura"].' )
                       )';
+                      */
            
 
           $this->db->where($where);          
@@ -764,6 +758,7 @@ public function buscador_pagosrealizados($data){
                                       6=>$activar,  
                                       7=>( (($row->pagos_tardios-$row->dias_ctas_pagar)<0) ? 1:0), //0->son tardios los pagos
                                       8=>$row->movimiento, 
+                                      9=>$row->id_factura, 
                                     );
                       }
 
@@ -789,6 +784,7 @@ public function buscador_pagosrealizados($data){
                                       8=>number_format($row->total, 2, '.', ','),
                                       9=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
                                       10=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
+                                      11=>$row->id_factura, 
 
                       "totales"     =>  $totales   
                       ));
@@ -826,10 +822,24 @@ public function buscador_pagosrealizados($data){
               
 
               $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-             
+  /*           
               $this->db->from($this->historico_ctasxpagar.' as m');
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
               $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+*/
+          
+          $this->db->from($this->historico_pagos_realizados.' as pr');
+
+          
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+          $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento','LEFT');
+
+
+
           
               $this->db->where($where);          
              // $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
@@ -1029,7 +1039,7 @@ public function impresion_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento'); //,m.id_almacen,m.id_empresa,m.factura
+          $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);
@@ -1136,7 +1146,7 @@ public function impresion_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+          $this->db->group_by('m.movimiento,m.id_factura,m.id_almacen,m.id_empresa,m.factura');
 
           
           $this->db->having($data['having']);           
@@ -1263,7 +1273,7 @@ public function exportar_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento'); //,m.id_almacen,m.id_empresa,m.factura
+          $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);

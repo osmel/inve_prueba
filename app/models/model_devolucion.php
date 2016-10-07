@@ -425,7 +425,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           $this->db->select('peso_real_devolucion peso_real',false);      
 
           $this->db->select('id_almacen');
-          $this->db->select('precio, iva, id_factura');
+          $this->db->select('precio, iva, id_factura,id_fac_orig');
 
           $this->db->from($this->historico_registros_salidas);
 

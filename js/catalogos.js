@@ -1636,6 +1636,11 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 				}	
 
+				if (settings.json.recordsTotal==0) {
+						jQuery("#disa_pagosrealizado").attr('disabled', true);					
+					} else {
+						jQuery("#disa_pagosrealizado").attr('disabled', false);					
+				}
 					
 
 			    return pre;
@@ -1657,7 +1662,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		                "render": function ( data, type, row ) {
 						if (row[6]!=0) { //si esta autorizado a eliminar
 							texto='<td>';
-								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'" type="button"'; 
+								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
 								texto+=' class="btn btn-warning btn-sm btn-block" >';
 									texto+=' <span class="glyphicon glyphicon-edit"></span>';
 								texto+=' </a>';
@@ -1684,7 +1689,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 	                	if (row[6]!=0) { //si esta autorizado a eliminar
 	                	
-							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'" '; 
+							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
 								texto+='<span class="glyphicon glyphicon-remove"></span>';
 							texto+='</a></td>';
@@ -1961,8 +1966,6 @@ cuentas
 							texto+=row[11];
 							texto+='</a>';
 						texto+='</td>';
-
-
 
 							return texto;	
 		                },

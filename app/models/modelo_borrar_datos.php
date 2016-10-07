@@ -36,6 +36,8 @@
       $this->historico_cancela_pedido_compra      = $this->db->dbprefix('historico_cancela_pedido_compra');
       $this->historico_historial_compra      = $this->db->dbprefix('historico_historial_compra');
 
+      $this->catalogo_operaciones      = $this->db->dbprefix('catalogo_operaciones');
+
     }
 
 
@@ -44,6 +46,16 @@
     //cuando se elimina un diseño en particular
     public function eliminar_todos(){
        
+      
+
+          $this->db->set( 'consecutivo', 0 );  
+          $this->db->set( 'conse_factura', 0 );  
+          $this->db->set( 'conse_remision', 0 );  
+          $this->db->set( 'conse_surtido', 0 );  
+
+
+          $this->db->update($this->catalogo_operaciones );
+
         
         $this->db->empty_table( $this->registros_entradas);
         $this->db->empty_table( $this->registros_salidas);
