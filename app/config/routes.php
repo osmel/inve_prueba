@@ -692,6 +692,11 @@ $route['impresion_ctas_detalle']			= 'ctasxpagar/impresion_ctas_detalle';
 
 $route['cargar_dependencia']   = 'inventario/cargar_dependencia';
 
+/////////////////////////////Conteo de inventarios////////////////////////
+
+$route['informe_pendiente']   = 'conteo_fisico/informe_pendiente';
+$route['procesando_informe_pendiente']   = 'conteo_fisico/procesando_informe_pendiente';
+
 
 
 

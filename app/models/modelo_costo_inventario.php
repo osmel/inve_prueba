@@ -65,12 +65,12 @@
 
       public function total_registros_entrada_histo($where){
 
-           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                               
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -97,11 +97,11 @@
               
 
               $this->db->from($this->historico_registros_entradas.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
               $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
               $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
               $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                                   
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -131,11 +131,11 @@ public function totales_importes_historica($where){
    
           
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                               
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
           $this->db->where($where);
@@ -316,11 +316,11 @@ public function totales_importes_historica($where){
           $this->db->select("tff.tipo_factura t_factura");  
 
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                               
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -696,13 +696,11 @@ public function totales_importes_historica($where){
 
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
           

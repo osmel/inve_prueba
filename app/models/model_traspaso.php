@@ -141,11 +141,10 @@
 
           
           $this->db->from($this->historico_registros_traspasos.' as m');
-          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
@@ -484,14 +483,13 @@ public function totales_importes_traspaso($where){
 
 
           $this->db->from($this->historico_registros_traspasos.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -746,16 +744,13 @@ public function totales_importes_traspaso($where){
 
           
           $this->db->from($this->registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
           $this->db->join($this->tipos_facturas.' As tf_manual' , 'tf_manual.id = m.id_factura','LEFT');
-
           $this->db->join($this->usuarios.' As u_manual' , 'u_manual.id = m.id_usuario_traspaso','LEFT');
           $this->db->join($this->proveedores.' As pr_manual', 'u_manual.id_cliente = pr_manual.id','LEFT');
           
@@ -1100,17 +1095,15 @@ public function totales_importes_traspaso_especifico($where){
           //$this->db->select('m.mov_salida', FALSE);
 
           $this->db->select("prod.codigo_contable");  
+
           $this->db->from($this->registros_entradas.' as m');
-
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -1372,17 +1365,15 @@ public function totales_importes_traspaso_especifico($where){
 
 
           $this->db->from($this->registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
-          $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tf_manual' , 'tf_manual.id = m.id_factura','LEFT');
-
           $this->db->join($this->usuarios.' As u_manual' , 'u_manual.id = m.id_usuario_traspaso','LEFT');
           $this->db->join($this->proveedores.' As pr_manual', 'u_manual.id_cliente = pr_manual.id','LEFT');
 
@@ -1561,21 +1552,17 @@ public function totales_importes_traspaso_especifico($where){
           $this->db->select("m.id_apartado apartado");  
 
           $this->db->select("prod.codigo_contable");  
+
           $this->db->from($this->registros_entradas.' as m');
-
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
-
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tf_manual' , 'tf_manual.id = m.id_factura','LEFT');
-
           $this->db->join($this->usuarios.' As u_manual' , 'u_manual.id = m.id_usuario_traspaso','LEFT');
           $this->db->join($this->proveedores.' As pr_manual', 'u_manual.id_cliente = pr_manual.id','LEFT');
 
@@ -1711,17 +1698,15 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
           
           $this->db->select("prod.codigo_contable");  
-          $this->db->from($this->registros_entradas.' as m');
-          
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
 
+          $this->db->from($this->registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -1831,17 +1816,13 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
 
           $this->db->from($this->historico_registros_traspasos.' as m');
-
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
-
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -2351,7 +2332,7 @@ public function valores_movimientos_temporal(){
         $donde1 = '';
         $donde = '';
 
-        $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' ) AND ( ( incluir =  1 ) AND (proceso_traspaso = 1) ) ';      
+        $id_tipo_facturaid = ' AND ( m.id_factura =  '.$id_tipo_factura.' ) AND ( ( incluir =  1 ) AND (proceso_traspaso = 1)) ';      
                            
 
          //este no hace falta en pedido porq no se filtra
@@ -2691,10 +2672,10 @@ public function valores_movimientos_temporal(){
            
           
           $this->db->from($this->historico_registros_traspasos.' as m');          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
@@ -2827,11 +2808,10 @@ public function totales_imprimir_traspaso_historico($data){
  
      
           $this->db->from($this->historico_registros_traspasos.' as m');
-          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 

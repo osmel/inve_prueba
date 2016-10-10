@@ -297,12 +297,13 @@
 
 
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
 
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+                               
 
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';//' OR (m.consecutivo LIKE  "%'.$cadena.'%") ';
@@ -744,14 +745,15 @@
           
           $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
+          
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');                     
+                               
 
 
           if ($estatus=="apartado") {
@@ -1163,12 +1165,13 @@
           
          
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');                 
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');    
+              
 
 
 
@@ -2020,8 +2023,8 @@
           
 
           $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
           if ($id_almacen!=0) {
@@ -2159,8 +2162,8 @@ public function totales_importes($where){
            $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
           $this->db->where($where);
@@ -2185,8 +2188,8 @@ public function totales_importes($where){
              
           
               $this->db->from($this->historico_registros_entradas.' as m');
-              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');              
               $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
 
@@ -2223,7 +2226,7 @@ public function totales_importes($where){
           $this->db->select('a.almacen');
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
 
           //$this->db->where('m.id_usuario',$id_session);
           //$this->db->where('m.id_operacion',$data['id_operacion']);
@@ -2325,8 +2328,9 @@ public function buscador_historico_devolucion($data){
           
           $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           if ($id_almacen!=0) {
              $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
@@ -2458,8 +2462,9 @@ public function totales_importes_devolucion($where){
            $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
 
 
@@ -2480,8 +2485,9 @@ public function totales_importes_devolucion($where){
       public function total_historico_devolucion($where){
                     $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
                     $this->db->from($this->historico_registros_entradas.' as m');
+                    $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
                     $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-                    $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+                    
 
                     $this->db->where($where);          
                     $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
@@ -2532,7 +2538,7 @@ public function totales_importes_devolucion($where){
           
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
 
 
           //$this->db->where('m.id_usuario',$id_session);
@@ -2636,12 +2642,12 @@ public function buscador_historico_salida($data){
         $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
 
           if ($id_almacen!=0) {
@@ -2797,11 +2803,12 @@ public function totales_importes_salida($where){
            $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
 
 
@@ -2822,11 +2829,12 @@ public function totales_importes_salida($where){
                
 
                 $this->db->from($this->historico_registros_salidas.' as m');
+                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
                 $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
                 $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
                 $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
                 $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+                
 
 
 

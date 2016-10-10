@@ -35,7 +35,19 @@
 
 				</div>
 
-				<?php $this->load->view( 'navbar' ); ?>
+				<?php 
+				$this->load->view( 'navbar' ); 
+					/*
+				   if (isset($almacenes))
+					   if ($almacenes!=false) {
+						   $this->load->view( 'navbar' ); 
+						} else {
+							//$this->load->view( 'navbar_conteo' ); 
+						}   
+						*/
+
+				?>
+
 			</div>
 			<div class="barra-verde"></div>
 		</header>

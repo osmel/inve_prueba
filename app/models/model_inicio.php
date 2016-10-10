@@ -167,10 +167,11 @@
           $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //filtro de busqueda
   
@@ -393,11 +394,12 @@
   
           $this->db->select("a.almacen");                 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->productos.' As pr' , 'pr.referencia = m.referencia','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //filtro de busqueda
 
@@ -732,11 +734,12 @@ precio_nodisp
   
           $this->db->select("a.almacen");                 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->productos.' As pr' , 'pr.referencia = m.referencia','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
           //filtro de busqueda
 
           
@@ -955,7 +958,7 @@ precio_nodisp
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
           $this->db->join($this->registros.' As m', 'p.referencia = m.referencia'.$id_almacenid.$id_tipo_facturaid,'LEFT');
-          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
 
 
           //filtro de busqueda

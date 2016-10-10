@@ -21,8 +21,68 @@ jQuery(document).ready(function($) {
 var target = document.getElementById('foo');
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////conteo físico///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	jQuery('#tabla_informe_pendiente').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_informe_pendiente",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 						
+	         		 }
+	     },   
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
 
 
+		"columnDefs": [
+			    
+
+
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3] //
+		            },
+
+		            
+		        ],
+
+	});	
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 jQuery('#tabla_costo_rollo').dataTable( {
@@ -2505,6 +2565,14 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+
+
+						
+						case "informe_pendiente":
+							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
 
 						case "costo_rollo":
 							var oTable =jQuery('#tabla_costo_rollo').dataTable();

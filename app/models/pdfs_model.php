@@ -130,11 +130,11 @@ class Pdfs_model extends CI_Model
           $this->db->select('a.almacen');
           
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');          
           $this->db->join($this->productos.' as prod', 'prod.referencia = m.referencia','LEFT');
 
 
@@ -193,17 +193,15 @@ class Pdfs_model extends CI_Model
           $this->db->select("m.peso_real, m1.peso_real peso_entrada");          
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-          
+          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');          
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
 
           //$this->db->where('m.id_usuario',$id_session);
@@ -318,6 +316,7 @@ class Pdfs_model extends CI_Model
 
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
@@ -327,7 +326,7 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
          
           
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //filtro de busqueda
           if ($id_almacen!=0) {
@@ -399,20 +398,15 @@ class Pdfs_model extends CI_Model
 
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
+
           $this->db->from($this->registros.' as m');
-          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-
-
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-          //filtro de busqueda
-          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
@@ -511,18 +505,18 @@ class Pdfs_model extends CI_Model
           $this->db->select("tf.tipo_factura"); 
           
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
           
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //filtro de busqueda
           if ($id_almacen!=0) {

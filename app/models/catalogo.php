@@ -2740,8 +2740,9 @@
 
         public function listado_almacenes($limit=-1, $offset=-1){
 
-          $this->db->select('c.id, c.almacen');
-          $this->db->from($this->almacenes.' as c');
+          $this->db->select('a.id, a.almacen');
+          $this->db->from($this->almacenes.' as a');
+          $this->db->where('a.activo', 1);
           
           if ($limit!=-1) {
               $this->db->limit($limit, $offset); 

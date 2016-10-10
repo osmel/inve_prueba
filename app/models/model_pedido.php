@@ -298,12 +298,13 @@
           
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //filtro de busqueda
         
@@ -598,14 +599,12 @@
          
           $this->db->select("a.almacen");
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
-
 
           //filtro de busqueda
         
@@ -815,10 +814,10 @@
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
@@ -1050,11 +1049,10 @@
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
-
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
          
@@ -1281,10 +1279,10 @@
           $this->db->select("tf.tipo_factura");          
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
@@ -1504,19 +1502,15 @@
           $this->db->select("prod.codigo_contable");  
           
           $this->db->from($this->registros.' as m');
-
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -1652,19 +1646,15 @@
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
              
               $this->db->from($this->registros.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
               $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
               $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
               $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
               $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-              
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
               $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
               $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
-
               $this->db->where($where);
 
              $result = $this->db->get();
@@ -1681,19 +1671,15 @@
               $id_session = $this->session->userdata('id');
               
               $this->db->from($this->registros.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
               $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
               $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
               $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
               $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-              
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
               $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
               $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');              
-
               $this->db->where($where);
               $cant = $this->db->count_all_results();          
      
@@ -1798,15 +1784,14 @@
 
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -1947,17 +1932,14 @@
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
              
               $this->db->from($this->registros.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
               $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
               $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
               $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
               $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-              
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
               $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
               $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
               $this->db->where($where);
@@ -1976,14 +1958,13 @@
               $id_session = $this->session->userdata('id');
                     
                 $this->db->from($this->registros.' as m');
+                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
                 $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
                 $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
                 $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
                 $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-                $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
                 $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
                 $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
                 $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
@@ -2109,14 +2090,13 @@
 
 
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -2263,13 +2243,12 @@
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
              
               $this->db->from($this->historico_registros_salidas.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
               $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
               $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
               $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
               $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
               $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
               $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -2289,13 +2268,12 @@
               
               
           $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
           $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -2817,25 +2795,11 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
 
 
         public function cancelar_traspaso_pedido_detalle( $data ){
-//WYzO193001190820161208_9
-//LXaX1600011908201612817_10
 
                 $id_almacen= $data['id_almacen'];
                
                 $porciento_aplicar = 16;                 
                 
-                
-                /*$this->db->set( 'precio', 
-                      '(precio-
-                            (
-                                ( 
-                                    ( (id_factura_original = 2)*'.$porciento_aplicar.')*
-                                        ((precio*100)/(100+'.$porciento_aplicar.'))
-                                )/100
-                            )
-                        )', FALSE );
-                */
-
                 $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
                 $this->db->set( 'incluir', 0);
                 $this->db->set( 'id_factura', 'id_factura_original', false);
@@ -2877,10 +2841,6 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
                 $fecha_hoy = date('Y-m-d H:i:s');  
 
                 $id_almacen= $data['id_almacen'];
-
-                
-               // $this->db->set( 'precio_anterior', 'precio', FALSE  );
-               // $this->db->set( 'precio', 'precio_cambio', FALSE  );
 
                 $this->db->set( 'fecha_vencimiento', '' ); 
                 $this->db->set( 'id_prorroga', 0);

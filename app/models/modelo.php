@@ -443,7 +443,7 @@
             $this->db->set( 'fecha_pc',  gmt_to_local( $timestamp, $this->timezone, TRUE) );
             $this->db->set( 'id_usuario',  $id_session );
 
-			$this->db->set( 'nombre', $data['nombre'] );
+			      $this->db->set( 'nombre', $data['nombre'] );
             $this->db->set( 'apellidos', $data['apellidos'] );
             $this->db->set( 'email', "AES_ENCRYPT('{$data['email']}','{$this->key_hash}')", FALSE );
             $this->db->set( 'telefono', "AES_ENCRYPT('{$data['telefono']}','{$this->key_hash}')", FALSE );
@@ -505,7 +505,7 @@
               $this->db->select('a.id id_almacen, a.almacen almacen'); 
               $this->db->from($this->almacenes.' as a');
 
-              //$this->db->where('(LOCATE("'.$id_actividad.'", p.coleccion_id_actividad) >0)' );
+              $this->db->where('a.activo', 1);
 
               $result = $this->db->get();
 

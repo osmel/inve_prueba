@@ -506,11 +506,12 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           
           //$this->db->from($this->registros_entradas.' as m');
           $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen','LEFT');
+          
 
           //$this->db->where('m.id_usuario',$id_session);
           //$this->db->where('m.id_operacion',1);
