@@ -203,7 +203,7 @@
 							</div>
 
 							<div class="col-sm-4 col-md-4">
-								<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="incluir_pedido">
+								<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_conteo">
 									<span>Procesar conteo</span>
 								</button>
 							</div>								

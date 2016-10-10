@@ -694,10 +694,11 @@ $route['cargar_dependencia']   = 'inventario/cargar_dependencia';
 
 /////////////////////////////Conteo de inventarios////////////////////////
 
-$route['informe_pendiente']   = 'conteo_fisico/informe_pendiente';
-$route['procesando_informe_pendiente']   = 'conteo_fisico/procesando_informe_pendiente';
+$route['informe_pendiente']   			= 'conteo_fisico/informe_pendiente';
+$route['procesando_informe_pendiente']  = 'conteo_fisico/procesando_informe_pendiente';
+$route['procesar_conteo/(:any)/(:any)/(:any)/(:any)/(:any)']	 			= 'conteo_fisico/procesar_conteo/$1/$2/$3/$4/$5';
 
-
+		
 
 
 

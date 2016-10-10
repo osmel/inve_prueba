@@ -80,13 +80,21 @@ class Conteo_fisico extends CI_Controller {
   }
 
 
-  public function procesando_informe_pendiente111(){
-      $data=$_POST;
+  public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_composicion,$id_calidad){
+           $data["id_almacen"]= base64_decode($id_almacen);       
+       $data["id_descripcion"]= base64_decode($id_descripcion);       
+             $data["id_color"]= base64_decode($id_color);       
+       $data["id_composicion"]= base64_decode($id_composicion);       
+           $data["id_calidad"]= base64_decode($id_calidad);       
+
+
+      //$data=$_POST;
+  /*
       $dato['entradas']  = $this->model_conteo_fisico->entradas($data); 
       $dato['pedidos']  = $this->model_conteo_fisico->pedidos($data); 
       $dato['devoluciones']  = $this->model_conteo_fisico->devoluciones($data); 
       $dato['traspasos']  = $this->model_conteo_fisico->traspasos($data); 
-
+*/
       /*
       cancelar_pedido_detalle( $data )
       quitar_producto_devolucion( $data )

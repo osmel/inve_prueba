@@ -25,6 +25,84 @@ var target = document.getElementById('foo');
 ////////////////////////////////////////conteo físico///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+									        	
+
+
+jQuery('body').on('click','#procesar_conteo', function (e) {
+
+
+	//valor= jQuery.base64.encode(data.aprobado);
+
+		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
+	id_descripcion 	= jQuery.base64.encode(jQuery("#producto").val());
+	id_color 		= jQuery.base64.encode(jQuery("#color").val()); 
+	id_composicion 	= jQuery.base64.encode(jQuery("#composicion").val());
+	id_calidad 		= jQuery.base64.encode(jQuery("#calidad").val());
+
+	var url = "procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad;
+
+	jQuery('#modalMessage').modal({
+		  show:'true',
+		remote:url,
+	}); 
+
+
+	/*
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	   var retorno = jQuery("#retorno").val();
+	var movimiento = jQuery("#movimiento").val();
+	
+	 var url = '/proc_pedido_aprobado';
+   
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	movimiento:movimiento,
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_aprobado');
+												window.location.href = retorno;	
+
+									        }
+								});	
+						}
+		        }
+
+		        
+	});						
+	*/        
+});
+
+
+
+
+
 	jQuery('#tabla_informe_pendiente').dataTable( {
 	
 	  "pagingType": "full_numbers",
