@@ -21,8 +21,7 @@
 	$dato['cant']['3']=1;
 	$dato['cant']['4']=1;
 	$dato['cant']['5']=1;
-	$dato['cant']['6']=1;
-	*/
+	$dato['cant']['6']=1;*/
 
 	$dato['config_almacen']=$config_almacen;
 	$dato['el_perfil']=$el_perfil;
@@ -62,14 +61,16 @@
 						<div class="table-responsive">
 
 							<section>
-								<table id="tabla_informe_pendiente" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<table id="tabla_conteos" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 									<thead>
 										<tr>
-											<th class="text-center " width="25%">Entradas</th>
-											<th class="text-center " width="25%"><strong>Pedidos</strong></th>
-											<th class="text-center " width="25%"><strong>Devolución</strong></th>
-											<th class="text-center " width="25%"><strong>Traspasos</strong></th>
-											
+											<th class="text-center " width="15%"><strong>Referencia</strong></th>
+											<th class="text-center " width="25%"><strong>Nombre de Tela</strong></th>
+											<th class="text-center " width="15%"><strong>Imagen</strong></th>
+											<th class="text-center " width="10%"><strong>Color</strong></th>
+											<th class="text-center " width="15%"><strong>Composición</strong></th>
+											<th class="text-center " width="10%"><strong>Calidad</strong></th>
+											<th class="text-center " width="10%"><strong>Cantidad</strong></th>
 
 										</tr>
 									</thead>
@@ -111,8 +112,8 @@
 							</div>
 
 							<div class="col-sm-4 col-md-4">
-								<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_conteo">
-									<span>Procesar conteo</span>
+								<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_contando">
+									<span>Procesar conteo1</span>
 								</button>
 							</div>								
 						</div>

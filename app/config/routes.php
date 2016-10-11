@@ -696,12 +696,20 @@ $route['cargar_dependencia']   = 'inventario/cargar_dependencia';
 
 $route['informe_pendiente']   			= 'conteo_fisico/informe_pendiente';
 $route['procesando_informe_pendiente']  = 'conteo_fisico/procesando_informe_pendiente';
-$route['procesar_conteo/(:any)/(:any)/(:any)/(:any)/(:any)']	 			= 'conteo_fisico/procesar_conteo/$1/$2/$3/$4/$5';
+$route['procesar_conteo/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 			= 'conteo_fisico/procesar_conteo/$1/$2/$3/$4/$5/$6';
 
 		
+$route['confirmar_proceso_conteo']  = 'conteo_fisico/confirmar_proceso_conteo';
+$route['procesando_conteos']  = 'conteo_fisico/procesando_conteos';
+$route['conteo1']   			= 'conteo_fisico/conteo1';
+$route['conteo2']   			= 'conteo_fisico/conteo2';
+$route['conteo3']   			= 'conteo_fisico/conteo3';
 
 
 
+
+$route['procesar_contando/(:any)']	 			= 'conteo_fisico/procesar_contando/$1';
+$route['confirmar_procesar_contando']  = 'conteo_fisico/confirmar_procesar_contando';
 
 
 /////////////////////////////new_implementacion////////////////////////

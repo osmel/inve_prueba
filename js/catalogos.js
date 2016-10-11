@@ -25,78 +25,119 @@ var target = document.getElementById('foo');
 ////////////////////////////////////////conteo físico///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-									        	
-
-
-jQuery('body').on('click','#procesar_conteo', function (e) {
-
-
-	//valor= jQuery.base64.encode(data.aprobado);
-
+jQuery('body').on('click','#procesar_contando', function (e) {
 		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
-	id_descripcion 	= jQuery.base64.encode(jQuery("#producto").val());
-	id_color 		= jQuery.base64.encode(jQuery("#color").val()); 
-	id_composicion 	= jQuery.base64.encode(jQuery("#composicion").val());
-	id_calidad 		= jQuery.base64.encode(jQuery("#calidad").val());
+		   //cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
 
-	var url = "procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad;
+	var url = "/procesar_contando/"+id_almacen;
 
 	jQuery('#modalMessage').modal({
 		  show:'true',
 		remote:url,
 	}); 
+});
+
+									        	
+	jQuery('#tabla_conteos').dataTable( {
+ 	    "pagingType": "full_numbers",
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_conteos",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
+					    	d.modulo = jQuery("#modulo").val(); 				
+	         		 }
+	     },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+		"columnDefs": [
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5] //
+		            },
+
+		            /*
+ 									  7=>$row->conteo1,
+                                      8=>$row->conteo2,
+                                      9=>$row->conteo3,
+		            */
+
+					{
+		                "render": function ( data, type, row ) {
+							
+							modulo= jQuery("#modulo").val(); 
+							valor = row[5+parseFloat(modulo)];
+
+							//habilitar = ((modulo == 2) ? '': 'disabled'); 
+							habilitar = (( parseFloat(row[11]) + 2 == parseFloat(modulo)) ? '': 'disabled'); 
 
 
-	/*
-	jQuery('#foo').css('display','block');
-	var spinner = new Spinner(opts).spin(target);
+							texto='<td>'; 
 
-	   var retorno = jQuery("#retorno").val();
-	var movimiento = jQuery("#movimiento").val();
-	
-	 var url = '/proc_pedido_aprobado';
-   
+							texto+='<fieldset '+habilitar+'>'; 
+								texto+='<input restriccion="entero"  identificador="'+row[10]+'" value="'+valor+'" type="text" class="form-control ttip cantidad" title="Números enteros."  placeholder="entero">';							
+							texto+='</fieldset>'; 
+							texto+='</td>';
+							return texto;	
 
-	jQuery.ajax({
-		        url : url,
-		        type : 'POST',
-		       	data : { 
-		        	movimiento:movimiento,
-		        },
-		        dataType : 'json',
-		        success : function(data) {	
-						if(data.exito != true){
-								spinner.stop();
-								jQuery('#foo').css('display','none');
-								jQuery('#messages').css('display','block');
-								jQuery('#messages').addClass('alert-danger');
-								jQuery('#messages').html(data.error);
-								jQuery('html,body').animate({
-									'scrollTop': jQuery('#messages').offset().top
-								}, 1000);
-						}else{
+		                },
+		                "targets": 6
+		            },	            
 
-							spinner.stop();
-							jQuery('#foo').css('display','none');
-								jQuery.ajax({
-									        url : '/conteo_tienda',
-									        data : { 
-									        	tipo: 'tienda',
-									        },
-									        type : 'POST',
-									        dataType : 'json',
-									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_aprobado');
-												window.location.href = retorno;	
+		        ],
+	});	
 
-									        }
-								});	
-						}
-		        }
 
-		        
-	});						
-	*/        
+jQuery('body').on('keypress paste','.cantidad[restriccion="entero"]', function (event) {	
+    var regex = new RegExp("^[0-9]+$");
+    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+    if (!regex.test(key)) {
+       event.preventDefault();
+       return false;
+    }
+});
+
+
+
+jQuery('body').on('click','#procesar_conteo', function (e) {
+		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
+	id_descripcion 	= jQuery.base64.encode(jQuery("#producto").val());
+	id_color 		= jQuery.base64.encode(jQuery("#color").val()); 
+	id_composicion 	= jQuery.base64.encode(jQuery("#composicion").val());
+	id_calidad 		= jQuery.base64.encode(jQuery("#calidad").val());
+		   cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
+
+	var url = "/procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad+'/'+cantidad;
+
+	jQuery('#modalMessage').modal({
+		  show:'true',
+		remote:url,
+	}); 
 });
 
 
@@ -2644,9 +2685,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
 
-
+						case "tabla_conteos":
+							var oTable =jQuery('#tabla_conteos').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
 						
-						case "informe_pendiente":
+						case "tabla_informe_pendiente":
 							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
 					    	oTable._fnAjaxUpdate();
 					        break;

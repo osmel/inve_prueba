@@ -33,7 +33,6 @@
       
 
       $this->colores                 = $this->db->dbprefix('catalogo_colores');
-      
       $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
 
       $this->registros_salidas       = $this->db->dbprefix('registros_salidas');

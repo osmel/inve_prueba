@@ -18,6 +18,23 @@ class Conteo_fisico extends CI_Controller {
           $id_perfil = $this->session->userdata('id_perfil');
               switch ($id_perfil) {    
                 case 1: //conteo
+
+                   $data['dato']['modulo'] = 1;
+                   $data['dato']['vista']  = "tabla_informe_pendiente";
+                   $data['mod']=1;      
+                   $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=2;      
+                   $data['dato']['cant'][2]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=3;      
+                   $data['dato']['cant'][3]   = 0; //$this->model_pedido_compra->total_modulo($data); 
+                   $data['mod']=4;      
+                   $data['dato']['cant'][4]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=5;      
+                   $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+                   $data['mod']=6;      
+                   $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+
+
                     $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
                     $data['productos'] = $this->catalogo->listado_productos_unico();
                    
@@ -79,29 +96,198 @@ class Conteo_fisico extends CI_Controller {
 
   }
 
+public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_composicion,$id_calidad,$cantidad){
 
-  public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_composicion,$id_calidad){
-           $data["id_almacen"]= base64_decode($id_almacen);       
-       $data["id_descripcion"]= base64_decode($id_descripcion);       
-             $data["id_color"]= base64_decode($id_color);       
-       $data["id_composicion"]= base64_decode($id_composicion);       
-           $data["id_calidad"]= base64_decode($id_calidad);       
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+              
+               $data["id_almacen"] = base64_decode($id_almacen);       
+           $data["id_descripcion"] = base64_decode($id_descripcion);       
+                 $data["id_color"] = base64_decode($id_color);       
+           $data["id_composicion"] = base64_decode($id_composicion);       
+               $data["id_calidad"] = base64_decode($id_calidad);  
+               $data["cantidad"] = base64_decode($cantidad);  
+
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/conteo_modal', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+
+          
+       }      
+  }
 
 
-      //$data=$_POST;
+
+  public function conteos($data){
+
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+
+            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
+            $data['productos'] = $this->catalogo->listado_productos_unico(); 
+
+           $data['dato']['vista']  = "tabla_conteos"; 
+           $data['mod']=1;      
+           $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=2;      
+           $data['dato']['cant'][2]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=3;      
+           $data['dato']['cant'][3]   = 0; //$this->model_pedido_compra->total_modulo($data); 
+           $data['mod']=4;      
+           $data['dato']['cant'][4]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=5;      
+           $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=6;      
+           $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+
+
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/conteos', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+         
+       }      
+  }
+
+public function conteo1(){
+  $data['dato']['modulo'] = 2;
+  $data['titulo'] = "";
+  self::conteos($data);
+}
+public function conteo2(){
+  $data['dato']['modulo'] = 3;
+  $data['titulo'] = "";
+  self::conteos($data);
+}
+public function conteo3(){
+  $data['dato']['modulo'] = 4;
+  $data['titulo'] = "";
+  self::conteos($data);
+}
+
+
+  public function confirmar_proceso_conteo() {
+           $data["id_almacen"]= $this->input->post("id_almacen");
+       $data["id_descripcion"]= $this->input->post("id_descripcion");       
+             $data["id_color"]= $this->input->post("id_color");
+       $data["id_composicion"]= $this->input->post("id_composicion");      
+           $data["id_calidad"]= $this->input->post("id_calidad");  
+
+            //cancelando las operaciones que estan en procesos
   /*
-      $dato['entradas']  = $this->model_conteo_fisico->entradas($data); 
-      $dato['pedidos']  = $this->model_conteo_fisico->pedidos($data); 
-      $dato['devoluciones']  = $this->model_conteo_fisico->devoluciones($data); 
-      $dato['traspasos']  = $this->model_conteo_fisico->traspasos($data); 
+            $this->model_conteo_fisico->eliminar_prod_temporal($data); 
+            $this->model_conteo_fisico->cancelar_pedido_detalle($data); 
+            $this->model_conteo_fisico->quitar_producto_devolucion($data); 
+            $this->model_conteo_fisico->quitar_productos_traspasado($data); 
 */
-      /*
-      cancelar_pedido_detalle( $data )
-      quitar_producto_devolucion( $data )
-      quitar_productos_traspasado( $data )
+            $this->model_conteo_fisico->creando_conteo($data) ; 
 
-      */
+            
+            redirect('/informe_pendiente');
 
+  }      
+
+
+
+
+
+
+
+
+public function procesando_conteos(){
+      $data=$_POST;
+      $busqueda  = $this->model_conteo_fisico->buscador_costos($data);
+      echo $busqueda;
+  } 
+
+
+
+
+
+
+
+
+
+
+
+
+public function procesar_contando($id_almacen){
+
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+              
+               $data["id_almacen"] = base64_decode($id_almacen);       
+           
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/contando_modal', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+
+          
+       }      
+  }
+
+
+
+
+  public function confirmar_procesar_contando() {
+           $data["id_almacen"]= $this->input->post("id_almacen");
+       $data["id_descripcion"]= $this->input->post("id_descripcion");       
+             $data["id_color"]= $this->input->post("id_color");
+       $data["id_composicion"]= $this->input->post("id_composicion");      
+           $data["id_calidad"]= $this->input->post("id_calidad");  
+
+            //cancelando las operaciones que estan en procesos
+  /*
+            $this->model_conteo_fisico->eliminar_prod_temporal($data); 
+            $this->model_conteo_fisico->cancelar_pedido_detalle($data); 
+            $this->model_conteo_fisico->quitar_producto_devolucion($data); 
+            $this->model_conteo_fisico->quitar_productos_traspasado($data); 
+*/
+            $this->model_conteo_fisico->creando_conteo($data) ; 
+
+            
+            redirect('/informe_pendiente');
 
   }      
 
