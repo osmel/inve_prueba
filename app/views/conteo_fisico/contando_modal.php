@@ -29,6 +29,7 @@
 	</div>
 
 	<input type="hidden" id="id_almacen" name="id_almacen" value="<?php echo $id_almacen; ?>">
+	<input type="hidden" id="modulo" name="modulo" value="<?php echo $modulo; ?>">
 	
 	
 <?php echo form_close(); ?>

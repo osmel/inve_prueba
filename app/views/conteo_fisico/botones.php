@@ -32,24 +32,24 @@
 						</a>
 					</div>
 
-					
+					<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>faltante"  
+							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste negativo.">Faltante <?php echo "(".$cant[5].")"; ?>
+						</a>
+					</div>
 
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>gestionar_pedido_compra"  
-							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Ajuste + <?php echo "(".$cant[5].")"; ?>
+						<a href="<?php echo base_url(); ?>sobrante"  
+							type="button" class="btn <?php echo ($modulo==6) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste positivo.">Sobrante <?php echo "(".$cant[6].")"; ?>
 						</a>
 					</div>
 
 
 					
-					<div class="col-xs-12 col-sm-3 col-md-2">
-						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>gestionar_pedido_compra"  
-							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Ajuste - <?php echo "(".$cant[6].")"; ?>
-						</a>
-					</div>
+					
 				
 
 				</div>

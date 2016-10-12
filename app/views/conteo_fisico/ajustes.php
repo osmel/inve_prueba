@@ -61,7 +61,7 @@
 						<div class="table-responsive">
 
 							<section>
-								<table id="tabla_conteos" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<table id="tabla_ajustes" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 									<thead>
 										<tr>
 											<th class="text-center " width="15%"><strong>Referencia</strong></th>
@@ -70,7 +70,8 @@
 											<th class="text-center " width="10%"><strong>Color</strong></th>
 											<th class="text-center " width="15%"><strong>Composición</strong></th>
 											<th class="text-center " width="10%"><strong>Calidad</strong></th>
-											<th class="text-center " width="10%"><strong>Cantidad</strong></th>
+											<th class="text-center " width="10%"><strong>Cantidad Real</strong></th>
+											<th class="text-center " width="10%"><strong>Cantidad Ajustar</strong></th>
 
 										</tr>
 									</thead>
@@ -116,9 +117,12 @@
 							
 								<div class="col-sm-4 col-md-4">
 									<fieldset id="hab_proceso" style="display:block;" >
-										<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_contando">
+										<!--<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_contando">
 											<span>Procesar conteo</span>
-										</button>
+										</button>-->
+
+
+										<a href="<?php echo base_url(); ?>salida_faltante/<?php echo base64_encode($dato['modulo']).'/'.base64_encode(2).'/'.base64_encode("faltante"); ?>" type="button" class="btn btn-success btn-block">Procesar conteo</a>
 									</fieldset>	
 								</div>								
 							

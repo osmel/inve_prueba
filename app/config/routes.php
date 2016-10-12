@@ -708,8 +708,20 @@ $route['conteo3']   			= 'conteo_fisico/conteo3';
 
 
 
-$route['procesar_contando/(:any)']	 			= 'conteo_fisico/procesar_contando/$1';
+$route['procesar_contando/(:any)/(:any)']	 			= 'conteo_fisico/procesar_contando/$1/$2';
 $route['confirmar_procesar_contando']  = 'conteo_fisico/confirmar_procesar_contando';
+
+$route['procesar_por_conteo']	 			= 'conteo_fisico/procesar_por_conteo';
+
+
+$route['faltante']   			= 'conteo_fisico/faltante';
+$route['sobrante']   			= 'conteo_fisico/sobrante';
+$route['procesando_ajustes']  = 'conteo_fisico/procesando_ajustes';
+
+$route['salida_faltante/(:any)/(:any)/(:any)']  = 'conteo_fisico/salida_faltante/$1/$2/$3';
+$route['entrada_sobrante']  = 'conteo_fisico/entrada_sobrante';
+
+$route['procesando_servidor_ajustes']  = 'conteo_fisico/procesando_servidor_ajustes';
 
 
 /////////////////////////////new_implementacion////////////////////////

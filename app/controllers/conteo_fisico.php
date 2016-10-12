@@ -8,6 +8,8 @@ class Conteo_fisico extends CI_Controller {
     $this->load->model('modelo', 'modelo');  
     $this->load->model('model_pedido', 'modelo_pedido');    
 
+    $this->load->model('model_salida', 'modelo_salida');  
+
 
     $this->load->library(array('email')); 
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
@@ -235,10 +237,56 @@ public function procesando_conteos(){
 
 
 
+public function procesar_por_conteo(){
+
+
+       if($this->session->userdata('session') === TRUE ){
+            $id_perfil=$this->session->userdata('id_perfil');
+
+            $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+            if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                  $coleccion_id_operaciones = array();
+             }  
+
+            $errores='';
+
+
+              $data['cantidad'] =  json_decode(json_encode( $this->input->post('arreglo_cantidad') ),true  );
+            $data['id_almacen'] =   $this->input->post('id_almacen');
+                $data['modulo'] =   $this->input->post('modulo');
+            
+            $dato['cantidades'] = $this->model_conteo_fisico->actualizar_cantidad($data);  
+            $dato['exito'] = true;
+            echo json_encode($dato);
+        
+              /*
+                if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
+                      //actualizar cantidad aprobada
+                      $data['movimiento'] =   $this->input->post('movimiento');
+                      $data['comentario'] =   $this->input->post('comentario');
+                      $data['cant_solicitada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_solicitada') ),true  );
+                      $data['cant_aprobada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_aprobada') ),true  );
+                        
+                      $dato['aprobado'] = $this->model_pedido_compra->actualizar_cantidad_aprobado($data);
+                      $dato['exito'] = true;
+                      echo json_encode($dato);
+                }  else {
+                    $dato['exito']  = false;
+                    //$dato['errores'] =$errores;
+                    $dato['error'] = validation_errors('<span class="error">','</span>');
+                    echo json_encode($dato);
+                }          
+             */   
+
+    } else { //fin de session
+      redirect('');
+    }   
+    
+  }
 
 
 
-public function procesar_contando($id_almacen){
+public function procesar_contando($id_almacen,$modulo){
 
       if ( $this->session->userdata('session') !== TRUE ) {
           redirect('');
@@ -250,9 +298,11 @@ public function procesar_contando($id_almacen){
           if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
                 $coleccion_id_operaciones = array();
            }   
-              
+                
                $data["id_almacen"] = base64_decode($id_almacen);       
-           
+               $data["modulo"] = base64_decode($modulo);       
+               
+
           switch ($id_perfil) {    
             case 1:
                     $this->load->view( 'conteo_fisico/contando_modal', $data );
@@ -272,24 +322,152 @@ public function procesar_contando($id_almacen){
 
   public function confirmar_procesar_contando() {
            $data["id_almacen"]= $this->input->post("id_almacen");
-       $data["id_descripcion"]= $this->input->post("id_descripcion");       
-             $data["id_color"]= $this->input->post("id_color");
-       $data["id_composicion"]= $this->input->post("id_composicion");      
-           $data["id_calidad"]= $this->input->post("id_calidad");  
-
-            //cancelando las operaciones que estan en procesos
-  /*
-            $this->model_conteo_fisico->eliminar_prod_temporal($data); 
-            $this->model_conteo_fisico->cancelar_pedido_detalle($data); 
-            $this->model_conteo_fisico->quitar_producto_devolucion($data); 
-            $this->model_conteo_fisico->quitar_productos_traspasado($data); 
-*/
-            $this->model_conteo_fisico->creando_conteo($data) ; 
-
-            
-            redirect('/informe_pendiente');
+           $data["modulo"]= $this->input->post("modulo");
+           $this->model_conteo_fisico->actualizar_conteos($data);  
+           redirect('/conteo'.(((int)$data["modulo"])-1) );
 
   }      
+
+
+
+
+public function ajustes($data){
+
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+
+            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
+            $data['productos'] = $this->catalogo->listado_productos_unico(); 
+
+           $data['dato']['vista']  = "tabla_ajustes"; 
+           $data['mod']=1;      
+           $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=2;      
+           $data['dato']['cant'][2]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=3;      
+           $data['dato']['cant'][3]   = 0; //$this->model_pedido_compra->total_modulo($data); 
+           $data['mod']=4;      
+           $data['dato']['cant'][4]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=5;      
+           $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=6;      
+           $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+
+
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/ajustes', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+         
+       }      
+  }
+
+public function faltante(){
+  $data['dato']['modulo'] = 5;
+  $data['titulo'] = "";
+  self::ajustes($data);
+}  
+
+public function sobrante(){
+  $data['dato']['modulo'] = 6;
+  $data['titulo'] = "";
+  self::ajustes($data);
+}  
+
+public function procesando_ajustes(){
+      $data=$_POST;
+      $busqueda  = $this->model_conteo_fisico->buscador_ajustes($data);
+      echo $busqueda;
+} 
+
+
+  public function salida_faltante($modulo,$id_almacen,$retorno){
+
+
+
+     if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+           
+           $data['modulo']       = base64_decode($modulo);    
+           $data['id_almacen']   =  base64_decode($id_almacen);    
+           $data['retorno']       = base64_decode($retorno);    
+
+         
+
+           $data['productos'] = $this->catalogo->listado_productos_unico();
+           $data['colores'] = $this->catalogo->listado_colores_unico();
+           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+           $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+
+
+           $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
+           
+           $data['nombre']   = "asasdas";
+           $data['cargador']   = "asasdas";
+           $dato['id'] = 7;
+           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
+         
+               
+            switch ($id_perfil) {    
+              case 1:          
+                          $this->load->view( 'conteo_fisico/salida_faltante',$data );
+                break;
+              default:  
+                redirect('');
+                break;
+            }
+        
+        }
+        else{ 
+          redirect('');
+        }     
+    
+    
+  }
+
+
+  public function procesando_servidor_ajustes(){
+    
+    $data=$_POST;
+    $data['id_cliente']=0;
+        if ($this->input->post('id_cliente')) {
+
+             $data['descripcion'] = $this->input->post('id_cliente');
+             $data['idproveedor'] = "2";
+
+          $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
+
+       //$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
+    }  
+
+    if (!($data['id_cliente'])) {
+      $data['id_cliente'] =0;
+    }
+
+    $busqueda = $this->model_conteo_fisico->buscador_entrada($data);
+    echo $busqueda;
+  }
+
 
 /////////////////validaciones/////////////////////////////////////////  
 

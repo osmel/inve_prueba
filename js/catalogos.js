@@ -20,11 +20,275 @@ jQuery(document).ready(function($) {
 	};
 var target = document.getElementById('foo');
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////Ajustes///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+jQuery('#tabla_entrada_ajuste').dataTable( {
+ 	"processing": true, //	//tratamiento con base de datos
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_servidor_ajustes",
+         		"type": "POST",
+         		 "data": function ( d ) {
+     				   if  (jQuery('.buscar_proveedor').typeahead("val")) {
+     				   		d.id_cliente = jQuery('.buscar_proveedor').typeahead("val");
+     				   	} else {
+     				   		d.id_cliente = jQuery('#id_proveedor').val();	
+     				   	}	
+
+
+						    d.producto_filtro = jQuery('#producto_filtro').val();	
+						    console.log(d.producto_filtro);
+
+
+						    d.color_filtro = jQuery('#color_filtro').val();	
+
+						    d.ancho_filtro = jQuery('#ancho_filtro').val();	
+						    //alert(d.ancho_filtro);
+						    d.factura_filtro = jQuery('#factura_filtro').val();	
+
+						    d.proveedor_filtro = jQuery('#editar_proveedor_filtro').val();	
+
+						    d.id_almacen = jQuery('#id_almacen').val();	
+						    d.modulo = jQuery('#modulo').val();	
+
+							d.id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+							//$data["id_almacen"]=1;
+          					//$data["modulo"]=5;
+
+
+
+    				    
+    			 } 
+     }, 
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+		 "rowCallback": function( row, data ) {
+		    // Bold the grade for all 'A' grade browsers
+		    if ( data[9] == 3 ) {
+		      jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( data[9] == 6 ) {
+		      jQuery('td', row).addClass( "success" );
+		    }
+
+		  },
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+		  
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+
+
+
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 11 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 12)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_pieza = (end-start);	
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+		}	
+    },  		  
+	"columnDefs": [
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,1,2,3,4,5,6,7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[10];	
+	                },
+	                "targets": [8]
+	            },
+
+	            {
+	                "render": function ( data, type, row ) {
+						texto='<td><button '; 
+							texto+='type="button" class="btn btn-success btn-block agregar_ajuste '+row[8]+'" identificador="'+row[8]+'" >';
+							texto+='<span  class="">Agregar</span>';
+						texto+='</button></td>';
+						return texto;	
+	                },
+	                "targets": 9
+	            },
+				{ 
+	                 "visible": false,
+	                 "targets": [10,11,12]
+	            }		            
+	        ],
+});	
+jQuery('#tabla_ajustes').dataTable( {
+ 	    "pagingType": "full_numbers",
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ajustes",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
+					    	d.modulo = jQuery("#modulo").val(); 				
+					 d.modulo_activo = jQuery("#modulo_activo").val(); 				
+	         		 }
+	     },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+		"columnDefs": [
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5] //
+		            },
+
+		            /*
+ 									  7=>$row->conteo1,
+                                      8=>$row->conteo2,
+                                      9=>$row->conteo3,
+		            */
+
+					{
+		                "render": function ( data, type, row ) {
+							return row[6];	
+
+		                },
+		                "targets": 6
+		            },	            
+
+					{
+		                "render": function ( data, type, row ) {
+							return row[12];	
+
+		                },
+		                "targets": 7
+		            },	            
+
+		        ],
+
+				"infoCallback": function( settings, start, end, max, total, pre ) {
+					    /*
+					    if (settings.json.generales) {
+						    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+						} else {
+						    
+						}	*/
+
+						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);					
+
+						if (settings.json.generales.modulo_activo!=jQuery("#modulo").val()) {
+							jQuery("#hab_proceso").attr('disabled', true);					
+						} else {
+							jQuery("#hab_proceso").attr('disabled', false);					
+						}
+
+					    return pre
+				  	} ,    
+
+
+
+	});	
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////conteo físico///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
 jQuery('body').on('click','#procesar_contando', function (e) {
 		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
 		   //cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
@@ -36,7 +300,113 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 		remote:url,
 	}); 
 });
+*/
 
+jQuery('body').on('click','#procesar_contando', function (e) {
+
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+	id_almacen = jQuery('#id_almacen_historicos').val();
+	var modulo = jQuery("#modulo").val();
+	
+
+	
+	 var url = '/procesar_por_conteo';
+
+	    var arreglo_cantidad = [];
+	    
+	    var arreglo = {};
+
+	   jQuery("#tabla_conteos tbody tr td input.cantidad").each(function(e) { //cant_solicitada
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo['cantidad'] = jQuery(this).val();
+	   		arreglo_cantidad.push( arreglo);
+	   });
+
+	jQuery.ajax({
+		        url : url,
+		        type : 'POST',
+		       	data : { 
+		        	arreglo_cantidad:arreglo_cantidad,
+		        	id_almacen:id_almacen,		
+		        	modulo:modulo,
+		        },
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.error);
+								jQuery('#messages').append(data.error);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+						}else{
+
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+
+							id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
+								  modulo = jQuery.base64.encode(jQuery("#modulo").val());	
+							var url = "/procesar_contando/"+id_almacen+"/"+modulo;
+
+							jQuery('#modalMessage').modal({
+								  show:'true',
+								remote:url,
+							}); 
+								/*
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_pedido_compra');
+									        	
+
+												//window.location.href = retorno;	
+
+									        	
+												valor= jQuery.base64.encode(data.aprobado);
+												var url = "/pedido_compra_modal/"+valor+'/'+jQuery.base64.encode(movimiento)+'/'+jQuery.base64.encode(modulo)+'/'+jQuery.base64.encode(retorno);
+											
+												jQuery('#modalMessage').modal({
+													  show:'true',
+													remote:url,
+												}); 									        	
+												
+												
+									        }
+								});	
+								*/
+
+						}
+		        }
+
+		        
+	});						        
+});
+
+
+/*
+jQuery('body').on('click','#procesar_contando', function (e) {
+		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
+		   //cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
+
+	var url = "/procesar_contando/"+id_almacen;
+
+	jQuery('#modalMessage').modal({
+		  show:'true',
+		remote:url,
+	}); 
+});
+*/
 									        	
 	jQuery('#tabla_conteos').dataTable( {
  	    "pagingType": "full_numbers",
@@ -48,6 +418,7 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 	         		 "data": function ( d ) {
 					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
 					    	d.modulo = jQuery("#modulo").val(); 				
+					 d.modulo_activo = jQuery("#modulo_activo").val(); 				
 	         		 }
 	     },   
 		"language": {  //tratamiento de lenguaje
@@ -110,6 +481,28 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 		            },	            
 
 		        ],
+
+				"infoCallback": function( settings, start, end, max, total, pre ) {
+					    /*
+					    if (settings.json.generales) {
+						    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+						} else {
+						    
+						}	*/
+
+						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);					
+
+						if (settings.json.generales.modulo_activo!=jQuery("#modulo").val()) {
+							jQuery("#hab_proceso").attr('disabled', true);					
+						} else {
+							jQuery("#hab_proceso").attr('disabled', false);					
+						}
+
+					    return pre
+				  	} ,    
+
+
+
 	});	
 
 
@@ -2684,6 +3077,12 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+
+						case "tabla_ajustes":
+							var oTable =jQuery('#tabla_ajustes').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
 
 						case "tabla_conteos":
 							var oTable =jQuery('#tabla_conteos').dataTable();
