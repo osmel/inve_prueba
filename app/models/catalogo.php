@@ -3845,7 +3845,6 @@
             $this->db->select("nombre", FALSE);  
             $this->db->from($this->proveedores);
             
-            
           $where = '(
                       (
                         (LOCATE("'.$data['idproveedor'].'", coleccion_id_actividad) >0)
@@ -3856,8 +3855,6 @@
                        )
 
             )';   
-
-
   
           $this->db->where($where);
 
@@ -3905,15 +3902,9 @@
                               ( codigo <> "'.$data['codigo_ant'].'" ) 
                               
                              )
-
                   )';   
-      
                 $this->db->where($where);
-
-
-
             }
-            
             
             $login = $this->db->get();
             if ($login->num_rows() > 0)
@@ -3923,7 +3914,18 @@
             $login->free_result();
     } 
 
+     public function tomar_proveedor( $data ){
+          $this->db->select('p.id, p.uid, p.codigo, p.nombre,p.dias_ctas_pagar,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 
+          $this->db->from($this->proveedores.' as p');
 
+            $this->db->where('p.id',$data['id']);
+            $result = $this->db->get(  );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
 
      public function coger_proveedor( $data ){
           $this->db->select('p.id, p.uid, p.codigo, p.nombre,p.dias_ctas_pagar,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 

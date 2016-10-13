@@ -1,4 +1,8 @@
-	
+	<?php 
+
+		$id_almacen_ajuste = 	$this->session->userdata( 'id_almacen_ajuste' );
+		//echo $id_almacen_ajuste;
+	 ?>
 				<div class="row">
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
@@ -82,7 +86,7 @@
 
 												<?php foreach ( $almacenes as $almacen ){ ?>
 													<?php 
-													if  (($almacen->id_almacen==$id_almacen) ) 
+													if  (($almacen->id_almacen==$id_almacen_ajuste) ) 
 														{$seleccionado='selected';} else {$seleccionado='';}
 													?>
 													

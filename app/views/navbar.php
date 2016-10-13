@@ -179,8 +179,8 @@
 
 					 <?php //if ( ( $perfil == 2 ) && (in_array(50, $coleccion_id_operaciones)) ) { ?>		 
 					 <?php if ( ( $perfil == 1 ) ) { ?>		 
-						<li id="bar_usuarios"> 
-							<a title="Conteo de Inventario físico." href="<?php echo base_url(); ?>informe_pendiente" class="ttip color-blanco">Conteo</a>
+						<li id="bar_informe_pendiente"> 
+							<a title="Conteo de Inventario físico." href="<?php echo base_url(); ?>informe_pendiente" class="ttip color-blanco">Conteos</a>
 						</li>
 					 <?php } ?>		
 						

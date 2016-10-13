@@ -30,8 +30,7 @@
 
 	$dato['id_almacen']=$id_almacen;
 
-	
-	
+    $id_almacen_ajuste = $this->session->userdata('id_almacen_ajuste');		
 
 
 ?>
@@ -122,7 +121,12 @@
 										</button>-->
 
 
-										<a href="<?php echo base_url(); ?>salida_faltante/<?php echo base64_encode($dato['modulo']).'/'.base64_encode(2).'/'.base64_encode("faltante"); ?>" type="button" class="btn btn-success btn-block">Procesar conteo</a>
+										<?php if ($dato['modulo']==5) { ?>
+											<a href="<?php echo base_url(); ?>salida_faltante/<?php echo base64_encode($dato['modulo']).'/'.base64_encode("faltante"); ?>" type="button" class="btn btn-success btn-block">Procesar conteo</a>
+										<?php } else { ?>
+											<a href="<?php echo base_url(); ?>entrada_sobrante/<?php echo base64_encode($dato['modulo']).'/'.base64_encode("sobrante"); ?>" type="button" class="btn btn-success btn-block">Procesar conteo</a>
+										<?php } ?>
+										
 									</fieldset>	
 								</div>								
 							

@@ -24,6 +24,253 @@ var target = document.getElementById('foo');
 ////////////////////////////////////////Ajustes///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+var productos_temporales = ['Código', 'Descripción','Color', 'Lote - No. consecutivo', 'No. de Partida','Medida(Mts)','Ancho(cm)','Precio','Peso Real']; 
+
+
+
+jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
+
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
+
+	   var arreglo_cantidad_um = [];
+	   var arreglo_ancho = [];
+	   var arreglo_precio = [];
+	   var arreglo_peso = [];
+
+	    var arreglo = {};
+
+   		jQuery("#tabla_entrada_sobrante tbody tr td input.cantidad_um").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador');  
+	   		arreglo['cantidad_um'] = jQuery(this).val();
+	   		arreglo_cantidad_um.push( arreglo);
+	   });
+
+   		jQuery("#tabla_entrada_sobrante tbody tr td input.ancho").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador');  
+	   		arreglo['ancho'] = jQuery(this).val();
+	   		arreglo_ancho.push( arreglo);
+	   });
+
+	   jQuery("#tabla_entrada_sobrante tbody tr td input.precio").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador');  
+	   		arreglo['precio'] = jQuery(this).val();
+	   		arreglo_precio.push( arreglo);
+	   });
+
+	   jQuery("#tabla_entrada_sobrante tbody tr td input.peso_real").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador');  
+	   		arreglo['peso_real'] = jQuery(this).val();
+	   		arreglo_peso.push( arreglo);
+	   });
+
+
+
+		jQuery.ajax({
+		        url : '/validar_proceso_sobrante',
+		        data : { 
+		        		  		dato: "valor",
+							 arreglo_cantidad_um:arreglo_cantidad_um, 
+							       arreglo_ancho:arreglo_ancho, 
+							      arreglo_precio:arreglo_precio,
+							    	arreglo_peso:arreglo_peso,
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+					if(data.exito != true){
+						spinner.stop();
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','block');
+						jQuery('#messages').addClass('alert-danger');
+						jQuery('#messages').html(data.error);
+						jQuery('html,body').animate({
+							'scrollTop': jQuery('#messages').offset().top
+						}, 1000);
+					}else{
+						/*
+						spinner.stop();
+						//borrar el mensaje q quedo	
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','none');
+
+
+
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
+						
+												$catalogo = e.target.name;
+												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
+									        	
+									        }
+								});			
+								*/
+						
+					}		        			        	  
+				}
+		});	
+
+});
+
+
+
+jQuery('#tabla_entrada_sobrante').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_temporales_sobrante",
+         		"type": "POST"
+     },   
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+	    return pre
+  	} ,    
+   "columnDefs": [
+   				{ 
+		                "render": function ( data, type, row ) {
+		                		if (row[17]!='') {
+		                			return row[2]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                		} else {
+		                			return row[2];
+		                		}
+		                		
+		                },
+		                "targets": [2]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },  
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [1,3]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [4]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [5]
+	            },
+
+
+	   
+				{
+	                "render": function ( data, type, row ) {
+						
+						//modulo= jQuery("#modulo").val(); 
+
+						texto='<td>'; 
+							texto+='<input restriccion="decimal" value="'+row[4]+'" identificador="'+row[0]+'" type="text" class="form-control ttip cantidad_um" title="Números y puntos decimales."  placeholder="0.00">';							
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 6
+	            },	 
+				{
+	                "render": function ( data, type, row ) {
+						
+						//modulo= jQuery("#modulo").val(); 
+
+						texto='<td>'; 
+							texto+='<input restriccion="decimal" value="'+row[5]+'" identificador="'+row[0]+'" type="text" class="form-control ttip ancho" title="Números y puntos decimales."  placeholder="0.00">';							
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 7
+	            },	 	            
+
+				{
+	                "render": function ( data, type, row ) {
+						
+						//modulo= jQuery("#modulo").val(); 
+
+						texto='<td>'; 
+							texto+='<input restriccion="decimal" value="'+row[13]+'" identificador="'+row[0]+'" type="text" class="form-control ttip precio" title="Números y puntos decimales."  placeholder="0.00">';							
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 8
+	            },	 	            
+				{
+	                "render": function ( data, type, row ) {
+						
+						//modulo= jQuery("#modulo").val(); 
+
+						texto='<td>'; 
+							texto+='<input restriccion="decimal" value="'+row[12]+'" identificador="'+row[0]+'" type="text" class="form-control ttip peso_real" title="Números y puntos decimales."  placeholder="0.00">';							
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 9
+	            },	            
+
+    			{ 
+	                 "visible": false,
+	                "targets": [0,10,11,12,13,14,15,16,17] //11,12
+	            }
+
+	],	
+
+
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =productos_temporales;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
+
 
 jQuery('#tabla_entrada_ajuste').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
@@ -236,12 +483,6 @@ jQuery('#tabla_ajustes').dataTable( {
 		                "targets": [0,1,2,3,4,5] //
 		            },
 
-		            /*
- 									  7=>$row->conteo1,
-                                      8=>$row->conteo2,
-                                      9=>$row->conteo3,
-		            */
-
 					{
 		                "render": function ( data, type, row ) {
 							return row[6];	
@@ -261,26 +502,18 @@ jQuery('#tabla_ajustes').dataTable( {
 		        ],
 
 				"infoCallback": function( settings, start, end, max, total, pre ) {
-					    /*
-					    if (settings.json.generales) {
-						    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
-						} else {
-						    
-						}	*/
+						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);		
 
-						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);					
+						//jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);			
+						//console.log(settings.aoData.length);			
 
-						if (settings.json.generales.modulo_activo!=jQuery("#modulo").val()) {
-							jQuery("#hab_proceso").attr('disabled', true);					
-						} else {
+						if (settings.aoData.length>0) {
 							jQuery("#hab_proceso").attr('disabled', false);					
+						} else {
+							jQuery("#hab_proceso").attr('disabled', true);					
 						}
-
 					    return pre
 				  	} ,    
-
-
-
 	});	
 
 

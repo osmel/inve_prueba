@@ -7,6 +7,7 @@ class Conteo_fisico extends CI_Controller {
     $this->load->model('catalogo', 'catalogo');  
     $this->load->model('modelo', 'modelo');  
     $this->load->model('model_pedido', 'modelo_pedido');    
+    $this->load->model('model_entradas', 'model_entrada');  
 
     $this->load->model('model_salida', 'modelo_salida');  
 
@@ -55,6 +56,7 @@ class Conteo_fisico extends CI_Controller {
 
   public function procesando_informe_pendiente(){
       $data=$_POST;
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
       $dato['entradas']  = $this->model_conteo_fisico->entradas($data); 
       $dato['pedidos']  = $this->model_conteo_fisico->pedidos($data); 
       $dato['devoluciones']  = $this->model_conteo_fisico->devoluciones($data); 
@@ -225,6 +227,7 @@ public function conteo3(){
 
 public function procesando_conteos(){
       $data=$_POST;
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
       $busqueda  = $this->model_conteo_fisico->buscador_costos($data);
       echo $busqueda;
   } 
@@ -389,17 +392,19 @@ public function sobrante(){
 
 public function procesando_ajustes(){
       $data=$_POST;
+      
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+
       $busqueda  = $this->model_conteo_fisico->buscador_ajustes($data);
       echo $busqueda;
 } 
 
 
-  public function salida_faltante($modulo,$id_almacen,$retorno){
-
-
+  public function salida_faltante($modulo,$retorno){
 
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
+          $id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
 
           $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
           if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -407,10 +412,10 @@ public function procesando_ajustes(){
            }   
            
            $data['modulo']       = base64_decode($modulo);    
-           $data['id_almacen']   =  base64_decode($id_almacen);    
            $data['retorno']       = base64_decode($retorno);    
-
-         
+           $data['id_almacen']   =  $this->session->userdata('id_almacen_ajuste');  
+           
+           
 
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
@@ -421,8 +426,11 @@ public function procesando_ajustes(){
 
            $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
            
-           $data['nombre']   = "asasdas";
-           $data['cargador']   = "asasdas";
+           $dato['id'] = 3;
+           $data['cargador']   =  $this->catalogo->coger_cargador($dato)->nombre; 
+           
+           $dato['id'] = $id_cliente_asociado;
+           $data['nombre']   =  $this->catalogo->tomar_proveedor($dato)->nombre; 
            $dato['id'] = 7;
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
@@ -441,10 +449,187 @@ public function procesando_ajustes(){
         else{ 
           redirect('');
         }     
-    
-    
   }
 
+public function entrada_sobrante1111($modulo,$retorno){
+
+              $data['id_empresa'] =  $this->session->userdata('id_cliente_asociado');
+              $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+              $data['id_factura']=2; //remision
+              $data['id_tipo_pago']=2; //contado
+              $data['movimiento'] = $this->model_conteo_fisico->consecutivo_operacion_entrada(1,$data['id_factura']); //cambio
+              $data['productos'] = $this->model_conteo_fisico->anadir_producto_temporal($data);
+  
+}  
+public function entrada_sobrante($modulo,$retorno){
+
+
+     if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+          $id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+
+
+            $data['id_empresa'] =  $this->session->userdata('id_cliente_asociado');
+            $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+            $data['id_factura']=2; //remision
+            $data['id_tipo_pago']=2; //contado
+            $data['movimiento'] = $this->model_conteo_fisico->consecutivo_operacion_entrada(1,$data['id_factura']); //cambio
+            $data['productos'] = $this->model_conteo_fisico->anadir_producto_temporal($data);
+
+           
+           $data['modulo']       = base64_decode($modulo);    
+           $data['retorno']       = base64_decode($retorno);    
+           
+           
+           
+
+           $data['productos'] = $this->catalogo->listado_productos_unico();
+           $data['colores'] = $this->catalogo->listado_colores_unico();
+           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+           $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+
+
+          // $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
+           
+           $dato['id'] = 3;
+           $data['cargador']   =  $this->catalogo->coger_cargador($dato)->nombre; 
+           
+           $dato['id'] = $id_cliente_asociado;
+           $data['nombre']   =  $this->catalogo->tomar_proveedor($dato)->nombre; 
+           $dato['id'] = 7;
+           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
+         
+
+
+
+            $data['medidas']  = $this->catalogo->listado_medidas();
+            $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
+            $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
+            $data['consecutivo']  = $this->catalogo->listado_consecutivo(1);
+
+            $data['movimientos']  = $this->model_entrada->listado_movimientos_temporal();
+            $data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
+            $data['productos']   = $this->catalogo->listado_productos_unico_activo();
+
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['pagos']   = $this->catalogo->listado_tipos_pagos();
+
+            
+
+
+
+
+
+
+
+               
+            switch ($id_perfil) {    
+              case 1:          
+                          $this->load->view( 'conteo_fisico/entrada_sobrante',$data );
+                break;
+              default:  
+                redirect('');
+                break;
+            }
+        
+        }
+        else{ 
+          redirect('');
+        }     
+    
+    
+  }  
+
+
+
+public function validar_proceso_sobrante(){ 
+
+    if($this->session->userdata('session') === TRUE ){
+          $id_perfil=$this->session->userdata('id_perfil');
+          $data['id_factura']=2; //remision
+
+          $data['dev'] = 0; 
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }  
+
+
+            $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+
+            $data['cantidad_um'] =  json_decode(json_encode( $this->input->post('arreglo_cantidad_um') ),true  );
+            $data['ancho'] =  json_decode(json_encode( $this->input->post('arreglo_ancho') ),true  );
+            $data['precio'] =  json_decode(json_encode( $this->input->post('arreglo_precio') ),true  );
+            $data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );
+
+            $this->model_conteo_fisico->actualizar_peso_real($data);
+
+            //verificar si hay pesos reales en cero 
+            $existe = $this->model_conteo_fisico->existencia_temporales_peso_real($data);
+            if  (!($existe)) {
+              $errores= "Existen productos sin especificar Peso real, cantidad, ancho o precio.";
+            } 
+
+            if (($existe)) {
+
+              
+                //copiar a tabla "registros" e "historico_registros_entradas"
+                $data['id_operacion'] =1;
+                $data['num_mov'] = $this->model_conteo_fisico->procesando_operacion($data);
+                
+
+               
+                $this->load->library('ciqrcode');
+                //hacemos configuraciones
+
+            $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+            /* 
+                
+                foreach ($data['movimientos'] as $key => $value) {
+                  
+                  $params['data'] = $value->codigo;
+                  $params['level'] = 'H';
+                  $params['size'] = 30;
+                  $params['savename'] = FCPATH.'qr_code/'.$value->codigo.'.png';
+                  $this->ciqrcode->generate($params);    
+                
+                }
+
+              $data['exito']  = true;
+              echo json_encode($data);
+          */
+
+          } else { 
+
+              $data['exito']  = false;
+              $data['error'] = '<span class="error">'. $errores.'</span>';
+              echo json_encode($data);
+
+                  
+          }  
+
+            
+    }
+        else{ 
+          redirect('');
+    }  
+  }
+
+
+  //Esta es la Regilla de los productos
+  public function procesando_temporales_sobrante(){
+    $data=$_POST;
+    $busqueda = $this->model_conteo_fisico->buscador_productos_temporales($data);
+    echo $busqueda;
+  } 
 
   public function procesando_servidor_ajustes(){
     

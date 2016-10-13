@@ -60,6 +60,542 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
+ public function procesando_operacion( $data ){
+          $consecutivo = self::consecutivo_operacion_entrada(1,$data['id_factura']); //cambio
+          //self::reordenar_new_temporal(); //cambio
+          //self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
+
+          $id_session = $this->session->userdata('id');
+          $fecha_hoy = date('Y-m-d H:i:s');  
+             
+          //aqui lista todos los datos que fueron entrados por un usuario especifico   
+          $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen,id_factura,id_fac_orig,iva, id_tipo_pago');
+          $this->db->select('id_medida, cantidad_um, peso_real, cantidad_royo, ancho, precio, codigo, comentario, id_estatus, id_lote, consecutivo');
+          $this->db->select('id_cargador, id_usuario, fecha_mac, id_operacion');
+          $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
+
+          $this->db->select($consecutivo.' AS movimiento',false); //cambio
+
+          $this->db->from($this->registros_temporales);
+
+          $this->db->where('id_usuario',$id_session);
+          $this->db->where('id_operacion',$data['id_operacion']);
+          $this->db->where('id_almacen',$data['id_almacen']);
+
+          $result = $this->db->get();
+
+          $objeto = $result->result();
+          //copiar a tabla "registros" e "historico_registros_entradas"
+          foreach ($objeto as $key => $value) {
+            $this->db->insert($this->historico_registros_entradas, $value); 
+            $value->peso_real = 0; //para el futuro es necesario hacerlo 0
+            $this->db->insert($this->registros, $value);
+            $num_movimiento = $value->movimiento;
+          }
+
+          //aqui es donde voy a agregar "historico_ctasxpagar"
+
+                  $this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
+                  $this->db->select('m.id_tipo_pago');
+                  $this->db->select('m.id_almacen');
+                  $this->db->select('m.id_empresa');
+                  $this->db->select('m.fecha_entrada');
+                  $this->db->select('m.factura');
+                  $this->db->select('m.id_factura,m.id_fac_orig');
+                  $this->db->select('m.fecha_mac, m.id_operacion,m.id_usuario');
+                  $this->db->select('m.comentario');
+                  
+                  $this->db->select('sum(m.precio) as subtotal');           
+                  $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
+                  $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
+                 
+
+                  $this->db->from($this->registros_temporales.' as m');
+
+          
+                  $where = '(
+                                 (m.id_usuario = "'.$id_session.'" ) AND (m.id_almacen = '.$data['id_almacen'].' ) AND
+                                 ( m.id_operacion = '.$data['id_operacion'].' )    
+                           )';
+                   
+
+                  $this->db->where($where);          
+
+                  $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+
+
+                  $result_ctas_pagar = $this->db->get();
+
+                  
+                  $objeto_ctas_pagar = $result_ctas_pagar->result();
+                  //copiar a tabla de "historico_ctasxpagar"  un resumen
+                  foreach ($objeto_ctas_pagar as $key => $value) {
+                    $this->db->insert($this->historico_ctasxpagar, $value); 
+                    
+                  }
+
+
+          //fin de  agregar "historico_ctasxpagar"
+
+          //actualizar (consecutivo) en tabla "operacion" 
+          if ($data['id_factura']==1) {
+              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          } else {
+              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+          }
+
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',1);
+          $this->db->update($this->operaciones);
+
+          //eliminar los registros en "temporal_registros" del usuario 
+          $this->db->delete($this->registros_temporales, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'],'id_almacen'=>$data['id_almacen'])); 
+
+          return $num_movimiento;
+
+          $result->free_result();          
+
+        }
+
+
+      public function consecutivo_productos($referencia){
+
+        $this->db->select('p.id, p.referencia, p.consecutivo');
+        $this->db->from($this->productos .' as p');
+        
+        $this->db->where('referencia',$referencia);  
+        
+
+        $result = $this->db->get();
+
+          if ( $result->num_rows() > 0 )
+             return $result->row();
+          else
+             return False;
+          $result->free_result();
+      } 
+
+public function anadir_producto_temporal( $data ){
+              $id_session = $this->session->userdata('id');
+              $fecha_hoy2 = date('Y-m-d H:i:s');  
+              
+              $fecha_hoy= date ( 'Y-m-d H:i:s' , strtotime ( '+1 g' , strtotime ($fecha_hoy2) ) );
+              $cant=0;
+
+              $hoy = getdate();
+              $fecha_formateada = ($hoy["seconds"]+$hoy["minutes"]+$hoy["hours"]+$hoy["mday"]+$hoy["mon"]+$hoy["year"]);
+              $id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
+
+
+              $this->db->select('CONCAT('.$id_cliente_asociado.',SUBSTRING(calm.referencia, 9 ),"001",'.$fecha_formateada.') as codigo', false);
+
+
+              $this->db->select('"'.$id_session.'" as id_usuario', false);
+              $this->db->select('"'.$fecha_hoy.'" as fecha_entrada', false);
+              $this->db->select('"F-ajuste" as factura', false);
+              $this->db->select('"P-ajuste" as num_partida', false);
+              $this->db->select('"Ajuste por sobrante" as comentario', false);
+              
+              $this->db->select('"0" as iva', false);
+              
+              $this->db->select('"0" as peso_real', false);
+              $this->db->select('"0" as cantidad_um', false);
+              $this->db->select('"0" as ancho', false);
+              $this->db->select('"0" as precio', false);
+              
+              $this->db->select('"1" as id_operacion', false); //operacion 1 es entrada
+              $this->db->select('"1" as id_medida', false); //mts
+              $this->db->select('"12" as id_estatus', false); //normal
+              $this->db->select('"001" as id_lote', false); //lote 001
+
+              $this->db->select('"'.$data['id_empresa'].'" as id_empresa', false);
+              $this->db->select('"'.$data['movimiento'].'" as movimiento', false);
+              $this->db->select('"'.$data['id_almacen'].'" as id_almacen', false);
+              $this->db->select('"'.$data['id_factura'].'" as id_factura', false);
+              $this->db->select('"'.$data['id_factura'].'" as id_fac_orig', false);
+              $this->db->select('"'.$data['id_tipo_pago'].'" as id_tipo_pago', false);
+
+              $this->db->select('calm.descripcion as id_descripcion', false);
+              $this->db->select('calm.id_color as id_color', false);
+              $this->db->select('calm.id_composicion as id_composicion', false);
+              $this->db->select('calm.id_calidad as id_calidad', false);
+
+              $this->db->select('calm.referencia as referencia', false);
+              $this->db->select('calm.conteo3-calm.cantidad_royo as cantidad_royo', false);
+
+              $this->db->select('calm.consecutivo as consecutivo', false);
+
+              
+              //$this->db->set( 'codigo', $data['codigo'].'_'.$i   );
+              //$this->db->set( 'consecutivo', $i);           //data['consecutivo']
+
+
+
+              $this->db->from($this->conteo_almacen.' As calm');
+
+
+              $where = '(
+                          (calm.sobrante=0) and (calm.num_conteo>=3) AND (calm.cantidad_royo<calm.conteo3) AND (calm.id_almacen =  '.$data["id_almacen"].' )
+                        )';
+
+
+              $this->db->where($where);
+              $this->db->order_by('calm.referencia', 'desc');                         
+
+              $result = $this->db->get();
+
+              //return $result->result();
+
+            $objeto = $result->result();
+            
+            //$data['productos'] = $this->model_conteo_fisico->anadir_producto_temporal($data);
+             
+            
+               
+            foreach ($objeto as $key => $value) {
+                   $cant = self::consecutivo_productos($value->referencia)->consecutivo;
+
+                    //actualizar el consecutivo de cada referencia
+                    $this->db->set( 'consecutivo',($value->cantidad_royo+$cant), FALSE  );
+                    $this->db->set( 'id_usuario', $id_session );
+                    $this->db->where('referencia',$value->referencia);
+                    $this->db->update($this->productos);
+
+
+                  for ($i=(1+$cant); $i <= ($value->cantidad_royo+$cant) ; $i++) {         
+                      $cod_temp=$value->codigo;
+                      $value->codigo=$value->codigo.'_'.$i;
+                      $value->consecutivo=$i;
+                      $this->db->insert($this->registros_temporales, $value); 
+                      $value->codigo=$cod_temp;
+                  }
+          
+                  
+              }
+
+
+                //indicar en la tabla que ya se hizo el sobrante
+                $this->db->set( 'sobrante', 1  );  
+                $this->db->where('id_almacen',$data['id_almacen']);                
+                $this->db->update($this->conteo_almacen);
+
+          if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+
+}
+
+ 
+
+         public function actualizar_peso_real( $data ){
+            foreach ($data['pesos'] as $key => $value) {
+
+                if(!is_numeric($value['peso_real'])) {  //caso cuando el peso viene vacio
+                  $value['peso_real'] = 0;
+                  
+                } 
+                
+                $this->db->set( 'cantidad_um', $data['cantidad_um'][$key]['cantidad_um'], FALSE  );
+                $this->db->set( 'ancho', $data['ancho'][$key]['ancho'], FALSE  );
+                $this->db->set( 'precio', $data['precio'][$key]['precio'], FALSE  );
+                $this->db->set( 'peso_real', $value['peso_real'], FALSE  );
+
+                
+                $this->db->where('id',$value['id']);                
+                $this->db->update($this->registros_temporales);
+              }
+            return TRUE;       
+         }
+  
+/*
+
+
+    public function actualizar_cantidad_aprobado( $data ){
+            $id_session = ($this->session->userdata('id'));
+
+            foreach ($data['cant_aprobada'] as $key => $value) {
+                if(!is_numeric($value['cantidad'])) {  //caso cuando el peso viene vacio
+                  $value['cantidad'] = 0;                  
+                } 
+                $this->db->set( 'comentario', '"'.addslashes($data['comentario']).'"', FALSE  );
+
+                $this->db->set( 'cantidad_aprobada', $value['cantidad'], FALSE  );
+                $this->db->set( 'cantidad_pedida', $data['cant_solicitada'][$key]['cantidad'], FALSE  );
+                $this->db->where('id_producto',$value['id']);                
+                $this->db->where('movimiento',$data['movimiento']);                
+                $this->db->update($this->historico_pedido_compra);
+              }
+
+          $this->db->select("sum(cantidad_aprobada<>cantidad_pedida) as desigual", FALSE);          
+          $this->db->select("sum(cantidad_aprobada) as suma", FALSE);
+          $this->db->from($this->historico_pedido_compra.' as p');
+          $this->db->where('movimiento',$data['movimiento']);                
+
+          $result = $this->db->get();
+      
+          if ( $result->num_rows() > 0 )
+             return (($result->row()->suma>0) && ($result->row()->desigual==0));
+          else
+             return False;
+          $result->free_result();              
+
+            return TRUE;       
+      }*/
+
+
+ public function buscador_productos_temporales($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+           $largo = $data['length'];
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+      
+          switch ($columa_order) {
+                   case '1':
+                        $columna = 'm.codigo';
+                     break;
+                   case '2':
+                        $columna = 'm.id_descripcion';
+                     break;
+                   case '3':
+                        $columna = 'c.hexadecimal_color';
+                     break;
+                   case '4':
+                        $columna = 'm.cantidad_um, u.medida';
+                     break;
+                   case '5':
+                        $columna = 'm.ancho';
+                     break;
+                   case '6':
+                        $columna = 'm.peso_real';
+                     break;
+
+                   case '7':
+                          $columna = 'p.nombre';
+                     break;
+                   case '8':
+                        $columna = 'm.id_lote, m.consecutivo';
+                     break;                     
+
+                   case '9':
+                        $columna = 'm.num_partida';
+                     break;                     
+
+
+                   case '10':
+                        $columna = 'm.precio';
+                     break;      
+
+
+                   case '11':
+                   case '12':
+                        $columna = 'm.precio, m.iva';
+                     break;      
+
+                   default:
+                         $columna = 'm.id_lote, m.id_descripcion';
+                     break;
+                 }                 
+
+
+                      
+          
+          $fecha_hoy =  date("Y-m-d h:ia"); 
+          $hoy = new DateTime($fecha_hoy);
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+
+                    
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
+          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
+          $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
+          $this->db->select('m.peso_real');
+          $this->db->select('m.precio, m.iva');
+
+           $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+           $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);
+
+
+
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("prod.codigo_contable");  
+
+
+          $this->db->from($this->registros_temporales.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+        
+        
+          //filtro de busqueda
+          //( m.id_usuario = '.$id_session.' ) or ( m.id_operacion = 1 ) 
+          $where = '(
+                      (
+                        ( m.id_usuario = '.$id_session.' )
+                      ) 
+                      AND
+                      (    
+                          (m.codigo LIKE  "%'.$cadena.'%") OR ( m.id_descripcion LIKE  "%'.$cadena.'%" ) OR                    
+                          (CONCAT(m.id_lote," - ",m.consecutivo) LIKE  "%'.$cadena.'%" ) OR 
+                          (m.ancho LIKE  "%'.$cadena.'%") 
+                       )   
+
+            )';   
+
+        // OR ( p.nombre  "%'.$cadena.'%" ) 
+ 
+
+
+          $where_total = '( m.id_usuario = '.$id_session.' )  '; //or ( m.id_operacion = 1 ) 
+
+          $this->db->where($where);
+
+          //ordenacion
+          $this->db->order_by($columna, $order); 
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+
+                  foreach ($result->result() as $row) {
+                            $dato[]= array(
+                                      0=>$row->id,
+                                      1=>$row->codigo,
+                                      2=>$row->id_descripcion,
+                                      3=>'<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      4=>$row->cantidad_um, //.' '.$row->medida,
+                                      5=>$row->ancho, //.' cm', 
+                                      6=>$row->nombre,
+                                      7=>$row->id_lote.' - '.$row->consecutivo, 
+                                      8=>$row->id_lote.' - '.$row->consecutivo, 
+                                      9=>$row->num_partida,
+                                      10=>$row->metros,
+                                      11=>$row->kilogramos,  
+                                      12=>$row->peso_real,  
+                                      13=>$row->precio, 
+                                      14=>$row->iva, 
+                                      15=>$row->sum_iva, 
+                                      16=>$row->sum_total, 
+                                      17=>$row->codigo_contable, 
+
+                                                                          
+                                    );
+                   }
+
+                      
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    =>intval( self::total_productos_temporales($where_total) ),  
+                        "recordsFiltered" => $registros_filtrados, 
+                        "data"            =>  $dato,
+
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0, //intval( self::total_productos_temporales($where_total) ),  
+                  "recordsFiltered" =>0,
+                  "aaData" => array(),
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+      }  
+
+
+   public function total_productos_temporales($where){
+
+              $this->db->from($this->registros_temporales.' as m');
+              $this->db->where($where);
+
+              $result = $this->db->get();
+              $cant = $result->num_rows();
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+
+       }    
+
+
+        public function existencia_temporales_peso_real($data){
+
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+               /* 
+              $this->db->where('id_almacen',$data['id_almacen']);
+              $this->db->where('id_usuario',$id_session);
+              $this->db->where('id_operacion',1);
+              $this->db->where('peso_real',0);  //no tiene peso real
+              */
+
+              $where = '(
+                         ( (id_almacen='.$data['id_almacen'].') and (id_usuario="'.$id_session.'") AND (id_operacion=1) ) AND
+                         ( (cantidad_um=0) OR (ancho=0) OR (precio=0) OR (peso_real=0)   )
+                      )';
+
+              $this->db->where($where); 
+
+              $this->db->from($this->registros_temporales);
+
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }     
+
+
+       public function consecutivo_operacion_entrada( $id,$id_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
+             
+
+
 
       public function buscador_entrada($data){
 
@@ -246,7 +782,7 @@
                   $retorno= " ";  
                   foreach ($result->result() as $row) {
                             $dato[]= array(
-                                      0=>$row->codigo,
+                                      0=>$row->codigo.' - '.$row->codigo1,
                                       1=>$row->id_descripcion,
                                       2=>$row->color.
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
@@ -485,11 +1021,6 @@ public function buscador_ajustes($data){
                                       10=>$row->id,
                                       11=>$row->num_conteo,
                                       12=>abs($row->cantidad_royo-$row->conteo3),
-                                      
-                                      
-                                      
-
-
                                     );                    
 
                             $num_conteo = $row->num_conteo;

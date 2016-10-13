@@ -6153,6 +6153,18 @@ jQuery('body').on('keypress paste','.peso_real[restriccion="decimal"]', function
     }
 });
 
+jQuery('body').on('keypress paste','.precio[restriccion="decimal"], .cantidad_um[restriccion="decimal"], .ancho[restriccion="decimal"]', function (e) {	
+    var nn = jQuery(this);
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
 
 /////////////////////////////////////////////////PEDIDO Completado///////////////////////////////////////////////////////////
 

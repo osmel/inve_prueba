@@ -718,10 +718,16 @@ $route['faltante']   			= 'conteo_fisico/faltante';
 $route['sobrante']   			= 'conteo_fisico/sobrante';
 $route['procesando_ajustes']  = 'conteo_fisico/procesando_ajustes';
 
-$route['salida_faltante/(:any)/(:any)/(:any)']  = 'conteo_fisico/salida_faltante/$1/$2/$3';
-$route['entrada_sobrante']  = 'conteo_fisico/entrada_sobrante';
+$route['salida_faltante/(:any)/(:any)']  = 'conteo_fisico/salida_faltante/$1/$2';
+$route['entrada_sobrante/(:any)/(:any)'] = 'conteo_fisico/entrada_sobrante/$1/$2';
 
 $route['procesando_servidor_ajustes']  = 'conteo_fisico/procesando_servidor_ajustes';
+
+$route['validar_proceso_sobrante']  = 'conteo_fisico/validar_proceso_sobrante';
+
+$route['procesando_temporales_sobrante']  = 'conteo_fisico/procesando_temporales_sobrante';
+
+
 
 
 /////////////////////////////new_implementacion////////////////////////
