@@ -262,8 +262,7 @@
 							<th style="width:15%;">Proveedor</th>
 							<th style="width:5%;">Lote</th>
 							<th style="width:5%;">No. de Partida</th>
-							<th style="width:5%;">Peso Real</th>
-							
+						
 							<th style="width:15%;">Quitar</th>
 						</tr>
 					</thead>
@@ -323,7 +322,7 @@
 		</div>
 
 			<div class="col-sm-4 col-md-4">
-				<button id="proc_salida1111a" type="button"  class="btn btn-success btn-block">
+				<button disabled id="proc_salida_ajuste" type="button"  class="btn btn-success btn-block">
 					<span class="">Procesar Salida</span>
 				</button>
 			</div>

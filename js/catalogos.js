@@ -24,6 +24,677 @@ var target = document.getElementById('foo');
 ////////////////////////////////////////Ajustes///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+jQuery('body').on('click','#proc_salida_ajuste', function (e) {
+
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
+
+	   	id_almacen = jQuery('#id_almacen').val();
+		id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+		id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+
+
+		jQuery.ajax({
+		        url : '/procesando_salida_ajuste_definitivo',
+		        data : { 
+ 		        		  		 id_almacen:id_almacen,
+							 id_tipo_pedido:id_tipo_pedido, 
+							id_tipo_factura:id_tipo_factura, 
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+					if(data.exito != true){
+						spinner.stop();
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','block');
+						jQuery('#messages').addClass('alert-danger');
+						jQuery('#messages').html(data.error);
+						jQuery('html,body').animate({
+							'scrollTop': jQuery('#messages').offset().top
+						}, 1000);
+					}else{
+						
+						spinner.stop();
+						//borrar el mensaje q quedo	
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','none');
+
+
+
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
+						
+												$catalogo = e.target.name;
+												//window.location.href = '/procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(2); //jQuery("#id_factura").val()
+												window.location.href = '/faltante'; //jQuery("#id_factura").val()
+									        	
+									        }
+								});			
+								
+						
+					}		        			        	  
+				}
+		});	
+
+});
+
+
+//Agregar las estradas a salidas en el modulo de salida "agregar la regilla de arriba a la regilla inferior"
+jQuery('table').on('click','.agregar_ajuste', function (e) {
+	
+	jQuery(this).attr('disabled', true);		
+	identificador = (jQuery(this).attr('identificador')); 
+	proveedor = jQuery('.buscar_proveedor').typeahead("val");
+	cargador = jQuery('.buscar_cargador').typeahead("val");
+	movimiento = jQuery("#movimiento").val();
+	id_almacen = jQuery("#id_almacen").val();
+	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+
+	//editar_proveedor
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
+ 
+	jQuery.ajax({
+		        url : '/agregar_prod_salida',
+		        data : { 
+		        	identificador: identificador,
+		        	id_cliente:proveedor,
+		        	id_cargador:cargador,
+		        	movimiento: movimiento,
+		        	id_almacen: id_almacen,
+		        	id_tipo_pedido: id_tipo_pedido,
+		        	id_tipo_factura: id_tipo_factura,
+		        },
+		        type : 'POST',
+		       // dataType : 'json',
+		        success : function(data) {	
+						if(data != true){
+							//alert('sad');
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+
+
+							//aqui es donde va el mensaje q no se ha copiado
+						}else{
+							
+							spinner.stop();
+							jQuery('#foo').css('display','none');
+						    jQuery('#messages').css('display','none');
+
+						    
+
+							jQuery("fieldset.disabledme").attr('disabled', true);
+
+							jQuery('#tabla_salida_ajuste').dataTable().fnDraw();
+							jQuery('#tabla_entrada_ajuste').dataTable().fnDraw();
+
+
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(data) {	
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'agregar ajustes');
+									        	return false;	
+									        }
+								});	
+
+								
+						}
+		        }
+	});		
+	jQuery(this).attr('disabled', false);				        
+	
+});
+
+jQuery('#tabla_salida_ajuste').dataTable( {
+
+	"processing": true, 	//tratamiento con base de datos
+	"serverSide": true,
+		"ajax": {
+            	"url" : "/procesando_salida_ajuste",
+         		"type": "POST",
+         		 "data": function ( d ) {
+     				
+     				   if  (jQuery('.buscar_proveedor').typeahead("val")) {
+     				   		d.id_cliente = jQuery('.buscar_proveedor').typeahead("val");
+     				   	} else {
+     				   		d.id_cliente = jQuery('#id_proveedor').val();	
+     				   	}	
+
+						    d.producto_filtro = jQuery('#producto_filtro').val();	
+						    d.color_filtro = jQuery('#color_filtro').val();	
+						    d.ancho_filtro = jQuery('#ancho_filtro').val();	
+						    d.factura_filtro = jQuery('#factura_filtro').val();	
+						    d.proveedor_filtro = jQuery('#editar_proveedor_filtro').val();	
+						    d.id_almacen = jQuery('#id_almacen').val();	
+						    d.modulo = jQuery('#modulo').val();	
+							d.id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+    			 } 
+     }, 
+
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+
+
+	 "rowCallback": function( row, data ) {
+	    // Bold the grade for all 'A' grade browsers
+	    if ( data[9] == 3 ) {
+	      jQuery('td', row).addClass( "danger" );
+	    }
+
+	    if ( data[9] == 6 ) {
+	      jQuery('td', row).addClass( "success" );
+	    }
+
+	  },
+
+
+
+
+
+"infoCallback": function( settings, start, end, max, total, pre ) {
+	    
+		cantidad = (jQuery('#tabla_entrada_ajuste').dataTable().fnSettings().aoData.length);
+
+		 
+
+			if(cantidad == 0){
+					jQuery("#proc_salida_ajuste").attr('disabled', false);
+			} else {				
+				jQuery("#proc_salida_ajuste").attr('disabled', true);
+			}	
+							
+
+
+	    jQuery('#total_pieza2').html( 'Total de piezas: 0');
+	    if (settings.json.totales) {
+	    	
+
+		    jQuery('#total_pieza2').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg2').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro2').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+			
+		} else {
+		    jQuery('#total_pieza2').html( 'Total de piezas: 0');
+			jQuery('#total_kg2').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro2').html('Total de mts: 0.00');
+
+		}	
+
+	    return pre
+  	} ,    
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 11 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 12)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_pieza = (end-start);	
+
+			        jQuery('#pieza2').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg2').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro2').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+		} else 	{
+			        jQuery('#pieza2').html('Total de piezas: 0');
+			        jQuery('#metro2').html('Total de mts: 0.00');
+					jQuery('#kg2').html('Total de kgs: 0.00');	
+
+		}	
+    },	  	
+	  
+	"columnDefs": [
+		    	
+		    	{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,1,2,3,4,5,6,7]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[10];	
+	                },
+	                "targets": [8]
+	            },
+
+            
+	            {
+	                "render": function ( data, type, row ) {
+						texto='<td><button'; 
+							texto+='type="button" identificador="'+row[8]+'" class="btn btn-danger btn-block quitar_ajuste">'; 
+							 texto+='Quitar';
+						texto+='</button></td>';
+						return texto;	
+
+	                },
+	                "targets": 9
+	            },
+				{ 
+	                 "visible": false,
+	                "targets": [10,11,12]
+	            }		            
+	        ],
+});	
+
+
+
+//Quitar las salidas y retornarlas a estradas "modulo de salida"
+jQuery('table').on('click','.quitar_ajuste', function (e) {
+
+	jQuery(this).attr('disabled', true);				        
+	
+	identificador = (jQuery(this).attr('identificador'));
+	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+	jQuery.ajax({
+		        url : '/quitar_salida_ajuste', //
+		        data : { 
+		        	identificador: identificador,
+		        	id_tipo_pedido: id_tipo_pedido,
+		        	id_tipo_factura: id_tipo_factura,
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+						
+						if(data.exito != true){
+							//aqui es donde va el mensaje q no se ha copiado
+						}else{
+							/*
+							if(data.total == 0){
+								jQuery("#proc_salida_ajuste").attr('disabled', true);
+							} else {
+								jQuery("#proc_salida_ajuste").attr('disabled', false);
+							}*/	
+
+							jQuery('#tabla_entrada_ajuste').dataTable().fnDraw();
+							jQuery('#tabla_salida_ajuste').dataTable().fnDraw();
+
+								jQuery.ajax({
+									        url : '/conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(data) {	
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar_ajuste');
+									     		return false;
+									        }
+								});	
+
+							//return false;
+						}
+						
+		        }
+	});	
+
+       	jQuery(this).attr('disabled', false);				        
+
+});
+
+
+jQuery('#tabla_entrada_ajuste').dataTable( {
+ 	"processing": true, //	//tratamiento con base de datos
+	"serverSide": true,
+	"ajax": {
+            	"url" : "/procesando_servidor_ajustes",
+         		"type": "POST",
+         		 "data": function ( d ) {
+     				   if  (jQuery('.buscar_proveedor').typeahead("val")) {
+     				   		d.id_cliente = jQuery('.buscar_proveedor').typeahead("val");
+     				   	} else {
+     				   		d.id_cliente = jQuery('#id_proveedor').val();	
+     				   	}	
+
+
+						    d.producto_filtro = jQuery('#producto_filtro').val();	
+						    console.log(d.producto_filtro);
+
+
+						    d.color_filtro = jQuery('#color_filtro').val();	
+
+						    d.ancho_filtro = jQuery('#ancho_filtro').val();	
+						    //alert(d.ancho_filtro);
+						    d.factura_filtro = jQuery('#factura_filtro').val();	
+
+						    d.proveedor_filtro = jQuery('#editar_proveedor_filtro').val();	
+
+						    d.id_almacen = jQuery('#id_almacen').val();	
+						    d.modulo = jQuery('#modulo').val();	
+
+							d.id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
+							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+
+    			 } 
+     }, 
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+		 "rowCallback": function( row, data ) {
+		    // Bold the grade for all 'A' grade browsers
+		    if ( data[9] == 3 ) {
+		      jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( data[9] == 6 ) {
+		      jQuery('td', row).addClass( "success" );
+		    }
+
+		  },
+
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+		cantidad = (jQuery('#tabla_entrada_ajuste').dataTable().fnSettings().aoData.length);
+		if(cantidad == 0){
+					jQuery("#proc_salida_ajuste").attr('disabled', false);
+			} else {				
+				jQuery("#proc_salida_ajuste").attr('disabled', true);
+			}	
+				
+
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+		  
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+
+
+
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+
+
+
+
+	    return pre
+  	} ,  	
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api
+					.column( 11 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 12)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_pieza = (end-start);	
+
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+		}	
+    },  		  
+	"columnDefs": [
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,1,2,3,4,5,6,7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[10];	
+	                },
+	                "targets": [8]
+	            },
+
+	            {
+	                "render": function ( data, type, row ) {
+						texto='<td><button '; 
+							texto+='type="button" class="btn btn-success btn-block agregar_ajuste '+row[8]+'" identificador="'+row[8]+'" >';
+							texto+='<span  class="">Agregar</span>';
+						texto+='</button></td>';
+						return texto;	
+	                },
+	                "targets": 9
+	            },
+				{ 
+	                 "visible": false,
+	                 "targets": [10,11,12]
+	            }		            
+	        ],
+});	
+jQuery('#tabla_ajustes').dataTable( {
+ 	    "pagingType": "full_numbers",
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ajustes",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
+					    	d.modulo = jQuery("#modulo").val(); 				
+					 d.modulo_activo = jQuery("#modulo_activo").val(); 				
+	         		 }
+	     },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+		"columnDefs": [
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5] //
+		            },
+
+					{
+		                "render": function ( data, type, row ) {
+							return row[6];	
+
+		                },
+		                "targets": 6
+		            },	            
+
+					{
+		                "render": function ( data, type, row ) {
+							return row[12];	
+
+		                },
+		                "targets": 7
+		            },	            
+
+		        ],
+
+
+				"infoCallback": function( settings, start, end, max, total, pre ) {
+						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);		
+
+						if (settings.aoData.length>0) {
+							jQuery("#hab_proceso").attr('disabled', false);			
+
+								if ( jQuery(modulo).val()==5) {
+									if  ( settings.json.generales.faltante==2 ) {
+										jQuery("#hab_proceso").attr('disabled', true);					
+										jQuery('#imp_faltante').css('display','block');
+										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0) );   
+										//generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura)
+									} else {
+										jQuery("#hab_proceso").attr('disabled', false);					
+										jQuery('#imp_faltante').css('display','none');
+										jQuery('#imp_nota_faltante').attr("href","");   
+									}
+								}								
+
+								if ( jQuery(modulo).val()==6) {
+									if (settings.json.generales.sobrante==2){
+										jQuery("#hab_proceso").attr('disabled', true);					
+										jQuery('#imp_sobrante').css('display','block');
+										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
+										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
+
+									} else {
+										jQuery("#hab_proceso").attr('disabled', false);					
+
+										jQuery('#imp_sobrante').css('display','none');
+										jQuery('#imp_etiq').attr("href","");   
+										jQuery('#imp_nota').attr("href","");   
+									}
+								}	
+								
+
+						} else {
+							jQuery("#hab_proceso").attr('disabled', true);					
+						}
+
+						
+
+
+				
+					    return pre
+				  	} ,    
+	});	
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////sobrantes///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 var productos_temporales = ['Código', 'Descripción','Color', 'Lote - No. consecutivo', 'No. de Partida','Medida(Mts)','Ancho(cm)','Precio','Peso Real']; 
 
 
@@ -92,7 +763,7 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 							'scrollTop': jQuery('#messages').offset().top
 						}, 1000);
 					}else{
-						/*
+						
 						spinner.stop();
 						//borrar el mensaje q quedo	
 						jQuery('#foo').css('display','none');
@@ -101,7 +772,7 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 
 
 								jQuery.ajax({
-									        url : 'conteo_tienda',
+									        url : '/conteo_tienda',
 									        data : { 
 									        	tipo: 'tienda',
 									        },
@@ -111,11 +782,12 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
 						
 												$catalogo = e.target.name;
-												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
+												//window.location.href = '/procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(2); //jQuery("#id_factura").val()
+												window.location.href = '/sobrante'; //jQuery("#id_factura").val()
 									        	
 									        }
 								});			
-								*/
+								
 						
 					}		        			        	  
 				}
@@ -269,271 +941,11 @@ jQuery('#tabla_entrada_sobrante').dataTable( {
 	},
 });	
 
-
-
-
-jQuery('#tabla_entrada_ajuste').dataTable( {
- 	"processing": true, //	//tratamiento con base de datos
-	"serverSide": true,
-	"ajax": {
-            	"url" : "/procesando_servidor_ajustes",
-         		"type": "POST",
-         		 "data": function ( d ) {
-     				   if  (jQuery('.buscar_proveedor').typeahead("val")) {
-     				   		d.id_cliente = jQuery('.buscar_proveedor').typeahead("val");
-     				   	} else {
-     				   		d.id_cliente = jQuery('#id_proveedor').val();	
-     				   	}	
-
-
-						    d.producto_filtro = jQuery('#producto_filtro').val();	
-						    console.log(d.producto_filtro);
-
-
-						    d.color_filtro = jQuery('#color_filtro').val();	
-
-						    d.ancho_filtro = jQuery('#ancho_filtro').val();	
-						    //alert(d.ancho_filtro);
-						    d.factura_filtro = jQuery('#factura_filtro').val();	
-
-						    d.proveedor_filtro = jQuery('#editar_proveedor_filtro').val();	
-
-						    d.id_almacen = jQuery('#id_almacen').val();	
-						    d.modulo = jQuery('#modulo').val();	
-
-							d.id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
-							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
-
-							//$data["id_almacen"]=1;
-          					//$data["modulo"]=5;
-
-
-
-    				    
-    			 } 
-     }, 
-	"language": {  //tratamiento de lenguaje
-		"lengthMenu": "Mostrar _MENU_ registros por página",
-		"zeroRecords": "No hay registros",
-		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-		"infoEmpty": "No hay registros disponibles",
-		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-		"emptyTable":     "No hay registros",
-		"infoPostFix":    "",
-		"thousands":      ",",
-		"loadingRecords": "Leyendo...",
-		"processing":     "Procesando...",
-		"search":         "Buscar:",
-		"paginate": {
-			"first":      "Primero",
-			"last":       "Último",
-			"next":       "Siguiente",
-			"previous":   "Anterior"
-		},
-		"aria": {
-			"sortAscending":  ": Activando para ordenar columnas ascendentes",
-			"sortDescending": ": Activando para ordenar columnas descendentes"
-		},
-	},
-		 "rowCallback": function( row, data ) {
-		    // Bold the grade for all 'A' grade browsers
-		    if ( data[9] == 3 ) {
-		      jQuery('td', row).addClass( "danger" );
-		    }
-
-		    if ( data[9] == 6 ) {
-		      jQuery('td', row).addClass( "success" );
-		    }
-
-		  },
-
-	"infoCallback": function( settings, start, end, max, total, pre ) {
-	    if (settings.json.totales) {
-		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
-		  
-			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
-			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
-
-		} else {
-		    jQuery('#total_pieza').html( 'Total de piezas: 0');
-			jQuery('#total_kg').html( 'Total de kgs: 0.00');
-			jQuery('#total_metro').html('Total de mts: 0.00');
-
-		}	
-
-
-
-			if (settings.json.recordsTotal==0) {
-				jQuery("#disa_reportes").attr('disabled', true);					
-			} else {
-				jQuery("#disa_reportes").attr('disabled', false);					
-			}
-
-	    return pre
-  	} ,  	
-
-
-	"footerCallback": function( tfoot, data, start, end, display ) {
-	   var api = this.api(), data;
-			var intVal = function ( i ) {
-				return typeof i === 'string' ?
-					i.replace(/[\$,]/g, '')*1 :
-					typeof i === 'number' ?
-						i : 0;
-			};
-
-		if  (data.length>0) {   
-				
-				total_metro = api
-					.column( 11 )
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );
-				total_kilogramo = api
-					.column( 12)
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );
-				total_pieza = (end-start);	
-
-			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
-			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
-			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
-
-		} else 	{
-			        jQuery('#pieza').html('Total de piezas: 0');
-			        jQuery('#metro').html('Total de mts: 0.00');
-					jQuery('#kg').html('Total de kgs: 0.00');	
-
-		}	
-    },  		  
-	"columnDefs": [
-	    		{ 
-	                "render": function ( data, type, row ) {
-	                		return data;
-	                },
-	                "targets": [0,1,2,3,4,5,6,7]
-	            },
-    			{ 
-	                "render": function ( data, type, row ) {
-						return row[10];	
-	                },
-	                "targets": [8]
-	            },
-
-	            {
-	                "render": function ( data, type, row ) {
-						texto='<td><button '; 
-							texto+='type="button" class="btn btn-success btn-block agregar_ajuste '+row[8]+'" identificador="'+row[8]+'" >';
-							texto+='<span  class="">Agregar</span>';
-						texto+='</button></td>';
-						return texto;	
-	                },
-	                "targets": 9
-	            },
-				{ 
-	                 "visible": false,
-	                 "targets": [10,11,12]
-	            }		            
-	        ],
-});	
-jQuery('#tabla_ajustes').dataTable( {
- 	    "pagingType": "full_numbers",
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-	            	"url" : "procesando_ajustes",
-	         		"type": "POST",
-	         		 "data": function ( d ) {
-					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
-					    	d.modulo = jQuery("#modulo").val(); 				
-					 d.modulo_activo = jQuery("#modulo_activo").val(); 				
-	         		 }
-	     },   
-		"language": {  //tratamiento de lenguaje
-			"lengthMenu": "Mostrar _MENU_ registros por página",
-			"zeroRecords": "No hay registros",
-			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			"infoEmpty": "No hay registros disponibles",
-			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-			"emptyTable":     "No hay registros",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"loadingRecords": "Leyendo...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Último",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": Activando para ordenar columnas ascendentes",
-				"sortDescending": ": Activando para ordenar columnas descendentes"
-			},
-		},
-		"columnDefs": [
-			    	{ 
-		                "render": function ( data, type, row ) {
-		                		return data;
-		                },
-		                "targets": [0,1,2,3,4,5] //
-		            },
-
-					{
-		                "render": function ( data, type, row ) {
-							return row[6];	
-
-		                },
-		                "targets": 6
-		            },	            
-
-					{
-		                "render": function ( data, type, row ) {
-							return row[12];	
-
-		                },
-		                "targets": 7
-		            },	            
-
-		        ],
-
-				"infoCallback": function( settings, start, end, max, total, pre ) {
-						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);		
-
-						//jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);			
-						//console.log(settings.aoData.length);			
-
-						if (settings.aoData.length>0) {
-							jQuery("#hab_proceso").attr('disabled', false);					
-						} else {
-							jQuery("#hab_proceso").attr('disabled', true);					
-						}
-					    return pre
-				  	} ,    
-	});	
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////conteo físico///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*
-jQuery('body').on('click','#procesar_contando', function (e) {
-		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
-		   //cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
 
-	var url = "/procesar_contando/"+id_almacen;
-
-	jQuery('#modalMessage').modal({
-		  show:'true',
-		remote:url,
-	}); 
-});
-*/
 
 jQuery('body').on('click','#procesar_contando', function (e) {
 
@@ -730,6 +1142,25 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 						} else {
 							jQuery("#hab_proceso").attr('disabled', false);					
 						}
+
+
+
+
+						if (settings.json.generales.modulo_activo>= parseInt(jQuery("#modulo").val()) ) {	
+										id_almacen = jQuery("#id_almacen_historicos").val(); 		
+					 				   	modulo = jQuery("#modulo").val(); 				
+					 					modulo_activo = jQuery("#modulo_activo").val(); 	
+
+										jQuery('#imp_conteos').css('display','block');
+										jQuery('#imp_nota_conteo').attr('href','/generar_conteos/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(modulo)+'/'+jQuery.base64.encode(modulo_activo) );   
+
+
+									} else {
+										jQuery('#imp_conteos').css('display','none');
+										jQuery('#imp_nota_conteo').attr("href","");   
+						}
+
+
 
 					    return pre
 				  	} ,    

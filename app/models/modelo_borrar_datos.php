@@ -37,7 +37,7 @@
       $this->historico_historial_compra      = $this->db->dbprefix('historico_historial_compra');
 
       $this->catalogo_operaciones      = $this->db->dbprefix('catalogo_operaciones');
-
+      $this->conteo_almacen      = $this->db->dbprefix('conteo_almacen');
     }
 
 
@@ -56,7 +56,7 @@
 
           $this->db->update($this->catalogo_operaciones );
 
-        
+        $this->db->empty_table( $this->conteo_almacen);
         $this->db->empty_table( $this->registros_entradas);
         $this->db->empty_table( $this->registros_salidas);
         $this->db->empty_table( $this->registros_temporales);

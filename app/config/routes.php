@@ -727,6 +727,14 @@ $route['validar_proceso_sobrante']  = 'conteo_fisico/validar_proceso_sobrante';
 
 $route['procesando_temporales_sobrante']  = 'conteo_fisico/procesando_temporales_sobrante';
 
+$route['agregar_salida_faltante'] 	 = 'conteo_fisico/agregar_salida_faltante';
+
+$route['procesando_salida_ajuste'] 	 = 'conteo_fisico/procesando_salida_ajuste';
+
+$route['quitar_salida_ajuste'] 	 = 'conteo_fisico/quitar_salida_ajuste';
+
+$route['procesando_salida_ajuste_definitivo'] 	 = 'conteo_fisico/procesando_salida_ajuste_definitivo';
+$route['generar_conteos/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/generar_conteos/$1/$2/$3';
 
 
 

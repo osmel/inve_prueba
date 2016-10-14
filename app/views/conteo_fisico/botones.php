@@ -99,7 +99,41 @@
 								</div>
 							</div>	
 
+							<fieldset id="imp_sobrante" style="display:none;">
+								<div class="col-sm-3 col-md-3">
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									
+									<a id="imp_etiq" href="" 
+										type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
+									</a>
+								</div>
 
+								<div class="col-sm-3 col-md-3">
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									<a id="imp_nota" href=""  
+										type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
+									</a>
+								</div>
+							</fieldset>						
+
+
+							<fieldset id="imp_faltante" style="display:none;">
+								<div class="col-sm-3 col-md-3">
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									<a id="imp_nota_faltante" href=""  
+										type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
+									</a>
+								</div>
+							</fieldset>	
+
+							<fieldset id="imp_conteos" style="display:none;">
+								<div class="col-sm-3 col-md-3">
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									<a id="imp_nota_conteo" href=""  
+										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
+									</a>
+								</div>
+							</fieldset>								
 
 								
 					</div>	

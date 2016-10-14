@@ -243,10 +243,6 @@ class Salidas extends CI_Controller {
 
       		}			
 
-
-
-
-
 		}	
    }
 
