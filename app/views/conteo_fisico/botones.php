@@ -156,7 +156,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control" name="producto" id="producto" dependencia="color" nombre="un color">
+			                          <select class="col-sm-12 col-md-12 form-control" name="producto_existente" id="producto_existente" dependencia="color_existente" nombre="un color">
 			                            <option value="0">Seleccione un producto</option>
 			                            <?php if($productos){ ?>
 			                              <?php foreach($productos as $producto){ ?>
@@ -174,7 +174,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Color</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="color" id="color"  dependencia="composicion" nombre="una composición" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="color_existente" id="color_existente"  dependencia="composicion_existente" nombre="una composición" style="padding-right:0px">
 			                            <option value="0">Seleccione un color</option>
 			                          </select>
 		                        </div>  
@@ -187,7 +187,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Composición</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="composicion" id="composicion" dependencia="calidad" nombre="una calidad" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="composicion_existente" id="composicion_existente" dependencia="calidad_existente" nombre="una calidad" style="padding-right:0px">
 			                            <option value="0">Seleccione una composición</option>
 			                          </select>
 		                        </div>  
@@ -201,7 +201,7 @@
 		                     <div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Calidad</label>
 								<div class="col-sm-12 col-md-12">
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="calidad" id="calidad" dependencia="" nombre="" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="calidad_existente" id="calidad_existente" dependencia="" nombre="" style="padding-right:0px">
 			                            <option value="0">Seleccione una calidad</option>
 			                          </select>
 		                        </div>  

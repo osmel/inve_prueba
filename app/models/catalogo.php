@@ -1669,6 +1669,35 @@
             $result->free_result();
         }    
 
+
+        public function lista_colores_existente($data){
+
+            $this->db->distinct();
+            $this->db->select("c.color nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select("c.hexadecimal_color", FALSE);  
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->registros_entradas.' As m', 'm.referencia = p.referencia');
+            $this->db->join($this->colores.' As c', 'p.id_color = c.id');
+            $this->db->where('p.activo',0);
+            $this->db->where('m.id_almacen',$data['id_almacen']);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+
+
+            $this->db->order_by('c.color', 'asc'); 
+            
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }    
+
+
         public function lista_composiciones($data){
             //distinct
 
@@ -1682,6 +1711,30 @@
             $this->db->where('p.descripcion', ($data['val_prod']) );
 
             $this->db->where('p.id_color', $data['val_color']);
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }   
+
+        public function lista_composiciones_existente($data){
+            //distinct
+
+            $this->db->distinct();
+            $this->db->select("c.composicion nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->registros_entradas.' As m', 'm.referencia = p.referencia');
+            $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id');
+            //$this->db->where('p.descripcion', $data['val_prod']);
+            $this->db->where('p.activo',0);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('p.id_color', $data['val_color']);
+            $this->db->where('m.id_almacen',$data['id_almacen']);
+
             $result = $this->db->get();
             
             if ( $result->num_rows() > 0 )
@@ -1712,6 +1765,28 @@
             $result->free_result();
         }    
 
+        public function lista_calidad_existente($data){
+            //distinct
+            $this->db->distinct();
+            $this->db->select("c.calidad nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->registros_entradas.' As m', 'm.referencia = p.referencia');
+            $this->db->join($this->calidades.' As c', 'p.id_calidad = c.id');
+            //$this->db->where('p.descripcion', $data['val_prod']);
+            $this->db->where('p.activo',0);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('p.id_color', $data['val_color']);
+            $this->db->where('p.id_composicion', $data['val_comp']);
+            $this->db->where('m.id_almacen',$data['id_almacen']);
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }  
 
         public function refe_producto($data){
             //distinct
@@ -4066,6 +4141,25 @@
                return False;
             $result->free_result();
         }        
+
+       public function listado_productos_existente($data){
+
+          $this->db->distinct();
+          $this->db->select('p.descripcion');
+          $this->db->from($this->productos.' as p');
+          $this->db->join($this->registros_entradas.' As m', 'm.referencia = p.referencia');
+          $this->db->where('p.activo',0);
+          $this->db->where('m.id_almacen',$data['id_almacen']);
+          $this->db->order_by('p.descripcion', 'asc'); 
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }       
 
 
         public function listado_productos($limit=-1, $offset=-1){

@@ -16,6 +16,56 @@ class Conteo_fisico extends CI_Controller {
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
 
+function cargar_dependencia_existente(){
+    
+    $data["id_almacen"] = $this->session->userdata('id_almacen_ajuste');
+
+    $data['campo']        = $this->input->post('campo');
+
+    $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_color']        = $this->input->post('val_color');
+    $data['val_comp']        = $this->input->post('val_comp');
+    $data['val_calida']        = $this->input->post('val_calida');
+
+    $data['dependencia']        = $this->input->post('dependencia');
+
+    switch ($data['dependencia']) {
+        case "producto_existente": //nunca será una dependencia
+            $elementos   = $this->catalogo->listado_productos_existente($data);  
+            break;
+        case "color_existente":
+            $elementos  = $this->catalogo->lista_colores_existente($data);            
+            break;
+        case "composicion_existente":
+            $elementos  = $this->catalogo->lista_composiciones_existente($data);
+            break;
+        case "calidad_existente":
+            $elementos  = $this->catalogo->lista_calidad_existente($data);
+            break;
+
+        default:
+    }
+
+
+
+      $variables = array();
+    if ($elementos != false)  {     
+         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
+            if ($data['dependencia']=="color_existente"){
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => $valor->hexadecimal_color)); 
+            } else {
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => "FFFFFF"));  
+            }
+       }
+    }  
+
+     echo json_encode($variables);
+  }
+
+
+
+
+
   function informe_pendiente() { 
     if($this->session->userdata('session') === TRUE ){
           $id_perfil = $this->session->userdata('id_perfil');
@@ -39,10 +89,14 @@ class Conteo_fisico extends CI_Controller {
                    $data['mod']=7;      
                    $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
 
-
+                  $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+                  //print_r($data['id_almacen']);
+                  //die;
+                  //$this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
 
                     $data['almacenes']   = $this->modelo->listado_almacenes();  
-                    $data['productos'] = $this->catalogo->listado_productos_unico();
+                    $data['productos']   = $this->catalogo->listado_productos_existente($data);  
+                    //$data['productos'] = $this->catalogo->listado_productos_unico();
                    
                     $this->load->view('conteo_fisico/informe_pendiente',$data );
                   break;    

@@ -740,6 +740,11 @@ $route['resumen_conteo'] 	 			= 'conteo_fisico/resumen_conteo';
 $route['procesando_resumen_conteo'] 	= 'conteo_fisico/procesando_resumen_conteo';
 $route['resumiendo_conteo'] 	 		= 'conteo_fisico/resumiendo_conteo';
 
+$route['cargar_dependencia_existente'] 	 		= 'conteo_fisico/cargar_dependencia_existente';
+
+
+
+
 
 
 /////////////////////////////new_implementacion////////////////////////

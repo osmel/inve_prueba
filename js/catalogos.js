@@ -20,6 +20,185 @@ jQuery(document).ready(function($) {
 	};
 var target = document.getElementById('foo');
 
+		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
+					switch(jQuery(this).attr('vista')) {
+
+						case "resumen_conteo":
+							var oTable =jQuery('#resumen_conteo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+						case "tabla_ajustes":
+							var oTable =jQuery('#tabla_ajustes').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+
+						case "tabla_conteos":
+							var oTable =jQuery('#tabla_conteos').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+						
+						case "tabla_informe_pendiente":
+
+							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+					    	oTable._fnAjaxUpdate();		
+					    	
+							window.location.href = '/informe_pendiente'; 
+
+							
+							/*
+							
+
+
+							jQuery('#calidad_existente option:eq(0)').prop('selected', 'selected');
+							jQuery('#composicion_existente option:eq(0)').prop('selected', 'selected');
+							jQuery('#color_existente option:eq(0)').prop('selected', 'selected');
+							jQuery('#producto_existente option:eq(0)').prop('selected', 'selected');
+							jQuery('#producto_existente').trigger( "change");
+
+							*/
+
+							
+
+					        break;
+
+
+						case "costo_rollo":
+							var oTable =jQuery('#tabla_costo_rollo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+
+					    case "listado_traspaso":
+					    
+							etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";
+							etiqueta = (jQuery(this).val()==0) ? "" : etiqueta;
+							jQuery('#label_factura_traspaso').text(etiqueta+jQuery('#id_tipo_factura_historicos option:selected').text());
+ 						    var oTable =jQuery('#tabla_general_traspaso').dataTable();
+					    	oTable._fnAjaxUpdate();
+					    	var oTable =jQuery('#tabla_traspaso_historico').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+
+					    case "pedido_compra":
+					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+					    case "entrada":
+					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "salida":
+					    	var oTable =jQuery('#tabla_historico_salida').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+					    case "devolucion":
+							var oTable =jQuery('#tabla_historico_devolucion').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+					    case "cuentas":
+							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
+							oTable._fnAjaxUpdate();
+							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
+							oTable._fnAjaxUpdate();
+					        break;
+
+
+					    default:
+					        var oTable =jQuery('#tabla_historico_entrada').dataTable();			        
+
+			              break;
+					}
+
+		});
+
+jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_existente").on('change', function(e) {
+
+		var campo = jQuery(this).attr("name");   
+ 		 var val_prod = jQuery('#producto_existente option:selected').text();  		
+ 		 var val_color = jQuery('#color_existente').val();  		  
+ 		 var val_comp = jQuery('#composicion_existente').val();  	
+ 		 var val_calida = jQuery('#calidad_existente').val();  		
+
+
+         var dependencia = jQuery(this).attr("dependencia"); 
+         var nombre = jQuery(this).attr("nombre");           //color composicion
+        
+    	if (dependencia !="") {	    
+	        //limpiar la dependencia
+	        jQuery("#"+dependencia).html(''); 
+	        //cargar la dependencia
+	        console.log(dependencia);
+	        cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
+        }
+
+
+				var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+				oTable._fnAjaxUpdate();
+
+     });
+
+
+
+
+	function cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre) {
+		
+		var url = '/cargar_dependencia_compra';	
+
+		jQuery.ajax({
+		        url : '/cargar_dependencia_existente',
+		        data:{
+		        	campo:campo,
+		        	
+		        	val_prod:val_prod,
+		        	val_color:val_color,
+		        	val_comp:val_comp,
+		        	val_calida:val_calida,
+
+		        	dependencia:dependencia
+		        },
+
+
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {
+		        		
+
+
+	                 jQuery("#"+dependencia).append('<option value="0" >Seleccione '+nombre+'</option>');
+             	     
+
+					if (data != "[]") {
+						
+                        jQuery.each(data, function (i, valor) {
+                            if (valor.nombre !== null) {
+                                 jQuery("#"+dependencia).append('<option value="' + valor.identificador + '" style="background-color:#'+valor.hexadecimal_color+' !important;" >' + valor.nombre + '</option>');     
+                            }
+                        });
+
+	                } 	
+
+					
+				
+					jQuery("#"+dependencia).trigger('change');
+
+                    return false;
+		        },
+		        error : function(jqXHR, status, error) {
+		        },
+		        complete : function(jqXHR, status) {
+		            
+		        }
+		    }); 
+	}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////Resumen COnteo///////////////////////////////////////////////////////////
@@ -3871,84 +4050,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 
-		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
-					switch(jQuery(this).attr('vista')) {
 
-						case "resumen_conteo":
-							var oTable =jQuery('#resumen_conteo').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-						case "tabla_ajustes":
-							var oTable =jQuery('#tabla_ajustes').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-
-						case "tabla_conteos":
-							var oTable =jQuery('#tabla_conteos').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-						
-						case "tabla_informe_pendiente":
-							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-
-						case "costo_rollo":
-							var oTable =jQuery('#tabla_costo_rollo').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-
-					    case "listado_traspaso":
-					    
-							etiqueta = (jQuery(this).val()==2) ? "De Factura a ": "De Remisión a ";
-							etiqueta = (jQuery(this).val()==0) ? "" : etiqueta;
-							jQuery('#label_factura_traspaso').text(etiqueta+jQuery('#id_tipo_factura_historicos option:selected').text());
- 						    var oTable =jQuery('#tabla_general_traspaso').dataTable();
-					    	oTable._fnAjaxUpdate();
-					    	var oTable =jQuery('#tabla_traspaso_historico').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-
-					    case "pedido_compra":
-					    	var oTable =jQuery('#tabla_pedido_compra').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-
-					    case "entrada":
-					    	var oTable =jQuery('#tabla_historico_entrada').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-					    case "salida":
-					    	var oTable =jQuery('#tabla_historico_salida').dataTable();
-					    	oTable._fnAjaxUpdate();
-					        break;
-					    case "devolucion":
-							var oTable =jQuery('#tabla_historico_devolucion').dataTable();
-							oTable._fnAjaxUpdate();
-					        break;
-
-					    case "cuentas":
-							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
-							oTable._fnAjaxUpdate();
-							var oTable =jQuery('#tabla_ctasxpagar').dataTable();
-							oTable._fnAjaxUpdate();
-							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
-							oTable._fnAjaxUpdate();
-					        break;
-
-
-					    default:
-					        var oTable =jQuery('#tabla_historico_entrada').dataTable();			        
-
-			              break;
-					}
-
-		});
 
 		jQuery('.fecha_historicos').daterangepicker(
 		  	  { 
