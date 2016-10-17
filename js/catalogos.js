@@ -43,7 +43,7 @@ var target = document.getElementById('foo');
 
 							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
 					    	oTable._fnAjaxUpdate();		
-					    	
+
 							window.location.href = '/informe_pendiente'; 
 
 							
@@ -1515,7 +1515,7 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 	     },   
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
-		    console.log((settings.json.status_almacen));
+		    console.log((jQuery('#producto_existente > option').length));
 		    
 
 		    
@@ -1524,7 +1524,14 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 			} else {
 				jQuery(".conteo_principal").css('display','block');
 			}		     
-			
+
+				//cuando no hay productos
+			if (jQuery('#producto_existente > option').length>1) {
+				jQuery(".conteo_principal").css('display','block');  	
+			} else {
+				jQuery(".conteo_principal").css('display','none');
+			}		     
+
 		},	
 		"language": {  //tratamiento de lenguaje
 			"lengthMenu": "Mostrar _MENU_ registros por página",
