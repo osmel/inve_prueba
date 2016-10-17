@@ -515,7 +515,38 @@
                    return False;
                 $result->free_result();
         }   
-            
+          
+        public function listado_almacenes(){
+
+              $this->db->select('a.id id_almacen, a.almacen almacen'); 
+              $this->db->from($this->almacenes.' as a');
+
+              //$this->db->where('a.activo', 1);
+
+              $result = $this->db->get();
+
+                if ( $result->num_rows() > 0 )
+                   return $result->result();
+                else
+                   return False;
+                $result->free_result();
+        }               
+
+    public function status_almacen( $data){
+
+              $this->db->select('activo'); 
+              $this->db->from($this->almacenes);
+              $this->db->where('id', $data["id_almacen"]);
+
+              $result = $this->db->get();
+
+                if ( $result->num_rows() > 0 )
+                   return $result->row();
+                else
+                   return False;
+                $result->free_result();
+        }   
+
 
 	} 
 ?>

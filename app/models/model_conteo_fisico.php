@@ -52,8 +52,138 @@
       $this->unidades_medidas        = $this->db->dbprefix('catalogo_unidades_medidas');
       $this->proveedores             = $this->db->dbprefix('catalogo_empresas');
       $this->cargadores             = $this->db->dbprefix('catalogo_cargador');
+
+      $this->historico_conteo_almacen             = $this->db->dbprefix('historico_conteo_almacen');
+
+      
     }
 
+
+
+
+
+    public function archivando_conteo($data){
+          $fecha_hoy = date('Y-m-d H:i:s');  
+          $id_almacen= $data['id_almacen'];
+          $id_session = $this->session->userdata('id');
+          $consecutivo = self::consecutivo_operacion(50); //cambio
+
+          //$this->db->select('"'.$consecutivo.'" AS consecutivo',false);
+          $this->db->select('"'.$id_session.'" as id_usuario', false);
+          $this->db->select('"'.$fecha_hoy.'" AS fecha_culminacion',false);
+
+          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante, p.consecutivo, p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro");
+         
+          
+          $this->db->from($this->conteo_almacen.' as p');
+        
+          
+          $where = '( 
+                        (p.id_almacen =  '.$data["id_almacen"].' )
+                     ) ' ; 
+
+          $this->db->where($where);
+          
+          $result = $this->db->get();
+
+          $objeto = $result->result();
+
+          //copiar a tabla "historico_conteo_almacen"
+          foreach ($objeto as $key => $value) {
+              $this->db->insert($this->historico_conteo_almacen, $value); 
+          }
+
+          //eliminando el conteo activo
+          $this->db->delete($this->conteo_almacen, array('id_usuario'=>$id_session,'id_almacen'=>$data["id_almacen"])); 
+
+
+          //actualizar status de almacen en operaciones" 
+          $this->db->set( 'activo', 1, FALSE  );
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',$data["id_almacen"]);
+          $this->db->update($this->almacenes);
+
+
+          return true;
+
+      }  
+
+
+public function buscador_resumen_conteo($data){
+          
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
+          $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
+          $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
+          
+          
+          
+          $this->db->from($this->conteo_almacen.' as p');
+          $where = '(
+                               (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3)
+                        )';
+
+          $this->db->where($where);
+
+          $this->db->group_by('p.num_conteo');
+
+          $result = $this->db->get();
+          
+
+              if ( $result->num_rows() > 0 ) {
+                 // return $result->num_rows();
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                    
+                  foreach ($result->result() as $row) {
+                           $dato[]= array(
+                                      0=>"Faltante", 
+                                      1=>($row->cant_faltante>0) ? "Si":"No",
+                                      2=>($row->mov_faltante!=0) ? "Si":"No",
+                                      3=>($row->mov_faltante!=0) ? $row->mov_faltante:"-",
+                                      
+                                    );                    
+                           
+                           $dato[]= array(
+                                      0=>"Sobrante", 
+                                      1=>($row->cant_sobrante>0) ? "Si":"No",
+                                      2=>($row->mov_sobrante!=0) ? "Si":"No",
+                                      3=>($row->mov_sobrante!=0) ? $row->mov_sobrante:"-",
+                                    );                            
+
+
+                      }
+  
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => intval( self::total_ajustes($where) ),  
+                        "recordsFiltered" => $registros_filtrados, 
+                        "data"            =>  $dato, 
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array(),
+                  );
+                  $array[]="";
+                  return json_encode($output);
+              }
+
+              $result->free_result();   
+              
+              
+      }  
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
  public function consecutivo_operacion_salida( $id,$id_tipo_pedido,$id_tipo_factura ){
@@ -1702,7 +1832,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
                      ) ' ; 
 
 
-         $where_cond ='';
+         $where_cond ='Todos';
 
          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
@@ -1712,8 +1842,12 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
 
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
               $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) AND  ( p.id_calidad  =  '.$id_calidad.' )';
-              $where_cond = '( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-              $where_cond .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) AND  ( p.id_calidad  =  '.$id_calidad.' )';
+              
+              $where_cond = 'Producto: '.$id_descripcion.';'.
+                             'Color: '.$id_color.';'.
+                             'Composición: '.$id_composicion.';'.
+                             'Calidad: '.$id_calidad.';';
+
           }    
           elseif
            ( 
@@ -1723,8 +1857,12 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
             ) {
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
               $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) ';
-              $where_cond = '( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-              $where_cond .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) ';
+              
+              $where_cond = 'Producto: '.$id_descripcion.';'.
+                             'Color: '.$id_color.';'.
+                             'Composición: '.$id_composicion.';';
+              
+
           }  
 
           elseif 
@@ -1732,12 +1870,13 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
             and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
             ) {
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-              $where_cond = '( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
+              $where_cond = 'Producto: '.$id_descripcion.';'.
+                             'Color: '.$id_color.';';
           }  
 
           elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" )';
-              $where_cond  = '( p.descripcion  =  "'.$id_descripcion.'" )';
+              $where_cond = 'Producto: '.$id_descripcion.';';
           }            
         
     
@@ -1756,19 +1895,6 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
 
 
 
-/*         $registros = $this->db->get();  
-
-
-          if ($registros->num_rows() > 0) {
-              return $registros->result(); 
-          }    
-          else
-              return false;
-          $registros->free_result();
-
-          
-*/
-
           $result = $this->db->get();
 
 
@@ -1776,17 +1902,23 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
 
           //copiar a tabla "registros"
           foreach ($objeto as $key => $value) {
+              $value->filtro = $where_cond;
               $this->db->insert($this->conteo_almacen, $value); 
           }
 
 
 
           //actualizar (consecutivo) en tabla "operacion" 
-          
           $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
           $this->db->set( 'id_usuario', $id_session );
           $this->db->where('id',50);
           $this->db->update($this->operaciones);
+
+          //actualizar status de almacen en operaciones" 
+          $this->db->set( 'activo', 0, FALSE  );
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',$data["id_almacen"]);
+          $this->db->update($this->almacenes);
 
 
           return true;
@@ -2091,7 +2223,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
                 $this->db->set( 'consecutivo_venta', 0);
 
                 $where = '(
-                                      ( m.id_apartado <> 0 ) AND ( m.id_almacen ='.$id_almacen.')
+                                      ( id_apartado <> 0 ) AND ( id_almacen ='.$id_almacen.')
                           )';
 
 
@@ -2159,7 +2291,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
               $this->db->set( 'comentario', '');
               
               $where = '(
-                        ( m.devolucion = 1  )  AND ( m.id_almacen ='.$id_almacen.')
+                        ( devolucion = 1  )  AND ( id_almacen ='.$id_almacen.')
               )';
 
               $this->db->where($where);
@@ -2231,7 +2363,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
                 $this->db->set( 'id_factura_original', 0, false);
 
                 $where = '(
-                                  ( ( incluir =  1 ) AND (proceso_traspaso = 1))  AND ( m.id_almacen ='.$id_almacen.') AND ( m.estatus_salida = "0" )
+                                  ( ( incluir =  1 ) AND (proceso_traspaso = 1))  AND ( id_almacen ='.$id_almacen.') AND ( estatus_salida = "0" )
                 )';
 
                 $this->db->where($where);               

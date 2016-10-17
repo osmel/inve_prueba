@@ -20,6 +20,124 @@ jQuery(document).ready(function($) {
 	};
 var target = document.getElementById('foo');
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////Resumen COnteo///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+jQuery('#resumen_conteo').dataTable( {
+ 	    "pagingType": "full_numbers",
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_resumen_conteo",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 		
+					    	d.modulo = jQuery("#modulo").val(); 				
+					 d.modulo_activo = jQuery("#modulo_activo").val(); 				
+	         		 }
+	     },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+		"columnDefs": [
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3] //
+		            },
+		            	/*
+				{ 
+	                 "visible": false,
+	                "targets": [4,5,6,7,8,9,10,11,12]
+	            }		*/            
+					         
+
+		        ],
+
+		        
+				"infoCallback": function( settings, start, end, max, total, pre ) {
+						cantidad = (jQuery('#resumen_conteo').dataTable().fnSettings().aoData.length);
+
+						if(cantidad == 0){
+								jQuery("#hab_proceso").attr('disabled', true);
+						} else {				
+							jQuery("#hab_proceso").attr('disabled', false);
+						}	
+
+						/*
+						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);		
+
+						if (settings.aoData.length>0) {
+							jQuery("#hab_proceso").attr('disabled', false);			
+
+								if ( jQuery(modulo).val()==5) {
+									if  ( settings.json.generales.faltante==2 ) {
+										jQuery("#hab_proceso").attr('disabled', true);					
+										jQuery('#imp_faltante').css('display','block');
+										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0) );   
+										//generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura)
+									} else {
+										jQuery("#hab_proceso").attr('disabled', false);					
+										jQuery('#imp_faltante').css('display','none');
+										jQuery('#imp_nota_faltante').attr("href","");   
+									}
+								}								
+
+								if ( jQuery(modulo).val()==6) {
+									if (settings.json.generales.sobrante==2){
+										jQuery("#hab_proceso").attr('disabled', true);					
+										jQuery('#imp_sobrante').css('display','block');
+										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
+										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
+
+									} else {
+										jQuery("#hab_proceso").attr('disabled', false);					
+
+										jQuery('#imp_sobrante').css('display','none');
+										jQuery('#imp_etiq').attr("href","");   
+										jQuery('#imp_nota').attr("href","");   
+									}
+								}	
+								
+
+						} else {
+							jQuery("#hab_proceso").attr('disabled', true);					
+						}
+
+						*/
+
+
+				
+					    return pre
+				  	} ,    
+				
+	});	
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////Ajustes///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -576,6 +694,8 @@ jQuery('#tabla_entrada_ajuste').dataTable( {
 	            }		            
 	        ],
 });	
+
+
 jQuery('#tabla_ajustes').dataTable( {
  	    "pagingType": "full_numbers",
 		"processing": true,
@@ -1215,6 +1335,18 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 	         		 }
 	     },   
 
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+		    console.log((settings.json.status_almacen));
+		    
+
+		    
+		    if (settings.json.status_almacen==0) {
+				jQuery(".conteo_principal").css('display','none');  	
+			} else {
+				jQuery(".conteo_principal").css('display','block');
+			}		     
+			
+		},	
 		"language": {  //tratamiento de lenguaje
 			"lengthMenu": "Mostrar _MENU_ registros por página",
 			"zeroRecords": "No hay registros",
@@ -3741,6 +3873,11 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+
+						case "resumen_conteo":
+							var oTable =jQuery('#resumen_conteo').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
 
 						case "tabla_ajustes":
 							var oTable =jQuery('#tabla_ajustes').dataTable();

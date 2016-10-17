@@ -8,7 +8,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>informe_pendiente"  
-							type="button" class="btn <?php echo ($modulo==1) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Se hizo un pedido y esta esperando a que el admin lo revise, O el almacenista hizo la modificacion .">Revisión - Admin. <?php echo "(".$cant[1].")"; ?>
+							type="button" class="btn <?php echo ($modulo==1) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Generar el conteo .">Generar Conteos. 
 						</a>
 					</div>
 
@@ -16,7 +16,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo1"  
-							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="El admin pide modificar">Conteo 1. <?php echo "(".$cant[2].")"; ?>
+							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Primer conteo">Conteo 1. <?php echo "(".$cant[2].")"; ?>
 						</a>
 					</div>
 
@@ -25,21 +25,21 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo2"  
-							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Imprimir y pasarlo al historico.">Conteo 2 <?php echo "(".$cant[3].")"; ?>
+							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Segundo conteo.">Conteo 2 <?php echo "(".$cant[3].")"; ?>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo3"  
-							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ver listado de cancelados.">Conteo 3 <?php echo "(".$cant[4].")"; ?>
+							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Tercer conteo.">Conteo 3 <?php echo "(".$cant[4].")"; ?>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>faltante"  
-							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste negativo.">Faltante <?php echo "(".$cant[5].")"; ?>
+							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste negativo o Lista de faltante.">Faltante <?php echo "(".$cant[5].")"; ?>
 						</a>
 					</div>
 
@@ -47,17 +47,24 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>sobrante"  
-							type="button" class="btn <?php echo ($modulo==6) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste positivo.">Sobrante <?php echo "(".$cant[6].")"; ?>
+							type="button" class="btn <?php echo ($modulo==6) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste positivo o Lista de sobrantes.">Sobrante <?php echo "(".$cant[6].")"; ?>
 						</a>
 					</div>
 
-
-					
-					
-				
+			
 
 				</div>
 
+				<div class="row">
+				<br/>
+					<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>resumen_conteo"  
+							type="button" class="btn <?php echo ($modulo==7) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Mostrar resumen y archivar todos los procesos.">Resumen y Archivo <?php echo "(".$cant[7].")"; ?>
+						</a>
+					</div>		
+					
+				</div>	
 
 
 

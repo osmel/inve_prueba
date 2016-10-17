@@ -21,8 +21,7 @@
 	$dato['cant']['3']=1;
 	$dato['cant']['4']=1;
 	$dato['cant']['5']=1;
-	$dato['cant']['6']=1;
-	*/
+	$dato['cant']['6']=1;*/
 
 	$dato['config_almacen']=$config_almacen;
 	$dato['el_perfil']=$el_perfil;
@@ -31,8 +30,7 @@
 
 	$dato['id_almacen']=$id_almacen;
 
-	
-	
+    $id_almacen_ajuste = $this->session->userdata('id_almacen_ajuste');		
 
 
 ?>
@@ -53,7 +51,7 @@
 
 
 
-			<div class="col-md-12 conteo_principal" style="display:none;">	
+			<div class="col-md-12">	
 				<hr style="padding: 0px; margin: 8px;"/>					
 
 				<div class="row">	
@@ -62,15 +60,13 @@
 						<div class="table-responsive">
 
 							<section>
-								<table id="tabla_informe_pendiente" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<table id="resumen_conteo" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 									<thead>
 										<tr>
-											<th class="text-center " width="25%">Entradas</th>
-											<th class="text-center " width="25%"><strong>Pedidos</strong></th>
-											<th class="text-center " width="25%"><strong>Devolución</strong></th>
-											<th class="text-center " width="25%"><strong>Traspasos</strong></th>
-											
-
+											<th class="text-center " width="15%"><strong>Ajuste</strong></th>
+											<th class="text-center " width="25%"><strong>Estatus</strong></th>
+											<th class="text-center " width="15%"><strong>Realizado</strong></th>
+											<th class="text-center " width="10%"><strong>Movimiento</strong></th>
 										</tr>
 									</thead>
 								</table>
@@ -95,6 +91,8 @@
 					<input type="hidden" id="referencia" name="referencia" value="">
 					<input type="hidden" id="codigo_original" name="codigo_original" value="">
 
+					<input type="hidden" id="modulo_activo" name="modulo_activo" value="">
+
 						
 
 						<div class="row">
@@ -105,16 +103,25 @@
 
 						
 						<div class="row">
-							<div class="col-sm-8 col-md-4"></div>
+							<div class="col-sm-8 col-md-4 hab_proceso"></div>
 							<div class="col-sm-4 col-md-4">
 								<a href="<?php echo base_url(); ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
 							</div>
 
-							<div class="col-sm-4 col-md-4">
-								<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_conteo">
-									<span>Procesar conteo</span>
-								</button>
-							</div>								
+							
+								<div class="col-sm-4 col-md-4">
+									<fieldset id="hab_proceso" style="display:block;" >
+										<!--<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_contando">
+											<span>Procesar conteo</span>
+										</button>-->
+
+
+										<a href="<?php echo base_url(); ?>resumiendo_conteo" type="button" class="btn btn-success btn-block">Procesar conteo</a>
+										
+									</fieldset>	
+								</div>								
+							
+								
 						</div>
 						<br/>
 				

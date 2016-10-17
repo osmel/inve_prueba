@@ -736,6 +736,10 @@ $route['quitar_salida_ajuste'] 	 = 'conteo_fisico/quitar_salida_ajuste';
 $route['procesando_salida_ajuste_definitivo'] 	 = 'conteo_fisico/procesando_salida_ajuste_definitivo';
 $route['generar_conteos/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/generar_conteos/$1/$2/$3';
 
+$route['resumen_conteo'] 	 			= 'conteo_fisico/resumen_conteo';
+$route['procesando_resumen_conteo'] 	= 'conteo_fisico/procesando_resumen_conteo';
+$route['resumiendo_conteo'] 	 		= 'conteo_fisico/resumiendo_conteo';
+
 
 
 /////////////////////////////new_implementacion////////////////////////

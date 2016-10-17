@@ -36,9 +36,12 @@ class Conteo_fisico extends CI_Controller {
                    $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
                    $data['mod']=6;      
                    $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+                   $data['mod']=7;      
+                   $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
 
 
-                    $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
+
+                    $data['almacenes']   = $this->modelo->listado_almacenes();  
                     $data['productos'] = $this->catalogo->listado_productos_unico();
                    
                     $this->load->view('conteo_fisico/informe_pendiente',$data );
@@ -57,7 +60,10 @@ class Conteo_fisico extends CI_Controller {
   public function procesando_informe_pendiente(){
       $data=$_POST;
       $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
-      $dato['entradas']  = $this->model_conteo_fisico->entradas($data); 
+      $data["id_almacen"] = $this->session->userdata('id_almacen_ajuste');
+      $status_almacen  = $this->modelo->status_almacen($data);       
+
+       $dato['entradas']  = $this->model_conteo_fisico->entradas($data); 
       $dato['pedidos']  = $this->model_conteo_fisico->pedidos($data); 
       $dato['devoluciones']  = $this->model_conteo_fisico->devoluciones($data); 
       $dato['traspasos']  = $this->model_conteo_fisico->traspasos($data); 
@@ -80,6 +86,7 @@ class Conteo_fisico extends CI_Controller {
               "recordsTotal"    => 1, //intval( self::total_detalle_colores($where_total) ),  //10
               "recordsFiltered" => 1, //$registros_filtrados, 
               "data"            =>  array($array),
+              "status_almacen"   => $status_almacen->activo,
             ));      
 
         } else {
@@ -88,7 +95,8 @@ class Conteo_fisico extends CI_Controller {
                       "recordsTotal"      => 0, 
                       "recordsFiltered"   => 0,
                       "aaData"            => array(),
-                     // "totales"           => 0,
+                      "status_almacen"    => $status_almacen->activo,
+                     
                   );
                   $array[]="";
                   echo json_encode($output);
@@ -149,7 +157,7 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
                 $coleccion_id_operaciones = array();
            }   
 
-            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
+            $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 
            $data['dato']['vista']  = "tabla_conteos"; 
@@ -165,6 +173,8 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
            $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
            $data['mod']=6;      
            $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=7;      
+           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
 
 
           switch ($id_perfil) {    
@@ -205,12 +215,12 @@ public function conteo3(){
            $data["id_calidad"]= $this->input->post("id_calidad");  
 
             //cancelando las operaciones que estan en procesos
-  /*
+  
             $this->model_conteo_fisico->eliminar_prod_temporal($data); 
             $this->model_conteo_fisico->cancelar_pedido_detalle($data); 
             $this->model_conteo_fisico->quitar_producto_devolucion($data); 
             $this->model_conteo_fisico->quitar_productos_traspasado($data); 
-*/
+
             $this->model_conteo_fisico->creando_conteo($data) ; 
 
             
@@ -332,8 +342,6 @@ public function procesar_contando($id_almacen,$modulo){
   }      
 
 
-
-
 public function ajustes($data){
 
       if ( $this->session->userdata('session') !== TRUE ) {
@@ -347,7 +355,7 @@ public function ajustes($data){
                 $coleccion_id_operaciones = array();
            }   
 
-            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);  
+            $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 
            $data['dato']['vista']  = "tabla_ajustes"; 
@@ -363,6 +371,8 @@ public function ajustes($data){
            $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
            $data['mod']=6;      
            $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=7;      
+           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
 
 
           switch ($id_perfil) {    
@@ -429,7 +439,7 @@ public function entrada_sobrante($modulo,$retorno){
 
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
-           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['almacenes']   = $this->modelo->listado_almacenes();
            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
@@ -619,7 +629,7 @@ public function validar_proceso_sobrante(){
 
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
-           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['almacenes']   = $this->modelo->listado_almacenes();
            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
@@ -872,6 +882,82 @@ public function procesando_salida_ajuste_definitivo(){
                                       11=>$row->num_conteo,
 */
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////Resumen COnteo/////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                                      
+
+
+public function resumen_conteo(){
+
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+
+            $data['almacenes']   = $this->modelo->listado_almacenes();  
+            $data['productos'] = $this->catalogo->listado_productos_unico(); 
+
+            $data['dato']['modulo'] = 7;
+            $data['titulo'] = "";
+
+           $data['dato']['vista']  = "resumen_conteo"; 
+           $data['mod']=1;      
+           $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=2;      
+           $data['dato']['cant'][2]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=3;      
+           $data['dato']['cant'][3]   = 0; //$this->model_pedido_compra->total_modulo($data); 
+           $data['mod']=4;      
+           $data['dato']['cant'][4]   = 0; //$this->model_pedido_compra->total_modulo($data);
+           $data['mod']=5;      
+           $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=6;      
+           $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['mod']=7;      
+           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+
+
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/resumen_conteo', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+         
+       }      
+  }
+
+  public function procesando_resumen_conteo(){
+      $data=$_POST;
+      
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+
+      $busqueda  = $this->model_conteo_fisico->buscador_resumen_conteo($data);
+      
+      //print_r($busqueda);
+      echo $busqueda;
+} 
+
+
+//UPDATE  `inven_conteo_almacen` SET num_conteo =0, conteo3 =0
+
+  public function resumiendo_conteo(){
+      
+        $data["id_almacen"] = $this->session->userdata('id_almacen_ajuste');
+        $this->model_conteo_fisico->archivando_conteo($data);
+        redirect('/informe_pendiente');
+
+      
+} 
 
 /////////////////validaciones/////////////////////////////////////////  
 
