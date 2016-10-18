@@ -705,6 +705,8 @@ $route['conteo1']   			= 'conteo_fisico/conteo1';
 $route['conteo2']   			= 'conteo_fisico/conteo2';
 $route['conteo3']   			= 'conteo_fisico/conteo3';
 
+$route['conteos_opciones']   			= 'conteo_fisico/conteos_opciones';
+
 
 
 
@@ -744,7 +746,17 @@ $route['cargar_dependencia_existente'] 	 		= 'conteo_fisico/cargar_dependencia_e
 
 
 
+			//historico conteo
 
+$route['historico_conteo']   				= 'conteo_fisico/historico_conteo';
+$route['procesando_historico_conteo']   	= 'conteo_fisico/procesando_historico_conteo';
+
+
+$route['historico_conteo1/(:any)/(:any)'] 	 = 'conteo_fisico/historico_conteo1/$1/$2';
+$route['historico_conteo2/(:any)/(:any)'] 	 = 'conteo_fisico/historico_conteo2/$1/$2';
+$route['historico_conteo3/(:any)/(:any)'] 	 = 'conteo_fisico/historico_conteo3/$1/$2';
+
+$route['procesando_conteo_historico']   	= 'conteo_fisico/procesando_conteo_historico';
 
 
 /////////////////////////////new_implementacion////////////////////////

@@ -96,7 +96,7 @@
 					<input type="hidden" id="referencia" name="referencia" value="">
 					<input type="hidden" id="codigo_original" name="codigo_original" value="">
 
-					<input type="hidden" id="modulo_activo" name="modulo_activo" value="">
+					
 
 						
 
@@ -110,7 +110,7 @@
 						<div class="row">
 							<div class="col-sm-8 col-md-4 hab_proceso"></div>
 							<div class="col-sm-4 col-md-4">
-								<a href="<?php echo base_url(); ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
+								<a href="<?php echo base_url(); ?>conteos_opciones" type="button" class="btn btn-danger btn-block">Regresar</a>
 							</div>
 
 							

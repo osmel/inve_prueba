@@ -59,6 +59,282 @@
     }
 
 
+public function buscador_historial_conteo($data){
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          
+
+          $fecha_hoy = date('Y-m-d H:i:s');  
+          $id_almacen= $data['id_almacen'];
+          $id_session = $this->session->userdata('id');
+
+
+          $columa_order = $data['order'][0]['column'];
+
+          $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==0) {  //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'DESC';
+           } 
+
+      
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'p.referencia';
+                     break;
+                   case '1':
+                        $columna = 'p.descripcion';
+                     break;
+                   case '2':
+                        $columna = 'p.imagen'; 
+                     break;
+                   case '3':
+                        $columna = 'c.color';
+                     break;
+                   case '4':
+                              $columna= 'co.composicion';
+                     break;
+                   case '5':
+                              $columna= 'ca.calidad';
+                     break;
+                   default:
+                       $columna = 'p.referencia';
+                       $order = 'DESC';                       
+                     break;
+                 }           
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+
+          
+          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+          $this->db->select('p.imagen');
+          $this->db->select('p.descripcion');
+          $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
+          $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");
+          $this->db->select('c.hexadecimal_color,c.color nombre_color');
+          $this->db->select("co.composicion", FALSE);  
+          $this->db->select("ca.calidad", FALSE);  
+          $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
+         
+          
+          $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
+          
+          $this->db->from($this->historico_conteo_almacen.' as p');
+          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+
+          if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
+              $filtro = ' AND (
+                        (
+                        (
+                        ( (conteo'.(intval($data['modulo'])-1).'<> p.cantidad_royo)  OR (conteo'.(intval($data['modulo'])-1).'<> conteo'.(intval($data['modulo'])-2).')  )
+                        ) AND (num_conteo<>0)
+                        )
+
+                         OR 
+                        (num_conteo=0)
+                        )';
+          } else {
+            $filtro ='';
+          }
+
+          $where = '(
+                      
+                      (
+                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR 
+                        (p.descripcion LIKE  "%'.$cadena.'%") OR 
+                        (c.color LIKE  "%'.$cadena.'%") OR
+                        (co.composicion LIKE  "%'.$cadena.'%")  OR
+                        ( ca.calidad LIKE  "%'.$cadena.'%" ) 
+                       ) AND (p.consecutivo =  '.$data["movimiento"].')'.$id_almacenid.$filtro.'
+            )' ; 
+
+          $this->db->where($where);
+          $this->db->order_by($columna, $order); 
+          $this->db->group_by("p.referencia,p.descripcion,p.id_composicion,p.id_color,p.id_calidad");
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+
+                  foreach ($result->result() as $row) {
+                        $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
+                        if (file_exists($nombre_fichero)) {
+                            $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
+
+                        } else {
+                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                        }
+
+                           $dato[]= array(
+                                      0=>$row->referencia, 
+                                      1=>$row->descripcion,
+                                      2=>$imagen.$row->cantidad_royo,
+                                      3=>$row->nombre_color.                                      
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      4=>$row->composicion,
+                                      5=>$row->calidad,
+                                      6=>$row->cantidad_royo,
+                                      7=>$row->conteo1,
+                                      8=>$row->conteo2,
+                                      9=>$row->conteo3,
+                                      10=>$row->id,
+                                      11=>$row->num_conteo,
+                                      
+                                      
+
+
+                                    );                    
+
+                            $num_conteo = $row->num_conteo;
+                      }
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => intval( self::total_historico_conteo($where) ),  
+                        "recordsFiltered" => $registros_filtrados, 
+                        "data"            =>  $dato, 
+                        "generales"            =>  array(
+                                                      "modulo_activo"=>intval($num_conteo)+2
+                                                    ),  
+
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array(),
+                   "generales"            =>  array(
+                                                      "modulo_activo"=>intval( self::num_conteo($data)+2 )
+                                                    ),  
+                  );
+                  $array[]="";
+                  return json_encode($output);
+              }
+
+              $result->free_result();   
+              
+
+      }  
+
+
+        public function total_historico_conteo($where){
+              $this->db->from($this->historico_conteo_almacen.' as p');
+              $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
+              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
+              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+
+              $this->db->where($where);
+              $cant = $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;     
+       }
+
+
+    //historico
+
+public function buscador_historico_conteo($data){
+          
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("p.consecutivo");
+          $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
+          $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
+          $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
+          //$this->db->select("CONCAT(us.nombre,' ',us.apellidos) AS vendedor",FALSE);
+          $this->db->select("prov.nombre AS vendedor",FALSE);
+          
+          
+          
+          $this->db->from($this->historico_conteo_almacen.' as p');
+          $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+          $where = '(
+                               (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3)
+                        )';
+
+          $this->db->where($where);
+
+          $this->db->group_by('p.consecutivo');
+
+          $result = $this->db->get();
+          
+
+              if ( $result->num_rows() > 0 ) {
+                 // return $result->num_rows();
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+                    
+                  foreach ($result->result() as $row) {
+                           $dato[]= array(
+                                      0=>$row->consecutivo, 
+                                      1=>($row->cant_faltante>0) ? "Si":"No",
+                                      2=>($row->mov_faltante!=0) ? "Si":"No",
+                                      3=>($row->mov_faltante!=0) ? $row->mov_faltante:"-",
+                                      4=>($row->cant_sobrante>0) ? "Si":"No",
+                                      5=>($row->mov_sobrante!=0) ? "Si":"No",
+                                      6=>($row->mov_sobrante!=0) ? $row->mov_sobrante:"-",
+                                      7=>$row->vendedor,
+
+
+                                      
+                                    );                    
+                           
+
+                      }
+  
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => intval( self::total_ajustes($where) ),  
+                        "recordsFiltered" => $registros_filtrados, 
+                        "data"            =>  $dato, 
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array(),
+                  );
+                  $array[]="";
+                  return json_encode($output);
+              }
+
+              $result->free_result();   
+              
+              
+      }  
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -72,7 +348,7 @@
           $this->db->select('"'.$id_session.'" as id_usuario', false);
           $this->db->select('"'.$fecha_hoy.'" AS fecha_culminacion',false);
 
-          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante, p.consecutivo, p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro");
+          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante,  p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro");
          
           
           $this->db->from($this->conteo_almacen.' as p');
@@ -162,6 +438,10 @@ public function buscador_resumen_conteo($data){
                         "recordsTotal"    => intval( self::total_ajustes($where) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
+                        "generales"            =>  array(
+                                                      "modulo_activo"=>intval( self::num_conteo($data)+2 )
+                                                    ),  
+
                       ));
                     
               }   
@@ -171,6 +451,10 @@ public function buscador_resumen_conteo($data){
                   "recordsTotal" => 0,
                   "recordsFiltered" =>0,
                   "aaData" => array(),
+                  "generales"            =>  array(
+                                                      "modulo_activo"=>intval( self::num_conteo($data)+2 )
+                                                    ),  
+
                   );
                   $array[]="";
                   return json_encode($output);
@@ -880,40 +1164,7 @@ public function anadir_producto_temporal( $data ){
             return TRUE;       
          }
   
-/*
 
-
-    public function actualizar_cantidad_aprobado( $data ){
-            $id_session = ($this->session->userdata('id'));
-
-            foreach ($data['cant_aprobada'] as $key => $value) {
-                if(!is_numeric($value['cantidad'])) {  //caso cuando el peso viene vacio
-                  $value['cantidad'] = 0;                  
-                } 
-                $this->db->set( 'comentario', '"'.addslashes($data['comentario']).'"', FALSE  );
-
-                $this->db->set( 'cantidad_aprobada', $value['cantidad'], FALSE  );
-                $this->db->set( 'cantidad_pedida', $data['cant_solicitada'][$key]['cantidad'], FALSE  );
-                $this->db->where('id_producto',$value['id']);                
-                $this->db->where('movimiento',$data['movimiento']);                
-                $this->db->update($this->historico_pedido_compra);
-              }
-
-          $this->db->select("sum(cantidad_aprobada<>cantidad_pedida) as desigual", FALSE);          
-          $this->db->select("sum(cantidad_aprobada) as suma", FALSE);
-          $this->db->from($this->historico_pedido_compra.' as p');
-          $this->db->where('movimiento',$data['movimiento']);                
-
-          $result = $this->db->get();
-      
-          if ( $result->num_rows() > 0 )
-             return (($result->row()->suma>0) && ($result->row()->desigual==0));
-          else
-             return False;
-          $result->free_result();              
-
-            return TRUE;       
-      }*/
 
 
  public function buscador_productos_temporales($data){
@@ -1245,34 +1496,6 @@ public function anadir_producto_temporal( $data ){
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
          
 
-/*
-SELECT book_name,dt_of_pub,pub_lang,no_page,book_price  
-FROM book_mast        
-WHERE pub_lang!="English"     
-AND book_price NOT IN (100,200); 
-
-
-SELECT * FROM match WHERE id NOT IN ( SELECT id FROM email ) ;
-Empty set (0.00 sec)
-
-
-SELECT a.referencia, (
-a.cantidad_royo - a.conteo3
-)dif, count(s.referencia) cantidad
-FROM inven_registros_salidas s
-INNER JOIN inven_conteo_almacen a ON s.referencia = a.referencia
-having dif=cantidad
-
-
-select referencia from 
-(SELECT a.referencia, (
-a.cantidad_royo - a.conteo3
-)dif, COUNT( s.referencia ) cantidad
-FROM inven_registros_salidas s
-INNER JOIN inven_conteo_almacen a ON s.referencia = a.referencia
-HAVING dif = cantidad) aaa
-select referencia from '.$this->registros_salidas.' where referencia="20160611sHIW390")  
-*/
 
 
           $id_almacenid = ' AND (m.id_almacen =  '.$data["id_almacen"].' )' ;  
@@ -1674,7 +1897,7 @@ public function buscador_ajustes($data){
                   "recordsFiltered" =>0,
                   "aaData" => array(),
                    "generales"            =>  array(
-                                                      "modulo_activo"=>0
+                                                      "modulo_activo"=>intval( self::num_conteo($data)+2 )
                                                     ),  
                   );
                   $array[]="";
@@ -1687,13 +1910,22 @@ public function buscador_ajustes($data){
       }  
 
 
-/*
-UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
-`conteo1` =0,
-`conteo2` =0,
-`conteo3` =0
+      public function num_conteo($data) {
+          $this->db->distinct();
+          $this->db->select("p.num_conteo");  
+          $where = '(p.id_almacen =  '.$data["id_almacen"].' )' ;  
+          $this->db->from($this->conteo_almacen.' as p');
+          $this->db->where($where);
+          
+          $result = $this->db->get();
+          if ( $result->num_rows() > 0 )
+             return $result->row()->num_conteo;
+          else
+             return -2;
+          $result->free_result();   
 
-*/
+      }
+
 
         public function total_ajustes($where){
               $this->db->from($this->conteo_almacen.' as p');
@@ -1716,15 +1948,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
 ////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
 
-                /*if ($data['modulo'] == 2) {
-                  $this->db->set( 'conteo1', $value['cantidad'], FALSE  );  
-                } else if ($data['modulo'] == 3) {
-                   $this->db->set( 'conteo2', $value['cantidad'], FALSE  );  
-                } else {
-                   $this->db->set( 'conteo3', $value['cantidad'], FALSE  );  
-                }  */
-
-
+           
     public function actualizar_cantidad( $data ){
             $id_session = ($this->session->userdata('id'));
 
@@ -1733,7 +1957,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
                   $value['cantidad'] = 0;                  
                 } 
 
-                $this->db->set( 'conteo'.($data["modulo"]-1), $value["cantidad"], FALSE  );  
+                $this->db->set('conteo'.($data["modulo"]-1), $value["cantidad"], FALSE  );  
                 $this->db->where('id',$value['id']);                
                 $this->db->where('id_almacen',$data['id_almacen']);                
                 $this->db->update($this->conteo_almacen);
@@ -1746,23 +1970,14 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
           $this->db->where('id_almacen',$data['id_almacen']);                
 
           $result = $this->db->get();
-          /*
-          if ( $result->num_rows() > 0 )
-             return (($result->row()->suma>0) && ($result->row()->desigual==0));
-          else
-             return False;
-          $result->free_result();              
-          */
+       
 
             return TRUE;       
     }
     public function actualizar_conteos( $data ){
 
-          //UPDATE `inven_conteo_almacen` SET `num_conteo`=0
-          //$this->db->set( 'num_conteo', ($data["modulo"]-1), FALSE  );  
-
           if  ($data['modulo']!=4) {
-          $this->db->set( "conteo".($data['modulo']), "(cantidad_royo=conteo".($data['modulo']-1).")*conteo".($data['modulo']-1), FALSE  );
+            $this->db->set( "conteo".($data['modulo']), "(cantidad_royo=conteo".($data['modulo']-1).")*conteo".($data['modulo']-1), FALSE  );
           }
 
           if  ($data['modulo']==2) {
@@ -1772,8 +1987,34 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
           $this->db->set( 'num_conteo', 'num_conteo+1', FALSE  );
           $this->db->where('id_almacen',$data['id_almacen']);                
           $this->db->update($this->conteo_almacen);
+          self::actualizar_cantidad_aprobado($data);
 
     }  
+
+
+      public function actualizar_cantidad_aprobado( $data ){
+          
+          $this->db->select("sum(p.conteo3<>p.cantidad_royo) as desigual", FALSE);          
+          $this->db->from($this->conteo_almacen.' as p');
+          
+          $where = '( 
+                        (p.id_almacen =  '.$data["id_almacen"].')
+                     )'; 
+          $this->db->where($where);
+          $result = $this->db->get();
+          
+          if ($result->row()->desigual==0) {
+              $this->db->set( 'num_conteo', 3  );
+              $this->db->where('id_almacen',$data['id_almacen']);                
+              $this->db->update($this->conteo_almacen);
+          }
+          
+          
+          
+      }
+
+
+
 
    public function consecutivo_operacion( $id ){
               
@@ -2100,7 +2341,7 @@ public function buscador_costos($data){
                   "recordsFiltered" =>0,
                   "aaData" => array(),
                    "generales"            =>  array(
-                                                      "modulo_activo"=>0
+                                                      "modulo_activo"=>intval( self::num_conteo($data)+2 )
                                                     ),  
                   );
                   $array[]="";

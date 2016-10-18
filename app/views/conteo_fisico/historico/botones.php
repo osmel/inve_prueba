@@ -3,10 +3,7 @@
 		$id_almacen_ajuste = 	$this->session->userdata( 'id_almacen_ajuste' );
 		//echo $id_almacen_ajuste;
 	 ?>
-	 
-	 <input type="hidden" id="modulo_activo" name="modulo_activo" value="">
-
-				<div class="row">
+				<div class="row" style="display:none;">
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
@@ -19,7 +16,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo1"  
-							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Primer conteo">Conteo 1 <?php echo '<span class="glyphicon glyphicon-eye-open l2" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Primer conteo">Conteo 1. <?php echo "(".$cant[2].")"; ?>
 						</a>
 					</div>
 
@@ -28,21 +25,21 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo2"  
-							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Segundo conteo.">Conteo 2 <?php echo '<span class="glyphicon glyphicon-eye-open l3" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Segundo conteo.">Conteo 2 <?php echo "(".$cant[3].")"; ?>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>conteo3"  
-							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Tercer conteo.">Conteo 3 <?php echo '<span class="glyphicon glyphicon-eye-open l4" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Tercer conteo.">Conteo 3 <?php echo "(".$cant[4].")"; ?>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>faltante"  
-							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste negativo o Lista de faltante.">Faltante <?php echo '<span class="glyphicon glyphicon-eye-open l5" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste negativo o Lista de faltante.">Faltante <?php echo "(".$cant[5].")"; ?>
 						</a>
 					</div>
 
@@ -50,21 +47,20 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>sobrante"  
-							type="button" class="btn <?php echo ($modulo==6) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste positivo o Lista de sobrantes.">Sobrante <?php echo '<span class="glyphicon glyphicon-eye-open l6" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==6) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ajuste positivo o Lista de sobrantes.">Sobrante <?php echo "(".$cant[6].")"; ?>
 						</a>
-
 					</div>
 
 			
 
 				</div>
 
-				<div class="row">
+				<div class="row" style="display:none;">
 				<br/>
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>resumen_conteo"  
-							type="button" class="btn <?php echo ($modulo==7) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Mostrar resumen y archivar todos los procesos.">Resumen y Archivo <?php echo '<span class="glyphicon glyphicon-eye-open l7" style="display:none;"> <span>'; ?>
+							type="button" class="btn <?php echo ($modulo==7) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Mostrar resumen y archivar todos los procesos.">Resumen y Archivo <?php echo "(".$cant[7].")"; ?>
 						</a>
 					</div>		
 					
@@ -75,7 +71,7 @@
 
 <!-- Aqui comienza filtro	-->
 
-		<div class="col-md-12 form-horizontal" id="tab_filtro" >      
+		<div class="col-md-12 form-horizontal"  id="tab_filtro" >      
 						
 						<h4>Filtros</h4>	
 						<hr style="padding: 0px; margin: 15px;"/>					
@@ -154,9 +150,7 @@
 							
 
 
-					<!--<div id="example2" class="row" style="display:<?php echo ($modulo==1) ? 'block': 'none'; ?>"> -->
-					<div id="example2" class="row conteo_principal" style="display:none;">
-					
+					<div id="example2" class="row" style="display:<?php echo ($modulo==1) ? 'block': 'none'; ?>">
 		                  <div class="col-xs-12 col-sm-6 col-md-4">
 		                     <div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>

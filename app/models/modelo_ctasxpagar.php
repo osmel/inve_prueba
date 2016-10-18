@@ -374,11 +374,7 @@ public function buscador_ctasxpagar($data){
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales_importe"            => json_decode(self::totales_importes($where_total,$data['having'])),
-                        /* array(
-                                "subtotal"=>floatval( self::totales_importes($where_total,$data['having'])->subtotal ), 
-                                "iva"=>floatval( self::totales_importes($where_total,$data['having'])->iva ), 
-                                "total"=>floatval( self::totales_importes($where_total,$data['having'])->total ),
-                                ), */
+                     
                       ));
                     
               }   

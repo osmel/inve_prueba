@@ -8,28 +8,13 @@
    }   
 
 
- $id_almacen=$this->session->userdata('id_almacen');
-
 
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
-	
-	/*
-	$dato['modulo']=1;
-	$dato['cant']['1']=1;
-	$dato['cant']['2']=1;
-	$dato['cant']['3']=1;
-	$dato['cant']['4']=1;
-	$dato['cant']['5']=1;
-	$dato['cant']['6']=1;*/
-
 	$dato['config_almacen']=$config_almacen;
 	$dato['el_perfil']=$el_perfil;
-	$dato['productos']=$productos;
-	$dato['almacenes']=$almacenes;
-
-	$dato['id_almacen']=$id_almacen;
-
+	
+	
 	
 	
 
@@ -43,7 +28,7 @@
 			<div class="container">	
 				<br>
 
-					<?php $this->load->view( 'conteo_fisico/botones',$dato ); ?>			
+					<?php //$this->load->view( 'conteo_fisico/botones',$dato ); ?>			
 
 
 
@@ -61,7 +46,7 @@
 						<div class="table-responsive">
 
 							<section>
-								<table id="tabla_conteos" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
+								<table id="tabla_conteo_historico" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 									<thead>
 										<tr>
 											<th class="text-center " width="15%"><strong>Referencia</strong></th>
@@ -88,15 +73,9 @@
 				<br/>
 		
 					
-				
-				
-
-
-
-					<input type="hidden" id="referencia" name="referencia" value="">
-					<input type="hidden" id="codigo_original" name="codigo_original" value="">
-
-					
+					<input type="hidden" id="modulo" name="modulo" value="<?php echo $modulo ?>">
+					<input type="hidden" id="id_almacen" name="id_almacen" value="<?php echo $id_almacen ?>">
+					<input type="hidden" id="movimiento" name="movimiento" value="<?php echo $movimiento ?>">
 
 						
 
@@ -110,7 +89,7 @@
 						<div class="row">
 							<div class="col-sm-8 col-md-4 hab_proceso"></div>
 							<div class="col-sm-4 col-md-4">
-								<a href="<?php echo base_url(); ?>conteos_opciones" type="button" class="btn btn-danger btn-block">Regresar</a>
+								<a href="<?php echo base_url(); ?>historico_conteo" type="button" class="btn btn-danger btn-block">Regresar</a>
 							</div>
 
 							

@@ -16,6 +16,126 @@ class Conteo_fisico extends CI_Controller {
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
 
+  
+  public function procesando_conteo_historico(){
+      $data=$_POST;
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+      $busqueda  = $this->model_conteo_fisico->buscador_historial_conteo($data);
+      echo $busqueda;
+  } 
+
+
+public function historico_conteo1($mov,$id_almacen){
+  $data["movimiento"] = base64_decode($mov);       
+  $data["id_almacen"] = base64_decode($id_almacen);     
+  $data['modulo'] = 2;
+  $data['titulo'] = "";
+  self::historial_conteos($data);
+}
+public function historico_conteo2($mov,$id_almacen){
+  $data["movimiento"] = base64_decode($mov);       
+  $data["id_almacen"] = base64_decode($id_almacen);       
+  $data['modulo'] = 3;
+  $data['titulo'] = "";
+  self::historial_conteos($data);
+}
+public function historico_conteo3($mov,$id_almacen){
+  $data["movimiento"] = base64_decode($mov);       
+  $data["id_almacen"] = base64_decode($id_almacen);       
+  $data['modulo'] = 4;
+  $data['titulo'] = "";
+  self::historial_conteos($data);
+}
+
+
+public function historial_conteos($data){
+
+      if ( $this->session->userdata('session') !== TRUE ) {
+          redirect('');
+        } else {
+
+          $id_perfil = $this->session->userdata('id_perfil');
+
+          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+                $coleccion_id_operaciones = array();
+           }   
+
+           $data['vista']  = "tabla_conteos"; 
+                          
+          switch ($id_perfil) {    
+            case 1:
+                    $this->load->view( 'conteo_fisico/historico/conteo_historico', $data );
+            break;
+
+            default:  
+              redirect('');
+              break;
+          }
+         
+       }      
+  }
+
+
+  function historico_conteo() { 
+    if($this->session->userdata('session') === TRUE ){
+          $id_perfil = $this->session->userdata('id_perfil');
+              switch ($id_perfil) {    
+                case 1: //conteo
+
+                   $data['modulo'] = 1;
+                   $data['vista']  = "tabla_historico_conteo";
+                   $data['mod']=1;      
+                   $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=2;      
+                   $data['dato']['cant'][2]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=3;      
+                   $data['dato']['cant'][3]   = 0; //$this->model_pedido_compra->total_modulo($data); 
+                   $data['mod']=4;      
+                   $data['dato']['cant'][4]   = 0; //$this->model_pedido_compra->total_modulo($data);
+                   $data['mod']=5;      
+                   $data['dato']['cant'][5]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+                   $data['mod']=6;      
+                   $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+                   $data['mod']=7;      
+                   $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+
+                  $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+                  //print_r($data['id_almacen']);
+                  //die;
+                  //$this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+
+                    $data['almacenes']   = $this->modelo->listado_almacenes();  
+                    $data['productos']   = $this->catalogo->listado_productos_existente($data);  
+                    //$data['productos'] = $this->catalogo->listado_productos_unico();
+                   
+                    $this->load->view('conteo_fisico/historico/historico_conteo',$data );
+                  break;    
+                default:  
+                  redirect('');
+                  break;
+              }
+        }
+        else{ 
+          redirect('');
+        } 
+  }
+
+
+ public function procesando_historico_conteo(){
+     
+      $data=$_POST;
+      
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+      $busqueda  = $this->model_conteo_fisico->buscador_historico_conteo($data);
+      
+      //print_r($busqueda);
+      echo $busqueda;
+
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function cargar_dependencia_existente(){
     
     $data["id_almacen"] = $this->session->userdata('id_almacen_ajuste');
@@ -64,6 +184,9 @@ function cargar_dependencia_existente(){
 
 
 
+function conteos_opciones() { 
+    $this->load->view('conteo_fisico/conteo_opciones' );
+}
 
 
   function informe_pendiente() { 
@@ -141,6 +264,9 @@ function cargar_dependencia_existente(){
               "recordsFiltered" => 1, //$registros_filtrados, 
               "data"            =>  array($array),
               "status_almacen"   => $status_almacen->activo,
+                  "generales"            =>  array(
+                                                      "modulo_activo"=>intval( $this->model_conteo_fisico->num_conteo($data)+2 )
+                                                    ),                
             ));      
 
         } else {
@@ -150,6 +276,9 @@ function cargar_dependencia_existente(){
                       "recordsFiltered"   => 0,
                       "aaData"            => array(),
                       "status_almacen"    => $status_almacen->activo,
+                  "generales"            =>  array(
+                                                      "modulo_activo"=>intval( $this->model_conteo_fisico->num_conteo($data)+2 )
+                                                    ),                        
                      
                   );
                   $array[]="";
@@ -326,25 +455,6 @@ public function procesar_por_conteo(){
             $dato['exito'] = true;
             echo json_encode($dato);
         
-              /*
-                if ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)  ) {
-                      //actualizar cantidad aprobada
-                      $data['movimiento'] =   $this->input->post('movimiento');
-                      $data['comentario'] =   $this->input->post('comentario');
-                      $data['cant_solicitada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_solicitada') ),true  );
-                      $data['cant_aprobada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_aprobada') ),true  );
-                        
-                      $dato['aprobado'] = $this->model_pedido_compra->actualizar_cantidad_aprobado($data);
-                      $dato['exito'] = true;
-                      echo json_encode($dato);
-                }  else {
-                    $dato['exito']  = false;
-                    //$dato['errores'] =$errores;
-                    $dato['error'] = validation_errors('<span class="error">','</span>');
-                    echo json_encode($dato);
-                }          
-             */   
-
     } else { //fin de session
       redirect('');
     }   

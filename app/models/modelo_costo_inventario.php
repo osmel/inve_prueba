@@ -105,9 +105,6 @@
               $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
 
 
-
-
-
               $this->db->where($where);
 
              $result = $this->db->get();
@@ -259,9 +256,6 @@ public function totales_importes_historica($where){
          if ($factura_reporte!="") {
             $donde .= ' AND ( m.factura  =  "'.$factura_reporte.'" ) ';
         } 
-
-
-
 
 
 
@@ -949,17 +943,12 @@ public function totales_importes($where){
         public function check_existente_proveedor_entrada($descripcion){
             $this->db->select("pro.id", FALSE);         
             $this->db->from($this->proveedores.' as pro ');
-
             $where = '(
                         (
                           ( pro.nombre =  "'.$descripcion.'" ) 
-                          
                          )
-
-              )';   
-  
+            )';   
             $this->db->where($where);
-           
             
             $login = $this->db->get();
             if ($login->num_rows() > 0) {

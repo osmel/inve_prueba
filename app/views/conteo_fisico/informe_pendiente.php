@@ -52,7 +52,7 @@
 
 
 
-
+			<h1 class="text-center mensaje_proceso" style="display:none;"> Actualmente hay un conteo activo para este almacén...	</h1>
 			<div class="col-md-12 conteo_principal" style="display:none;">	
 				<hr style="padding: 0px; margin: 8px;"/>					
 
@@ -107,7 +107,7 @@
 						<div class="row">
 							<div class="col-sm-8 col-md-4"></div>
 							<div class="col-sm-4 col-md-4">
-								<a href="<?php echo base_url(); ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
+								<a href="<?php echo base_url(); ?>conteos_opciones" type="button" class="btn btn-danger btn-block">Regresar</a>
 							</div>
 
 							<div class="col-sm-4 col-md-4">

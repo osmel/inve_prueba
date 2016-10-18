@@ -91,7 +91,7 @@
 					<input type="hidden" id="referencia" name="referencia" value="">
 					<input type="hidden" id="codigo_original" name="codigo_original" value="">
 
-					<input type="hidden" id="modulo_activo" name="modulo_activo" value="">
+
 
 						
 
