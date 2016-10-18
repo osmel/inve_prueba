@@ -88,40 +88,22 @@ jQuery('#tabla_conteo_historico').dataTable( {
 
 		        ],
 
-		        /*
+		"infoCallback": function( settings, start, end, max, total, pre ) {
 
-				"infoCallback": function( settings, start, end, max, total, pre ) {
-					  
+				cantidad = (settings.aoData.length);
 
-						jQuery("#modulo_activo").val(settings.json.generales.modulo_activo);					
+				if(cantidad == 0){
+					jQuery("#imp_historico_conteo").css('display','none');
+				} else {				
+					jQuery("#imp_historico_conteo").css('display','block');
+				}	
 
-						if (settings.json.generales.modulo_activo!=jQuery("#modulo").val()) {
-							jQuery("#hab_proceso").attr('disabled', true);					
-						} else {
-							jQuery("#hab_proceso").attr('disabled', false);					
-						}
+			
 
+			return pre
 
+		},	
 
-
-						if (settings.json.generales.modulo_activo>= parseInt(jQuery("#modulo").val()) ) {	
-										id_almacen = jQuery("#id_almacen_historicos").val(); 		
-					 				   	modulo = jQuery("#modulo").val(); 				
-					 					modulo_activo = jQuery("#modulo_activo").val(); 	
-
-										jQuery('#imp_conteos').css('display','block');
-										jQuery('#imp_nota_conteo').attr('href','/generar_conteos/'+jQuery.base64.encode(id_almacen)+'/'+jQuery.base64.encode(modulo)+'/'+jQuery.base64.encode(modulo_activo) );   
-
-
-									} else {
-										jQuery('#imp_conteos').css('display','none');
-										jQuery('#imp_nota_conteo').attr("href","");   
-						}
-
-
-
-					    return pre
-				  	} ,    */
 
 
 
@@ -143,24 +125,18 @@ jQuery('#tabla_conteo_historico').dataTable( {
 	     },   
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
-		  	/*
-		    console.log((jQuery('#producto_existente > option').length));
-		    
 
-		    
-		    if (settings.json.status_almacen==0) {
-				jQuery(".conteo_principal").css('display','none');  	
-			} else {
-				jQuery(".conteo_principal").css('display','block');
-			}		     
+				cantidad = (settings.aoData.length);
 
-				//cuando no hay productos
-			if (jQuery('#producto_existente > option').length>1) {
-				jQuery(".conteo_principal").css('display','block');  	
-			} else {
-				jQuery(".conteo_principal").css('display','none');
-			}
-			*/		     
+				if(cantidad == 0){
+					jQuery("#imp_historico_conteo").css('display','none');
+				} else {				
+					jQuery("#imp_historico_conteo").css('display','block');
+				}	
+
+			
+
+			return pre
 
 		},	
 		"language": {  //tratamiento de lenguaje

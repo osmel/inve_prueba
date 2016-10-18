@@ -13,11 +13,6 @@
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 	$dato['config_almacen']=$config_almacen;
 	$dato['el_perfil']=$el_perfil;
-	
-	
-	
-	
-
 
 ?>
 
@@ -28,8 +23,15 @@
 			<div class="container">	
 				<br>
 
-					<?php //$this->load->view( 'conteo_fisico/botones',$dato ); ?>			
-
+					
+					<fieldset id="imp_historico_conteo" style="display:block;">
+						<div class="col-sm-3 col-md-3">
+							<label for="descripcion" class="col-sm-12 col-md-12"></label>
+							<a id="imprimir_conteos_historicos" href=""  
+								type="button" class="btn btn-success btn-block" target="_blank">Imprimir
+							</a>
+						</div>
+					</fieldset>	
 
 
 
@@ -87,20 +89,13 @@
 
 						
 						<div class="row">
-							<div class="col-sm-8 col-md-4 hab_proceso"></div>
+							<div class="col-sm-8 col-md-8 hab_proceso"></div>
 							<div class="col-sm-4 col-md-4">
 								<a href="<?php echo base_url(); ?>historico_conteo" type="button" class="btn btn-danger btn-block">Regresar</a>
 							</div>
 
 							
-								<div class="col-sm-4 col-md-4">
-									<fieldset id="hab_proceso" style="display:block;" >
-										<button type="button"  class="btn btn-success btn-block ttip" title="Cambiar el estatus del pedido para poder ser procesado en la salida." id="procesar_contando">
-											<span>Procesar conteo</span>
-										</button>
-									</fieldset>	
-								</div>								
-							
+								
 								
 						</div>
 						<br/>

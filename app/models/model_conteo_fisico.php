@@ -256,6 +256,7 @@ public function buscador_historial_conteo($data){
     //historico
 
 public function buscador_historico_conteo($data){
+          $cadena = addslashes($data['search']['value']);
           
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
           $this->db->select("p.consecutivo");
@@ -270,9 +271,17 @@ public function buscador_historico_conteo($data){
           $this->db->from($this->historico_conteo_almacen.' as p');
           $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
           $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+
+
           $where = '(
-                               (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3)
-                        )';
+                      
+                      (
+                        ( p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
+                        (p.mov_faltante LIKE  "%'.$cadena.'%") OR
+                        (p.mov_sobrante LIKE  "%'.$cadena.'%") 
+                       ) AND ( (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3) )
+
+            ) ' ;                         
 
           $this->db->where($where);
 
