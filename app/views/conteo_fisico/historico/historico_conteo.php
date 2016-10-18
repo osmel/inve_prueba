@@ -47,7 +47,7 @@
 			<div class="container">	
 				<br>
 
-					<?php //$this->load->view( 'conteo_fisico/historico/botones',$dato ); ?>			
+					
 
 							<div id="almacen_id" class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 								<div class="form-group">
@@ -76,7 +76,14 @@
 
 
 
-
+					<fieldset id="imp_historico_conteo" style="display:block;">
+						<div class="col-sm-3 col-md-3">
+							<label for="descripcion" class="col-sm-12 col-md-12"></label>
+							<a id="imprimir_historico_conteo" href=""  
+								type="button" class="btn btn-success btn-block" target="_blank">Imprimir
+							</a>
+						</div>
+					</fieldset>					
 
 
 

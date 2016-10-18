@@ -124,7 +124,7 @@ class Main extends CI_Controller {
 			case '/reportes':
 			case '/catalogos':
 			case '/usuarios':
-			case '/informe_pendiente':
+			case '/conteos_opciones':
 			case '/salir':
 					$this->session->set_userdata('modulo', substr($url, 1));		
 				break;
