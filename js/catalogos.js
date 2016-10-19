@@ -18,8 +18,8 @@ jQuery(document).ready(function($) {
 		top: '50%', // Top position relative to parent
 		left: '50%' // Left position relative to parent		
 	};
-var target = document.getElementById('foo');
 
+var target = document.getElementById('foo');
 
 jQuery('#tabla_conteo_historico').dataTable( {
  	    "pagingType": "full_numbers",
@@ -89,31 +89,19 @@ jQuery('#tabla_conteo_historico').dataTable( {
 		        ],
 
 		"infoCallback": function( settings, start, end, max, total, pre ) {
-
 				cantidad = (settings.aoData.length);
-
 				if(cantidad == 0){
 					jQuery("#imp_historico_conteo").css('display','none');
 				} else {				
 					jQuery("#imp_historico_conteo").css('display','block');
 				}	
-
-			
-
 			return pre
-
 		},	
-
-
-
-
 	});	
 
 
 	jQuery('#tabla_historico_conteo').dataTable( {
-	
-	  "pagingType": "full_numbers",
-		
+	    "pagingType": "full_numbers",
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
@@ -123,21 +111,17 @@ jQuery('#tabla_conteo_historico').dataTable( {
 					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 						
 	         		 }
 	     },   
-
 		"infoCallback": function( settings, start, end, max, total, pre ) {
-
 				cantidad = (settings.aoData.length);
-
 				if(cantidad == 0){
 					jQuery("#imp_historico_conteo").css('display','none');
 				} else {				
 					jQuery("#imp_historico_conteo").css('display','block');
 				}	
 
-			
+				jQuery('#imprimir_historico_conteo').attr('href','/generar_historico_inventarios/'+jQuery.base64.encode(jQuery("#id_almacen_historicos").val()) );   
 
 			return pre
-
 		},	
 		"language": {  //tratamiento de lenguaje
 			"lengthMenu": "Mostrar _MENU_ registros por página",
@@ -172,6 +156,13 @@ jQuery('#tabla_conteo_historico').dataTable( {
 		                },
 		                "targets": [0] //
 		        },
+				{
+	                "render": function ( data, type, row ) {
+						return row[8];	
+
+	                },
+	                "targets": 1
+	            },		        
 
 				{
 	                "render": function ( data, type, row ) {
@@ -186,7 +177,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": 1
+	                "targets": 2
 	            },
 
 
@@ -203,7 +194,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": 2
+	                "targets": 3
 	            },
 
 				{
@@ -219,7 +210,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": 3
+	                "targets": 4
 	            },
         
 
@@ -228,7 +219,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return row[1];	
 
 	                },
-	                "targets": 4
+	                "targets": 5
 	            },
 
 				{
@@ -236,7 +227,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return row[2];	
 
 	                },
-	                "targets": 5
+	                "targets": 6
 	            },
 
 
@@ -254,7 +245,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 							$otro_retorno="historico_conteo";
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0)+'"'; //
+								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode("historico_conteo")+'"'; ///historico_conteo
 								texto+='type="button" class="btn btn-success btn-block">';
 								texto+=row[3];
 								texto+='</a>';
@@ -266,7 +257,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 
 
 	                },
-	                "targets": 6
+	                "targets": 7
 	            },
 
 				{
@@ -274,7 +265,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return row[4];	
 
 	                },
-	                "targets": 7
+	                "targets": 8
 	            },
 
 				{
@@ -282,7 +273,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return row[5];	
 
 	                },
-	                "targets": 8
+	                "targets": 9
 	            },
 
 				{
@@ -308,18 +299,9 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": 9
+	                "targets": 10
 	            },
-				      
-				      //public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura){      
-    
-				/*
-				{ 
-	                 "visible": false,
-	                "targets": [10,11,12]
-	            }*/		   
-
-		            
+				   		            
 		        ],
 
 	});	
@@ -1733,14 +1715,21 @@ jQuery('body').on('keypress paste','.cantidad[restriccion="entero"]', function (
 
 
 jQuery('body').on('click','#procesar_conteo', function (e) {
-	    //dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
 		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
-	
+
+	/*
 	id_descripcion 	= 	(typeof (jQuery("#producto").val()) === 'undefined') ? jQuery.base64.encode(0):jQuery.base64.encode(jQuery("#producto").val());
 	id_color 	= 	(typeof (jQuery("#id_color").val()) === 'undefined') ? jQuery.base64.encode(0): jQuery.base64.encode(jQuery("#color").val()); 
 	id_composicion 	= 	(typeof (jQuery("#id_composicion").val()) === 'undefined') ? jQuery.base64.encode(0): jQuery.base64.encode(jQuery("#composicion").val());
 	id_calidad 	= 	(typeof (jQuery("#id_calidad").val()) === 'undefined') ? jQuery.base64.encode(0):  jQuery.base64.encode(jQuery("#calidad").val());
-		   
+	*/
+
+	id_descripcion 	= 	jQuery.base64.encode(jQuery("#producto_existente").val());
+	id_color 	= 	  jQuery.base64.encode(jQuery("#color_existente").val()); 
+	id_composicion 	= jQuery.base64.encode(jQuery("#composicion_existente").val());
+	id_calidad 	= 	  jQuery.base64.encode(jQuery("#calidad_existente").val());
+	
+
 		   cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
 
 	var url = "/procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad+'/'+cantidad;
@@ -4897,7 +4886,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'"'; //
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';

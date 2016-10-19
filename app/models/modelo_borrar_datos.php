@@ -38,6 +38,10 @@
 
       $this->catalogo_operaciones      = $this->db->dbprefix('catalogo_operaciones');
       $this->conteo_almacen      = $this->db->dbprefix('conteo_almacen');
+      $this->historico_conteo_almacen      = $this->db->dbprefix('historico_conteo_almacen');
+      $this->catalogo_almacenes         = $this->db->dbprefix('catalogo_almacenes');
+
+      
     }
 
 
@@ -52,11 +56,16 @@
           $this->db->set( 'conse_factura', 0 );  
           $this->db->set( 'conse_remision', 0 );  
           $this->db->set( 'conse_surtido', 0 );  
-
-
           $this->db->update($this->catalogo_operaciones );
 
+
+          $this->db->set( 'activo', 1 );  
+          $this->db->update($this->catalogo_almacenes );          
+
         $this->db->empty_table( $this->conteo_almacen);
+        $this->db->empty_table( $this->historico_conteo_almacen);
+
+
         $this->db->empty_table( $this->registros_entradas);
         $this->db->empty_table( $this->registros_salidas);
         $this->db->empty_table( $this->registros_temporales);

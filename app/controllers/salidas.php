@@ -507,7 +507,7 @@ public function validar_confirmar_salida_sino(){
 
 	
 
-	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
+	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura,$retorno){
 
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -516,6 +516,7 @@ public function validar_confirmar_salida_sino(){
 		      $id_movimiento= base64_decode($id_movimiento);
 		      $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
 		      $data["id_tipo_factura"] = base64_decode($id_tipo_factura);
+		      $data["retorno"] = base64_decode($retorno);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -533,16 +534,16 @@ public function validar_confirmar_salida_sino(){
 		      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
 		      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
 		      			
-
+		      			
 		      			//if ($data['encabezado']['cargador']==" ") { //home
 		      			if (substr($data['encabezado']['cargador'], -1)==" ") {	
-		      				$data['retorno'] ="";	
+		      				//$data['retorno'] ="";	
 							$data['encabezado']['cargador'] = substr($data['encabezado']['cargador'], 0, -1); 		      				
 		      			} elseif (substr($data['encabezado']['cargador'], -2)=="r*") {
 		      				$data['encabezado']['cargador'] = substr($data['encabezado']['cargador'], 0, -2); 
 		      				$data['retorno'] ="reportes";	 //HOME DE REPORTES
 		      			} else {
-		      					$data['retorno'] ="listado_salidas";	 //DETALLES DE REPORTE
+		      					//$data['retorno'] ="listado_salidas";	 //DETALLES DE REPORTE
 		      			}
 
 					

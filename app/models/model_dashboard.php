@@ -830,7 +830,7 @@
                                       4=>$row->cantidad_um.' '.$row->medida,
                                       5=>$row->ancho.' cm',
                                       6=>
-                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador." ").'" 
+                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador." ").'/'.base64_encode(" ").'" 
                                           type="button" class="btn btn-danger btn-block">'.$row->mov_salida.'</a>',
                                       7=>$columna6,
                                       8=>$columna7,

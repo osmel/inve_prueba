@@ -116,8 +116,12 @@
 										</button>-->
 
 
-										<a href="<?php echo base_url(); ?>resumiendo_conteo" type="button" class="btn btn-success btn-block">Procesar conteo</a>
+										<!--<a href="<?php echo base_url(); ?>resumiendo_conteo" type="button" class="btn btn-success btn-block">Procesar conteo</a> -->
 										
+										
+
+										<a type="button" class="btn btn-success btn-block" data-toggle="modal" href="" data-target="#myModal">Procesar conteo</a>
+
 									</fieldset>	
 								</div>								
 							
@@ -136,8 +140,32 @@
 
 <?php $this->load->view( 'footer' ); ?>
 
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Conteo de inventario</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿Quieres dar por concluido el conteo?. Esta acción archivará la información, este proceso es irreversible</p>
+      </div>
+  	  <div class="modal-footer">
+	  	
+	  	<a type="button" class="btn btn-danger" href="<?php echo base_url(); ?>resumiendo_conteo">SI</a>
+		<button class="btn btn-default" data-dismiss="modal">NO</button>
+ 	  </div>      
+
+    </div>
+
+  </div>
+</div>
+
+<!--
 <div class="modal fade bs-example-modal-lg" id="modalMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content"></div>
 	</div>
-</div>	
+</div>	-->

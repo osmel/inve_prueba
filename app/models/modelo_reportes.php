@@ -1302,7 +1302,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=> //
-                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'" 
+                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'/'.base64_encode("reportes").'" 
                                           type="button" class="btn btn-success btn-block">'.$row->mov_salida.'</a>',
                                       6=>$columna6,
                                       7=>$columna7,

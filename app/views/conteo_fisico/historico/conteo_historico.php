@@ -23,11 +23,11 @@
 			<div class="container">	
 				<br>
 
-					
+
 					<fieldset id="imp_historico_conteo" style="display:block;">
 						<div class="col-sm-3 col-md-3">
 							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a id="imprimir_conteos_historicos" href=""  
+							<a id="imprimir_conteos_historicos" href="/generar_conteos_historico/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($modulo); ?>/<?php echo base64_encode($movimiento); ?>"  
 								type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 							</a>
 						</div>

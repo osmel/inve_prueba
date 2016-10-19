@@ -79,7 +79,7 @@
 					<fieldset id="imp_historico_conteo" style="display:block;">
 						<div class="col-sm-3 col-md-3">
 							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a id="imprimir_historico_conteo" href=""  
+							<a id="imprimir_historico_conteo" href=""   
 								type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 							</a>
 						</div>
@@ -99,12 +99,11 @@
 								<table id="tabla_historico_conteo" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 									<thead>
 										<tr>
-							                <th rowspan="2" width="9%" class="text-center">Movimiento</th>
-							                <th rowspan="2" width="7%" class="text-center">Conteo1</th>
-							                <th rowspan="2" width="7%" class="text-center">Conteo2</th>
-							                <th rowspan="2" width="7%" class="text-center">Conteo3</th>
-							                <th colspan="3" width="35%" class="text-center">Faltante</th>
-							                <th colspan="3" width="35%" class="text-center">Sobrante</th>
+							                <th rowspan="2" width="5%" class="text-center">Mov.</th>
+							                <th rowspan="2" width="36%" class="text-center">Filtro</th>
+							                <th colspan="3" width="9%" class="text-center">Conteos</th>
+							                <th colspan="3" width="25%" class="text-center">Faltante</th>
+							                <th colspan="3" width="25%" class="text-center">Sobrante</th>
 							                
 
 
@@ -112,6 +111,9 @@
 
 							            </tr>									
 										<tr>
+											<th class="text-center"><strong>1</strong></th>
+											<th class="text-center"><strong>2</strong></th>
+											<th class="text-center"><strong>3</strong></th>
 											
 											<th class="text-center"><strong>Status</strong></th>
 											<th class="text-center"><strong>Realizado</strong></th>

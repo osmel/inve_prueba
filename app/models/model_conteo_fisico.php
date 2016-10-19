@@ -58,6 +58,88 @@
       
     }
 
+/*
+          $this->db->select("p.num_conteo");  
+          $where = '(p.id_almacen =  '.$data["id_almacen"].' )' ;  
+          $this->db->from($this->conteo_almacen.' as p');
+          $this->db->where($where);
+          
+          $result = $this->db->get();
+          if ( $result->num_rows() > 0 )
+             return $result->row()->num_conteo;
+          else
+             return -2;
+          $result->free_result();   
+*/
+   public function obtener_filtro($data){
+          $data["id_almacen"] =  $this->session->userdata( 'id_almacen_ajuste' );
+          
+          $this->db->distinct();
+          $this->db->select("p.filtro");
+          $this->db->from($this->conteo_almacen.' as p');
+          $where = '( 
+                        (p.id_almacen =  '.$data["id_almacen"].' )
+                     ) ' ; 
+
+          $this->db->where($where);
+          
+          $result = $this->db->get();
+
+          if ( $result->num_rows() > 0 )
+             return $result->row()->filtro;
+          else
+             return false;
+          $result->free_result();             
+   }
+
+
+
+public function reporte_historico_conteo($data){
+         // $cadena = addslashes($data['search']['value']);
+          
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("p.consecutivo,p.filtro");
+          $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
+          $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
+          $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
+          $this->db->select("prov.nombre AS vendedor",FALSE);
+          
+          
+          
+          $this->db->from($this->historico_conteo_almacen.' as p');
+          $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+
+          /*     (
+                        ( p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
+                        (p.mov_faltante LIKE  "%'.$cadena.'%") OR
+                        (p.mov_sobrante LIKE  "%'.$cadena.'%") 
+                       ) AND
+          */
+
+          $where = '(
+                       ( (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3) )
+
+            ) ' ;                         
+
+          $this->db->where($where);
+
+          $this->db->group_by('p.consecutivo');
+
+          $result = $this->db->get();
+          
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();  
+
+
+
+              
+      }  
+
 
 public function buscador_historial_conteo($data){
 
@@ -259,11 +341,10 @@ public function buscador_historico_conteo($data){
           $cadena = addslashes($data['search']['value']);
           
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          $this->db->select("p.consecutivo");
+          $this->db->select("p.consecutivo, p.filtro");
           $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
           $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
           $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
-          //$this->db->select("CONCAT(us.nombre,' ',us.apellidos) AS vendedor",FALSE);
           $this->db->select("prov.nombre AS vendedor",FALSE);
           
           
@@ -299,6 +380,17 @@ public function buscador_historico_conteo($data){
 
                     
                   foreach ($result->result() as $row) {
+                            $arreglo= explode(";", $row->filtro);
+                           
+                           $filtro =''; 
+                          for ($i=0; $i < count($arreglo); $i++) { 
+                            if  ($arreglo[$i]!='') {
+                              $filtro .= (($i!=0) ? '<br/>': '').$arreglo[$i];
+                            }
+                            
+                          }
+                          
+
                            $dato[]= array(
                                       0=>$row->consecutivo, 
                                       1=>($row->cant_faltante>0) ? "Si":"No",
@@ -308,9 +400,7 @@ public function buscador_historico_conteo($data){
                                       5=>($row->mov_sobrante!=0) ? "Si":"No",
                                       6=>($row->mov_sobrante!=0) ? $row->mov_sobrante:"-",
                                       7=>$row->vendedor,
-
-
-                                      
+                                      8=>$filtro,
                                     );                    
                            
 
@@ -318,7 +408,7 @@ public function buscador_historico_conteo($data){
   
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_ajustes($where) ),  
+                        "recordsTotal"    => intval( self::total_ajustes_historico($where) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                       ));
@@ -339,6 +429,23 @@ public function buscador_historico_conteo($data){
               
               
       }  
+
+        public function total_ajustes_historico($where){
+             $this->db->from($this->historico_conteo_almacen.' as p');
+             $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
+             $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+
+              $this->db->where($where);
+              $this->db->group_by('p.consecutivo');
+
+               $result = $this->db->get();
+              $cant =$result->num_rows(); // $this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;     
+       }      
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,7 +551,7 @@ public function buscador_resumen_conteo($data){
   
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_ajustes($where) ),  
+                        "recordsTotal"    => intval( self::total_ajustes_resumen($where) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "generales"            =>  array(
@@ -1936,6 +2043,25 @@ public function buscador_ajustes($data){
       }
 
 
+       public function total_ajustes_resumen($where){
+              $this->db->from($this->conteo_almacen.' as p');
+              $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
+              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
+              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+
+              $this->db->where($where);
+              $this->db->group_by('p.num_conteo');
+              $result = $this->db->get();
+
+              $cant = $result->num_rows();//$this->db->count_all_results();          
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;     
+       }
+
         public function total_ajustes($where){
               $this->db->from($this->conteo_almacen.' as p');
               $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
@@ -2075,6 +2201,12 @@ public function buscador_ajustes($data){
           
           $this->db->from($this->productos.' as p');
           $this->db->join($this->registros_entradas.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
+          
+          /*$this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
+          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
+          $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
+          */
+          
         
           $activo  = ' and ( p.activo =  0 ) '; 
           $where = '( 
@@ -2082,7 +2214,7 @@ public function buscador_ajustes($data){
                      ) ' ; 
 
 
-         $where_cond ='Todos';
+         $where_cond ='Todos;';
 
          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
@@ -2093,10 +2225,10 @@ public function buscador_ajustes($data){
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
               $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) AND  ( p.id_calidad  =  '.$id_calidad.' )';
               
-              $where_cond = 'Producto: '.$id_descripcion.';'.
-                             'Color: '.$id_color.';'.
-                             'Composición: '.$id_composicion.';'.
-                             'Calidad: '.$id_calidad.';';
+              $where_cond = '<b>Producto:</b> '.$id_descripcion.';'.
+                             '<b>Color:</b> '.$data["color"].';'.
+                             '<b>Composición:</b> '.$data["composicion"].';'.
+                             '<b>Calidad:</b> '.$data["calidad"].';';
 
           }    
           elseif
@@ -2108,9 +2240,9 @@ public function buscador_ajustes($data){
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
               $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) ';
               
-              $where_cond = 'Producto: '.$id_descripcion.';'.
-                             'Color: '.$id_color.';'.
-                             'Composición: '.$id_composicion.';';
+              $where_cond = '<b>Producto</b>: '.$id_descripcion.';'.
+                             '<b>Color</b>: '.$data["color"].';'.
+                             '<b>Composición</b>: '.$data["composicion"].';';
               
 
           }  
@@ -2120,13 +2252,13 @@ public function buscador_ajustes($data){
             and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
             ) {
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-              $where_cond = 'Producto: '.$id_descripcion.';'.
-                             'Color: '.$id_color.';';
+              $where_cond = '<b>Producto</b>: '.$id_descripcion.';'.
+                             '<b>Color</b>: '.$data["color"].';';
           }  
 
           elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
               $where .= ' AND ( p.descripcion  =  "'.$id_descripcion.'" )';
-              $where_cond = 'Producto: '.$id_descripcion.';';
+              $where_cond = '<b>Producto</b>: '.$id_descripcion.';';
           }            
         
     
@@ -2287,7 +2419,7 @@ public function buscador_costos($data){
 
           $this->db->group_by("p.referencia,p.descripcion,p.id_composicion,p.id_color,p.id_calidad");
 
-          $this->db->limit($largo,$inicio); 
+          //$this->db->limit($largo,$inicio); 
 
 
           $result = $this->db->get();
@@ -2700,6 +2832,80 @@ public function reporte_conteos($data){
 
       }  
 
+
+
+public function reporte_conteos_historico($data){
+
+          $fecha_hoy = date('Y-m-d H:i:s');  
+          $id_almacen= $data['id_almacen'];
+          $id_session = $this->session->userdata('id');
+          
+          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+          $this->db->select('p.imagen');
+          $this->db->select('p.descripcion');
+          $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
+          $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");
+          $this->db->select('c.hexadecimal_color,c.color nombre_color');
+          $this->db->select("co.composicion", FALSE);  
+          $this->db->select("ca.calidad", FALSE);  
+          $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
+
+          $this->db->select('conteo'.(intval($data['modulo'])-1).' conteos',FALSE);  
+         
+         
+                                    
+
+          
+          $id_almacenid = ' (p.id_almacen =  '.$id_almacen.' )' ;  
+          
+          $this->db->from($this->historico_conteo_almacen.' as p');
+          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+
+          if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
+              $filtro = ' AND (
+                        (
+                        (
+                        ( (conteo'.(intval($data['modulo'])-1).'<> p.cantidad_royo)  OR (conteo'.(intval($data['modulo'])-1).'<> conteo'.(intval($data['modulo'])-2).')  )
+                        ) AND (num_conteo<>0)
+                        )
+
+                         OR 
+                        (num_conteo=0)
+                        )';
+          } else {
+            $filtro ='';
+          }
+
+          $where = '('
+
+                .$id_almacenid.$filtro.'AND (p.consecutivo =  '.$data["movimiento"].')
+
+            ) ' ; 
+
+
+
+          $this->db->where($where);
+
+          //$this->db->order_by($columna, $order); 
+
+          $this->db->group_by("p.referencia,p.descripcion,p.id_composicion,p.id_color,p.id_calidad");
+
+          
+
+            $result = $this->db->get();
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();  
+              
+
+      }  
 
 
     

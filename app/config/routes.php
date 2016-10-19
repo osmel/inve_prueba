@@ -360,7 +360,7 @@ $route['generar_salida/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3
 
 
 
-$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5';
+$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5/$6';
 
 $route['procesar_salidas']    = 'salidas/procesar_salidas';
 
@@ -738,6 +738,8 @@ $route['quitar_salida_ajuste'] 	 = 'conteo_fisico/quitar_salida_ajuste';
 $route['procesando_salida_ajuste_definitivo'] 	 = 'conteo_fisico/procesando_salida_ajuste_definitivo';
 $route['generar_conteos/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/generar_conteos/$1/$2/$3';
 
+
+
 $route['resumen_conteo'] 	 			= 'conteo_fisico/resumen_conteo';
 $route['procesando_resumen_conteo'] 	= 'conteo_fisico/procesando_resumen_conteo';
 $route['resumiendo_conteo'] 	 		= 'conteo_fisico/resumiendo_conteo';
@@ -758,7 +760,10 @@ $route['historico_conteo3/(:any)/(:any)'] 	 = 'conteo_fisico/historico_conteo3/$
 
 $route['procesando_conteo_historico']   	= 'conteo_fisico/procesando_conteo_historico';
 
+$route['generar_conteos_historico/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/generar_conteos_historico/$1/$2/$3';
 
+
+$route['generar_historico_inventarios/(:any)'] 	 = 'conteo_fisico/generar_historico_inventarios/$1';
 /////////////////////////////new_implementacion////////////////////////
 
 $route['imprimir_reportes']    = 'pdf_reportes/imprimir_reportes';

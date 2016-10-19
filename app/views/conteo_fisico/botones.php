@@ -77,7 +77,8 @@
 
 		<div class="col-md-12 form-horizontal" id="tab_filtro" >      
 						
-						<h4>Filtros</h4>	
+						<h4>Filtros: </h4>	 
+						<?php echo $filtro;?>
 						<hr style="padding: 0px; margin: 15px;"/>					
 
 					

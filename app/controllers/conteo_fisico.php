@@ -16,6 +16,141 @@ class Conteo_fisico extends CI_Controller {
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
 
+
+   public function generar_conteos_historico($id_almacen,$modulo,$movimiento){
+  
+
+        $data['id_almacen']       = base64_decode($id_almacen);
+        $data['modulo']           = base64_decode($modulo);
+        $data['movimiento']    = base64_decode($movimiento);
+        /////////////
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M'); 
+
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+
+        $pdf->SetFont('Times', '', 8,'','true');
+
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+
+
+        $data['movimientos'] = $this->model_conteo_fisico->reporte_conteos_historico($data);
+
+        
+
+        //$data['etiq_mov'] ="Salida";  
+
+       
+        $html = $this->load->view('pdfs/conteos/conteos_historico', $data, true);
+        
+
+        // Imprimimos el texto con writeHTMLCell()
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+         
+        // ---------------------------------------------------------
+        // Cerrar el documento PDF y preparamos la salida
+        // Este método tiene varias opciones, consulte la documentación para más información.
+        $nombre_archivo = utf8_decode("Conteos_".$data['id_almacen'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+
+
+
+    }
+
+
+
+
+   public function generar_historico_inventarios($id_almacen){
+        $data['id_almacen']       = base64_decode($id_almacen);
+        /////////////
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M'); 
+
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+
+        $pdf->SetFont('Times', '', 8,'','true');
+
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+
+
+        $data['movimientos'] = $this->model_conteo_fisico->reporte_historico_conteo($data);
+
+        
+
+        //$data['etiq_mov'] ="Salida";  
+
+       
+        $html = $this->load->view('pdfs/conteos/resumen_conteos', $data, true);
+        
+
+        // Imprimimos el texto con writeHTMLCell()
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+         
+        // ---------------------------------------------------------
+        // Cerrar el documento PDF y preparamos la salida
+        // Este método tiene varias opciones, consulte la documentación para más información.
+        $nombre_archivo = utf8_decode("Conteos_".$data['id_almacen'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+
+
+
+    }
   
   public function procesando_conteo_historico(){
       $data=$_POST;
@@ -342,8 +477,11 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
 
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
-
-           $data['dato']['vista']  = "tabla_conteos"; 
+            $data['dato']['vista']  = "tabla_conteos"; 
+            
+            $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
+            /*
+           
            $data['mod']=1;      
            $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
            $data['mod']=2;      
@@ -357,7 +495,8 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
            $data['mod']=6;      
            $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
            $data['mod']=7;      
-           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);   
+           */               
 
 
           switch ($id_perfil) {    
@@ -393,9 +532,18 @@ public function conteo3(){
   public function confirmar_proceso_conteo() {
            $data["id_almacen"]= $this->input->post("id_almacen");
        $data["id_descripcion"]= $this->input->post("id_descripcion");       
+            
              $data["id_color"]= $this->input->post("id_color");
        $data["id_composicion"]= $this->input->post("id_composicion");      
            $data["id_calidad"]= $this->input->post("id_calidad");  
+
+            $dato["id"]= $this->input->post("id_color");
+            $data["color"] = $this->catalogo->coger_color($dato)->color;
+           $dato["id"]= $this->input->post("id_composicion");      
+           $data["composicion"] = $this->catalogo->coger_composicion($dato)->composicion;
+           
+           $dato["id"]= $this->input->post("id_calidad");  
+           $data["calidad"] = $this->catalogo->coger_calidad($dato)->calidad;
 
             //cancelando las operaciones que estan en procesos
   
@@ -1030,21 +1178,7 @@ public function procesando_salida_ajuste_definitivo(){
 
     }
 
-/*
-0=>$row->referencia, 
-                                      1=>$row->descripcion,
-                                      2=>$imagen.$row->cantidad_royo,
-                                      3=>$row->nombre_color.                                      
-                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                      4=>$row->composicion,
-                                      5=>$row->calidad,
-                                      6=>$row->cantidad_royo,
-                                      7=>$row->conteo1,
-                                      8=>$row->conteo2,
-                                      9=>$row->conteo3,
-                                      10=>$row->id,
-                                      11=>$row->num_conteo,
-*/
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////Resumen COnteo/////////////////////////////////////////////////////////
