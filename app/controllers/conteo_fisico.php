@@ -332,6 +332,7 @@ function conteos_opciones() {
 
                    $data['dato']['modulo'] = 1;
                    $data['dato']['vista']  = "tabla_informe_pendiente";
+                   /*
                    $data['mod']=1;      
                    $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
                    $data['mod']=2;      
@@ -346,7 +347,7 @@ function conteos_opciones() {
                    $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
                    $data['mod']=7;      
                    $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
-
+                   */
                   $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
                   //print_r($data['id_almacen']);
                   //die;
@@ -355,7 +356,9 @@ function conteos_opciones() {
                     $data['almacenes']   = $this->modelo->listado_almacenes();  
                     $data['productos']   = $this->catalogo->listado_productos_existente($data);  
                     //$data['productos'] = $this->catalogo->listado_productos_unico();
-                   
+                    
+                    $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
+
                     $this->load->view('conteo_fisico/informe_pendiente',$data );
                   break;    
                 default:  
@@ -671,6 +674,8 @@ public function ajustes($data){
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 
            $data['dato']['vista']  = "tabla_ajustes"; 
+           $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
+           /*
            $data['mod']=1;      
            $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
            $data['mod']=2;      
@@ -685,6 +690,7 @@ public function ajustes($data){
            $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
            $data['mod']=7;      
            $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
+           */
 
 
           switch ($id_perfil) {    
@@ -789,7 +795,7 @@ public function entrada_sobrante($modulo,$retorno){
 
 
 
-
+              $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
                
             switch ($id_perfil) {    
               case 1:          
@@ -956,7 +962,7 @@ public function validar_proceso_sobrante(){
            $dato['id'] = 7;
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
-         
+            $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
                
             switch ($id_perfil) {    
               case 1:          
@@ -1205,6 +1211,7 @@ public function resumen_conteo(){
             $data['titulo'] = "";
 
            $data['dato']['vista']  = "resumen_conteo"; 
+           /*
            $data['mod']=1;      
            $data['dato']['cant'][1]   = 0; //$this->model_pedido_compra->total_modulo($data);
            $data['mod']=2;      
@@ -1218,8 +1225,9 @@ public function resumen_conteo(){
            $data['mod']=6;      
            $data['dato']['cant'][6]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
            $data['mod']=7;      
-           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);                  
-
+           $data['dato']['cant'][7]   = 0; //$this->model_pedido_compra->total_modulo($data);    
+           */              
+           $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
 
           switch ($id_perfil) {    
             case 1:
