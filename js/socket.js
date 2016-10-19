@@ -38,6 +38,7 @@ $(function(){
 		//jQuery('#etiq_conteo').val(  data.message);
 		var hash_url = window.location.pathname;
 
+    //alert(data.message);
     $('#etiq_conteo').text(data.message);
 
 
@@ -63,6 +64,58 @@ conf_devolucion
 */
 var url_pedidos = hash_url.split( '/' )
 //console.log(a[1]);
+
+/*
+"gestionar_pedido_compra"
+"cancelado"
+"solicitar_modificacion"
+"pendiente_revision"    
+"aprobado"             
+
+   tabla_pedido_compra
+
+
+SELECT * 
+FROM  `inven_historico_registros_salidas` 
+WHERE mov_salida =4240 or movimiento =4240
+
+*/
+
+if  ( (url_pedidos[1]=="gestionar_pedido_compra") || (url_pedidos[1]=="cancelado") || (url_pedidos[1]=="solicitar_modificacion")
+  || (url_pedidos[1]=="pendiente_revision") || (url_pedidos[1]=="aprobado")) {  
+
+
+ $('#tabla_pedido_compra').dataTable().fnDraw();
+
+              switch(data.tipo) {
+                  case "incluir_pedido":
+                         mensaje_notif=  "Se incluyó apartado de tienda para salida.";
+                         caja_notificacion = '.notif-bot-pedidos';
+                      break;     
+
+                      case "form_pedido":
+                             mensaje_notif=  "Se eliminó apartado de tienda.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break; 
+
+                      case "proc_salida":
+                             mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;   
+
+                      case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;       
+
+                  
+              default:
+                  mensaje_notif=  "notificación";
+          }     
+
+
+}  
+
 if  ( (url_pedidos[1]=="pedido_detalle")  ) {  //estos son los que tienen el pedido del conteo
     $('#pedido_detalle').dataTable().fnDraw();
 
@@ -81,6 +134,11 @@ if  ( (url_pedidos[1]=="pedido_detalle")  ) {  //estos son los que tienen el ped
                              mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                              caja_notificacion = '.notif-bot-pedidos';
                           break;   
+
+                      case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;       
 
                   
               default:
@@ -109,6 +167,11 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                       mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                       caja_notificacion = '.notif-bot-pedidos';
                   break;   
+
+                      case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;                    
 
                   
               default:
@@ -179,6 +242,10 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
+                      case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;                    
 
               //generar_pedido
               case "agregar_pedido":
@@ -374,6 +441,10 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
+                      case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;                    
 
               //generar_pedido
               case "agregar_pedido":
@@ -496,6 +567,11 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
 
+                          case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;  
+
               //generar_pedido
               case "agregar_pedido":
                      mensaje_notif=  "Producto apartado. Para realizar un pedido, procese y confirme apartado.";
@@ -587,6 +663,11 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
+
+                          case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;   
 
               //generar_pedido
               case "agregar_pedido":
@@ -714,6 +795,11 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
 
+                          case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;  
+
               //generar_pedido
               case "agregar_pedido":
                      mensaje_notif=  "Producto apartado. Para realizar un pedido, procese y confirme apartado.";
@@ -836,6 +922,11 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      mensaje_notif=  "Salida de producto. Se actualizó el inventario.";
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
+
+                          case "proc_pedido_compra":
+                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;  
 
               //generar_pedido
               case "agregar_pedido":

@@ -8,6 +8,7 @@ class Respaldo extends CI_Controller {
         parent::__construct();
         //$this->load->model('reportes', 'reporte');  
         $this->load->model('model_pedido', 'modelo_pedido');
+        $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
       
     }
  

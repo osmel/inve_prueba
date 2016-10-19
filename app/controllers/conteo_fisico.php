@@ -7,6 +7,7 @@ class Conteo_fisico extends CI_Controller {
     $this->load->model('catalogo', 'catalogo');  
     $this->load->model('modelo', 'modelo');  
     $this->load->model('model_pedido', 'modelo_pedido');    
+    $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
     $this->load->model('model_entradas', 'model_entrada');  
 
     $this->load->model('model_salida', 'modelo_salida');  

@@ -632,7 +632,7 @@ jQuery('body').on('click','#proc_salida_ajuste', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
 						
 												$catalogo = e.target.name;
 												//window.location.href = '/procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(2); //jQuery("#id_factura").val()
@@ -1355,7 +1355,7 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
 						
 												$catalogo = e.target.name;
 												//window.location.href = '/procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(2); //jQuery("#id_factura").val()
@@ -2166,7 +2166,7 @@ jQuery('body').on('click','#proc_aprobado', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_aprobado');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_aprobado');
 												window.location.href = retorno;	
 
 									        }
@@ -2254,7 +2254,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_pedido_compra');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_pedido_compra');
 									        	
 
 												//window.location.href = retorno;	
@@ -2580,13 +2580,9 @@ jQuery('#tabla_pedido_compra').dataTable( {
 		
 		if (settings.json.totales_importe) {
 			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
-
 		} else {
-
 			jQuery('#total_total').html('Total: 0.00');
-
 		}			
-
 	    return pre
   	} ,  	
 
@@ -3318,7 +3314,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_pedido_compra');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_pedido_compra');
 
 									        	//$catalogo = 'pedido_compra';
 												window.location.href = retorno;	

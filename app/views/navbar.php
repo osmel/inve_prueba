@@ -55,7 +55,18 @@
          	$dato['tienda'] ="0";
          }
 
-			$conteos =  '<span title="Pedidos Vendedores." class="ttip">'.$dato['vendedor'].'</span><span> - </span><span title="Pedidos Tiendas." class="ttip">'.$dato['tienda'].'</span>';
+
+         if ($perfil) {
+         	$data['modulo'] = $this->session->userdata('id_perfil'); 
+         	$dato['compra'] = (string)$this->model_pedido_compra->notificador_pedido_compra($data);  
+         } else {
+         	$dato['compra'] = 99;
+         }	
+
+
+			$conteos =  '<span title="Pedidos Vendedores." class="ttip">'.$dato['vendedor'].'</span><span> - </span><span title="Pedidos Tiendas." class="ttip">'.$dato['tienda'].'</span>
+				<span> - </span><span title="Ordenes de Compra." class="ttip">'.$dato['compra'].'</span>
+			';
 
 
 

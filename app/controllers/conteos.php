@@ -5,6 +5,7 @@ class Conteos extends CI_Controller {
 		parent::__construct();
 		//$this->load->model('catalogo', 'catalogo');  
 		$this->load->model('model_pedido', 'modelo_pedido');
+		$this->load->model('model_pedido_compra', 'model_pedido_compra'); 
 		$this->load->library(array('email')); 
 		$this->load->library('Jquery_pagination');//-->la estrella del equipo	
 	}

@@ -4,6 +4,7 @@ class Pedidos extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('model_pedido', 'modelo_pedido');
+		$this->load->model('model_pedido_compra', 'model_pedido_compra'); 
 		$this->load->model('catalogo', 'catalogo');  
 		$this->load->model('modelo', 'modelo');  
 		$this->load->library(array('email')); 
@@ -190,6 +191,10 @@ class Pedidos extends CI_Controller {
          } else {
          	$dato['tienda'] ="0";
          }
+
+
+         	$data['modulo']=$this->session->userdata('id_perfil'); 
+         	$dato['compra'] = (string)$this->model_pedido_compra->notificador_pedido_compra($data);  
 	
 			echo  json_encode($dato);
 		}	

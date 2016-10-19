@@ -1699,7 +1699,7 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'conf_entrada');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
 						
 												$catalogo = e.target.name;
 												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
@@ -5446,7 +5446,7 @@ jQuery('body').on('click','#proc_salida_apartado', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_salida');
 
 												valor= jQuery.base64.encode(data.valor);
 												var url = "/proc_apartado_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura)+'/'+jQuery.base64.encode(id_almacen);
@@ -5551,7 +5551,7 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_salida');
 
 												valor= jQuery.base64.encode(data.valor);
 												var url = "/proc_salida_pedido_definitivo/"+jQuery.base64.encode(num_mov)+'/'+jQuery.base64.encode(data.id_cargador)+'/'+jQuery.base64.encode(id_tipo_pedido)+'/'+jQuery.base64.encode(id_tipo_factura)+'/'+jQuery.base64.encode(id_almacen);
@@ -5640,7 +5640,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda,'proc_salida');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_salida');
 
 												valor= jQuery.base64.encode(data.valor);
 

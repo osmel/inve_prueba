@@ -58,6 +58,41 @@
 
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+
+public function notificador_pedido_compra($data){
+
+             if ($this->session->userdata('id_almacen') != 0) {
+                  $id_almacenid = ' AND ( p.id_almacen =  '.$this->session->userdata('id_almacen').' ) ';  
+              } else {
+                  $id_almacenid = '';
+              } 
+            
+              $this->db->from($this->historico_pedido_compra.' as p');
+              //$this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
+              //$this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+
+              $where = '(                      
+                           (p.status_compra =  '.$data["modulo"].') '.$id_almacenid.' 
+                    ) ';  
+
+              $this->db->where($where);      
+
+              $this->db->group_by("p.movimiento");
+             
+              $result = $this->db->get();
+
+              $cant = $result->num_rows(); 
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }     
+
+
  public function total_modulo($data){
               $id_almacen= $data['id_almacen'];
               

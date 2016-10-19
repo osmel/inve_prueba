@@ -4,6 +4,7 @@ class Inventario extends CI_Controller {
   public function __construct(){
     parent::__construct();
     $this->load->model('model_pedido', 'modelo_pedido');
+    $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
     $this->load->model('catalogo', 'catalogo');  
     $this->load->model('modelo', 'modelo');  
     $this->load->model('model_entradas', 'model_entrada');  
