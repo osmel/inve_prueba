@@ -39,7 +39,23 @@ $(function(){
 		var hash_url = window.location.pathname;
 
     //alert(data.message);
-    $('#etiq_conteo').text(data.message);
+
+
+
+                $.ajax({
+                          url : '/conteo_tienda',
+                          data : { 
+                            tipo: 'tienda',
+                          },
+                          type : 'POST',
+                          dataType : 'json',
+                          success : function(dato) {  
+                            $('#etiq_conteo').text(dato.vendedor+' - '+dato.tienda+' - '+dato.compra);
+                      
+                          }
+                }); 
+
+    //$('#etiq_conteo').text(data.message);
 
 
     mensaje_notif ='';
