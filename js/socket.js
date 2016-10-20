@@ -1,17 +1,12 @@
 $(function(){
 
-
-
   window.MY_Socket = {
-
     
   // Instanciar al "cliente Socket.IO" y conectar con el servidor
-	//socket : io.connect('http://45.55.85.45:8080'),
+	//socket : io.connect('http://104.236.91.215:8080'),
   socket : io.connect('http://localhost:8080'),
 	//socket : io.connect('http://localhost:8080'),
-    
   // Configurar los controladores de eventos iniciales para el cliente Socket.IO
-
   // estos son los que inicializan los controladores para cada evento que ocurra,
   //en este caso esta escuchando constantemente si sucede
   // una  this.socket.on('conexion' : para disparar el mensaje de "estoy trabajando"
@@ -21,6 +16,8 @@ $(function(){
       
       //cuando le transmiten el nuevo mensaje, al equipo del que envia el mensaje
       this.socket.on('broadcastNewPost',MY_Socket.updateMessages);
+
+      this.socket.on('broadcastSalidaAlmacen',MY_Socket.salida_almacen);
     },
 
   // Esto sólo indica que una conexión Socket.IO ha comenzado.
@@ -62,22 +59,7 @@ $(function(){
     caja_notificacion ='';
 
 
-/*
-              case "conf_entrada":
-                     mensaje_notif=  "Entrada de productos, actualizando inventario. Espere por favor.";
-                     caja_notificacion = '.notif-bot-pedidos';
-                  break;
 
-
-              case "conf_devolucion":
-                     mensaje_notif=  "Devolución de productos, actualizando inventario. Espere por favor.";
-                     caja_notificacion = '.notif-bot-pedidos';
-                  break;     
-
-
-conf_entrada
-conf_devolucion
-*/
 var url_pedidos = hash_url.split( '/' )
 //console.log(a[1]);
 
@@ -101,6 +83,23 @@ if  ( (url_pedidos[1]=="gestionar_pedido_compra") || (url_pedidos[1]=="cancelado
   || (url_pedidos[1]=="pendiente_revision") || (url_pedidos[1]=="aprobado")) {  
 
 
+
+                $.ajax({
+                          url : '/notificacion_compra',
+                          data : {                             
+                            id_almacen : jQuery('#id_almacen_historicos').val(),
+                          },
+                          type : 'POST',
+                          dataType : 'json',
+                          success : function(dato) {                              
+                            jQuery.each(dato.cant, function (i, valor) {
+                                   $(".etiq_btn"+i).text("("+valor+")");
+                            });
+
+                      
+                          }
+                }); 
+
  $('#tabla_pedido_compra').dataTable().fnDraw();
 
               switch(data.tipo) {
@@ -120,9 +119,18 @@ if  ( (url_pedidos[1]=="gestionar_pedido_compra") || (url_pedidos[1]=="cancelado
                           break;   
 
                       case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;       
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                        
 
                   
               default:
@@ -152,9 +160,18 @@ if  ( (url_pedidos[1]=="pedido_detalle")  ) {  //estos son los que tienen el ped
                           break;   
 
                       case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;       
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                        
 
                   
               default:
@@ -185,9 +202,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                   break;   
 
                       case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
                           break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                                     
 
                   
               default:
@@ -259,9 +285,19 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
                       case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
                           break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                                     
+
 
               //generar_pedido
               case "agregar_pedido":
@@ -458,9 +494,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                      caja_notificacion = '.notif-bot-pedidos';
                   break;   
                       case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
                           break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                                     
 
               //generar_pedido
               case "agregar_pedido":
@@ -584,9 +629,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                   break;   
 
                           case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;  
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                   
 
               //generar_pedido
               case "agregar_pedido":
@@ -681,9 +735,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                   break;   
 
                           case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;   
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                    
 
               //generar_pedido
               case "agregar_pedido":
@@ -812,9 +875,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                   break;   
 
                           case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;  
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                   
 
               //generar_pedido
               case "agregar_pedido":
@@ -940,9 +1012,18 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
                   break;   
 
                           case "proc_pedido_compra":
-                             mensaje_notif=  "Orden de compra. No actualiza el inventario.";
+                             mensaje_notif=  "Orden de compra generada.";
                              caja_notificacion = '.notif-bot-pedidos';
-                          break;  
+                          break;                    
+                          case "form_cancelar_pedido_compra":
+                             mensaje_notif=  "Orden de compra. Cancelada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                          case "proc_aprobado_compra":
+                             mensaje_notif=  "Orden de compra aprobada.";
+                             caja_notificacion = '.notif-bot-pedidos';
+                          break;         
+                                   
 
               //generar_pedido
               case "agregar_pedido":
@@ -991,7 +1072,7 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
 
 
     //mensaje de notificacion
-    if (mensaje_notif !='') {
+    if ((mensaje_notif !='') && (mensaje_notif !=  "notificación") ){
       /*
               $('<div/>', {  //texto de notificacion
                 id: 'notif-bot', //id q debe estar mal
@@ -1050,6 +1131,54 @@ if  ( (url_pedidos[1]=="apartado_detalle")  ) {  //estos son los que tienen el p
        // App.showBroadcastedMessage(data.message);
       }
     },
+
+salida_almacen : function(data) {
+
+  
+  mensaje_notif=  "CONTEO EN INVENTARIO.";
+  caja_notificacion = '.notif-bot-pedidos';
+  
+     $.notify(mensaje_notif,  
+
+          {
+            // whether to hide the notification on click
+            clickToHide: true,
+            // whether to auto-hide the notification
+            autoHide: true,
+            // if autoHide, hide after milliseconds
+            autoHideDelay: 1000,
+            // show the arrow pointing at the element
+            arrowShow: true,
+            // arrow size in pixels
+            arrowSize: 5,
+            // default positions
+            elementPosition: 'bottom left',
+            globalPosition: 'top right',
+            // default style
+            style: 'bootstrap',
+            // default class (string or [string])
+            className: 'success',
+            // show animation
+            showAnimation: 'slideDown',
+            // show animation duration
+            showDuration: 40,
+            // hide animation
+            hideAnimation: 'slideUp',
+            // hide animation duration
+            hideDuration: 2000,
+            // padding between element and notification
+            gap: 2
+          }
+      );
+
+    window.location.href = '/salir';  
+
+},    
+  
+  sendAlmacen : function(id_almacen,tipo) {  
+      var sessionId = readCookie('inven_session');
+      MY_Socket.socket.emit('newAlmacen',id_almacen,sessionId,tipo);
+  },
 
   // Esta emitirá un html parcial que contiene un mensaje nuevo,
     // Más el ID del equipo(teamId) del usuario que envía el mensaje.

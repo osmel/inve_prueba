@@ -70,16 +70,21 @@ public function buscador_revisar_historial_compra($data){
           
           $id_session = $this->session->userdata('id');
           
-                    //
 
-          //$this->db->select('p.id, p.uid, p.referencia,p.codigo_contable,p.fecha_mac, c.hexadecimal_color, p.activo');
+
 
           $this->db->select("(DATE_FORMAT(pc.fecha_entrada,'%d-%m-%Y')) as fecha_entrada",false);
           $this->db->select('pc.movimiento, pc.comentario,a.almacen');
           $this->db->select('p.descripcion,p.codigo_contable, p.imagen,c.color nombre_color');
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
-          $this->db->select("pc.precio", FALSE);
+          
+
+          if ($perfil==1) {
+            $this->db->select("pc.precio", FALSE);  
+          }
+          
+
           $this->db->select("p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
@@ -143,6 +148,8 @@ public function buscador_revisar_historial_compra($data){
           $cadena = addslashes($data['busqueda']);
           $id_almacen= $data['id_almacen'];
           $movimiento= $data['movimiento'];
+          $perfil= $this->session->userdata('id_perfil');
+          
           
              
           $id_session = $this->session->userdata('id');
@@ -152,7 +159,11 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select('p.descripcion,p.codigo_contable, p.imagen,c.color nombre_color');
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
-          $this->db->select("pc.precio", FALSE);
+          
+          if ($perfil==1) {
+            $this->db->select("pc.precio", FALSE);  
+          }
+          
           $this->db->select("p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
@@ -218,6 +229,7 @@ public function buscador_revisar_historial_compra($data){
           $id_almacen= $data['id_almacen'];
           $movimiento= $data['movimiento'];
           
+          $perfil= $this->session->userdata('id_perfil');
              
           $id_session = $this->session->userdata('id');
           
@@ -226,7 +238,13 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select('p.descripcion,p.codigo_contable, p.imagen,c.color nombre_color');
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
-          $this->db->select("pc.precio", FALSE);
+          
+
+          if ($perfil==1) {
+            $this->db->select("pc.precio", FALSE);  
+          }
+          
+
           $this->db->select("p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");

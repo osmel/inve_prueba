@@ -32,7 +32,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>pendiente_revision"  
-							type="button" class="btn <?php echo ($modulo==1) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Se hizo un pedido y esta esperando a que el admin lo revise, O el almacenista hizo la modificacion .">Revisión - Admin. <?php echo "(".$cant[1].")"; ?>
+							type="button" class="btn <?php echo ($modulo==1) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Se hizo un pedido y esta esperando a que el admin lo revise, O el almacenista hizo la modificacion .">Revisión - Admin. <span class="etiq_btn1"><?php echo "(".$cant[1].")"; ?></span>
 						</a>
 					</div>
 
@@ -40,7 +40,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>solicitar_modificacion"  
-							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="El admin pide modificar">Revisión - Alm. <?php echo "(".$cant[2].")"; ?>
+							type="button" class="btn <?php echo ($modulo==2) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="El admin pide modificar">Revisión - Alm. <span class="etiq_btn2"><?php echo "(".$cant[2].")"; ?></span>
 						</a>
 					</div>
 
@@ -49,14 +49,14 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>aprobado"  
-							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Imprimir y pasarlo al historico.">Aprobados <?php echo "(".$cant[3].")"; ?>
+							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Imprimir y pasarlo al historico.">Aprobados <span class="etiq_btn3"><?php echo "(".$cant[3].")"; ?></span>
 						</a>
 					</div>
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>cancelado"  
-							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ver listado de cancelados.">Cancelados <?php echo "(".$cant[4].")"; ?>
+							type="button" class="btn <?php echo ($modulo==4) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Ver listado de cancelados.">Cancelados <span class="etiq_btn4"><?php echo "(".$cant[4].")"; ?></span>
 						</a>
 					</div>
 
@@ -66,7 +66,7 @@
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>gestionar_pedido_compra"  
-							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Histórico <?php echo "(".$cant[5].")"; ?>
+							type="button" class="btn <?php echo ($modulo==5) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Todos los que fueron aprobados por el admin y confirmado en 'aprobado' por el almacenista.">Histórico <span class="etiq_btn5"><?php echo "(".$cant[5].")"; ?></span>
 						</a>
 					</div>
 
@@ -196,7 +196,7 @@
 
 <br/>
 		
-				<div class="row bloque_totales">						
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -209,7 +209,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales">		
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

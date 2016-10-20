@@ -44,7 +44,9 @@
 
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/sistema.js"></script>
 
+	<!--
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/catalogos.js"></script>
+	-->
 
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.tablesorter.min.js"></script> 	
 
@@ -101,7 +103,7 @@
 		<script src="<?php echo base_url();?>js/socket.js"></script>
 	<?php } ?>			
 
-	
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/catalogos.js"></script>
 
 
 </body>

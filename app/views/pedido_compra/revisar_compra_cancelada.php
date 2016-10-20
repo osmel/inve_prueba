@@ -217,7 +217,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales">						
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -230,7 +230,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales">		
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

@@ -110,6 +110,32 @@ var pool    =    mysql.createPool({
             
           }); //fin del socket newPost
 
+
+
+
+         socket.on('newAlmacen', function (id_almacen,sessionId,tipo) {  
+          
+             var parsedRes, team, isAdmin, team_almacen;
+
+              rClient.get('sessions:'+sessionId, function(err,res){
+
+                  
+                  parsedRes = JSON.parse(res);
+                  team = parsedRes.sala; //id_perfil //parsedRes.teamId;
+                  team_almacen = parsedRes.id_almacen;
+
+                  var broadcastData = {message: id_almacen, team: team,tipo: tipo};
+
+                   socket.broadcast.to((parseInt(id_almacen)+3).toString()).emit('broadcastSalidaAlmacen',broadcastData);   
+
+            
+              });
+            
+          }); //fin del socket newPost
+
+          
+
+
           
 
 

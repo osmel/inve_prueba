@@ -21,6 +21,25 @@ jQuery(document).ready(function($) {
 
 var target = document.getElementById('foo');
 
+
+
+var hash_url_notif = window.location.pathname;
+
+    if  ( (hash_url_notif=="/gestionar_pedido_compra") || (hash_url_notif=="/cancelado") || (hash_url_notif=="/solicitar_modificacion")
+     || (hash_url_notif=="/pendiente_revision") || (hash_url_notif=="/aprobado")) {  	
+
+    		MY_Socket.sendNewPost(' ','notificando_compra');
+		}
+
+		/*
+	    if  ( (hash_url_notif=="/informe_pendiente") ) {  	
+    		MY_Socket.sendAlmacen("1",'salida_almacen');	   
+		}*/
+
+
+
+
+
 jQuery('#tabla_conteo_historico').dataTable( {
  	    "pagingType": "full_numbers",
 		"processing": true,
@@ -647,6 +666,7 @@ jQuery('body').on('click','#proc_salida_ajuste', function (e) {
 		});	
 
 });
+
 
 
 //Agregar las estradas a salidas en el modulo de salida "agregar la regilla de arriba a la regilla inferior"
@@ -1717,13 +1737,6 @@ jQuery('body').on('keypress paste','.cantidad[restriccion="entero"]', function (
 jQuery('body').on('click','#procesar_conteo', function (e) {
 		id_almacen 	= jQuery.base64.encode(jQuery("#id_almacen_historicos").val()); 
 
-	/*
-	id_descripcion 	= 	(typeof (jQuery("#producto").val()) === 'undefined') ? jQuery.base64.encode(0):jQuery.base64.encode(jQuery("#producto").val());
-	id_color 	= 	(typeof (jQuery("#id_color").val()) === 'undefined') ? jQuery.base64.encode(0): jQuery.base64.encode(jQuery("#color").val()); 
-	id_composicion 	= 	(typeof (jQuery("#id_composicion").val()) === 'undefined') ? jQuery.base64.encode(0): jQuery.base64.encode(jQuery("#composicion").val());
-	id_calidad 	= 	(typeof (jQuery("#id_calidad").val()) === 'undefined') ? jQuery.base64.encode(0):  jQuery.base64.encode(jQuery("#calidad").val());
-	*/
-
 	id_descripcion 	= 	jQuery.base64.encode(jQuery("#producto_existente").val());
 	id_color 	= 	  jQuery.base64.encode(jQuery("#color_existente").val()); 
 	id_composicion 	= jQuery.base64.encode(jQuery("#composicion_existente").val());
@@ -1731,6 +1744,8 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 	
 
 		   cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
+
+
 
 	var url = "/procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad+'/'+cantidad;
 
@@ -1787,6 +1802,7 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 		    if (settings.json.status_almacen==0) {
 				jQuery(".conteo_principal").css('display','none');  	
 				jQuery(".mensaje_proceso").css('display','block');
+				MY_Socket.sendAlmacen("1",'salida_almacen');	   
 			} else {
 				jQuery(".conteo_principal").css('display','block');
 				jQuery(".mensaje_proceso").css('display','none');
@@ -2166,7 +2182,7 @@ jQuery('body').on('click','#proc_aprobado', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(dato) {	
-									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_aprobado');
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_aprobado_compra');
 												window.location.href = retorno;	
 
 									        }
@@ -2256,9 +2272,6 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 									        success : function(dato) {	
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'proc_pedido_compra');
 									        	
-
-												//window.location.href = retorno;	
-
 									        	
 												valor= jQuery.base64.encode(data.aprobado);
 												var url = "/pedido_compra_modal/"+valor+'/'+jQuery.base64.encode(movimiento)+'/'+jQuery.base64.encode(modulo)+'/'+jQuery.base64.encode(retorno);
@@ -2333,8 +2346,7 @@ jQuery('body').on('submit','#form_cancelar_pedido_compra', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
-									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'form_pedido_compra');
-									        	//alert('este');
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'form_cancelar_pedido_compra');
 									        	window.location.href = $catalogo;	
 									        }
 								});		
@@ -2437,6 +2449,12 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 			};
 
 		if  (data.length>0) {   
+
+				if ( (jQuery("#el_perfil").val() != '1') ) {
+							 api.column(6).visible(false);
+				}
+
+
 				//importe https://datatables.net/reference/api/
 				filas = api.rows().nodes();
 				total_precio=0;
@@ -2623,7 +2641,7 @@ jQuery('#tabla_pedido_compra').dataTable( {
 				//alert(jQuery("#modulo").val());	    
 				if ( (jQuery("#mi_perfil").val() != '1') ) {
 
-
+							api.column(6).visible(false);
 					switch(jQuery("#modulo").val()) {
 					    case '1':
 						    	api.column(8).visible(false);
@@ -2892,7 +2910,9 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 
 		if  (data.length>0) {   
 				
-			
+				if ( (jQuery("#el_perfil").val() != '1') ) {
+							 api.column(6).visible(false);
+				}			
 
 				//importe
 				
@@ -3123,7 +3143,10 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 			};
 
 		if  (data.length>0) {   
-				
+
+				if ( (jQuery("#el_perfil").val() != '1') ) {
+							 api.column(6).visible(false);
+				}				
 			
 
 				//importe

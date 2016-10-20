@@ -482,6 +482,25 @@ public function gestionar_pedido_compra(){
 }
 
 
+   public function notificacion_compra(){
+
+            //$data['id_almacen']=$this->session->userdata('id_almacen');
+            $data['id_almacen'] = $this->input->post('id_almacen');
+
+           $data['mod']=1;      
+           $data['cant'][1]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=2;      
+           $data['cant'][2]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=3;      
+           $data['cant'][3]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=4;      
+           $data['cant'][4]   =  $this->model_pedido_compra->total_modulo($data);
+           $data['mod']=5;      
+           $data['cant'][5]   =  $this->model_pedido_compra->total_modulo($data);
+        
+        echo  json_encode($data);
+    }            
+
 public function modulo_pedido_compra($data){
 
      if($this->session->userdata('session') === TRUE ){
@@ -501,7 +520,7 @@ public function modulo_pedido_compra($data){
            $data['colores'] = $this->catalogo->listado_colores_unico();
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
-          $data['id_almacen']=$this->session->userdata('id_almacen');
+           $data['id_almacen']=$this->session->userdata('id_almacen');
            $data['mod']=1;      
            $data['cant'][1]   =  $this->model_pedido_compra->total_modulo($data);
            $data['mod']=2;      

@@ -1,4 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php $perfil= $this->session->userdata('id_perfil'); ?>
+
 <div class="container">
 	<div>
 		<div>
@@ -33,6 +35,7 @@
 						</th>
 					</tr>
 					<tr>
+						
 						<th width="20%">Nombre de Tela</th>
 						<th  width="10%">Imagen</th>
 						<th  width="10%">Color</th>
@@ -40,10 +43,11 @@
 						<th  width="10%">Ancho</th>
 						<th  width="10%">Composición</th>
 						<th  width="8%">Calidad</th>
-						<th  width="8%">Precio</th>
-
+						<?php if ($perfil==1) { ?>
+							<th  width="8%">Precio</th>
+						<?php } ?>	
 						
-						<th width="8%">Cant. Disponible</th>
+						<th width="<?php echo ( ($perfil==1) ? '8%' : '16%') ?>">Cant. Disponible</th>
 						
 						<th width="8%">Cant. Solicitada</th>
 						<th width="8%">Cant. Aprobada</th>
@@ -79,10 +83,15 @@
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->calidad; ?></td>
-							<td width="8%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>
+
+							<?php if ($perfil==1) { ?>
+							     <td width="8%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>
+							<?php } ?>	
+						
+							
 
 
-							<td width="8%" style="border-top: 1px solid #222222;"><?php echo 'Optimo:'.$movimiento->minimo.'<br/>  Reales:'. $movimiento->suma; ?></td>
+							<td width="<?php echo ( ($perfil==1) ? '8%' : '16%') ?>" style="border-top: 1px solid #222222;"><?php echo 'Optimo:'.$movimiento->minimo.'<br/>  Reales:'. $movimiento->suma; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_pedida; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_aprobada; ?></td>
 							

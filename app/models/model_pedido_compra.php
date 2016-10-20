@@ -94,6 +94,7 @@ public function notificador_pedido_compra($data){
 
 
  public function total_modulo($data){
+  
               $id_almacen= $data['id_almacen'];
               
               if ($id_almacen!=0) {
