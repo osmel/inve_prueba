@@ -339,6 +339,37 @@ public function buscador_historial_conteo($data){
 
 public function buscador_historico_conteo($data){
           $cadena = addslashes($data['search']['value']);
+
+          $inicio = $data['start'];
+           $largo = $data['length'];
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'p.consecutivo';
+                     break;
+                   case '1':
+                        $columna = 'p.filtro';
+                     break;
+                   
+                   case '5':
+                   case '6':
+                   case '7':
+                        $columna = 'sum(p.cantidad_royo>p.conteo3)*1';
+                     break;                     
+                   
+                     case '8':
+                     case '9':
+                    case '10':
+                        $columna = 'sum(p.cantidad_royo<p.conteo3)*1';
+                     break;                   
+
+                   default:
+                         $columna = 'p.consecutivo';
+                     break;
+                 }                 
           
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
           $this->db->select("p.consecutivo, p.filtro");
@@ -357,7 +388,8 @@ public function buscador_historico_conteo($data){
           $where = '(
                       
                       (
-                        ( p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
+                        (p.filtro LIKE  "%'.$cadena.'%" ) OR 
+                        (p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
                         (p.mov_faltante LIKE  "%'.$cadena.'%") OR
                         (p.mov_sobrante LIKE  "%'.$cadena.'%") 
                        ) AND ( (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3) )
@@ -365,6 +397,8 @@ public function buscador_historico_conteo($data){
             ) ' ;                         
 
           $this->db->where($where);
+          
+          $this->db->order_by($columna, $order); 
 
           $this->db->group_by('p.consecutivo');
 

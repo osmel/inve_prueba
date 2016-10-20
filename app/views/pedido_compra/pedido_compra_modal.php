@@ -13,22 +13,23 @@
 		<h3 class="text-left">Confirmar cambios</h3>
 	</div>
 	<div class="modal-body">
-
+	
 		<?php if ($modulo==1) { ?>		
 			<?php if ($aprobado=="true") { ?>
-					<p>Aprobado. admin</p>
+					<p>Esta orden fue aprobada y debe ser procesada por el almacenista</p>
 			<?php } else { ?>
-					<p>Modificado. admin</p>
+					<p>Esta orden ha sido enviada al almacenista para su modificación o aprobación</p>
 			<?php } ?>		
 		<?php } else { ?>			
 
 			<?php if ($aprobado=="true") { ?>
-					<p>Aprobado. almacén</p>
+					<p>Esta orden fue aprobada y debe ser procesada por el almacenista</p>
 			<?php } else { ?>
-					<p>Modificado. almacén</p>
+					<p>Esta orden ha sido enviada al Administrador para su modificación o aprobación</p>
 			<?php } ?>		
 
 		<?php } ?>			
+		
 
 		<div class="alert" id="messagesModal"></div>
 	</div>
