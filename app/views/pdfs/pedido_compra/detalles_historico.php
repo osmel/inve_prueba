@@ -17,6 +17,7 @@
 									<?php }  ?> 	
 
 									<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
+									<span><b>Proveedor: </b> <?php echo $movimientos[0]->proveedor; ?></span><br>
 		                            <span><b>Comentario: </b> <?php echo $movimientos[0]->movimiento; ?></span><br>
 							</p>
 						</td>
@@ -43,11 +44,11 @@
 						<th  width="10%">Ancho</th>
 						<th  width="10%">Composición</th>
 						<th  width="8%">Calidad</th>
-						<?php if ($perfil==1) { ?>
+						<?php if ($perfil!=2) { ?>
 							<th  width="8%">Precio</th>
 						<?php } ?>	
 						
-						<th width="<?php echo ( ($perfil==1) ? '8%' : '16%') ?>">Cant. Disponible</th>
+						<th width="<?php echo ( ($perfil!=2) ? '8%' : '16%') ?>">Cant. Disponible</th>
 						
 						<th width="8%">Cant. Solicitada</th>
 						<th width="8%">Cant. Aprobada</th>
@@ -84,14 +85,14 @@
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->calidad; ?></td>
 
-							<?php if ($perfil==1) { ?>
+							<?php if ($perfil!=2) { ?>
 							     <td width="8%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>
 							<?php } ?>	
 						
 							
 
 
-							<td width="<?php echo ( ($perfil==1) ? '8%' : '16%') ?>" style="border-top: 1px solid #222222;"><?php echo 'Optimo:'.$movimiento->minimo.'<br/>  Reales:'. $movimiento->suma; ?></td>
+							<td width="<?php echo ( ($perfil!=2) ? '8%' : '16%') ?>" style="border-top: 1px solid #222222;"><?php echo 'Optimo:'.$movimiento->minimo.'<br/>  Reales:'. $movimiento->suma; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_pedida; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_aprobada; ?></td>
 							

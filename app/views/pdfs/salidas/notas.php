@@ -4,11 +4,8 @@
 		<div>
 			<table style="width: 100%; border: 2px solid #222222;">
 				<tbody>
-					
-
 					<tr>
 						<th width="70%" style="font-size:10px; line-height: 15px;">
-
 								<span><b>Vendedor: </b> <?php echo $movimientos[0]->cliente; ?></span><br>
 								<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 								<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
@@ -25,11 +22,6 @@
 								<?php } else { ?>
 									<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_pedido; ?></span> 
 								<?php } ?>	
-
-
-
-									
-
 						</th>
 
 						<th width="30%" style="text-align:right;">
@@ -37,20 +29,11 @@
 								<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
 							<?php } ?>	
 						</th>
-
 					</tr>
-
 					<tr style="padding:0px;margin:0px;" height="0px;" >
-
 						<th height="0px;">
-							
 						</th>
-
 					</tr>
-
-
-
-
 
 				</tbody>
 			</table>
@@ -102,19 +85,6 @@
 
 				<tfooter>	
 						<tr>
-						<!--
-							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
-									<?php  if ($totales->metros>0) { ?>	
-										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span><br>
-									<?php } ?>		
-									<?php  if ($totales->kilogramos>0) { ?>	
-										<span><b>Total Kilogramos: </b> <?php echo $totales->kilogramos; ?></span><br>
-									<?php } ?>	
-									<span><b>Total Peso real: </b> <?php echo $totales->peso_real; ?></span><br>
-									<span><b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
-							</td>-->
-
-
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 									
 									<?php  if ($totales->metros>0) { ?>	
@@ -157,9 +127,4 @@
 	    
 	  </tr>
 	</table>
-
-
-
-
-
 </div>

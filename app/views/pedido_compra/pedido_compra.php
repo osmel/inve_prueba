@@ -175,7 +175,7 @@
 															<th  width="10%">Almacén</th>
 															<th  width="25%">Comentario</th>
 															<th  width="10%">Importe</th>
-															<th  width="10%">Recorrido</th>
+															<th  width="10%">Proveedor</th>
 															<th width="10%">Revisar</th>
 															<th width="10%">Cancelar Pedido</th>
 														</tr>
@@ -196,7 +196,7 @@
 
 <br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -209,7 +209,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

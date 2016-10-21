@@ -1610,7 +1610,8 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 
 									        	
 	jQuery('#tabla_conteos').dataTable( {
- 	    "pagingType": "full_numbers",
+ 	    //"pagingType": "full_numbers",
+ 	    "paging": false,
 		"processing": true,
 		"serverSide": true,
 		"ajax": {
@@ -2450,7 +2451,7 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 		if  (data.length>0) {   
 
-				if ( (jQuery("#el_perfil").val() != '1') ) {
+				if ( (jQuery("#el_perfil").val() == '2') ) {
 							 api.column(6).visible(false);
 				}
 
@@ -2623,8 +2624,7 @@ jQuery('#tabla_pedido_compra').dataTable( {
 				}
 
 				//si eres administrador			    
-				if ( (jQuery("#mi_perfil").val() == '1') ) {
-
+				if ( (jQuery("#mi_perfil").val() != '2') ) {
 					switch(jQuery("#modulo").val()) {
 					    case '2':
 					    case '3':
@@ -2639,7 +2639,7 @@ jQuery('#tabla_pedido_compra').dataTable( {
 
 				//si eres almacenista		
 				//alert(jQuery("#modulo").val());	    
-				if ( (jQuery("#mi_perfil").val() != '1') ) {
+				if ( (jQuery("#mi_perfil").val() == '2') ) { //if ( (jQuery("#mi_perfil").val() != '1') ) {
 
 							api.column(6).visible(false);
 					switch(jQuery("#modulo").val()) {
@@ -2683,8 +2683,15 @@ jQuery('#tabla_pedido_compra').dataTable( {
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7]
+	                "targets": [0,1,2,3,4,5,6]
 	            },
+  				{
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": 7
+	            },
+
     			
   				{
 	                "render": function ( data, type, row ) {
@@ -2910,7 +2917,7 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 
 		if  (data.length>0) {   
 				
-				if ( (jQuery("#el_perfil").val() != '1') ) {
+				if ( (jQuery("#el_perfil").val() == '2') ) {
 							 api.column(6).visible(false);
 				}			
 
@@ -2981,7 +2988,8 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 	movimiento = jQuery("#movimiento").val();
 	factura = jQuery("#factura").val();
 	comentario = jQuery("#comentario").val();
-	id_almacen = jQuery("#id_almacen").val();
+	id_almacen = jQuery("#id_almacen_compra").val();
+	id_proveedor = jQuery("#id_proveedor_compra").val();
 	
 
 	//editar_proveedor
@@ -2997,6 +3005,7 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 		        	factura: factura,
 		        	comentario: comentario,
 		        	id_almacen: id_almacen,
+		        	id_proveedor:id_proveedor,
 		        },
 		        type : 'POST',
 		       // dataType : 'json',
@@ -3144,7 +3153,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 
 		if  (data.length>0) {   
 
-				if ( (jQuery("#el_perfil").val() != '1') ) {
+				if ( (jQuery("#el_perfil").val() == '2') ) {
 							 api.column(6).visible(false);
 				}				
 			

@@ -28,16 +28,16 @@
 					<tr>
 
 						<th width="13%">Referencia</th>
-						<th width="15%">Descripción</th>
+						<th width="25%">Descripción</th>
 						
 						<th width="15%">Rollos Vendidos</th>
 						
 						
-						<th width="12%">Imagen</th>
+						<!-- <th width="12%">Imagen</th> -->
 						<th width="7%">Color</th>
 						
 
-						<th width="16%">Composición</th>
+						<th width="18%">Composición</th>
 						<th width="9%">Calidad</th>
 						<th width="7%">Precio</th>
 						<th width="6%">Almacén</th>	
@@ -56,16 +56,18 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->referencia; ?></td>								
-							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							
 							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->suma; ?></td>
 							
+							<!--
 							<td width="12%" style="border-top: 1px solid #222222;"><?php echo '<img src="'.base_url().'uploads/productos/thumbnail/300X300/'.substr($movimiento->imagen,0,-4).'_thumb'.substr($movimiento->imagen,-4).'" border="0" width="75" height="75">'; ?></td>
+							-->
 							<td width="7%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre_color.                                      
                                         '<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
 							
 							
-							<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion;  ?></td>
+							<td width="18%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion;  ?></td>
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->calidad; ?></td>
 							<td width="7%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>

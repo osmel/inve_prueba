@@ -257,6 +257,7 @@ public function confirmar_pedido_compra(){
 
 public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
 
+
       if ( $this->session->userdata('session') !== TRUE ) {
           redirect('');
         } else {
@@ -276,6 +277,10 @@ public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
           $data['modulo']         = base64_decode($modulo);
           $data['retorno']         = base64_decode($retorno);
 
+          //print_r($data);
+          //die;
+          //Array ( [aprobado] => false [movimiento] => 1 [modulo] => 1 [retorno] => /pendiente_revision )
+
           switch ($id_perfil) {    
             case 1:
                   
@@ -284,7 +289,7 @@ public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
             case 2:
             case 3:
             case 4:
-                 if  (in_array(2, $coleccion_id_operaciones))  { 
+                 if  (in_array(39, $coleccion_id_operaciones))  {                 
                      $this->load->view( 'pedido_compra/pedido_compra_modal', $data );
                   }  else  {
                     redirect('');
@@ -355,6 +360,7 @@ public function detalle_revision($movimiento, $modulo){
           $dato['id'] = 7;
           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['proveedores']   = $this->modelo->coger_catalogo_proveedores(2);
 
 
           switch ($id_perfil) {    
@@ -519,6 +525,7 @@ public function modulo_pedido_compra($data){
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['proveedores']   = $this->modelo->coger_catalogo_proveedores(2);
 
            $data['id_almacen']=$this->session->userdata('id_almacen');
            $data['mod']=1;      
@@ -581,6 +588,7 @@ public function nuevo_pedido_compra($url){
            $data['colores'] = $this->catalogo->listado_colores_unico();
            
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+           $data['proveedores']   = $this->modelo->coger_catalogo_proveedores(2);
 
            $data['retorno'] = base64_decode($url);
 
@@ -718,6 +726,7 @@ function agregar_salida_compra(){
             }  
             $data['comentario'] = $this->input->post('comentario');
             $data['id_almacen'] = $this->input->post('id_almacen');
+            $data['id_proveedor'] = $this->input->post('id_proveedor');
 
             $existe=$this->model_pedido_compra->checar_salida_compra($data);
 

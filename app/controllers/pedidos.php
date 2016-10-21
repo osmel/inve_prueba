@@ -193,7 +193,8 @@ class Pedidos extends CI_Controller {
          }
 
 
-         	$data['modulo']=$this->session->userdata('id_perfil'); 
+         	//$data['modulo']=$this->session->userdata('id_perfil'); 
+         	$data['modulo'] = ($this->session->userdata('id_perfil')!=2) ? 1: 2; 
          	$dato['compra'] = (string)$this->model_pedido_compra->notificador_pedido_compra($data);  
 	
 			echo  json_encode($dato);

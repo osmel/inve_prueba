@@ -1173,7 +1173,7 @@
             $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->historico_registros_salidas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); // AND a.activo=1
           $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');

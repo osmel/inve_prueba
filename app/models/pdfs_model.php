@@ -130,7 +130,7 @@ class Pdfs_model extends CI_Model
           $this->db->select('a.almacen');
           
           $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -193,7 +193,7 @@ class Pdfs_model extends CI_Model
           $this->db->select("m.peso_real, m1.peso_real peso_entrada");          
 
           $this->db->from($this->historico_registros_salidas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
           $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');

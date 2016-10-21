@@ -113,6 +113,43 @@
 							</div>
 
 					</div>		
+
+
+
+					<!--Proveedor -->
+					<div class="col-xs-12 col-sm-6 col-md-8">
+					    
+							<label for="id_proveedor_compra" class="col-sm-3 col-md-3 control-label">Proveedor</label>
+							<div class="col-sm-9 col-md-10">
+							    <?php if (!$val_compra) { ?>
+									 <fieldset class="disabledme">				
+								<?php } else { ?>	
+									 <fieldset class="disabledme" disabled>
+								<?php } ?>	
+											<select name="id_proveedor_compra" id="id_proveedor_compra" class="form-control">
+													<?php foreach ( $proveedores as $proveedor ){ ?>
+															<?php 
+															   
+															   $seleccionado='';	
+																if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
+																	 if ($proveedor->id==$val_compra->id_proveedor) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+																}
+															?>
+																<option value="<?php echo $proveedor->id; ?>" <?php echo $seleccionado; ?> ><?php echo $proveedor->nombre; ?></option>
+													<?php } ?>
+											</select>
+								    </fieldset>
+
+							</div>
+					</div>	
+
+
+
+
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<fieldset id="disa_reportes" disabled>
 										<div class="col-sm-6 col-md-6">
@@ -142,14 +179,11 @@
 								<fieldset class="disabledme">						
 							<?php } ?>					
 										<?php 
-
 											$nomb_nom='';
 												if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
 													if (isset($val_compra->comentario)) 
 													 {	$nomb_nom = $val_compra->comentario;}
 												}
-
-											
 										?>	
 
 										<textarea  class="form-control" name="comentario" id="comentario" rows="5" placeholder="Comentarios"><?php echo  set_value('comentario',$nomb_nom); ?></textarea>
@@ -217,7 +251,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -230,7 +264,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

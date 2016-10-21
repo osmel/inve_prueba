@@ -67,7 +67,7 @@ public function buscador_revisar_historial_compra($data){
           $id_almacen= $data['id_almacen'];
           $movimiento= $data['movimiento'];
           
-          
+           $perfil= $this->session->userdata('id_perfil');           
           $id_session = $this->session->userdata('id');
           
 
@@ -80,7 +80,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select('co.composicion, ca.calidad');
           
 
-          if ($perfil==1) {
+          if ($perfil!=2) {
             $this->db->select("pc.precio", FALSE);  
           }
           
@@ -89,6 +89,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
+          $this->db->select('prov.nombre proveedor');
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( pc.id_almacen =  '.$id_almacen.' ) ';  
@@ -107,6 +108,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->historico_historial_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
           
 
           $where = '(                      
@@ -160,7 +162,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
           
-          if ($perfil==1) {
+          if ($perfil!=2) {
             $this->db->select("pc.precio", FALSE);  
           }
           
@@ -168,6 +170,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
+          $this->db->select('prov.nombre proveedor');
 
 
 
@@ -188,6 +191,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->historico_cancela_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
 
           $where = '(                      
                             (
@@ -240,7 +244,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select('co.composicion, ca.calidad');
           
 
-          if ($perfil==1) {
+          if ($perfil!=2) {
             $this->db->select("pc.precio", FALSE);  
           }
           
@@ -249,6 +253,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
+          $this->db->select('prov.nombre proveedor');
 
 
          
@@ -270,6 +275,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->historico_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
           
 
           $where = '(                      

@@ -340,18 +340,18 @@ class Informes_model extends CI_Model
           } else {
             $id_almacenid = '';
           }
-
+/*
           if ($data['id_factura']!=0) {
               $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
           } else {
               $id_facturaid = '';
           } 
-
+*/
           
 
           $where = '(
                       (
-                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.$id_facturaid.' 
+                         ( m.estatus_salida = "0" ) '.$estatus_idid.$id_almacenid.' 
                       ) 
                        AND
                       ( ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
@@ -363,7 +363,7 @@ class Informes_model extends CI_Model
             ) ' ;                     
           
 
-          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'  )';
+          $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
 
 
 

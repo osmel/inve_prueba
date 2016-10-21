@@ -57,7 +57,8 @@
 
 
          if ($perfil) {
-         	$data['modulo'] = $this->session->userdata('id_perfil'); 
+         	//$data['modulo']=$this->session->userdata('id_perfil'); 
+         	$data['modulo'] = ($this->session->userdata('id_perfil')!=2) ? 1: 2; 
          	$dato['compra'] = (string)$this->model_pedido_compra->notificador_pedido_compra($data);  
          } else {
          	$dato['compra'] = 99;
@@ -189,7 +190,7 @@
 					 <?php } ?>						
 
 					 <?php //if ( ( $perfil == 2 ) && (in_array(50, $coleccion_id_operaciones)) ) { ?>		 
-					 <?php if ( ( $perfil == 1 ) ) { ?>		 
+					 <?php if ( ( $perfil == 1 ) || (in_array(50, $coleccion_id_operaciones)) ) { ?>		 
 						<li id="bar_conteos_opciones"> 
 							<a title="Conteo de Inventario físico." href="<?php echo base_url(); ?>conteos_opciones" class="ttip color-blanco">Conteos</a>
 						</li>

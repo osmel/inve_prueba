@@ -148,7 +148,7 @@ public function confirmando_aprobado( $data ){
             $id_session = $this->session->userdata('id');
             $fecha_hoy = date('Y-m-d H:i:s');
          
-            $this->db->select('id_producto,factura,id_almacen,comentario,id_almacen',false);  
+            $this->db->select('id_producto,factura,id_almacen,id_proveedor,comentario',false);  
              $this->db->select('descripcion, id_color, id_composicion, id_calidad, referencia, ancho, precio');
              
              $this->db->select('fecha_entrada',false);
@@ -212,7 +212,7 @@ public function cancelar_pedido_compra( $data ){
             $id_session = $this->session->userdata('id');
             $fecha_hoy = date('Y-m-d H:i:s');
          
-            $this->db->select('id_producto,factura,id_almacen,comentario,id_almacen',false);  
+            $this->db->select('id_producto,factura,id_almacen,id_proveedor,comentario',false);  
              $this->db->select('descripcion, id_color, id_composicion, id_calidad, referencia, ancho, precio');
              
              $this->db->select('fecha_entrada',false);
@@ -284,7 +284,8 @@ public function cancelar_pedido_compra( $data ){
                         $columna = 'sum(p.precio*p.cantidad_pedida)';
                      break;                     
                    case '7':
-                        $columna = 'p.recorrido_status';
+                        $columna = 'prov.nombre'; 
+                        //$columna = 'p.recorrido_status';
                      break;
 
                    
@@ -308,6 +309,8 @@ public function cancelar_pedido_compra( $data ){
 
          $this->db->select('sum(p.precio*p.cantidad_pedida) importe');
          $this->db->select('a.almacen');
+         $this->db->select('prov.nombre proveedor');
+
           
 
            if ($id_almacen!=0) {
@@ -332,11 +335,14 @@ public function cancelar_pedido_compra( $data ){
           $this->db->from($this->historico_cancela_pedido_compra.' as p');
           $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
           $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
+
+
 
           //((p.precio*p.cantidad_pedida) LIKE  "%'.$cadena.'%") OR
            $where = '(                      
                                 (
-                                  
+                                  (prov.nombre LIKE  "%'.$cadena.'%") OR      
                                   (p.movimiento LIKE  "%'.$cadena.'%") OR     
                                   (p.descripcion LIKE  "%'.$cadena.'%") OR 
                                   (p.factura LIKE  "%'.$cadena.'%") OR    
@@ -399,7 +405,7 @@ public function cancelar_pedido_compra( $data ){
                                       6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
-                                      
+                                      9=>$row->proveedor,
                                       
                                       
                                     );
@@ -445,7 +451,8 @@ public function cancelar_pedido_compra( $data ){
 
               $this->db->from($this->historico_cancela_pedido_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
-              $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');              
+              $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');       
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');       
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -470,6 +477,7 @@ public function cancelar_pedido_compra( $data ){
               $this->db->from($this->historico_cancela_pedido_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
               $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -537,7 +545,8 @@ public function cancelar_pedido_compra( $data ){
                         $columna = 'sum(p.precio*p.cantidad_pedida)';
                      break;                     
                    case '7':
-                        $columna = 'p.recorrido_status';
+                        //$columna = 'p.recorrido_status';
+                        $columna = 'prov.nombre'; 
                      break;
 
                    
@@ -561,7 +570,7 @@ public function cancelar_pedido_compra( $data ){
 
          $this->db->select('sum(p.precio*p.cantidad_pedida) importe');
          $this->db->select('a.almacen');
-          
+          $this->db->select('prov.nombre proveedor');
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( p.id_almacen =  '.$id_almacen.' ) ';  
@@ -584,10 +593,13 @@ public function cancelar_pedido_compra( $data ){
           $this->db->from($this->historico_historial_compra.' as p');
           $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
           $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
+          
+
 
            $where = '(                      
                                 (
-                                  
+                                  (prov.nombre LIKE  "%'.$cadena.'%") OR      
                                   (p.movimiento LIKE  "%'.$cadena.'%") OR     
                                   (p.descripcion LIKE  "%'.$cadena.'%") OR 
                                   (p.factura LIKE  "%'.$cadena.'%") OR    
@@ -650,6 +662,7 @@ public function cancelar_pedido_compra( $data ){
                                       6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
+                                      9=>$row->proveedor,          
                                       
                                       
                                       
@@ -699,6 +712,7 @@ public function cancelar_pedido_compra( $data ){
               $this->db->from($this->historico_historial_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
               $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -722,6 +736,7 @@ public function cancelar_pedido_compra( $data ){
               $this->db->from($this->historico_historial_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
               $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -787,7 +802,8 @@ public function cancelar_pedido_compra( $data ){
                         $columna = 'sum(p.precio*p.cantidad_pedida)';
                      break;                     
                    case '7':
-                        $columna = 'p.recorrido_status';
+                         $columna = 'prov.nombre'; 
+                        //$columna = 'p.recorrido_status';
                      break;
 
                    
@@ -815,6 +831,7 @@ public function cancelar_pedido_compra( $data ){
 
          $this->db->select('sum(p.precio*p.cantidad_pedida) importe');
          $this->db->select('a.almacen');
+         $this->db->select('prov.nombre proveedor');
           
 
            if ($id_almacen!=0) {
@@ -838,11 +855,14 @@ public function cancelar_pedido_compra( $data ){
           $this->db->from($this->historico_pedido_compra.' as p');
           $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
           $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+          $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
+          
 
           //((p.precio*p.cantidad_pedida) LIKE  "%'.$cadena.'%") OR
            $where = '(                      
                                 (
                                   
+                                  (prov.nombre LIKE  "%'.$cadena.'%") OR     
                                   (p.movimiento LIKE  "%'.$cadena.'%") OR     
                                   (p.descripcion LIKE  "%'.$cadena.'%") OR 
                                   (p.factura LIKE  "%'.$cadena.'%") OR    
@@ -897,6 +917,7 @@ public function cancelar_pedido_compra( $data ){
                                       6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
+                                      9=>$row->proveedor,
                                      
                                     );
                       }
@@ -942,6 +963,7 @@ public function cancelar_pedido_compra( $data ){
               $this->db->from($this->historico_pedido_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
               $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -965,6 +987,8 @@ public function cancelar_pedido_compra( $data ){
               $this->db->from($this->historico_pedido_compra.' as p');
               $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
               $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+              $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
+
 
               if ($data['where_total']!=''){
                 $this->db->where($data['where_total']);
@@ -993,7 +1017,7 @@ public function cancelar_pedido_compra( $data ){
             $id_session = $this->session->userdata('id');
             $fecha_hoy = date('Y-m-d H:i:s');
          
-            $this->db->select('id_producto,factura,id_almacen,comentario',false);  
+            $this->db->select('id_producto,factura,id_almacen,id_proveedor,comentario',false);  
              $this->db->select('descripcion, id_color, id_composicion, id_calidad, referencia, ancho, precio');
              
              $this->db->select('fecha_entrada',false);
@@ -1671,7 +1695,16 @@ public function totales_importes_salida($data){
             $login->free_result();
     } 
 
-    
+    /*
+    inven_catalogo_status_pedido_compra
+
+ALTER TABLE  `inven_temporal_pedido_compra` ADD  `id_proveedor` INT( 11 ) NOT NULL
+ALTER TABLE  `inven_historico_pedido_compra` ADD  `id_proveedor` INT( 11 ) NOT NULL ;
+ALTER TABLE  `inven_historico_cancela_pedido_compra` ADD  `id_proveedor` INT( 11 ) NOT NULL ;
+ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NOT NULL
+
+
+    */
     public function enviar_salida_compra( $data ){
 
             $id_session = $this->session->userdata('id');
@@ -1692,6 +1725,8 @@ public function totales_importes_salida($data){
                
              $this->db->select('"'.addslashes($data['movimiento']).'" AS movimiento',false); 
              $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
+             $this->db->select('"'.addslashes($data['id_proveedor']).'" AS id_proveedor',false); 
+
              $this->db->select('"'.addslashes($data['comentario']).'" AS comentario',false); 
              $this->db->select('"'.$id_session.'" AS id_usuario',false); 
              $this->db->select('descripcion, id_color, id_composicion, id_calidad, referencia, ancho, precio');
@@ -1743,7 +1778,7 @@ public function totales_importes_salida($data){
           $this->db->select('pc.comentario', false);
           $this->db->select('pc.factura');
           $this->db->select('pc.movimiento');
-          $this->db->select('pc.id_almacen');
+          $this->db->select('pc.id_almacen,pc.id_proveedor');
           $this->db->select('a.almacen');
           $this->db->select("(DATE_FORMAT(pc.fecha_entrada,'%d-%m-%Y')) as fecha_entrada",false);
 
@@ -1782,6 +1817,7 @@ public function totales_importes_salida($data){
           $this->db->select('pc.factura');
           $this->db->select('pc.movimiento');
           $this->db->select('pc.id_almacen');
+          $this->db->select('pc.id_proveedor');
           
           $this->db->from($this->productos.' as p');
           $this->db->join($this->temporal_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
@@ -1820,6 +1856,7 @@ public function totales_importes_salida($data){
           $this->db->select('pc.factura');
           $this->db->select('pc.movimiento');
           $this->db->select('pc.id_almacen');
+          $this->db->select('pc.id_proveedor');
           $this->db->select('a.almacen');
           $this->db->select("(DATE_FORMAT(pc.fecha_entrada,'%d-%m-%Y')) as fecha_entrada",false);
 
@@ -1859,6 +1896,7 @@ public function totales_importes_salida($data){
           $this->db->select('pc.factura');
           $this->db->select('pc.movimiento');
           $this->db->select('pc.id_almacen');
+          $this->db->select('pc.id_proveedor');
           $this->db->select('a.almacen');
           $this->db->select("(DATE_FORMAT(pc.fecha_entrada,'%d-%m-%Y')) as fecha_entrada",false);
 

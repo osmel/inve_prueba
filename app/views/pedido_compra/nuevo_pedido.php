@@ -29,6 +29,7 @@
 	<div class="row">		
 		<!-- derecha comentarios-->	
 	   <div class="col-sm-12 col-md-8">
+			
 			<div >
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<fieldset disabled>
@@ -72,16 +73,11 @@
 					</div>
 				<?php }  ?> 	
 
-			</div>
-
-			<div class="row">
-
-
 					<!--almacen Asociado -->
 					<div class="col-xs-12 col-sm-6 col-md-4" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 					    
 							<label for="id_almacen_compra" class="col-sm-3 col-md-3 control-label">Almacén</label>
-							<div class="col-sm-9 col-md-10">
+							<div class="col-sm-9 col-md-12">
 							    <!--Los administradores o con permisos de traspaso 
 							    	Y que no este inhabilitado y 
 							    	que no sean almacenista 
@@ -114,10 +110,48 @@
 
 							</div>
 					</div>		
-			</div>
 
-		</div>		
-	     <!-- Izquierda comentarios-->	
+
+					<div class="col-xs-12 col-sm-6 col-md-8" style="margin-top:0px;">
+					    
+							<label for="id_proveedor_compra" class="col-sm-3 col-md-3 control-label">Proveedor</label>
+							<div class="col-sm-9 col-md-12">
+							    <?php if (!$val_compra) { ?>
+											 <fieldset class="disabledme">				
+										<?php } else { ?>	
+											 <fieldset class="disabledme" disabled>
+										<?php } ?>	
+													<select name="id_proveedor_compra" id="id_proveedor_compra" class="form-control">
+															<?php foreach ( $proveedores as $proveedor ){ ?>
+																	<?php 
+																	   
+																	   $seleccionado='';	
+																		if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
+																			 if ($proveedor->id==$val_compra->id_proveedor) {
+																					$seleccionado='selected';
+																				} else {
+																					$seleccionado='';
+																				}
+																		}
+																	?>
+																		<option value="<?php echo $proveedor->id; ?>" <?php echo $seleccionado; ?> ><?php echo $proveedor->nombre; ?></option>
+															<?php } ?>
+													</select>
+										    </fieldset>
+
+							</div>
+					</div>	
+
+
+			</div>  	<!--*****fin del div vacio -->
+			
+
+		</div>		 <!-- fin del lado izquierdo -->
+
+
+
+
+	     <!-- derecho comentarios-->	
 		<div class="col-sm-12 col-md-4">
 				<div class="form-group">
 					<!--<label for="comentario" class="col-sm-4 col-md-4">Especificaciones</label>-->
@@ -145,10 +179,10 @@
 					</div>
 				</div>						
 		</div>	
-			<!-- -->		
 
 
-    </div>
+
+   </div>		<!-- Fin del row-->		
 
 
 
@@ -235,7 +269,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -248,7 +282,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -296,7 +330,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -309,7 +343,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil==1 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

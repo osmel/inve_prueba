@@ -497,7 +497,25 @@
                 else
                    return False;
                 $result->free_result();
-        }   
+        }  
+
+
+        public function coger_catalogo_proveedores( $id_actividad){
+
+              $this->db->select('p.id, p.nombre'); 
+              $this->db->from($this->proveedores.' as p');
+
+              $id_actividad=1;
+              $this->db->where('(LOCATE("'.$id_actividad.'", p.coleccion_id_actividad) >0)' );
+
+              $result = $this->db->get();
+
+                if ( $result->num_rows() > 0 )
+                   return $result->result();
+                else
+                   return False;
+                $result->free_result();
+        }           
 			    
 //----------------**************almacenes_asociados-------------------************------------------
         public function coger_catalogo_almacenes( $id_actividad){

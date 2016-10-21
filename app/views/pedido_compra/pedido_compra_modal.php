@@ -16,16 +16,16 @@
 	
 		<?php if ($modulo==1) { ?>		
 			<?php if ($aprobado=="true") { ?>
-					<p>Esta orden fue aprobada y debe ser procesada por el almacenista</p>
+					<p>¿Desea aprobar esta orden, y enviarla al almacenista?</p>
 			<?php } else { ?>
-					<p>Esta orden ha sido enviada al almacenista para su modificación o aprobación</p>
+					<p>¿Desea enviar esta orden al almacenista para su modificación o aprobación?</p>
 			<?php } ?>		
 		<?php } else { ?>			
 
 			<?php if ($aprobado=="true") { ?>
-					<p>Esta orden fue aprobada y debe ser procesada por el almacenista</p>
+					<p>¿Desea aprobar esta orden?. Luego, ver sección <b>aprobados</b> para imprimir y confirmar la orden</p>
 			<?php } else { ?>
-					<p>Esta orden ha sido enviada al Administrador para su modificación o aprobación</p>
+					<p>¿Desea enviar esta orden al administrador para su modificación o aprobación?</p>
 			<?php } ?>		
 
 		<?php } ?>			
@@ -35,7 +35,7 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn btn-danger" name="procesando_confirmar_pedido" id="deleteUserSubmit">SI</button>
-		<button class="btn btn-default" data-dismiss="modal">NO</button>
+		<button class="btn btn-default" data-dismiss="modal">CANCELAR</button>
 	</div>
 	<input type="hidden" id="aprobado" name="aprobado" value="<?php echo $aprobado; ?>">
 	<input  type="hidden" id="movimiento" name="movimiento" value="<?php echo $movimiento; ?>">

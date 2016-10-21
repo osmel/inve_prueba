@@ -157,10 +157,6 @@ public function impresion_etiquetas1($codigo) {
  
         $pdf->setFontSubsetting(true);
 
-        //http://www.tcpdf.org/fonts.php
-        //$pdf->SetFont('freemono', '', 14, '', true);
-        //$pdf->SetFont('freemono', '', 11, '', 'true');
-
         $pdf->SetFont('Times', '', 8,'','true');
 
  

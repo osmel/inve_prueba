@@ -350,16 +350,7 @@ class Entradas extends CI_Controller {
 
 
 	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura){
-/*
-print_r($id_movimiento);
-echo '<br/>';
-print_r($dev);
-echo '<br/>';
-print_r($retorno);
-echo '<br/>';
-print_r($id_factura);
-echo '<br/>';
-die;*/
+
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
@@ -432,7 +423,7 @@ die;*/
 			        case 4:
 			        		//solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
 			        		//aparecen en todo el sistema que tiene el numero de entrada
-			              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
+			              if ( (in_array(9, $coleccion_id_operaciones)) || (in_array(50, $coleccion_id_operaciones))   )  {   //los 
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/pdfs_view',$data );
 			              } else {

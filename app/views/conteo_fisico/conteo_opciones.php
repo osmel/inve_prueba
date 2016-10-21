@@ -17,7 +17,7 @@
 			<div class="panel-heading">Conteos de Inventarios</div>
 			<div class="panel-body">	
 
-				<?php if ( ( $perfil == 1 ) ) { ?>
+				<?php if ( ( $perfil == 1 ) || (in_array(50, $coleccion_id_operaciones)) ) { ?>		 
 					<div class="row">
 						
 							<div class="col-md-3"></div>
