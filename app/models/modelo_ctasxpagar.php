@@ -1118,7 +1118,7 @@ public function impresion_ctas_detalladas($data){
           //$this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
           //$this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
           
-         // $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
 
           //quizas esta no las necesite
           
