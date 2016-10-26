@@ -5388,6 +5388,7 @@ jQuery('body').on('click','#proc_salida_apartado', function (e) {
 
 	 id_cargador = jQuery('.buscar_cargador').typeahead("val");
 	 num_mov = jQuery('#etiq_num_mov').val(); 
+	 
 	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
 	 id_almacen = jQuery('#id_almacen_pedido').val( );
 	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
@@ -5472,26 +5473,9 @@ jQuery('body').on('click','#proc_salida_pedido', function (e) {
 	jQuery('#foo').css('display','block');
 	var spinner = new Spinner(opts).spin(target);
 
-	 		/*
-	 		jQuery('#etiq_num_mov').val(  settings.json.datos.num_mov);
-		    jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
-			jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);
-		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
-		    jQuery('#etiq_hora').val(  settings.json.datos.mi_hora);
-
-		    jQuery('#etiq_tipo_apartado').html(  settings.json.datos.tipo_apartado);
-		    jQuery('#etiq_color_apartado').html('<div style="margin-right: 15px;float:left;background-color:#'+settings.json.datos.color_apartado+';width:15px;height:15px;"></div>');
-			
-		    jQuery('#id_tipo_factura').val(settings.json.datos.id_tipo_factura);
-
-		    if (settings.json.datos.tipo_factura!=null) {
-		    	jQuery('.panel-heading > span').text(settings.json.datos.tipo_pedido+' - '+settings.json.datos.tipo_factura );		
-		    }else {
-		    	jQuery('.panel-heading > span').text( settings.json.datos.tipo_pedido);	
-		    }*/
 
 	 id_cargador = jQuery('.buscar_cargador').typeahead("val");
-	 num_mov = jQuery('#etiq_num_mov').val(); 
+	 num_mov = jQuery('#num_mov').val(); 
 	 dependencia= jQuery('#etiq_dependencia').val( ); // etiq_cliente
 	 id_almacen = jQuery('#id_almacen_pedido').val( );
 	 id_tipo_pedido = jQuery('#id_tipo_pedido').val( );
@@ -6237,29 +6221,24 @@ jQuery('#pedido_completo_detalle').dataTable( {
 	    if (settings.json.datos) {
 			
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
-				jQuery('#label_cliente').text("Empresa Asociada");
-				jQuery('#label_vendedor').text("Vendedor");
-				
-			} else {
 				jQuery('#label_cliente').text("Vendedor");
-				jQuery('#label_vendedor').text("Num. Mov");
+				jQuery('#label_vendedor').text("Empresa Asociada/Núm. Pedido");
+
+				
+				jQuery('#etiq_num_mov').val(  settings.json.datos.cliente+'  Nro.'+jQuery('#consecutivo_venta').val());
+				jQuery('#etiq_cliente').val(  settings.json.datos.num_mov);	
+			} else {//pedidos internos
+				jQuery('#label_cliente').text("Vendedor");
+				jQuery('#label_vendedor').text("Empresa Asociada/Núm. Pedido");
+
+				jQuery('#etiq_num_mov').val(  ((settings.json.datos.cliente_pedido!=null)?settings.json.datos.cliente_pedido:'')+' Nro.'+settings.json.datos.num_mov);
+				jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
+				
 			}
+
+			jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);	
 				
 
-			jQuery('#etiq_num_mov').val(  settings.json.datos.num_mov);
-	    	
-		    
-		    jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
-			//jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);
-
-
-
-			if (jQuery('#consecutivo_venta').val()!=0){
-				jQuery('#etiq_dependencia').val( settings.json.datos.dependencia+'  Nro.'+jQuery('#consecutivo_venta').val());	
-			} else {
-				jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);	
-			}
-			
 		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
 		    jQuery('#etiq_hora').val(  settings.json.datos.mi_hora);
 
@@ -6375,10 +6354,10 @@ jQuery('#tabla_pedido_completado').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						if (row[8]!=0) {
+						if ((row[2]!=0) &&  (row[2]!=null) ) {
 							return row[2]+' <br/><b>Nro.</b>'+row[8];		
 						} else {
-							return row[2];	
+							return row[8];	
 						}
 						
 	                },
@@ -6610,8 +6589,9 @@ jQuery('#pedido_detalle').dataTable( {
 		}	
 
 	    if (settings.json.datos) {
-
-			jQuery('#etiq_num_mov').val(  settings.json.datos.num_mov);
+	    	
+	    	jQuery('#num_pedido').val(  settings.json.datos.num_mov);
+			jQuery('#etiq_num_mov').val(  ((settings.json.datos.cliente_pedido!=null)?settings.json.datos.cliente_pedido:'')+' Nro.'+settings.json.datos.num_mov);
 		    jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
 			jQuery('#etiq_dependencia').val(  settings.json.datos.dependencia);
 		    jQuery('#etiq_fecha').val(  settings.json.datos.mi_fecha);
@@ -7488,6 +7468,11 @@ jQuery('table').on('click','.agregar_pedido', function (e) {
 
 	id_tipo_pedido = jQuery("#id_tipo_pedido").val();
 	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
+	var id_cliente = jQuery('.buscar_proveedor').typeahead('val');
+
+					    
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
 
 
 	jQuery.ajax({
@@ -7497,18 +7482,30 @@ jQuery('table').on('click','.agregar_pedido', function (e) {
 		        	movimiento: movimiento,
 		        	id_tipo_pedido: id_tipo_pedido,
 		        	id_tipo_factura: id_tipo_factura,
+		        	id_cliente: id_cliente,
 
 		        },
 		        type : 'POST',
 		        dataType : 'json',
 		        success : function(data) {	
 						if(data.exito != true){
-							//aqui es donde va el mensaje q no se ha copiado
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.mensaje);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
 
 						}else{
 
 							jQuery('#pedido_salida').dataTable().fnDraw();
 							jQuery('#pedido_entrada').dataTable().fnDraw();
+
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+
 
 								jQuery.ajax({
 									        url : 'conteo_tienda',

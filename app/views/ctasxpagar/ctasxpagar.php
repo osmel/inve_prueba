@@ -155,14 +155,24 @@
 						<br>	
 
 							<fieldset id="disa_vencidas" disabled>
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="impresion_vencidas" type="button" class="btn btn-success btn-block impresion_ctas" tipo="vencidas">Imprimir</a>
 								</div>
 
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="exportar_vencidas" type="button" class="btn btn-success btn-block exportar_ctas" tipo="vencidas" >Exportar</a>
 								</div>
 	
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas" tipo="vencidas">Reporte de Pago General</a>
+								</div>								
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="vencidas">Historico de Pagos por proveedor</a>
+								</div>								
+
+
+
 			                </fieldset>	
 							
 							
@@ -249,13 +259,21 @@
 						<br>	
 
 							<fieldset id="disa_xpagar" disabled>
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="impresion_ctasxpagar" type="button" class="btn btn-success btn-block impresion_ctas" tipo="xpagar">Imprimir</a>
 								</div>
 
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="exportar_ctasxpagar" type="button" class="btn btn-success btn-block exportar_ctas" tipo="xpagar" >Exportar</a>
 								</div>
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas" tipo="xpagar">Reporte de Pago General</a>
+								</div>								
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="xpagar">Historico de Pagos por proveedor</a>
+								</div>								
 
 							</fieldset>			
 
@@ -343,13 +361,21 @@
 
 
 							<fieldset id="disa_pagadas" disabled>
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="impresion_pagadas" type="button" class="btn btn-success btn-block impresion_ctas" tipo="pagadas">Imprimir</a>
 								</div>
 
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="exportar_pagadas" type="button" class="btn btn-success btn-block exportar_ctas" tipo="pagadas">Exportar</a>
 								</div>
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas" tipo="pagadas">Reporte de Pago General</a>
+								</div>								
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="pagadas">Historico de Pagos por proveedor</a>
+								</div>									
 
 							</fieldset>			
 								<!--Rango de fecha -->

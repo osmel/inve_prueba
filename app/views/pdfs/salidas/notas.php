@@ -18,10 +18,17 @@
 
 								<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br> 
 								<?php if ($movimientos[0]->id_tipo_factura!=0) { ?>
-										<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?></span> 
+										<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_factura; ?></span><br>  
 								<?php } else { ?>
-									<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_pedido; ?></span> 
+									<span><b>Tipo de Salida: </b> <?php echo $movimientos[0]->tipo_pedido; ?></span><br>  
 								<?php } ?>	
+
+								<?php if ($movimientos[0]->id_apartado==3) { ?>
+										<span><b>Cliente: </b> <?php echo $movimientos[0]->cliente_apartado; ?></span> 
+								<?php } else { ?>
+									<span><b>Cliente: </b> <?php echo $movimientos[0]->cliente_pedido; ?></span> 
+								<?php } ?>	
+
 						</th>
 
 						<th width="30%" style="text-align:right;">

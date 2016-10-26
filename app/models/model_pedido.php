@@ -1048,6 +1048,8 @@
 
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
 
+          $this->db->select("prov.nombre cliente_pedido");          
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
@@ -1055,6 +1057,8 @@
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
          
           //filtro de busqueda
           if ($id_almacen!=0) {
@@ -1070,6 +1074,7 @@
                       )'.$id_almacenid .' 
                     AND
                       (
+                        ( prov.nombre LIKE  "%'.$cadena.'%" ) OR
                         ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR
                         ( pr.nombre LIKE  "%'.$cadena.'%" ) OR (m.id_cliente_apartado LIKE  "%'.$cadena.'%") OR
                         ((DATE_FORMAT((m.fecha_apartado),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR
@@ -1077,6 +1082,8 @@
                         ( "Pedido Confirmado" LIKE  "%'.$cadena.'%" ) OR
                         ( "Disponibilidad Salida" LIKE  "%'.$cadena.'%" ) OR
                         ( "En proceso" LIKE  "%'.$cadena.'%" ) 
+
+                        
                        )                     
 
             )';   
@@ -1137,7 +1144,7 @@
                             $dato[]= array(
                                       0=>$row->vendedor,
                                       1=>$row->dependencia,
-                                      2=>$row->id_cliente_apartado,
+                                      2=>$row->cliente_pedido.'<br/><b>Nro.'.$row->id_cliente_apartado.'</b>',
                                       3=>date( 'd-m-Y', strtotime($row->fecha_apartado)),
                                       4=>$apartar,
                                       5=>$mi_vencimiento, //hora vencimiento
@@ -1276,7 +1283,10 @@
           $this->db->select("a.almacen");
           $this->db->select("m.consecutivo_venta");
           $this->db->select("tp.tipo_pedido tip_pedido", false);          
-          $this->db->select("tf.tipo_factura");          
+          $this->db->select("tf.tipo_factura");     
+          $this->db->select("prov.nombre cliente_pedido");          
+
+
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -1285,6 +1295,10 @@
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
+
+
+
 
 
           if ($id_almacen!=0) {
@@ -1301,6 +1315,7 @@
                       )'.$id_almacenid .' 
                        AND
                       (
+                        ( prov.nombre LIKE  "%'.$cadena.'%" ) OR
                         ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR
                         ( pr.nombre LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR
                         (m.id_cliente_apartado LIKE  "%'.$cadena.'%") OR 
@@ -1347,21 +1362,27 @@
                   foreach ($result->result() as $row) {
 
                               if ($row->apartado==3) {
-                                 $num=$row->comprador;
+                                 $client  = $row->comprador;
+                                     $num = $row->consecutivo_venta; //$row->comprador;
+
                               } else  {
+                                $client = $row->cliente_pedido;
                                  $num= $row->id_cliente_apartado;
+
+
+
                               }   
 
                             $dato[]= array(
                                       0=>$row->vendedor,
                                       1=>$row->dependencia,
-                                      2=>$num, 
+                                      2=>$client, //$num, 
                                       3=>date( 'd-m-Y', strtotime($row->fecha_apartado)),
                                       4=>$row->tipo_apartado.' '.$row->tipo_pedido,                                      
                                       5=>$row->mov_salida,
                                       6=>$row->id_apartado,  //$row->id_cliente_apartado,
                                       7=>$row->almacen,
-                                      8=>$row->consecutivo_venta,
+                                      8=>$num, //$row->consecutivo_venta,
                                       9=>$row->tip_pedido,
                                       10=>$row->tipo_factura,   
                                       11=>$row->id_tipo_pedido,   
@@ -1779,7 +1800,7 @@
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
           $this->db->select("prod.codigo_contable");  
-
+          $this->db->select("prov.nombre cliente_pedido");          
  
 
 
@@ -1793,6 +1814,10 @@
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+
+
+        $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
+
 
 
           //filtro de busqueda
@@ -1884,6 +1909,8 @@
                             $tipo_factura=$row->tipo_factura; 
                             $id_tipo_pedido=$row->id_tipo_pedido;   
                             $id_tipo_factura=$row->id_tipo_factura;   
+                            
+                            $cliente_pedido = $row->cliente_pedido;
 
                       }
                       return json_encode ( array(
@@ -1891,7 +1918,7 @@
                         "recordsTotal"    => intval( self::total_pedido_especifico($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
-                        "datos"            =>  array("num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
+                        "datos"            =>  array("num_mov"=>$num_mov, "cliente_pedido"=>$cliente_pedido, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                             
                             "tipo_pedido"=>$tipo_pedido,
                             "tipo_factura"=>$tipo_factura, 
@@ -2086,6 +2113,7 @@
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
           $this->db->select("prod.codigo_contable");  
 
+        $this->db->select("prov.nombre cliente_pedido");          
 
 
 
@@ -2100,6 +2128,7 @@
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
 
           //filtro de busqueda
 
@@ -2165,6 +2194,7 @@
                             $color_apartado = $row->color_apartado;
                             $mi_fecha = date( 'd-m-Y', strtotime($row->fecha_apartado));
                             $mi_hora = date( 'h:ia', strtotime($row->fecha_apartado));
+                            $cliente_pedido = $row->cliente_pedido;
 
                             $dato[]= array(
                                       0=>$row->codigo,
@@ -2200,7 +2230,7 @@
                         "recordsTotal"    => intval( self::total_completo_especifico($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
-                        "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
+                        "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "cliente_pedido"=>$cliente_pedido, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                           "tipo_pedido"=>$tipo_pedido,
                           "tipo_factura"=>$tipo_factura,  
                          ),
@@ -2402,6 +2432,8 @@
             $this->db->set( 'id_apartado', 4);
             $this->db->set( 'fecha_apartado', $fecha_hoy);  
             $this->db->set( 'id_cliente_apartado', $data['id_movimiento']);
+            $this->db->set( 'consecutivo_venta', $data['id_cliente']);
+
 
             $this->db->set( 'id_tipo_factura', $data['id_tipo_factura']);
             $this->db->set( 'id_tipo_pedido', $data['id_tipo_pedido']);
@@ -2446,10 +2478,18 @@
           $id_session = $this->db->escape($this->session->userdata('id'));
           
           $this->db->distinct();          
-          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura');
+          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura,p.nombre');
           
           
           $this->db->from($this->registros_entradas.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.consecutivo_venta','LEFT');
+          /*
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
+          */
+
+
           $where = '(  ( m.id_usuario_apartado = '.$id_session.' ) AND   ( m.id_apartado = 4 ) )'; 
           $this->db->where($where);
 

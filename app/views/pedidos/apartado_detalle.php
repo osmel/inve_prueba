@@ -22,7 +22,8 @@
 			<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">
 	
 			<input type="hidden" id="etiq_num_mov" name="etiq_num_mov" value="">		
-			<input type="hidden" id="etiq_dependencia" name="etiq_dependencia" value="">		
+			<input type="hidden" id="etiq_dependencia" name="etiq_dependencia" value="">	
+			<input type="hidden" id="num_pedido" name="num_pedido" value="">			
 
 
 			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
@@ -30,7 +31,14 @@
 						
 			
 
-						<div class="row">						
+						<div class="row">	
+								<div class="col-sm-4 col-md-5" style="margin-top:0px;">
+									<div class="form-group">
+										<label for="descripcion" class="col-sm-12 col-md-12">Empresa Asociada/Núm. Pedido</label>
+											<input type="text" disabled class="form-control" id="etiq_comprador" name="etiq_comprador" placeholder="Iniciativa Textil">
+									</div>
+								</div>
+
 								<div class="col-sm-4 col-md-3">
 									<div class="form-group">
 										<label for="descripcion" class="col-sm-12 col-md-12">Vendedor</label>
@@ -45,12 +53,7 @@
 									</div>
 								</div>							
 
-								<div class="col-sm-4 col-md-5" style="margin-top:0px;">
-									<div class="form-group">
-										<label for="descripcion" class="col-sm-12 col-md-12">Empresa Relacionada</label>
-											<input type="text" disabled class="form-control" id="etiq_comprador" name="etiq_comprador" placeholder="Iniciativa Textil">
-									</div>
-								</div>
+
 							
 								<div class="col-sm-4 col-md-4" style="padding-left: 0px;">
 									<div class="form-group">

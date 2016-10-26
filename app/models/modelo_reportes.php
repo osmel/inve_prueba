@@ -2638,7 +2638,10 @@ public function buscador_historico_salida($data){
           $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
           $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
 
-        $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
+          $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
+
+          $this->db->select("prov_pedido.nombre cliente_pedido");
+          $this->db->select("prov_apartado.nombre cliente_apartado");
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -2646,6 +2649,8 @@ public function buscador_historico_salida($data){
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');          
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT');
           
 
 
@@ -2657,7 +2662,8 @@ public function buscador_historico_salida($data){
          
 
           if ($id_factura!=0) {
-             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+             $id_factura = (($id_factura==3) ? 0 : $id_factura);
+             $id_facturaid = ' and ( m.id_tipo_factura =  '.$id_factura.' ) ';  
           } else {
              $id_facturaid = '';
           }         
@@ -2735,8 +2741,11 @@ public function buscador_historico_salida($data){
 
                               if ($row->apartado==3) {
                                  $num=$row->consecutivo_venta;
+                                 $client=$row->cliente_apartado;
+
                               } else  {
                                  $num= $row->id_cliente_apartado;
+                                 $client=$row->cliente_pedido;
                               }   
 
                                $dato[]= array(
@@ -2753,6 +2762,7 @@ public function buscador_historico_salida($data){
                                       10=>number_format($row->sum_total, 2, '.', ','),
                                       11=>$row->id_tipo_pedido,
                                       12=>$row->id_tipo_factura,
+                                      13=>$client,
 
                                     );
                       }

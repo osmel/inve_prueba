@@ -40,24 +40,21 @@
 					<hr style="padding: 0px; margin: 15px;"/>					
 
 					<div  class="row">
-							
 							<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>"> 
-							
+
+
 							<!--Tipos de factura -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
-							    
 									<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo de factura</label>
 									<div class="col-sm-9 col-md-12">
-									    			
 													<select name="id_factura_historicos" vista="salida" id="id_factura_historicos" class="form-control">
 															<option value="0">Todos</option>	
 															<?php foreach ( $facturas as $factura ){ ?>
 																		<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
 															<?php } ?>
+															<option value="3">Surtidos</option>	
 														<!--rol de usuario -->
 													</select>
-										    
-
 									</div>
 							</div>	
 

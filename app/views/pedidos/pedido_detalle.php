@@ -19,6 +19,7 @@
 	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">		
 
 	<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
+	<input type="hidden" id="num_pedido" name="num_pedido" value="">		
 		
 
 		<div class="panel panel-primary">
@@ -28,9 +29,9 @@
 				
 
 					<div class="row">
-						<div class="col-sm-4 col-md-3">
+						<div class="col-sm-4 col-md-5">
 							<div class="form-group">
-								<label for="descripcion" class="col-sm-12 col-md-12">Num. Mov</label>
+								<label for="descripcion" class="col-sm-12 col-md-12">Empresa Asociada/Núm. Pedido</label>
 									<input type="text" disabled class="form-control" id="etiq_num_mov" name="etiq_num_mov" placeholder="">
 							</div>
 						</div>		
@@ -44,7 +45,7 @@
 
 
 
-						<div class="col-sm-4 col-md-5" >
+						<div class="col-sm-4 col-md-3" >
 							<div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Dependencia</label>
 									<input type="text" disabled class="form-control" id="etiq_dependencia" name="etiq_dependencia" placeholder="">

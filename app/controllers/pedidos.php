@@ -518,20 +518,43 @@ class Pedidos extends CI_Controller {
 
 
 function agregar_prod_pedido(){
-
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
-	 		$data['id'] = $this->input->post('identificador');
-	 		$data['id_movimiento'] = $this->input->post('movimiento');
 
-	 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-	 		 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-	 		
+			  if ($this->input->post('id_cliente')) {
 
-			$actualizar = $this->modelo_pedido->actualizar_pedido($data);
-			$dato['exito']  = true;
+						$data['descripcion'] = $this->input->post('id_cliente');
+						$data['idproveedor'] = "3";
+						$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
+
+						if (!($data['id_cliente'])){
+							$dato['mensaje'] = "El cliente no existe";
+						}
+			  } else {
+			  	$data['id_cliente']=null;
+			  	$dato['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
+
+			  }	 		
+
+			if  ($data['id_cliente'])  {
+		 		$data['id'] = $this->input->post('identificador');
+		 		$data['id_movimiento'] = $this->input->post('movimiento');
+		 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+		 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+
+				$actualizar = $this->modelo_pedido->actualizar_pedido($data);
+				$dato['exito']  = true;
+			} else {      
+					
+	       		$dato['exito'] = validation_errors('<span class="error">','</span>');
+
+	      	}		
+
+			  
 			echo json_encode($dato);
+
+
 		}	
    }
 

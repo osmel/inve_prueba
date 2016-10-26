@@ -170,7 +170,7 @@ class Pdfs_model extends CI_Model
           $nombre_completo = $this->session->userdata('nombre_completo');
 
                     
-          $this->db->select('m.id, m.mov_salida, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
+          $this->db->select('m.id, m.id_apartado, m.mov_salida, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
@@ -192,6 +192,10 @@ class Pdfs_model extends CI_Model
           $this->db->select("prod.codigo_contable");  
           $this->db->select("m.peso_real, m1.peso_real peso_entrada");          
 
+          $this->db->select("prov_pedido.nombre cliente_pedido");
+          $this->db->select("prov_apartado.nombre cliente_apartado");
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
           $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
@@ -203,6 +207,10 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');          
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT');
+          
+
 
           //$this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.id_operacion',2);

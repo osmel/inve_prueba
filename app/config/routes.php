@@ -686,6 +686,10 @@ $route['validar_eliminar_pago']			= 'ctasxpagar/validar_eliminar_pago';
 $route['impresion_ctasxpagar']			= 'ctasxpagar/impresion_ctasxpagar';
 $route['exportar_ctasxpagar']			= 'ctasxpagar/exportar_ctasxpagar';
 
+$route['impresion_ctas_especificas']			= 'ctasxpagar/impresion_ctas_especificas';
+$route['impresion_ctas_detalladas']			= 'ctasxpagar/impresion_ctas_detalladas';
+
+
 $route['impresion_ctas_detalle']			= 'ctasxpagar/impresion_ctas_detalle';
 
 

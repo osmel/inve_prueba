@@ -195,6 +195,26 @@
 
 
 
+					<div class="col-xs-12 col-sm-6 col-md-4" >
+						<?php if ($val_proveedor) { ?>
+						<fieldset class="disabledme" disabled>							
+						<?php } else { ?>
+						<fieldset class="disabledme">						
+						<?php } ?>
+							<div class="form-group">
+								<label for="descripcion">Cliente</label>
+								<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
+									<?php if ($val_proveedor) { ?>
+									<input identificador="" value="<?php echo $val_proveedor->nombre; ?>" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Empresa Relacionada...">
+									<?php } else { ?>
+									<input  identificador="" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Empresa Relacionada...">
+									<?php } ?>
+								</div>
+							</div>
+						</fieldset>	
+					</div>
+
+
 
 	
 </div>
@@ -203,7 +223,7 @@
 	<div class="container">	
 
 
-<!--  -->
+<!--  -->	<h4>Filtros: </h4>	 
 
 				<div class="row">
 		                  <div class="col-xs-12 col-sm-6 col-md-3">
