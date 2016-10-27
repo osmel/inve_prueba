@@ -14,7 +14,7 @@
       	$retorno ="";
     }
 
-  $hidden = array('id'=>$id);
+  $hidden = array('id'=>$id,'total'=>$pago->total );
   $attr = array('class' => 'form-horizontal', 'id'=>'form_pago','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
   echo form_open('validacion_edicion_ctasxpagar', $attr,$hidden);
 

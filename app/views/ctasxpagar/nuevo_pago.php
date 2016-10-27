@@ -13,7 +13,7 @@
       	$retorno ="";
     }
 
-  $hidden = array('movimiento'=>$movimiento);
+  $hidden = array('movimiento'=>$movimiento,'total'=>$pago->total );
   $attr = array('class' => 'form-horizontal', 'id'=>'form_pago','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
   echo form_open('validacion_nuevo_ctasxpagar', $attr,$hidden);
 
