@@ -25,21 +25,23 @@
 					<tr><th> </th></tr>
 					<tr>
 
-						<th width="15%">Proveedor</th>
+						<th width="14%">Proveedor</th>
 
 						<th width="5%">Mov.</th>
 						
-						<th width="7%">Almacén</th>
-						<th width="10%">Fecha Emisión</th>
-						<th width="10%">Fecha Vencimiento</th>
+						<th width="5%">Almacén</th>
+						<th width="8%">Fecha Emisión</th>
+						<th width="8%">Fecha Vencimiento</th>
 
 						<th width="10%">Cargos</th>
 						<th width="10%">Abonos</th>
 						<th width="10%">Recargos</th>
 						<th width="10%">Descuentos</th>
 
-						<th width="7%">Saldo</th>		
-						<th width="6%">Días por Vencer</th>						
+						<th width="10%">Saldo</th>		
+						<th width="10%">Días vencidos</th>		
+						
+										
 						
 						
 						
@@ -48,7 +50,9 @@
 				<tbody>
 				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 						<?php 
-							 $nomb = ''; 
+							$nomb = ''; 
+							$id_factura=0;
+
 							 $total = 0;
 							 $abono = 0;
 							 $recargo = 0;
@@ -64,10 +68,11 @@
 
 					<?php foreach( $movimientos as $movimiento ): ?>
 
-						<?php if ( ($nomb != $movimiento->nombre) && ($total!=0) ) { ?>
+						<?php //if ( ($nomb != $movimiento->nombre) && ($total!=0) ) { ?>
+						<?php if ( ( ($nomb != $movimiento->nombre) || ($id_factura != $movimiento->id_factura)) && ($total!=0) ) { ?>	
 
 						<tr>
-							<td width="36%" >
+							<td width="29%" >
 
 							</td>								
 							<td width="10%" >
@@ -103,10 +108,13 @@
 						<?php }	?>
 
 						<tr>
-							<?php if ($nomb != $movimiento->nombre) { ?>
-								<td width="15%" ><?php echo $movimiento->nombre; ?></td>
+							<?php //if ($nomb != $movimiento->nombre) { ?>
+							<?php if ( ( ($nomb != $movimiento->nombre) || ($id_factura != $movimiento->id_factura))  ) { ?>	
+								
+								<td width="14%" ><?php echo $movimiento->nombre.'<br/><b style="color:red;">'.$movimiento->tipo_factura.'</b>' ; ?></td>
 							<?php 														
 								$nomb = $movimiento->nombre;
+								$id_factura=$movimiento->id_factura;
 								$total=0;
 								 $abono = 0;
 								 $recargo = 0;
@@ -114,7 +122,7 @@
 								 $saldo = 0;								
 								} else {
 							?>		
-								<td width="15%" ></td>
+								<td width="14%" ></td>
 							<?php }
 
 							$total = $total+ number_format($movimiento->total, 2, '.', ','); 
@@ -134,34 +142,21 @@
 
 							<td width="5%" ><?php echo $movimiento->movimiento; ?></td>		
 							
-							<td width="7%" ><?php echo $movimiento->almacen; ?></td>
-							<td width="10%" ><?php echo $movimiento->fecha; ?></td>
-							<td width="10%" ><?php echo $movimiento->fecha_vencimiento; ?></td>
-							
-							
-							
-							
+							<td width="5%" ><?php echo $movimiento->almacen; ?></td>
+							<td width="8%" ><?php echo $movimiento->fecha; ?></td>
+							<td width="8%" ><?php echo $movimiento->fecha_vencimiento; ?></td>
 							<td width="10%" ><?php echo number_format($movimiento->total, 2, '.', ','); ?></td>
-							
 							<td width="10%" ><?php echo number_format($movimiento->abono, 2, '.', ','); ?></td>
-	
 							<td width="10%" ><?php echo number_format($movimiento->recargo, 2, '.', ','); ?></td>
-
 							<td width="10%" ><?php echo number_format($movimiento->descuento, 2, '.', ','); ?></td>
-
-
-							<td width="7%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
-
-							<td width="6%" ><?php echo abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar); ?></td>
-						
-							
-							
+							<td width="10%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+							<td width="10%" ><?php echo abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar); ?></td>
 						</tr>
 					<?php endforeach; ?>
 
 						<?php if ( ($total!=0) ) { ?>
 							<tr>
-							<td width="36%" >
+							<td width="29%" >
 
 							</td>								
 							<td width="10%" >
@@ -205,7 +200,7 @@
 				<tfooter>	
 						
 						<tr>
-							<td width="36%" >
+							<td width="29%" >
 
 							</td>								
 							<td width="10%" >

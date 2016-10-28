@@ -4,7 +4,11 @@
  	if (!isset($retorno)) {
       	$retorno ="";
     }
- $hidden = array('id'=>$id); ?>
+ 
+ $hidden = array('id'=>$id,'id_factura'=>$id_factura);
+
+
+  ?>
 <?php echo form_open('validar_eliminar_pago', array('class' => 'form-horizontal','id'=>'form_pago','name'=>$retorno, 'method' => 'POST', 'role' => 'form', 'autocomplete' => 'off' ) ,   $hidden ); ?>
 	<div class="modal-header">
 		<a class="close" data-dismiss="modal">&times;</a>

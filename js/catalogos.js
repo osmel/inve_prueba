@@ -23,6 +23,1005 @@ var target = document.getElementById('foo');
 
 
 
+/////////////////////////////////////////REGILLA PRINCIPAL/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////ctas por pagar/////////////////////////////////////////////////////////////////
+
+/*
+ctas_vencida
+ctas_ctasxpagar
+ctas_pagadas
+cuentas
+*/
+
+	jQuery('#tabla_ctas_vencidas').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctas_vencidas",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_vencida"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];
+
+
+						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];
+
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+				  
+
+
+	         		 }
+	         		
+	     },   
+
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+		if  (data.length>0) {   
+				
+
+			total_subtotal = api
+					.column( 7)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				
+				total_iva = api
+					.column( 8)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+				
+				total = api
+					.column( 9)
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
+
+		} else 	{
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');										
+
+
+		}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(6).visible(false);		
+			}			
+
+    },
+
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+	
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+				jQuery('#total_iva').html( 'IVA: 0.00');
+				jQuery('#total_total').html('Total de mts: 0.00');
+
+			}	
+
+
+			if (settings.json.recordsTotal==0) {
+					jQuery("#disa_vencidas").attr('disabled', true);					
+				} else {
+					jQuery("#disa_vencidas").attr('disabled', false);					
+			}
+			return pre
+		},	     
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+	
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+='type="button" class="btn btn-warning btn-block">';
+							texto+=row[11];
+							texto+='</a>';
+						texto+='</td>';
+
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; // 
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 12
+		            },
+  					
+  					{ 
+		                 "visible": false,
+		                "targets": [13,14]
+		            }
+		            
+		          
+		           
+		            
+		        ],
+	});	
+
+
+jQuery('#tabla_ctasxpagar').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctasxpagar",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion = 1;
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_ctasxpagar"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];
+
+	         		 	var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	      
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	   		 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+	         		 }
+	         		
+	     },   
+
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 9)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal2').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva2').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total2').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal2').html('SubTotal: 0.00');	
+						jQuery('#iva2').html('IVA: 0.00');	
+						jQuery('#total2').html('Total: 0.00');										
+
+
+			}	
+
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(6).visible(false);		
+			}			
+	    },
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal2').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva2').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total2').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal2').html( 'Subtotal: 0.00');
+				jQuery('#total_iva2').html( 'IVA: 0.00');
+				jQuery('#total_total2').html('Total de mts: 0.00');
+
+			}	
+
+
+			if (settings.json.recordsTotal==0) {
+					jQuery("#disa_xpagar").attr('disabled', true);					
+				} else {
+					jQuery("#disa_xpagar").attr('disabled', false);					
+			}
+			return pre
+		},		     
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
+		            },
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+='type="button" class="btn btn-warning btn-block">';
+							texto+=row[11];
+							texto+='</a>';
+						texto+='</td>';
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 12
+		            },
+  					
+  					{ 
+		                 "visible": false,
+		                "targets": [13,14]
+		            }
+		            
+		          
+		           
+		            
+		        ],
+	});	
+
+jQuery('#tabla_ctas_pagadas').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_ctas_pagadas",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+						var fecha = (jQuery('.fecha_historicos[vista="ctas_pagadas"]').val()).split(' / ');
+						d.fecha_inicial2 = fecha[0];
+						d.fecha_final2 = fecha[1];	
+							         		 	
+						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];	
+						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 	         		 	
+					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+	         		 }
+	         		
+	     },   
+
+		"footerCallback": function( tfoot, data, start, end, display ) {
+		   var api = this.api(), data;
+				var intVal = function ( i ) {
+					return typeof i === 'string' ?
+						i.replace(/[\$,]/g, '')*1 :
+						typeof i === 'number' ?
+							i : 0;
+				};
+			if  (data.length>0) {   
+					
+
+				total_subtotal = api
+						.column( 7)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+					
+					total_iva = api
+						.column( 8)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );	
+					
+					total = api
+						.column( 9)
+						.data()
+						.reduce( function (a, b) {
+							return intVal(a) + intVal(b);
+						} );					
+
+
+						//importes
+						jQuery('#subtotal3').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+						jQuery('#iva3').html('IVA:' + number_format( total_iva, 2, '.', ','));
+						jQuery('#total3').html('Total:'+ number_format(total, 2, '.', ','));	
+
+			} else 	{
+						//importes
+						jQuery('#subtotal3').html('SubTotal: 0.00');	
+						jQuery('#iva3').html('IVA: 0.00');	
+						jQuery('#total3').html('Total: 0.00');										
+
+
+			}	
+			if ( jQuery('#config_activo').val() == 0 ) {
+				api.column(6).visible(false);		
+			}			
+	    },
+
+
+
+
+		"infoCallback": function( settings, start, end, max, total, pre ) {
+			if (settings.json.totales_importe) {
+			  	jQuery('#total_subtotal3').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+				jQuery('#total_iva3').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+				jQuery('#total_total3').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+			} else {
+			    jQuery('#total_subtotal3').html( 'Subtotal: 0.00');
+				jQuery('#total_iva3').html( 'IVA: 0.00');
+				jQuery('#total_total3').html('Total de mts: 0.00');
+			}				
+
+			if (settings.json.recordsTotal==0) {
+					jQuery("#disa_pagadas").attr('disabled', true);					
+				} else {
+					jQuery("#disa_pagadas").attr('disabled', false);					
+			}
+			return pre
+		},		     
+
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+		        		
+						if (row[12]!=2) {
+			        		texto='<td>';
+								texto+='<a style="padding: 1px 0px 1px 0px;"';
+								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+								texto+='type="button" class="btn btn-warning btn-block">';
+								texto+=row[13]; //"Pagado"; //"row[10];
+								texto+='</a>';
+							texto+='</td>';
+						} else {
+
+			        		texto='<td><fieldset disabled>';
+								texto+='<a style="padding: 1px 0px 1px 0px;"';
+								texto+=' href="#"'; //
+								texto+='type="button" class="btn btn-warning btn-block">';
+								texto+='Contado';
+								texto+='</a>';
+							texto+='</fieldset></td>';
+
+						}
+
+
+							return texto;	
+		                },
+		                "targets": 10
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+						$otro_retorno="listado_ctasxpagar";
+		        		texto='<td>';
+							texto+='<a style="padding: 1px 0px 1px 0px;"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+='type="button" class="btn btn-success btn-block">';
+							texto+='Detalles';
+							texto+='</a>';
+						texto+='</td>';
+
+
+
+							return texto;	
+		                },
+		                "targets": 11
+		            },
+  					
+  					{ 
+		                 "visible": false,
+		                "targets": [12,13,14]
+		            }
+		        ],
+
+	 "rowCallback": function( row, data ) {
+		    
+		    if ( data[13] == data[9] ) { //monto=total -->normal
+		      //jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( data[11] < 0 ) { //se pago de mas
+		      jQuery('td', row).addClass( "danger" );
+		    }
+
+		    if ( (data[11] == 0 ) &&  ( data[13] != data[9] ) ) { //se pago de mas
+		      jQuery('td', row).addClass( "warning" );
+		    }
+
+
+
+		    /*if ( data[11] == "morado" ) {
+		      jQuery('td', row).addClass( "success" );
+		    }
+
+		    if ( data[15] == 1 ) {
+		      jQuery('td', row).addClass( "warning" );
+		    }*/
+
+
+
+		  },		
+
+
+
+	});	
+
+
+/////////////////////////////////////////Detalle Monto/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+jQuery('#tabla_pagos_realizados').dataTable( {
+	
+	  "pagingType": "full_numbers",
+		
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "/procesando_pagos_realizados",
+	         		"type": "POST",
+	         		 "data": function ( d ) {
+	         		 	d.id_operacion=1;
+	         		 	d.movimiento=jQuery("#movimiento").val();
+	         		 	d.id_factura=jQuery("#id_factura").val();
+	         		 }
+	    },   
+		"language": {  //tratamiento de lenguaje
+			"lengthMenu": "Mostrar _MENU_ registros por página",
+			"zeroRecords": "No hay registros",
+			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+			"infoEmpty": "No hay registros disponibles",
+			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+			"emptyTable":     "No hay registros",
+			"infoPostFix":    "",
+			"thousands":      ",",
+			"loadingRecords": "Leyendo...",
+			"processing":     "Procesando...",
+			"search":         "Buscar:",
+			"paginate": {
+				"first":      "Primero",
+				"last":       "Último",
+				"next":       "Siguiente",
+				"previous":   "Anterior"
+			},
+			"aria": {
+				"sortAscending":  ": Activando para ordenar columnas ascendentes",
+				"sortDescending": ": Activando para ordenar columnas descendentes"
+			},
+		},
+
+ 			"rowCallback": function( row, data ) {
+				    if  (data[7] == 0) 					    {
+				      jQuery('td', row).addClass( "danger" );
+				    }
+			},	
+
+			"infoCallback": function( settings, start, end, max, total, pre ) {
+
+
+			    if (settings.json.totales) {
+				    jQuery('#etiq_num_mov').val(  settings.json.totales.movimiento);
+					jQuery('#etiq_almacen').val( settings.json.totales.almacen); //
+					jQuery('#etiq_proveedor').val( settings.json.totales.nombre);
+
+					jQuery('#etiq_fecha').val( settings.json.totales.fecha);
+					jQuery('#etiq_factura').val( settings.json.totales.factura);
+					jQuery('#etiq_subtotal').val( settings.json.totales.subtotal);
+					jQuery('#etiq_iva').val( settings.json.totales.iva);
+					jQuery('#etiq_total').val( settings.json.totales.total);
+					jQuery('#etiq_dia_vencido').val( settings.json.totales.dias_vencidos);
+					jQuery('#etiq_monto_paga').val( settings.json.totales.monto_restante);
+					jQuery('#importe_pagado').html( number_format((settings.json.totales.total-settings.json.totales.monto_restante), 2, '.', ','));
+					
+
+				} else {
+				    /*
+				    jQuery('#total_entrada').html( 'Total de Entradas: 0');
+					jQuery('#total_salida').html( 'Total de Salidas: 0');
+					jQuery('#total_devoluciones').html('Total de Devoluciones: 0');
+					*/
+
+				}	
+
+				if (settings.json.recordsTotal==0) {
+						jQuery("#disa_pagosrealizado").attr('disabled', true);					
+					} else {
+						jQuery("#disa_pagosrealizado").attr('disabled', false);					
+				}
+					
+
+			    return pre;
+			  } ,
+
+
+
+		"columnDefs": [
+			    	
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return data;
+
+		                },
+		                "targets": [0,1,2,3,4] 
+		            },
+
+     				 {
+		                "render": function ( data, type, row ) {
+						if (row[6]!=0) { //si esta autorizado a eliminar
+							texto='<td>';
+								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
+								texto+=' class="btn btn-warning btn-sm btn-block" >';
+									texto+=' <span class="glyphicon glyphicon-edit"></span>';
+								texto+=' </a>';
+							texto+='</td>';
+						} else {
+							texto='<fieldset disabled> <td>';
+								texto+='<a href="#" type="button"'; 
+								texto+=' class="btn btn-warning btn-sm btn-block" >';
+									texto+=' <span class="glyphicon glyphicon-edit"></span>';
+								texto+=' </a>';
+							texto+='</td> </fieldset>';							
+						}
+
+
+
+
+							return texto;	
+		                },
+		                "targets": 5
+		            },
+		            {
+		                "render": function ( data, type, row ) {
+
+
+	                	if (row[6]!=0) { //si esta autorizado a eliminar
+	                	
+							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
+								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
+								texto+='<span class="glyphicon glyphicon-remove"></span>';
+							texto+='</a></td>';
+						} else {
+
+
+								texto='	<fieldset disabled> <td>';								
+									texto+=' <a href="#"'; 
+									texto+=' class="btn btn-danger btn-sm btn-block">';
+									texto+=' <span class="glyphicon glyphicon-remove"></span>';
+									texto+=' </a>';
+								texto+=' </td></fieldset>';									
+
+						}
+							return texto;	
+		                },
+		                "targets": 6
+		            },
+  					/*
+  					{ 
+		                 "visible": false,
+		                "targets": [9]
+		            }
+		            */
+		        ],
+	});	
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////Imprimir detalles de los "pagos realizados"//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+jQuery('body').on('click','.impresion_ctas_detalle', function (e) {
+  	    busqueda    = jQuery('input[type=search]').val();
+		movimiento  = jQuery("#movimiento").val();
+		id_factura  = jQuery("#id_factura").val();
+    abrir('POST', '/impresion_ctas_detalle', {
+    		busqueda  :busqueda,
+		  movimiento:movimiento,   			
+		  id_factura:id_factura,   		
+    }, '_blank' );
+});
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////Impresiones de la regilla principal//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //1- imprimir
+jQuery('body').on('click','.impresion_ctas', function (e) {
+  	    //busqueda      = jQuery('input[type=search]').val();
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctasxpagar', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
+
+
+//2- imprimir
+
+jQuery('body').on('click','.impresion_ctas_especificas', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_especificas', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
+//3- imprimir
+jQuery('body').on('click','.impresion_ctas_detalladas', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_detalladas', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
+
+//4- imprimir
+jQuery('body').on('click','.impresion_ctas_antiguedad', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_antiguedad', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////Exportaciones de la regilla principal//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+jQuery('body').on('click','.exportar_ctas', function (e) {
+  	    //busqueda      = jQuery('input[type=search]').val();
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+		
+
+    abrir('POST', 'exportar_ctasxpagar', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+
+    }, '_blank' );
+		        
+	
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 var hash_url_notif = window.location.pathname;
 
     if  ( (hash_url_notif=="/gestionar_pedido_compra") || (hash_url_notif=="/cancelado") || (hash_url_notif=="/solicitar_modificacion")
@@ -3406,952 +4405,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 			return false;
 	});	
 
-	jQuery('#tabla_pagos_realizados').dataTable( {
 	
-	  "pagingType": "full_numbers",
-		
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-	            	"url" : "/procesando_pagos_realizados",
-	         		"type": "POST",
-	         		 "data": function ( d ) {
-	         		 	d.id_operacion=1;
-	         		 	d.movimiento=jQuery("#movimiento").val();
-	         		 	d.id_factura=jQuery("#id_factura").val();
-	         		 }
-	    },   
-		"language": {  //tratamiento de lenguaje
-			"lengthMenu": "Mostrar _MENU_ registros por página",
-			"zeroRecords": "No hay registros",
-			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			"infoEmpty": "No hay registros disponibles",
-			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-			"emptyTable":     "No hay registros",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"loadingRecords": "Leyendo...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Último",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": Activando para ordenar columnas ascendentes",
-				"sortDescending": ": Activando para ordenar columnas descendentes"
-			},
-		},
 
- 			"rowCallback": function( row, data ) {
-				    if  (data[7] == 0) 					    {
-				      jQuery('td', row).addClass( "danger" );
-				    }
-			},	
-
-			"infoCallback": function( settings, start, end, max, total, pre ) {
-
-
-			    if (settings.json.totales) {
-				    jQuery('#etiq_num_mov').val(  settings.json.totales.movimiento);
-					jQuery('#etiq_almacen').val( settings.json.totales.almacen); //
-					jQuery('#etiq_proveedor').val( settings.json.totales.nombre);
-
-					jQuery('#etiq_fecha').val( settings.json.totales.fecha);
-					jQuery('#etiq_factura').val( settings.json.totales.factura);
-					jQuery('#etiq_subtotal').val( settings.json.totales.subtotal);
-					jQuery('#etiq_iva').val( settings.json.totales.iva);
-					jQuery('#etiq_total').val( settings.json.totales.total);
-					jQuery('#etiq_dia_vencido').val( settings.json.totales.dias_vencidos);
-					jQuery('#etiq_monto_paga').val( settings.json.totales.monto_restante);
-					jQuery('#importe_pagado').html( number_format((settings.json.totales.total-settings.json.totales.monto_restante), 2, '.', ','));
-					
-
-				} else {
-				    /*
-				    jQuery('#total_entrada').html( 'Total de Entradas: 0');
-					jQuery('#total_salida').html( 'Total de Salidas: 0');
-					jQuery('#total_devoluciones').html('Total de Devoluciones: 0');
-					*/
-
-				}	
-
-				if (settings.json.recordsTotal==0) {
-						jQuery("#disa_pagosrealizado").attr('disabled', true);					
-					} else {
-						jQuery("#disa_pagosrealizado").attr('disabled', false);					
-				}
-					
-
-			    return pre;
-			  } ,
-
-
-
-		"columnDefs": [
-			    	
-			    	{ 
-		                "render": function ( data, type, row ) {
-		                		return data;
-
-		                },
-		                "targets": [0,1,2,3,4] 
-		            },
-
-     				 {
-		                "render": function ( data, type, row ) {
-						if (row[6]!=0) { //si esta autorizado a eliminar
-							texto='<td>';
-								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
-								texto+=' class="btn btn-warning btn-sm btn-block" >';
-									texto+=' <span class="glyphicon glyphicon-edit"></span>';
-								texto+=' </a>';
-							texto+='</td>';
-						} else {
-							texto='<fieldset disabled> <td>';
-								texto+='<a href="#" type="button"'; 
-								texto+=' class="btn btn-warning btn-sm btn-block" >';
-									texto+=' <span class="glyphicon glyphicon-edit"></span>';
-								texto+=' </a>';
-							texto+='</td> </fieldset>';							
-						}
-
-
-
-
-							return texto;	
-		                },
-		                "targets": 5
-		            },
-		            {
-		                "render": function ( data, type, row ) {
-
-
-	                	if (row[6]!=0) { //si esta autorizado a eliminar
-	                	
-							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
-								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
-								texto+='<span class="glyphicon glyphicon-remove"></span>';
-							texto+='</a></td>';
-						} else {
-
-
-								texto='	<fieldset disabled> <td>';								
-									texto+=' <a href="#"'; 
-									texto+=' class="btn btn-danger btn-sm btn-block">';
-									texto+=' <span class="glyphicon glyphicon-remove"></span>';
-									texto+=' </a>';
-								texto+=' </td></fieldset>';									
-
-						}
-							return texto;	
-		                },
-		                "targets": 6
-		            },
-  					/*
-  					{ 
-		                 "visible": false,
-		                "targets": [9]
-		            }
-		            */
-		        ],
-	});	
-
-jQuery('body').on('click','.impresion_ctas_detalle', function (e) {
-  	    busqueda    = jQuery('input[type=search]').val();
-		movimiento  = jQuery("#movimiento").val();
-    abrir('POST', '/impresion_ctas_detalle', {
-    		busqueda  :busqueda,
-		  movimiento:movimiento,   			
-    }, '_blank' );
-});
-
-
-jQuery('body').on('click','.impresion_ctas', function (e) {
-  	    //busqueda      = jQuery('input[type=search]').val();
-  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
-	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
-	    id_almacen = jQuery("#id_almacen_historicos").val(); 
-	    id_factura = jQuery("#id_factura_historicos").val(); 
-		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
-		fecha_inicial2 = fecha[0];
-		fecha_final2 = fecha[1];	    
-		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-
-
-    abrir('POST', 'impresion_ctasxpagar', {
-    			busqueda:busqueda,
-			extra_search:extra_search,
-			id_operacion: id_operacion,
-			
-			fecha_inicial:fecha_inicial, 
-			fecha_final: fecha_final,
-			id_almacen:id_almacen,
-			id_factura:id_factura,
-	    fecha_inicial2:fecha_inicial2,
-		  fecha_final2:fecha_final2,
-		  proveedor:proveedor,   			
-
-    }, '_blank' );
-		        
-	
-});
-
-
-
-
-
-jQuery('body').on('click','.impresion_ctas_especificas', function (e) {
-  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
-	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
-	    id_almacen = jQuery("#id_almacen_historicos").val(); 
-	    id_factura = jQuery("#id_factura_historicos").val(); 
-		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
-		fecha_inicial2 = fecha[0];
-		fecha_final2 = fecha[1];	    
-		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-
-
-    abrir('POST', 'impresion_ctas_especificas', {
-    			busqueda:busqueda,
-			extra_search:extra_search,
-			id_operacion: id_operacion,
-			
-			fecha_inicial:fecha_inicial, 
-			fecha_final: fecha_final,
-			id_almacen:id_almacen,
-			id_factura:id_factura,
-	    fecha_inicial2:fecha_inicial2,
-		  fecha_final2:fecha_final2,
-		  proveedor:proveedor,   			
-
-    }, '_blank' );
-		        
-	
-});
-
-
-jQuery('body').on('click','.impresion_ctas_detalladas', function (e) {
-  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
-	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
-	    id_almacen = jQuery("#id_almacen_historicos").val(); 
-	    id_factura = jQuery("#id_factura_historicos").val(); 
-		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
-		fecha_inicial2 = fecha[0];
-		fecha_final2 = fecha[1];	    
-		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-
-
-    abrir('POST', 'impresion_ctas_detalladas', {
-    			busqueda:busqueda,
-			extra_search:extra_search,
-			id_operacion: id_operacion,
-			
-			fecha_inicial:fecha_inicial, 
-			fecha_final: fecha_final,
-			id_almacen:id_almacen,
-			id_factura:id_factura,
-	    fecha_inicial2:fecha_inicial2,
-		  fecha_final2:fecha_final2,
-		  proveedor:proveedor,   			
-
-    }, '_blank' );
-		        
-	
-});
-
-
-
-jQuery('body').on('click','.impresion_ctas_antiguedad', function (e) {
-  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
-	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
-	    id_almacen = jQuery("#id_almacen_historicos").val(); 
-	    id_factura = jQuery("#id_factura_historicos").val(); 
-		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
-		fecha_inicial2 = fecha[0];
-		fecha_final2 = fecha[1];	    
-		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-
-
-    abrir('POST', 'impresion_ctas_antiguedad', {
-    			busqueda:busqueda,
-			extra_search:extra_search,
-			id_operacion: id_operacion,
-			
-			fecha_inicial:fecha_inicial, 
-			fecha_final: fecha_final,
-			id_almacen:id_almacen,
-			id_factura:id_factura,
-	    fecha_inicial2:fecha_inicial2,
-		  fecha_final2:fecha_final2,
-		  proveedor:proveedor,   			
-
-    }, '_blank' );
-		        
-	
-});
-
-jQuery('body').on('click','.exportar_ctas', function (e) {
-  	    //busqueda      = jQuery('input[type=search]').val();
-  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
-	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
-		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
-	    id_almacen = jQuery("#id_almacen_historicos").val(); 
-	    id_factura = jQuery("#id_factura_historicos").val(); 
-		
-		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
-		fecha_inicial2 = fecha[0];
-		fecha_final2 = fecha[1];	    
-		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-		
-
-    abrir('POST', 'exportar_ctasxpagar', {
-    			busqueda:busqueda,
-			extra_search:extra_search,
-			id_operacion: id_operacion,
-			
-			fecha_inicial:fecha_inicial, 
-			fecha_final: fecha_final,
-			id_almacen:id_almacen,
-			id_factura:id_factura,
-	    fecha_inicial2:fecha_inicial2,
-		  fecha_final2:fecha_final2,
-		  proveedor:proveedor,   			
-
-
-    }, '_blank' );
-		        
-	
-});
-
-
-
-/////////////////////////////////////////////////ctas por pagar/////////////////////////////////////////////////////////////////
-
-/*
-ctas_vencida
-ctas_ctasxpagar
-ctas_pagadas
-cuentas
-*/
-
-	jQuery('#tabla_ctas_vencidas').dataTable( {
-	
-	  "pagingType": "full_numbers",
-		
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-	            	"url" : "procesando_ctas_vencidas",
-	         		"type": "POST",
-	         		 "data": function ( d ) {
-	         		 	d.id_operacion=1;
-
-						var fecha = (jQuery('.fecha_historicos[vista="ctas_vencida"]').val()).split(' / ');
-						d.fecha_inicial2 = fecha[0];
-						d.fecha_final2 = fecha[1];
-
-
-						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];
-
-						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
-					    d.id_factura = jQuery("#id_factura_historicos").val(); 	
-					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-				  
-
-
-	         		 }
-	         		
-	     },   
-
-
-
-	"footerCallback": function( tfoot, data, start, end, display ) {
-	   var api = this.api(), data;
-			var intVal = function ( i ) {
-				return typeof i === 'string' ?
-					i.replace(/[\$,]/g, '')*1 :
-					typeof i === 'number' ?
-						i : 0;
-			};
-		if  (data.length>0) {   
-				
-
-			total_subtotal = api
-					.column( 7)
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );					
-
-				
-				total_iva = api
-					.column( 8)
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );	
-				
-				total = api
-					.column( 9)
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );					
-
-
-					//importes
-					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
-					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
-					jQuery('#total').html('Total:'+ number_format(total, 2, '.', ','));	
-
-		} else 	{
-					//importes
-					jQuery('#subtotal').html('SubTotal: 0.00');	
-					jQuery('#iva').html('IVA: 0.00');	
-					jQuery('#total').html('Total: 0.00');										
-
-
-		}	
-
-			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(6).visible(false);		
-			}			
-
-    },
-
-
-		"infoCallback": function( settings, start, end, max, total, pre ) {
-	
-			if (settings.json.totales_importe) {
-			  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
-				jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
-				jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
-
-			} else {
-			    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
-				jQuery('#total_iva').html( 'IVA: 0.00');
-				jQuery('#total_total').html('Total de mts: 0.00');
-
-			}	
-
-
-			if (settings.json.recordsTotal==0) {
-					jQuery("#disa_vencidas").attr('disabled', true);					
-				} else {
-					jQuery("#disa_vencidas").attr('disabled', false);					
-			}
-			return pre
-		},	     
-
-		"language": {  //tratamiento de lenguaje
-			"lengthMenu": "Mostrar _MENU_ registros por página",
-			"zeroRecords": "No hay registros",
-			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			"infoEmpty": "No hay registros disponibles",
-			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-			"emptyTable":     "No hay registros",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"loadingRecords": "Leyendo...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Último",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": Activando para ordenar columnas ascendentes",
-				"sortDescending": ": Activando para ordenar columnas descendentes"
-			},
-		},
-	
-		"columnDefs": [
-			    	
-			    	{ 
-		                "render": function ( data, type, row ) {
-		                		return data;
-		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
-		            },
-
-     				 {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-
-		        		texto='<td>';
-							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
-							texto+='type="button" class="btn btn-warning btn-block">';
-							texto+=row[11];
-							texto+='</a>';
-						texto+='</td>';
-
-							return texto;	
-		                },
-		                "targets": 11
-		            },
-		            {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-		        		texto='<td>';
-							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; // 
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
-							texto+='</a>';
-						texto+='</td>';
-
-
-
-							return texto;	
-		                },
-		                "targets": 12
-		            },
-  					
-  					{ 
-		                 "visible": false,
-		                "targets": [13,14]
-		            }
-		            
-		          
-		           
-		            
-		        ],
-	});	
-
-
-jQuery('#tabla_ctasxpagar').dataTable( {
-	
-	  "pagingType": "full_numbers",
-		
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-	            	"url" : "procesando_ctasxpagar",
-	         		"type": "POST",
-	         		 "data": function ( d ) {
-	         		 	d.id_operacion = 1;
-						var fecha = (jQuery('.fecha_historicos[vista="ctas_ctasxpagar"]').val()).split(' / ');
-						d.fecha_inicial2 = fecha[0];
-						d.fecha_final2 = fecha[1];
-
-	         		 	var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];	      
-						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
-					    d.id_factura = jQuery("#id_factura_historicos").val(); 	   		 	
-					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-	         		 }
-	         		
-	     },   
-
-
-		"footerCallback": function( tfoot, data, start, end, display ) {
-		   var api = this.api(), data;
-				var intVal = function ( i ) {
-					return typeof i === 'string' ?
-						i.replace(/[\$,]/g, '')*1 :
-						typeof i === 'number' ?
-							i : 0;
-				};
-			if  (data.length>0) {   
-					
-
-				total_subtotal = api
-						.column( 7)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );					
-
-					
-					total_iva = api
-						.column( 8)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );	
-					
-					total = api
-						.column( 9)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );					
-
-
-						//importes
-						jQuery('#subtotal2').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
-						jQuery('#iva2').html('IVA:' + number_format( total_iva, 2, '.', ','));
-						jQuery('#total2').html('Total:'+ number_format(total, 2, '.', ','));	
-
-			} else 	{
-						//importes
-						jQuery('#subtotal2').html('SubTotal: 0.00');	
-						jQuery('#iva2').html('IVA: 0.00');	
-						jQuery('#total2').html('Total: 0.00');										
-
-
-			}	
-
-			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(6).visible(false);		
-			}			
-	    },
-
-		"infoCallback": function( settings, start, end, max, total, pre ) {
-			if (settings.json.totales_importe) {
-			  	jQuery('#total_subtotal2').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
-				jQuery('#total_iva2').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
-				jQuery('#total_total2').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
-
-			} else {
-			    jQuery('#total_subtotal2').html( 'Subtotal: 0.00');
-				jQuery('#total_iva2').html( 'IVA: 0.00');
-				jQuery('#total_total2').html('Total de mts: 0.00');
-
-			}	
-
-
-			if (settings.json.recordsTotal==0) {
-					jQuery("#disa_xpagar").attr('disabled', true);					
-				} else {
-					jQuery("#disa_xpagar").attr('disabled', false);					
-			}
-			return pre
-		},		     
-
-		"language": {  //tratamiento de lenguaje
-			"lengthMenu": "Mostrar _MENU_ registros por página",
-			"zeroRecords": "No hay registros",
-			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			"infoEmpty": "No hay registros disponibles",
-			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-			"emptyTable":     "No hay registros",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"loadingRecords": "Leyendo...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Último",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": Activando para ordenar columnas ascendentes",
-				"sortDescending": ": Activando para ordenar columnas descendentes"
-			},
-		},
-
-
-		"columnDefs": [
-			    	{ 
-		                "render": function ( data, type, row ) {
-		                		return data;
-		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
-		            },
-     				 {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-		        		texto='<td>';
-							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
-							texto+='type="button" class="btn btn-warning btn-block">';
-							texto+=row[11];
-							texto+='</a>';
-						texto+='</td>';
-							return texto;	
-		                },
-		                "targets": 11
-		            },
-		            {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-		        		texto='<td>';
-							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
-							texto+='</a>';
-						texto+='</td>';
-
-
-
-							return texto;	
-		                },
-		                "targets": 12
-		            },
-  					
-  					{ 
-		                 "visible": false,
-		                "targets": [13,14]
-		            }
-		            
-		          
-		           
-		            
-		        ],
-	});	
-
-jQuery('#tabla_ctas_pagadas').dataTable( {
-	
-	  "pagingType": "full_numbers",
-		
-		"processing": true,
-		"serverSide": true,
-		"ajax": {
-	            	"url" : "procesando_ctas_pagadas",
-	         		"type": "POST",
-	         		 "data": function ( d ) {
-	         		 	d.id_operacion=1;
-						var fecha = (jQuery('.fecha_historicos[vista="ctas_pagadas"]').val()).split(' / ');
-						d.fecha_inicial2 = fecha[0];
-						d.fecha_final2 = fecha[1];	
-							         		 	
-						var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
-						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];	
-						d.id_almacen = jQuery("#id_almacen_historicos").val(); 
-					    d.id_factura = jQuery("#id_factura_historicos").val(); 	         		 	
-					    d.proveedor = jQuery("#editar_proveedor_historico").val(); 	   
-	         		 }
-	         		
-	     },   
-
-		"footerCallback": function( tfoot, data, start, end, display ) {
-		   var api = this.api(), data;
-				var intVal = function ( i ) {
-					return typeof i === 'string' ?
-						i.replace(/[\$,]/g, '')*1 :
-						typeof i === 'number' ?
-							i : 0;
-				};
-			if  (data.length>0) {   
-					
-
-				total_subtotal = api
-						.column( 7)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );					
-
-					
-					total_iva = api
-						.column( 8)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );	
-					
-					total = api
-						.column( 9)
-						.data()
-						.reduce( function (a, b) {
-							return intVal(a) + intVal(b);
-						} );					
-
-
-						//importes
-						jQuery('#subtotal3').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
-						jQuery('#iva3').html('IVA:' + number_format( total_iva, 2, '.', ','));
-						jQuery('#total3').html('Total:'+ number_format(total, 2, '.', ','));	
-
-			} else 	{
-						//importes
-						jQuery('#subtotal3').html('SubTotal: 0.00');	
-						jQuery('#iva3').html('IVA: 0.00');	
-						jQuery('#total3').html('Total: 0.00');										
-
-
-			}	
-			if ( jQuery('#config_activo').val() == 0 ) {
-				api.column(6).visible(false);		
-			}			
-	    },
-
-
-
-
-		"infoCallback": function( settings, start, end, max, total, pre ) {
-			if (settings.json.totales_importe) {
-			  	jQuery('#total_subtotal3').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
-				jQuery('#total_iva3').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
-				jQuery('#total_total3').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
-
-			} else {
-			    jQuery('#total_subtotal3').html( 'Subtotal: 0.00');
-				jQuery('#total_iva3').html( 'IVA: 0.00');
-				jQuery('#total_total3').html('Total de mts: 0.00');
-			}				
-
-			if (settings.json.recordsTotal==0) {
-					jQuery("#disa_pagadas").attr('disabled', true);					
-				} else {
-					jQuery("#disa_pagadas").attr('disabled', false);					
-			}
-			return pre
-		},		     
-
-		"language": {  //tratamiento de lenguaje
-			"lengthMenu": "Mostrar _MENU_ registros por página",
-			"zeroRecords": "No hay registros",
-			"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-			"infoEmpty": "No hay registros disponibles",
-			"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-			"emptyTable":     "No hay registros",
-			"infoPostFix":    "",
-			"thousands":      ",",
-			"loadingRecords": "Leyendo...",
-			"processing":     "Procesando...",
-			"search":         "Buscar:",
-			"paginate": {
-				"first":      "Primero",
-				"last":       "Último",
-				"next":       "Siguiente",
-				"previous":   "Anterior"
-			},
-			"aria": {
-				"sortAscending":  ": Activando para ordenar columnas ascendentes",
-				"sortDescending": ": Activando para ordenar columnas descendentes"
-			},
-		},
-
-
-		"columnDefs": [
-			    	
-			    	{ 
-		                "render": function ( data, type, row ) {
-		                		return data;
-		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
-		            },
-
-     				 {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-		        		
-						if (row[12]!=2) {
-			        		texto='<td>';
-								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
-								texto+='type="button" class="btn btn-warning btn-block">';
-								texto+=row[13]; //"Pagado"; //"row[10];
-								texto+='</a>';
-							texto+='</td>';
-						} else {
-
-			        		texto='<td><fieldset disabled>';
-								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="#"'; //
-								texto+='type="button" class="btn btn-warning btn-block">';
-								texto+='Contado';
-								texto+='</a>';
-							texto+='</fieldset></td>';
-
-						}
-
-
-							return texto;	
-		                },
-		                "targets": 10
-		            },
-		            {
-		                "render": function ( data, type, row ) {
-
-
-						$otro_retorno="listado_ctasxpagar";
-		        		texto='<td>';
-							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
-							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
-							texto+='</a>';
-						texto+='</td>';
-
-
-
-							return texto;	
-		                },
-		                "targets": 11
-		            },
-  					
-  					{ 
-		                 "visible": false,
-		                "targets": [12,13,14]
-		            }
-		        ],
-
-	 "rowCallback": function( row, data ) {
-		    
-		    if ( data[13] == data[9] ) { //monto=total -->normal
-		      //jQuery('td', row).addClass( "danger" );
-		    }
-
-		    if ( data[11] < 0 ) { //se pago de mas
-		      jQuery('td', row).addClass( "danger" );
-		    }
-
-		    if ( (data[11] == 0 ) &&  ( data[13] != data[9] ) ) { //se pago de mas
-		      jQuery('td', row).addClass( "warning" );
-		    }
-
-
-
-		    /*if ( data[11] == "morado" ) {
-		      jQuery('td', row).addClass( "success" );
-		    }
-
-		    if ( data[15] == 1 ) {
-		      jQuery('td', row).addClass( "warning" );
-		    }*/
-
-
-
-		  },		
-
-
-
-	});	
 
 
 

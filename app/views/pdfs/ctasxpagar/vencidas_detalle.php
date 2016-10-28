@@ -44,6 +44,7 @@
 						<?php 
 							 $nomb = ''; 
 							 $mov = 0; 
+							 $id_factura=0;
 							 $total = 0;
 							 $saldo = 0;
 
@@ -53,14 +54,15 @@
 
 					<?php foreach( $movimientos as $movimiento ): ?>
 
-						<?php if ( ( ($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento)) && ($total!=0) ) { ?>
+						<?php if ( ( ($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) || ($id_factura != $movimiento->id_factura) ) && ($total!=0) ) { 
+
+							$saldo2 = $saldo2+ ($saldo+$total);
+							?>
 							<tr> <td  width="100%" ></td>	</tr>
 								<tr>
-
 									<td  width="100%" >
 										<b style="font-size:14px; text-align:right;">Saldo: <?php echo number_format($saldo+$total, 2, '.', ','); ?></b>
 									</td>	
-
 								</tr>
 							<tr> <td width="100%" ></td> </tr>
 
@@ -74,9 +76,7 @@
 						
 
 							<?php 
-							//print_r($nomb);
-							//print_r($movimiento->nombre);
-							if (($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) ){ ?>
+							if (($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) || ($id_factura != $movimiento->id_factura) ){ ?>
 								<tr>
 									<?php if ($nomb != $movimiento->nombre) { ?>
 										<td width="20%" ><?php echo $movimiento->nombre; ?></td>
@@ -94,6 +94,7 @@
 							<?php 														
 								$nomb = $movimiento->nombre;
 								$mov= $movimiento->movimiento;
+								$id_factura=$movimiento->id_factura;
 								$total=0;
 								$saldo = 0;								
 								} //else {
@@ -121,6 +122,11 @@
 
 							//   $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
+							/*$saldo2 = $saldo2+ 
+								(($movimiento->id_documento_pago!=12)*$movimiento->importe*-1)+
+								(($movimiento->id_documento_pago==12)*$movimiento->importe);
+								*/
+	
 
 							$total2 = $total2+ number_format($movimiento->total, 2, '.', ','); 
 							//$saldo2 = $saldo2+ (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante);
@@ -138,11 +144,19 @@
 							
 						
 							
-							
+								
 						
-					<?php endforeach; ?>
+					<?php endforeach; 
 
-						<?php if ( ($total!=0) ) { ?>
+						
+					?>
+
+						<?php if ( ($total!=0) ) { 
+
+
+							$saldo2 = $saldo2+ ($saldo+$total);
+
+							?>
 							<tr> <td  width="100%" ></td>	</tr>
 							<tr>
 
@@ -170,7 +184,7 @@
 							<tr>
 
 								<td  width="100%" >
-									<b style="font-size:14px; text-align:right;">Saldo: <?php echo number_format($saldo+$total, 2, '.', ','); ?></b>
+									<b style="font-size:14px; text-align:right;">Saldo: <?php echo number_format($saldo2, 2, '.', ','); ?></b>
 								</td>	
 
 							</tr>

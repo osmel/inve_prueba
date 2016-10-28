@@ -62,135 +62,36 @@
      
 
 
-        
-//////////////////////Auxiliar 
-
-      public function nuevo_pago_realizado($data){
-
-          $this->db->select('m.total');
-          $this->db->from($this->historico_ctasxpagar.' as m');
-          $where = '(
-                          ( m.movimiento =  '.$data["movimiento"].' ) 
-          )';   
-  
-          $this->db->where($where);
-
-          $result = $this->db->get();
-
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-      }    
+  //$this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%Y-%m-%d') as fecha_ven", false);                    
 
 
+                /*       
+select sum(total) from 
+  (SELECT (total - SUM( pr.importe )) AS total2, total
+  FROM inven_historico_ctasxpagar m
+  LEFT JOIN inven_historico_pagos_realizados pr ON pr.movimiento = m.movimiento
+  GROUP BY m.movimiento
+  HAVING (total - SUM( pr.importe )) <=0
+  )
+  //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
+           //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
+*/
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+          //recargo=12
+          //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
+/*
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
 
-      public function editar_pago_realizado($data){
-
-          $this->db->select("( CASE WHEN ( (h.id_documento_pago !=12) && (h.id_documento_pago !=13)) THEN h.importe ELSE  
-            FORMAT(((h.importe*100)/m.total), 2) 
-            END ) AS importe", FALSE);   
-          //h.importe
-          $this->db->select('m.total');
-          $this->db->select('h.id, h.movimiento, h.id_documento_pago, h.instrumento_pago,   h.comentario');
-          $this->db->select("(DATE_FORMAT(h.fecha_pago,'%d-%m-%Y')) as fecha_pago",false);
-          $this->db->from($this->historico_pagos_realizados.' as h');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'h.movimiento = m.movimiento');
-          $where = '(
-                          ( h.id =  "'.$data["id"].'" ) 
-          )';   
-  
-          $this->db->where($where);
-
-          $result = $this->db->get();
-
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-      }    
+*/
 
 
-      public function anadir_pago( $data ){
-
-        $id_session = $this->session->userdata('id');
-        $this->db->set( 'id_usuario',  $id_session );
-        
-        $this->db->set( 'movimiento', $data['movimiento'] );  
-        $this->db->set( 'id_documento_pago', $data['id_documento_pago'] );  
-        $this->db->set( 'instrumento_pago', $data['instrumento_pago'] );  
-        //$this->db->set( 'importe', $data['importe'] );  
-        $this->db->set( 'importe',            ($data['importe']*( ($data['id_documento_pago'] !=12) && ($data['id_documento_pago'] !=13) )) 
-          +((( $data['importe'] * $data['total'] ) /100)*( ($data['id_documento_pago'] ==12) OR ($data['id_documento_pago'] ==13) ) ), false);
-
-        $this->db->set( 'comentario', $data['comentario'] );  
-        $this->db->set( 'fecha_pago', $data['fecha_pago'] );  
-
-
-          $this->db->insert($this->historico_pagos_realizados );
-          if ($this->db->affected_rows() > 0){
-                  return TRUE;
-              } else {
-                  return FALSE;
-              }
-              $result->free_result();
-      }          
-
-      public function editar_pago( $data ){
-
-        $id_session = $this->session->userdata('id');
-        $this->db->set( 'id_usuario',  $id_session );
-        
-        //$this->db->set( 'movimiento', $data['movimiento'] );  
-        $this->db->set( 'id_documento_pago', $data['id_documento_pago'] );  
-      
-         /*
-            $this->db->select("
-            ( CASE WHEN ( (h.id_documento_pago !=12) && (h.id_documento_pago !=13)) THEN h.importe ELSE  
-            (h.importe*100)/m.total END ) AS importe", FALSE);  
-         */
-
-        $this->db->set( 'importe',            ($data['importe']*( ($data['id_documento_pago'] !=12) && ($data['id_documento_pago'] !=13) )) 
-          +((( $data['importe'] * $data['total'] ) /100)*( ($data['id_documento_pago'] ==12) OR ($data['id_documento_pago'] ==13) ) ), false); 
-
-        //$this->db->set( 'importe', $data['importe'] );        
-
-        $this->db->set( 'instrumento_pago', $data['instrumento_pago'] );  
-        
-        $this->db->set( 'comentario', $data['comentario'] );  
-        $this->db->set( 'fecha_pago', $data['fecha_pago'] );  
-
-          $this->db->where( 'id', $data['id'] );  
-
-
-          $this->db->update($this->historico_pagos_realizados );
-          if ($this->db->affected_rows() > 0){
-                  return TRUE;
-              } else {
-                  return FALSE;
-              }
-              $result->free_result();
-      }          
-
-
-        public function eliminar_pago( $data ){
-            $this->db->delete( $this->historico_pagos_realizados, array( 'id' => $data['id'] ) );
-            if ( $this->db->affected_rows() > 0 ) return TRUE;
-            else return FALSE;
-        }
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////ctasxpagar/////////////////////////////////////////
+/////////////////////////////////Regilla principal/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public function buscador_ctasxpagar($data){
 
@@ -237,7 +138,7 @@ public function buscador_ctasxpagar($data){
                         $columna = 'iva';
                      break;
                    case '8':
-                        $columna = 'total';
+                        $columna = 'm.total';
                      break;
 
 
@@ -266,16 +167,13 @@ public function buscador_ctasxpagar($data){
           $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
           
           $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);                    
-          //$this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%Y-%m-%d') as fecha_ven", false);                    
-
+        
 
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
+          $this->db->select("m.total", FALSE);
 
-          //recargo=12
-          //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
               
           //esto es para que de el monto que tuve q pagar
           $this->db->select("sum(  ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS sepago", FALSE);
@@ -287,8 +185,9 @@ public function buscador_ctasxpagar($data){
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-          
+          //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+           
 
 
           $fechas = ' ';
@@ -354,7 +253,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,m.id_factura, m.id_almacen,m.id_empresa,m.factura');
+          $this->db->group_by('m.movimiento,m.id_factura, m.id_almacen,m.id_empresa'); //,m.factura
 
           
           $this->db->having($data['having']);
@@ -420,8 +319,7 @@ public function buscador_ctasxpagar($data){
                     
               }   
               else {
-                  //cuando este vacio la tabla que envie este
-                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+
                   $output = array(
                   "draw" =>  intval( $data['draw'] ),
                   "recordsTotal" => 0,
@@ -438,15 +336,7 @@ public function buscador_ctasxpagar($data){
 
       }  
 
-/*       
-select sum(total) from 
-  (SELECT (total - SUM( pr.importe )) AS total2, total
-  FROM inven_historico_ctasxpagar m
-  LEFT JOIN inven_historico_pagos_realizados pr ON pr.movimiento = m.movimiento
-  GROUP BY m.movimiento
-  HAVING (total - SUM( pr.importe )) <=0
-  )
-*/
+
 
 public function totales_importes($where,$having){
            
@@ -456,20 +346,20 @@ public function totales_importes($where,$having){
           $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
 
 
-           //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-            $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+            $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
 
            $this->db->select("(m.id_tipo_pago) AS id_tipo_pago", FALSE);
            $this->db->select("(subtotal) as subtotal", FALSE);
            $this->db->select("(iva) as iva", FALSE);
-           $this->db->select("(total) as total", FALSE);
+           $this->db->select("(m.total) as total", FALSE);
    
            $this->db->from($this->historico_ctasxpagar.' as m');
            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');           
            $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');      
-           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+           //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
 
            $this->db->where($where);          
            $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
@@ -506,11 +396,11 @@ public function totales_importes($where,$having){
 
               $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
              
-             //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-              $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+             
+              $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
   
-    $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
           $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
           $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);        
           $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
@@ -520,7 +410,7 @@ public function totales_importes($where,$having){
             $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
             $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');            
             $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
 
           
               $this->db->where($where);          
@@ -543,85 +433,12 @@ public function totales_importes($where,$having){
        }      
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////Detalle MONTO////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-public function encabezado_pagosrealizados($data){
-
-           $this->db->distinct();
-         $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
-
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
-
-          
-          $this->db->select('p.dias_ctas_pagar');   
-          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
-          $this->db->select('subtotal');           
-          $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
-
-          //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-
-
-
-
-          
-
-          $this->db->from($this->historico_ctasxpagar.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
-          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-          
-         
-
-          $where = '(
-                      (
-                         ( m.movimiento = '.$data["movimiento"].' )
-                      ) 
-          )';   
-           
-
-         $this->db->where($where);          
-
-         //$this->db->limit(1,1); 
-
-          $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-
-                  foreach ($result->result() as $row) {
-                              $totales =array(
-                                          "movimiento"=>$row->movimiento, 
-                                          "tipo_pago"=>$row->tipo_pago,
-                                          "almacen"=>$row->almacen,
-                                          "nombre"=>$row->nombre,
-                                          "fecha"=>$row->fecha,
-                                          "factura"=>$row->factura,
-                                          "subtotal"=>number_format($row->subtotal, 2, '.', ','),
-                                          "iva"=>number_format($row->iva, 2, '.', ','),
-                                          "total"=>number_format($row->total, 2, '.', ','),
-                                          "dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
-                                          "monto_restante"=>(($row->monto_restante==null) ? $row->total : $row->monto_restante)           
-                                      );
-                              
-                  }
-
-
-                return  json_encode($totales);                 
-                    
-              }   
-                        
-
-      }  
-       
-
-
-
-
+//regilla que esta en nuevo pago
 public function buscador_pagosrealizados($data){
 
           $cadena = addslashes($data['search']['value']);
@@ -668,7 +485,7 @@ public function buscador_pagosrealizados($data){
 
                    default:
                         $columna = 'pr.fecha_pago';
-                        //$this->db->order_by('m.movimiento', 'desc'); 
+                        
                      break;
                  }                 
 
@@ -692,33 +509,27 @@ public function buscador_pagosrealizados($data){
           $this->db->select("DATEDIFF( NOW( ) ,  m.fecha_entrada ) as diferencia_dias", false);                    
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
+          $this->db->select("m.total", FALSE);
 
-          //$this->db->select("m.total-sum(pri.importe) AS monto_restante", FALSE);
-
-           //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
           $this->db->select("m.total+sum((pri.id_documento_pago <> 12)*pri.importe*-1)+sum((pri.id_documento_pago = 12)*pri.importe) AS monto_restante", FALSE);
 
           $this->db->select("DATEDIFF( pr.fecha_pago ,  m.fecha_entrada ) as pagos_tardios", false);                    
-
-          //$this->db->select("sum(  ( (pri.id_documento_pago <> 12) && (pri.id_documento_pago <> 13) ) *pri.importe)  AS pago_importe", FALSE);
 
           $this->db->select("sum((pri.id_documento_pago = 13)*pri.importe*-1)+sum((pri.id_documento_pago <> 13)*pri.importe) AS pago_importe", FALSE);
 
 
           
           $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento','LEFT');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento AND pr.id_factura=m.id_factura','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento AND pri.id_factura=m.id_factura','LEFT');
 
           $where = '(
                       (
-                         ( m.movimiento = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )
+                         ( pr.movimiento = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' )
                       ) 
                        AND
                       (  
@@ -735,13 +546,7 @@ public function buscador_pagosrealizados($data){
 
           $where_total= $where;
 
-          /*
-          '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )   AND ( m.id_factura = '.$data["id_factura"].' )
-                      )';
-                      */
-           
-
+     
           $this->db->where($where);          
 
          $this->db->group_by('pr.id'); //,m.id_almacen,m.id_empresa,m.factura
@@ -858,21 +663,21 @@ public function buscador_pagosrealizados($data){
  public function total_pagosrealizados($where){
               
 
-              $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
           
           $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento','LEFT');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento AND pr.id_factura=m.id_factura','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento','LEFT');
-
+          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento AND pri.id_factura=m.id_factura','LEFT');
+          $this->db->group_by('pr.id');
 
 
           
-              $this->db->where($where);          
-             // $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+             $this->db->where($where);          
+             
              $result = $this->db->get();
 
               if ( $result->num_rows() > 0 ) {
@@ -889,11 +694,231 @@ public function buscador_pagosrealizados($data){
                  return 0;         
        }      
 
+
+
+
+public function encabezado_pagosrealizados($data){
+
+           $this->db->distinct();
+         $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
+
+          
+          $this->db->select('p.dias_ctas_pagar');   
+          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
+          $this->db->select('subtotal');           
+          $this->db->select("iva", FALSE);
+          $this->db->select("m.total", FALSE);
+
+          
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+
+
+
+
+          
+
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+
+          $where = '(
+                      (
+                         ( m.movimiento = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )
+                      ) 
+          )';   
+           
+
+         $this->db->where($where);          
+
+         //$this->db->limit(1,1); 
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                  foreach ($result->result() as $row) {
+                              $totales =array(
+                                          "movimiento"=>$row->movimiento, 
+                                          "tipo_pago"=>$row->tipo_pago,
+                                          "almacen"=>$row->almacen,
+                                          "nombre"=>$row->nombre,
+                                          "fecha"=>$row->fecha,
+                                          "factura"=>$row->factura,
+                                          "subtotal"=>number_format($row->subtotal, 2, '.', ','),
+                                          "iva"=>number_format($row->iva, 2, '.', ','),
+                                          "total"=>number_format($row->total, 2, '.', ','),
+                                          "dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
+                                          "monto_restante"=>(($row->monto_restante==null) ? $row->total : $row->monto_restante)           
+                                      );
+                              
+                  }
+
+
+                return  json_encode($totales);                 
+                    
+              }   
+                        
+
+      }  
+       
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////Nuevo pago////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+//////////////////////buscar los datos de un nuevo pago///// 
+
+      public function nuevo_pago_realizado($data){
+
+          $this->db->select('m.total,m.id_factura,m.id_almacen,m.id_empresa');
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $where = '(
+                          ( m.movimiento =  '.$data["movimiento"].' ) 
+                          AND ( m.id_factura =  '.$data["id_factura"].' ) 
+          )';   
+  
+          $this->db->where($where);
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+      }    
+
+      public function anadir_pago( $data ){
+
+        $id_session = $this->session->userdata('id');
+        $this->db->set( 'id_usuario',  $id_session );
+        
+        $this->db->set( 'movimiento', $data['movimiento'] );  
+        $this->db->set( 'id_documento_pago', $data['id_documento_pago'] );  
+        $this->db->set( 'instrumento_pago', $data['instrumento_pago'] );  
+        //$this->db->set( 'importe', $data['importe'] );  
+        $this->db->set( 'importe',            ($data['importe']*( ($data['id_documento_pago'] !=12) && ($data['id_documento_pago'] !=13) )) 
+          +((( $data['importe'] * $data['total'] ) /100)*( ($data['id_documento_pago'] ==12) OR ($data['id_documento_pago'] ==13) ) ), false);
+
+        $this->db->set( 'comentario', $data['comentario'] );  
+        $this->db->set( 'fecha_pago', $data['fecha_pago'] );  
+
+        $this->db->set( 'id_factura', $data['id_factura'] );  
+        $this->db->set( 'id_almacen', $data['id_almacen'] );  
+        $this->db->set( 'id_empresa', $data['id_empresa'] );  
+        $this->db->set( 'total', $data['total'] );  
+
+
+
+          $this->db->insert($this->historico_pagos_realizados );
+          if ($this->db->affected_rows() > 0){
+                  return TRUE;
+              } else {
+                  return FALSE;
+              }
+              $result->free_result();
+      }          
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////EDITAR PAGO////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
 
 
+      public function editar_pago_realizado($data){
+
+          $this->db->select("( CASE WHEN ( (h.id_documento_pago !=12) && (h.id_documento_pago !=13)) THEN h.importe ELSE  
+            FORMAT(((h.importe*100)/m.total), 2) 
+            END ) AS importe", FALSE);   
+          //h.importe
+          $this->db->select('m.total');
+          $this->db->select('h.id, h.movimiento, h.id_documento_pago, h.instrumento_pago, h.comentario, h.id_factura,h.id_almacen,h.id_empresa');
+          $this->db->select("(DATE_FORMAT(h.fecha_pago,'%d-%m-%Y')) as fecha_pago",false);
+          $this->db->from($this->historico_pagos_realizados.' as h');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'h.movimiento = m.movimiento');
+          $where = '(
+                          ( h.id =  "'.$data["id"].'" ) 
+          )';   
+  
+          $this->db->where($where);
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+      }    
 
 
+     
+      public function editar_pago( $data ){
+
+        $id_session = $this->session->userdata('id');
+        $this->db->set( 'id_usuario',  $id_session );
+        
+        $this->db->set( 'id_documento_pago', $data['id_documento_pago'] );  
+        $this->db->set( 'importe',            ($data['importe']*( ($data['id_documento_pago'] !=12) && ($data['id_documento_pago'] !=13) )) 
+          +((( $data['importe'] * $data['total'] ) /100)*( ($data['id_documento_pago'] ==12) OR ($data['id_documento_pago'] ==13) ) ), false); 
+        //$this->db->set( 'importe', $data['importe'] );        
+        $this->db->set( 'instrumento_pago', $data['instrumento_pago'] );  
+        
+        $this->db->set( 'comentario', $data['comentario'] );  
+        $this->db->set( 'fecha_pago', $data['fecha_pago'] );  
+
+        $this->db->set( 'id_factura', $data['id_factura'] );  
+        $this->db->set( 'id_almacen', $data['id_almacen'] );  
+        $this->db->set( 'id_empresa', $data['id_empresa'] );  
+        $this->db->set( 'total', $data['total'] );  
+
+
+          $this->db->where( 'id', $data['id'] );  
+
+
+
+          $this->db->update($this->historico_pagos_realizados );
+          if ($this->db->affected_rows() > 0){
+                  return TRUE;
+              } else {
+                  return FALSE;
+              }
+              $result->free_result();
+      }          
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////Eliminar PAGO////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+
+
+        public function eliminar_pago( $data ){
+            $this->db->delete( $this->historico_pagos_realizados, array( 'id' => $data['id'],'id_factura' => $data['id_factura'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }
+
+
+
+
+/////////////////////////////////////////Imprimir detalles de los "pagos realizados"/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public function impresion_pagosrealizados($data){
 
@@ -912,7 +937,7 @@ public function impresion_pagosrealizados($data){
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
+          $this->db->select("m.total", FALSE);
           //"dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
           $this->db->select("DATEDIFF( NOW( ) ,  m.fecha_entrada ) as diferencia_dias", false);   
           $this->db->select('p.dias_ctas_pagar');   
@@ -920,19 +945,17 @@ public function impresion_pagosrealizados($data){
 
           
           $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento','LEFT');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento = pr.movimiento AND pr.id_factura=m.id_factura','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');          
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento','LEFT');
-          
-          
+          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento = m.movimiento AND pri.id_factura=m.id_factura','LEFT');
           
 
           $where = '(
                       (
-                         ( m.movimiento = '.$data["movimiento"].' )
+                         ( pr.movimiento = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' )
                          
                       ) 
 
@@ -947,14 +970,8 @@ public function impresion_pagosrealizados($data){
             )';   
 
 
-
-
-
          $this->db->where($where);          
          $this->db->group_by('pr.id'); //,m.id_almacen,m.id_empresa,m.factura
-
-
-                    
 
           $result = $this->db->get();
 
@@ -965,429 +982,16 @@ public function impresion_pagosrealizados($data){
           return False;
           $result->free_result();
 
-      
-       
-             
+            
 
       }  
 
+/////////////////////////////////////////1- imprimir ctas x pagar/////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////IMPRESION CTAS antiguedad/////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-public function impresion_ctas_antiguedad($data){
-
-          $cadena = addslashes($data['busqueda']);          
-
-
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          $id_almacen= $data['id_almacen'];
-          $id_factura= $data['id_factura'];
-
-          $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
-
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
-
-          
-          $this->db->select('p.dias_ctas_pagar');   
-          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
-          $this->db->select('subtotal');           
-          $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
-
-          
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-
-     
-          $this->db->select("sum( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
-          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
-          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
-          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
-          
-          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
-
-          $this->db->from($this->historico_ctasxpagar.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-          
-
-
-         if ($id_almacen!=0) {
-             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-              $id_almacenid = '';
-          }
-         
-
-          if ($id_factura!=0) {
-             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
-          } else {
-             $id_facturaid = '';
-          }         
-
-          $fechas = ' ';
-          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
-                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
-                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
-                          
-                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
-
-          } else {
-           $fechas .= ' ';
-          }     
-
-         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
-            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
-          } else {
-            $proveedorid = '';
-          }
-
-
-          $where = '(
-                      (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
-                      ) 
-                       AND
-                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
-                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
-                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
-                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
-                        (m.factura LIKE  "%'.$cadena.'%")                         
-                       )
-            )';   
-
-
-          $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
-                      )';
-           
-
-          $this->db->where($where);          
-
-          $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
-
-          
-          $this->db->having($data['having']);
-          
-          //ordenacion
-          $this->db->order_by('m.id_empresa', 'DESC'); 
-
-            $result = $this->db->get();
-
-
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-
-      }        
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////IMPRESION CTAS ESPECIFICAS/////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-public function impresion_ctas_especificas($data){
-
-          $cadena = addslashes($data['busqueda']);          
-
-
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          $id_almacen= $data['id_almacen'];
-          $id_factura= $data['id_factura'];
-
-          $this->db->select('m.movimiento');
-          $this->db->select('a.almacen');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
-
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
-
-          
-          $this->db->select('p.dias_ctas_pagar');   
-          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
-          $this->db->select('subtotal');           
-          $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
-
-          //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-
-          /*
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-              
-          //esto es para que de el monto que tuve q pagar
-          $this->db->select("sum(  ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS sepago", FALSE);
-          */
-
-           $this->db->select("sum( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
-
-
-          
-
-          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
-          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
-          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
-          
-          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
-
-          $this->db->from($this->historico_ctasxpagar.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-          
-
-
-         if ($id_almacen!=0) {
-             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-              $id_almacenid = '';
-          }
-         
-
-          if ($id_factura!=0) {
-             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
-          } else {
-             $id_facturaid = '';
-          }         
-
-          $fechas = ' ';
-          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
-                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
-                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
-                          
-                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
-
-          } else {
-           $fechas .= ' ';
-          }     
-
-         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
-            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
-          } else {
-            $proveedorid = '';
-          }
-
-
-          $where = '(
-                      (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
-                      ) 
-                       AND
-                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
-                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
-                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
-                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
-                        (m.factura LIKE  "%'.$cadena.'%")                         
-                       )
-            )';   
-
-
-          $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
-                      )';
-           
-
-          $this->db->where($where);          
-
-          $this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
-
-          
-          $this->db->having($data['having']);
-          
-          //ordenacion
-          $this->db->order_by('m.id_empresa', 'DESC'); 
-
-            $result = $this->db->get();
-
-
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-
-      }  
-       
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////IMPRESION CTAS detalladas/////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-public function impresion_ctas_detalladas($data){
-
-          $cadena = addslashes($data['busqueda']);          
-
-
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          $id_almacen= $data['id_almacen'];
-          $id_factura= $data['id_factura'];
-
-          $this->db->select('p.nombre');
-          $this->db->select('m.movimiento');
-          $this->db->select('m.total');
-          $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
-          //$this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-          
-/*
-
-          
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
-
-          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
-
-          
-          
-          
-          $this->db->select('subtotal');           
-          $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
-
-          //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-
-          $this->db->select("sum( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
-          $this->db->select("sum(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
-*/
-
-          
-
-          //$this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
-          $this->db->select('pr.importe');
-          $this->db->select("(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pago",false);
-          $this->db->select('dp.documento_pago');
-          $this->db->select('tf.tipo_factura');
-          //$this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
-          //$this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
-          
-          //$this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
-
-          //quizas esta no las necesite
-          
-          $this->db->select("( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
-          $this->db->select("(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
-          $this->db->select("(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
-
-          $this->db->select('p.dias_ctas_pagar');   
-          $this->db->select("DATEDIFF( NOW( ) ,  m.fecha_entrada ) as diferencia_dias", false);                    
-          $this->db->select('a.almacen,pr.id_documento_pago ');
-
-
-          $this->db->from($this->historico_ctasxpagar.' as m');
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_fac_orig','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-          $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-
-
-          
-          
-
-
-         if ($id_almacen!=0) {
-             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-              $id_almacenid = '';
-          }
-         
-
-          if ($id_factura!=0) {
-             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
-          } else {
-             $id_facturaid = '';
-          }         
-
-          $fechas = ' ';
-          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
-                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
-                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
-                          
-                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
-
-          } else {
-           $fechas .= ' ';
-          }     
-
-         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
-            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
-          } else {
-            $proveedorid = '';
-          }
-
-
-          $where = '(
-                      (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
-                      ) 
-                       AND
-                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
-                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
-                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
-                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
-                        (m.factura LIKE  "%'.$cadena.'%")                         
-                       )
-            )';   
-
-
-          $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
-                      )';
-
-
-                 
-             
-           
-
-
-
-
-          $this->db->where($where.$data['filtro']);          
-
-          //$this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
-
-          
-          //$this->db->having($data['having']);
-          
-          //ordenacion
-          $this->db->order_by('m.id_empresa,m.movimiento,pr.fecha_pago', 'ASC'); 
-
-
-            $result = $this->db->get();
-
-
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-
-      }         
-
-///////////////////////////////////////
 
 public function impresion_ctasxpagar($data){
 
@@ -1410,10 +1014,10 @@ public function impresion_ctasxpagar($data){
           $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
+          $this->db->select("m.total", FALSE);
 
           //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
           
 
@@ -1427,7 +1031,7 @@ public function impresion_ctasxpagar($data){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
           
 
 
@@ -1518,12 +1122,12 @@ public function impresion_ctasxpagar($data){
 
            
            //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-           $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+           $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
            $this->db->select("(m.id_tipo_pago) AS id_tipo_pago", FALSE);
            $this->db->select("(subtotal) as subtotal", FALSE);
            $this->db->select("(iva) as iva", FALSE);
-           $this->db->select("(total) as total", FALSE);
+           $this->db->select("(m.total) as total", FALSE);
 
           $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
           $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
@@ -1535,7 +1139,9 @@ public function impresion_ctasxpagar($data){
            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');           
            $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');      
-           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+           //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+
 
 
 
@@ -1614,12 +1220,387 @@ public function impresion_ctasxpagar($data){
                                 "iva"=>$iva,
                                 "total"=>$total,
                                 ));
-
            }
            else
              return False;
            $result->free_result();              
     }         
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////IMPRESION CTAS ESPECIFICAS/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function impresion_ctas_especificas($data){
+
+          $cadena = addslashes($data['busqueda']);          
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
+          $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago,m.id_factura');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
+
+          
+          $this->db->select('p.dias_ctas_pagar');   
+          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
+          $this->db->select('subtotal');           
+          $this->db->select("iva", FALSE);
+          $this->db->select("m.total", FALSE);
+
+          
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+
+           $this->db->select("sum( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
+          $this->db->select("sum(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
+          $this->db->select("sum(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
+
+
+          
+
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
+          
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
+
+          
+          
+          $this->db->select('tf.tipo_factura');
+
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_factura','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+          
+
+
+         if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }     
+
+         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
+            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
+          } else {
+            $proveedorid = '';
+          }
+
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                      ) 
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+            )';   
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                      )';
+           
+
+          $this->db->where($where);          
+
+          $this->db->group_by('m.id_empresa,m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+
+          
+          $this->db->having($data['having']);
+          
+          //ordenacion
+          $this->db->order_by('m.id_empresa,m.id_factura,m.movimiento', 'ASC'); 
+
+            $result = $this->db->get();
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+
+      }  
+       
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////IMPRESION CTAS detalladas/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function impresion_ctas_detalladas($data){
+
+          $cadena = addslashes($data['busqueda']);          
+          $id_session = $this->db->escape($this->session->userdata('id'));
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
+          $this->db->select('p.nombre');
+          $this->db->select('m.movimiento');
+          $this->db->select('m.total');
+          $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
+          $this->db->select('pr.importe');
+          $this->db->select("(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pago",false);
+          $this->db->select('dp.documento_pago');
+          
+          $this->db->select("(( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
+          $this->db->select("((pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
+          $this->db->select("((pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
+          $this->db->select('p.dias_ctas_pagar');   
+          $this->db->select("DATEDIFF( NOW( ) ,  m.fecha_entrada ) as diferencia_dias", false);                    
+          $this->db->select('a.almacen,pr.id_documento_pago ');
+
+          $this->db->select('tf.tipo_factura,m.id_factura');
+
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_fac_orig','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
+          
+
+         if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }     
+
+
+         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
+            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
+          } else {
+            $proveedorid = '';
+          }
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                      ) 
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+            )';   
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                      )';
+
+
+          $this->db->where($where.$data['filtro']);          
+
+          //$this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+          //$this->db->having($data['having']);
+          //ordenacion
+          $this->db->order_by('m.id_empresa,m.id_factura,m.movimiento, pr.fecha_pago', 'ASC'); 
+
+          $result = $this->db->get();
+
+
+          if ( $result->num_rows() > 0 )
+             return $result->result();
+          else
+             return False;
+          $result->free_result();
+
+      }         
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////IMPRESION CTAS antiguedad/////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+public function impresion_ctas_antiguedad($data){
+
+          $cadena = addslashes($data['busqueda']);          
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
+          $this->db->select('m.movimiento');
+          $this->db->select('a.almacen');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
+
+          $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
+
+          
+          $this->db->select('p.dias_ctas_pagar');   
+          $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
+          $this->db->select('subtotal');           
+          $this->db->select("iva", FALSE);
+          $this->db->select("m.total", FALSE);
+
+          
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+
+     
+          $this->db->select("sum( ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS abono", FALSE);
+          $this->db->select("sum(  (pr.id_documento_pago = 12)  *pr.importe)  AS recargo", FALSE);
+          $this->db->select("sum(  (pr.id_documento_pago = 13)  *pr.importe)  AS descuento", FALSE);
+          $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
+          $this->db->select("MAX(pr.fecha_pago) as fecha_pago",false);
+          $this->db->select("DATE_FORMAT(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY), '%d-%m-%Y') as fecha_vencimiento", false);                    
+          
+          $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
+
+           $this->db->select('tf.tipo_factura,m.id_factura');
+
+          $this->db->from($this->historico_ctasxpagar.' as m');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_factura','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+          
+
+
+         if ($id_almacen!=0) {
+             $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+              $id_almacenid = '';
+          }
+         
+
+          if ($id_factura!=0) {
+             $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }         
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_entrada),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }     
+
+         if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
+            $proveedorid= 'and ( p.nombre =  "'.addslashes($data['proveedor']).'" ) ';
+          } else {
+            $proveedorid = '';
+          }
+
+
+          $where = '(
+                      (
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                      ) 
+                       AND
+                      (  ( m.movimiento LIKE  "%'.$cadena.'%" )OR 
+                        ( tp.tipo_pago LIKE  "%'.$cadena.'%" ) OR 
+                        ( a.almacen LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR 
+                        ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y %H:%i") ) LIKE  "%'.$cadena.'%") OR
+                        (m.factura LIKE  "%'.$cadena.'%")                         
+                       )
+            )';   
+
+
+          $where_total= '(
+                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                      )';
+           
+
+          $this->db->where($where);          
+
+                  
+         
+         $this->db->group_by('m.id_empresa,m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+
+          
+          $this->db->having($data['having']);
+          
+          //ordenacion
+          $this->db->order_by('m.id_empresa,m.id_factura,m.movimiento', 'ASC'); 
+
+
+
+            $result = $this->db->get();
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+
+      }        
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////EXPORTAR//////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 public function exportar_ctasxpagar($data){
@@ -1644,10 +1625,10 @@ public function exportar_ctasxpagar($data){
           $this->db->select("DATEDIFF( NOW( ) ,  fecha_entrada ) as diferencia_dias", false);                    
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
-          $this->db->select("total", FALSE);
+          $this->db->select("m.total", FALSE);
 
           //$this->db->select("total-sum(pr.importe) AS monto_restante", FALSE);
-          $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
+          $this->db->select("m.total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
 
           
           $this->db->select("MAX(DATE_FORMAT(pr.fecha_pago,'%d-%m-%Y')) as fecha_pagada",false);
@@ -1661,7 +1642,8 @@ public function exportar_ctasxpagar($data){
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
+           
 
 
          if ($id_almacen!=0) {

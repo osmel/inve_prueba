@@ -48,7 +48,9 @@
 				<tbody>
 				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 						<?php 
-							 $nomb = ''; 
+							$nomb = ''; 
+							$id_factura=0;
+
 							 $total = 0;
 							 $abono = 0;
 							 $recargo = 0;
@@ -64,7 +66,8 @@
 
 					<?php foreach( $movimientos as $movimiento ): ?>
 
-						<?php if ( ($nomb != $movimiento->nombre) && ($total!=0) ) { ?>
+						<?php //if ( ($nomb != $movimiento->nombre) && ($total!=0) ) { ?>
+						<?php if ( ( ($nomb != $movimiento->nombre) || ($id_factura != $movimiento->id_factura)) && ($total!=0) ) { ?>	
 
 						<tr>
 							<td width="40%" >
@@ -103,10 +106,13 @@
 						<?php }	?>
 
 						<tr>
-							<?php if ($nomb != $movimiento->nombre) { ?>
-								<td width="15%" ><?php echo $movimiento->nombre; ?></td>
+							<?php //if ($nomb != $movimiento->nombre) { ?>
+							<?php if ( ( ($nomb != $movimiento->nombre) || ($id_factura != $movimiento->id_factura))  ) { ?>	
+								
+								<td width="15%" ><?php echo $movimiento->nombre.'<br/><b style="color:red;">'.$movimiento->tipo_factura.'</b>' ; ?></td>
 							<?php 														
 								$nomb = $movimiento->nombre;
+								$id_factura=$movimiento->id_factura;
 								$total=0;
 								 $abono = 0;
 								 $recargo = 0;
