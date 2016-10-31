@@ -1076,11 +1076,23 @@ jQuery('#tabla_conteo_historico').dataTable( {
 			},
 		},
 		"columnDefs": [
+					{
+		                "render": function ( data, type, row ) {
+			                if (row[12]=='') {
+								return row[1];	
+							} else {
+								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[12];										
+
+							}
+
+		                },
+		                "targets": 1
+		            },	            
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5] //
+		                "targets": [0,2,3,4,5] //
 		            },
 					{
 		                "render": function ( data, type, row ) {
@@ -1331,13 +1343,11 @@ jQuery('#tabla_conteo_historico').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
-
 						
 						case "tabla_historico_conteo":
 							var oTable =jQuery('#tabla_historico_conteo').dataTable();
 					    	oTable._fnAjaxUpdate();
 					        break;
-
 
 						case "resumen_conteo":
 							var oTable =jQuery('#resumen_conteo').dataTable();
@@ -1357,10 +1367,24 @@ jQuery('#tabla_conteo_historico').dataTable( {
 						
 						case "tabla_informe_pendiente":
 
-							var oTable =jQuery('#tabla_informe_pendiente').dataTable();
-					    	oTable._fnAjaxUpdate();		
+							//var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+					    	//oTable._fnAjaxUpdate();		
 
-							window.location.href = '/informe_pendiente'; 
+								jQuery.ajax({
+									        url : "/almacen_ajuste_conteo",
+									        type : 'POST',
+									       	data : { 
+									        	id_almacen:jQuery("#id_almacen_historicos").val(),
+									        },
+									        //dataType : 'json',
+									        success : function(data) {													
+									        	window.location.href = '/informe_pendiente'; 
+									        }
+
+									        
+								});	
+
+							
 
 							
 							/*
@@ -1889,12 +1913,23 @@ jQuery('#tabla_salida_ajuste').dataTable( {
     },	  	
 	  
 	"columnDefs": [
-		    	
+					{
+		                "render": function ( data, type, row ) {
+			                if (row[14]=='') {
+								return row[1];	
+							} else {
+								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[14];										
+							}
+
+		                },
+		                "targets": 1
+		            },		    	
+
 		    	{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7]
+	                "targets": [0,2,3,4,5,6,7]
 	            },
 
     			{ 
@@ -1918,7 +1953,7 @@ jQuery('#tabla_salida_ajuste').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                "targets": [10,11,12]
+	                "targets": [10,11,12,13]
 	            }		            
 	        ],
 });	
@@ -2125,11 +2160,23 @@ jQuery('#tabla_entrada_ajuste').dataTable( {
 		}	
     },  		  
 	"columnDefs": [
+
+				{
+		                "render": function ( data, type, row ) {
+			                if (row[13]=='') {
+								return row[1];	
+							} else {
+								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[13];										
+							}
+
+		                },
+		                "targets": 1
+		            },	 	
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7]
+	                "targets": [0,2,3,4,5,6,7]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
@@ -2193,11 +2240,23 @@ jQuery('#tabla_ajustes').dataTable( {
 			},
 		},
 		"columnDefs": [
+
+					{
+		                "render": function ( data, type, row ) {
+			                if (row[13]=='') {
+								return row[1];	
+							} else {
+								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[13];										
+							}
+
+		                },
+		                "targets": 1
+		            },	 		
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5] //
+		                "targets": [0,2,3,4,5] //
 		            },
 
 					{
@@ -2646,11 +2705,23 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 			},
 		},
 		"columnDefs": [
+					{
+		                "render": function ( data, type, row ) {
+			                if (row[12]=='') {
+								return row[1];	
+							} else {
+								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[12];										
+							}
+
+		                },
+		                "targets": 1
+		            },	            
+
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5] //
+		                "targets": [0,2,3,4,5] //
 		            },
 
 					{

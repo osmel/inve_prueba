@@ -15,7 +15,7 @@
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 	
 	/*
-	$dato['modulo']=1;
+	   $dato['modulo']=1;
 	$dato['cant']['1']=1;
 	$dato['cant']['2']=1;
 	$dato['cant']['3']=1;

@@ -203,7 +203,7 @@ public function buscador_historial_conteo($data){
           $this->db->select("co.composicion", FALSE);  
           $this->db->select("ca.calidad", FALSE);  
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
-         
+          $this->db->select("prod.codigo_contable");
           
           $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
           
@@ -212,6 +212,8 @@ public function buscador_historial_conteo($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
+            
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
               $filtro = ' AND (
@@ -266,7 +268,7 @@ public function buscador_historial_conteo($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen.$row->cantidad_royo,
+                                      2=>$imagen, //.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,
@@ -277,7 +279,9 @@ public function buscador_historial_conteo($data){
                                       9=>$row->conteo3,
                                       10=>$row->id,
                                       11=>$row->num_conteo,
+                                      12=>$row->codigo_contable,
                                       
+
                                       
 
 
@@ -886,11 +890,15 @@ public function buscador_resumen_conteo($data){
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-         
+          $this->db->select("prod.codigo_contable");
           $this->db->from($this->registros_salidas.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+
+          
          
           //filtro de busqueda
 
@@ -942,6 +950,7 @@ public function buscador_resumen_conteo($data){
                                       11=>$row->metros,
                                       12=>$row->kilogramos,
                                       13=>$row->peso_real,
+                                      14=>$row->codigo_contable,          
                                       
                                     );
                       }
@@ -1637,14 +1646,15 @@ public function anadir_producto_temporal( $data ){
 
 
           
-
+          $this->db->select("prod.codigo_contable");
           $this->db->from($this->registros_entradas.' as m');
           $this->db->join($this->conteo_almacen.' As calm' , 'calm.referencia = m.referencia');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-         
+
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');         
 
 
 
@@ -1785,6 +1795,7 @@ public function anadir_producto_temporal( $data ){
                                       10=>$row->num_partida,
                                       11=>$row->metros,
                                       12=>$row->kilogramos,
+                                      13=>$row->codigo_contable,
                                     );
                       }
 
@@ -1919,7 +1930,7 @@ public function buscador_ajustes($data){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
           
-          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+          $this->db->select("p.id,p.consecutivo, p.grupo,p.referencia");    //p.codigo_contable,
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
           $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
@@ -1930,7 +1941,7 @@ public function buscador_ajustes($data){
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
 
           $this->db->select("p.mov_sobrante,p.mov_faltante,p.faltante,p.sobrante");  
-         
+          $this->db->select("prod.codigo_contable");
           
           $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
           
@@ -1939,6 +1950,7 @@ public function buscador_ajustes($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
 
           if  ( ($data["modulo"]==5) )  {
               $filtro = ' AND (
@@ -2010,6 +2022,7 @@ public function buscador_ajustes($data){
                                       10=>$row->id,
                                       11=>$row->num_conteo,
                                       12=>abs($row->cantidad_royo-$row->conteo3),
+                                      13=>$row->codigo_contable,
                                     );                    
 
                             $num_conteo = $row->num_conteo;
@@ -2411,12 +2424,13 @@ public function buscador_costos($data){
          
           
           $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
-          
+          $this->db->select("prod.codigo_contable");  
           $this->db->from($this->conteo_almacen.' as p');
           $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
               $filtro = ' AND (
@@ -2477,7 +2491,7 @@ public function buscador_costos($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen.$row->cantidad_royo,
+                                      2=>$imagen, //.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,
@@ -2488,6 +2502,7 @@ public function buscador_costos($data){
                                       9=>$row->conteo3,
                                       10=>$row->id,
                                       11=>$row->num_conteo,
+                                      12=>$row->codigo_contable,
                                       
                                       
 
@@ -2802,7 +2817,7 @@ public function reporte_conteos($data){
           $id_almacen= $data['id_almacen'];
           $id_session = $this->session->userdata('id');
           
-          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+          $this->db->select("p.id,p.consecutivo,p.grupo,p.referencia");    
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
           $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
@@ -2811,7 +2826,7 @@ public function reporte_conteos($data){
           $this->db->select("co.composicion", FALSE);  
           $this->db->select("ca.calidad", FALSE);  
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
-         
+          $this->db->select("prod.codigo_contable");
                                     
 
           
@@ -2822,6 +2837,9 @@ public function reporte_conteos($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
+
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
               $filtro = ' AND (
@@ -2874,7 +2892,7 @@ public function reporte_conteos_historico($data){
           $id_almacen= $data['id_almacen'];
           $id_session = $this->session->userdata('id');
           
-          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+          $this->db->select("p.id,p.consecutivo,p.grupo,p.referencia");    
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
           $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
@@ -2885,7 +2903,7 @@ public function reporte_conteos_historico($data){
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
 
           $this->db->select('conteo'.(intval($data['modulo'])-1).' conteos',FALSE);  
-         
+          $this->db->select("prod.codigo_contable");         
          
                                     
 
@@ -2897,6 +2915,9 @@ public function reporte_conteos_historico($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+
+        $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
+
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
               $filtro = ' AND (

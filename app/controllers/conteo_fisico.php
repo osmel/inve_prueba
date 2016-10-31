@@ -335,7 +335,7 @@ function conteos_opciones() {
 
                    $data['dato']['modulo'] = 1;
                    $data['dato']['vista']  = "tabla_informe_pendiente";
-                  $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+                   $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
 
                     $data['almacenes']   = $this->modelo->listado_almacenes();  
                     $data['productos']   = $this->catalogo->listado_productos_existente($data);  
@@ -364,6 +364,14 @@ function conteos_opciones() {
         } 
   }
 
+  public function almacen_ajuste_conteo(){
+
+      $data['id_almacen']        = $this->input->post('id_almacen');
+      $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
+      echo true; // json_encode(value)
+
+  }
+    
 
   public function procesando_informe_pendiente(){
       $data=$_POST;

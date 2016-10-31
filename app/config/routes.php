@@ -774,6 +774,9 @@ $route['generar_conteos_historico/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/gene
 
 
 $route['generar_historico_inventarios/(:any)'] 	 = 'conteo_fisico/generar_historico_inventarios/$1';
+
+$route['almacen_ajuste_conteo']   	= 'conteo_fisico/almacen_ajuste_conteo';
+
 /////////////////////////////new_implementacion////////////////////////
 
 $route['imprimir_reportes']    = 'pdf_reportes/imprimir_reportes';
