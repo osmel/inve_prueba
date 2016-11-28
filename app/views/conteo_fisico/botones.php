@@ -151,8 +151,57 @@
 					</div>	
 
 
-		            
+
+
+		           
+
+
+
+
+
+
+
+
+ 				<div class="row"> 
+					<!--Tipos de factura -->
+						<div class="col-xs-12 col-sm-6 col-md-3" >
+								<div class="form-group">
+									<label for="descripcion">Tipo de Factura</label>
+								    <!--Los administradores o con permisos de entrada 
+								    	Y que no este inhabilitado y 
+								    	que no sean facturaista 
+								    	ENTONCES lista editable -->
+										<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
+												<select name="id_tipo_factura" id="id_tipo_factura" pantalla="generar_pedidos1" class="form-control">
+													<!--<option value="0">Selecciona una opción</option>-->
+														<?php foreach ( $facturas as $factura ){ ?>
+																	<option value="<?php echo $factura->id; ?>"  ><?php echo $factura->tipo_factura; ?></option>
+														<?php } ?>
+													<!--rol de usuario -->
+												</select>
+									    </div>
+								</div>
+						</div>		
+
+
+
+						<div class="col-xs-12 col-sm-6 col-md-4" >							
+								<div class="form-group">
+									<label for="descripcion">Cliente</label>
+									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
+										
+										<input  identificador="" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Empresa Relacionada...">
+										
+									</div>
+								</div>							
+						</div>
+		        </div>
 							
+
+
+
+
+
 
 
 					<!--<div id="example2" class="row" style="display:<?php echo ($modulo==1) ? 'block': 'none'; ?>"> -->

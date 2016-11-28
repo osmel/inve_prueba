@@ -342,6 +342,8 @@ function conteos_opciones() {
                     
                     $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
 
+                     $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+
               switch ($id_perfil) {    
                 case 1: 
                     $this->load->view('conteo_fisico/informe_pendiente',$data );
