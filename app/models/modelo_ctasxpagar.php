@@ -452,7 +452,11 @@ public function buscador_pagosrealizados($data){
      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
           $coleccion_id_operaciones = array();
      }   
-     $activar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ));
+     $activar_nuevo = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ));
+
+  $activar_modificar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(31, $coleccion_id_operaciones)))  ));
+
+  $activar_eliminar = (($data['configuracion']->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(32, $coleccion_id_operaciones)))  ));
 
 
 
@@ -597,10 +601,12 @@ public function buscador_pagosrealizados($data){
                                       3=>number_format($row->importe, 2, '.', ','),
                                       4=>$row->comentario,
                                       5=>$row->id,
-                                      6=>$activar,  
+                                      6=>$activar_nuevo,  
                                       7=>( (($row->pagos_tardios-$row->dias_ctas_pagar)<0) ? 1:0), //0->son tardios los pagos
                                       8=>$row->movimiento, 
-                                      9=>$row->id_factura, 
+                                      9=>$row->id_factura,
+                                      10=>$activar_modificar,  
+                                      11=>$activar_eliminar,   
                                     );
                       }
 

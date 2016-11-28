@@ -6,7 +6,10 @@
 				<tbody>
 
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
+						
+
 						<th width="70%">
+							<h1 style="font-size: 18px;"><b >Antigüedad</b></h1>
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
 							<p style="font-size: 10px;"><b >Entradas</b></p>
 						</th>
@@ -109,7 +112,7 @@
 								<td width="15%" ></td>
 							<?php }
 
-							$total = $total+ number_format($movimiento->total, 2, '.', ','); 
+							$total = $total+$movimiento->total; // number_format($movimiento->total, 2, '.', ','); 
 							
 							$saldo1 = $saldo1 + ((($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante) *(abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar)<=7));
 

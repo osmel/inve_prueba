@@ -1,21 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Ctasxpagar extends CI_Controller {
 
-	public function __construct(){
-		parent::__construct();
-		$this->load->model('model_pedido', 'modelo_pedido');
+  public function __construct(){
+    parent::__construct();
+    $this->load->model('model_pedido', 'modelo_pedido');
     $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
-		$this->load->model('modelo_reportes', 'modelo_reportes');  
-		$this->load->model('modelo_costo_inventario', 'modelo_costo_inventario');  
-		$this->load->model('modelo_ctasxpagar', 'modelo_ctasxpagar');  
-		
-		
-	    $this->load->model('catalogo', 'catalogo');  
-	    $this->load->model('modelo', 'modelo');  
+    $this->load->model('modelo_reportes', 'modelo_reportes');  
+    $this->load->model('modelo_costo_inventario', 'modelo_costo_inventario');  
+    $this->load->model('modelo_ctasxpagar', 'modelo_ctasxpagar');  
+    
+    
+      $this->load->model('catalogo', 'catalogo');  
+      $this->load->model('modelo', 'modelo');  
 
-		$this->load->library(array('email')); 
-		$this->load->library('Jquery_pagination');//-->la estrella del equipo	
-	}
+    $this->load->library(array('email')); 
+    $this->load->library('Jquery_pagination');//-->la estrella del equipo 
+  }
 
 
 
@@ -26,7 +26,7 @@ class Ctasxpagar extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+ //ok
   public function listado_ctasxpagar(){
 
      if($this->session->userdata('session') === TRUE ){
@@ -54,7 +54,8 @@ class Ctasxpagar extends CI_Controller {
             case 2:
             case 3:
             case 4:
-                  if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) || (in_array(28, $coleccion_id_operaciones))  ) {                 
+              //|| (in_array(28, $coleccion_id_operaciones))  
+                  if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) ) {                 
                             $this->load->view( 'ctasxpagar/ctasxpagar',$data );
                  }   
               break;
@@ -146,13 +147,11 @@ class Ctasxpagar extends CI_Controller {
     }
 
 
-    //OR ( monto_restante NOT IS null )   
-    //( monto_restante <=0 ) OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) )
      $data['having'] = '(
-                         (( monto_restante <=0 )  OR  ( (monto_restante IS null)  AND  (id_tipo_pago=2) ) )'.$data['fecha_especifica'].'
+                         (( monto_restante <=0 )  )'.$data['fecha_especifica'].'
                       )';  
 
-    $data["condicion"]=' AND ((m.id_tipo_pago=2) OR (m.id_tipo_pago<>2)) ';   //or ya esta pagado
+    $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) ';   //or ya esta pagado
   $busqueda  = $this->modelo_ctasxpagar->buscador_ctasxpagar($data);
     echo $busqueda;
   }   
@@ -166,7 +165,7 @@ class Ctasxpagar extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+ //ok
   public function procesar_ctasxpagar($movimiento,$retorno,$id_factura){
 
 
@@ -195,7 +194,8 @@ class Ctasxpagar extends CI_Controller {
             case 2:
             case 3:
             case 4:
-                  if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) || (in_array(28, $coleccion_id_operaciones))  ) {
+              //|| (in_array(28, $coleccion_id_operaciones)) 
+                  if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) )  ) {
 
                             $this->load->view( 'ctasxpagar/detalle_ctasxpagar',$data );
                  }   
@@ -232,8 +232,8 @@ class Ctasxpagar extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
- 	function nuevo_pago($movimiento,$id_factura){
+  //ok
+  function nuevo_pago($movimiento,$id_factura){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
       $data['movimiento']= base64_decode($movimiento);
@@ -270,7 +270,7 @@ class Ctasxpagar extends CI_Controller {
     else{ 
       redirect('index');
     }
-  }	
+  } 
 
 
 
@@ -281,7 +281,7 @@ class Ctasxpagar extends CI_Controller {
     } else {
       
       $this->form_validation->set_rules( 'instrumento_pago', ' Referencia', 'trim|required|min_length[3]|max_lenght[6]|xss_clean');
-	  $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
+    $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
       $this->form_validation->set_rules( 'importe', 'importe', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules('fecha_pago', 'fecha', 'callback_valid_date|xss_clean');
 
@@ -322,6 +322,7 @@ class Ctasxpagar extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  //ok
   function editar_pago_realizado( $id = '',$movimiento = '',$id_factura  ){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
@@ -347,7 +348,7 @@ class Ctasxpagar extends CI_Controller {
         case 2:
         case 3:
         case 4:
-             if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones))  ) { 
+             if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(31, $coleccion_id_operaciones))  ) { 
                 $this->load->view( 'ctasxpagar/editar_pago', $data ); 
               }   
           break;
@@ -372,7 +373,7 @@ class Ctasxpagar extends CI_Controller {
     } else {
       
       $this->form_validation->set_rules( 'instrumento_pago', ' Referencia', 'trim|required|min_length[3]|max_lenght[6]|xss_clean');
-	  $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
+    $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
       $this->form_validation->set_rules( 'importe', 'importe', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules('fecha_pago', 'fecha', 'callback_valid_date|xss_clean');
 
@@ -415,7 +416,7 @@ class Ctasxpagar extends CI_Controller {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+//ok
  function eliminar_pago($id = '', $instrumento_pago='',$movimiento,$id_factura){
       if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
@@ -439,7 +440,7 @@ class Ctasxpagar extends CI_Controller {
         case 2:
         case 3:
         case 4:
-            if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones))  ) { 
+            if ( ( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(32, $coleccion_id_operaciones))  ) { 
                 $this->load->view( 'ctasxpagar/eliminar_pago', $data );
              }   
           break;
@@ -613,9 +614,9 @@ class Ctasxpagar extends CI_Controller {
                    $data['fecha_especifica'] = '';
                   }            
                  $data['having'] = '(
-                                       (( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ))'.$data['fecha_especifica'].'
+                                       (( monto_restante <=0 ) )'.$data['fecha_especifica'].'
                                     )';  
-                  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                  $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
               break;
          
 
@@ -745,9 +746,9 @@ class Ctasxpagar extends CI_Controller {
                    $data['fecha_especifica'] = '';
                   }            
                  $data['having'] = '(
-                                       (( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ))'.$data['fecha_especifica'].'
+                                       (( monto_restante <=0 ) )'.$data['fecha_especifica'].'
                                     )';  
-                  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                  $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
               break;
          
 
@@ -974,25 +975,11 @@ public function impresion_ctas_detalladas() {
                                                 where m1.movimiento = m.movimiento AND m1.id_factura=m.id_factura
                                                 GROUP BY m1.movimiento, m1.id_factura, m1.id_empresa    
                                         )  ) ) <= 0
-                        ) OR
-                        (
-                              (                                
-                                              ( m.total+(
-                                              (SELECT 
-                                              sum((pr1.id_documento_pago <> 12)*pr1.importe*-1)+sum((pr1.id_documento_pago = 12)*pr1.importe)                                         
-                                               FROM '.$this->db->dbprefix('historico_ctasxpagar').' m1
-                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento = m1.movimiento
-                                                AND pr1.id_factura=m1.id_factura
-                                                where m1.movimiento = m.movimiento AND m1.id_factura=m.id_factura
-                                                GROUP BY m1.movimiento, m1.id_factura, m1.id_empresa    
-                                              )  ) ) IS null
-                              ) AND  
-                                            (m.id_tipo_pago=2) 
-                              )
+                        ) 
                         )'.$data['otro'];                          
                   
 
-                  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                  $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
               break;
             default:
         }
@@ -1127,9 +1114,9 @@ public function impresion_ctas_antiguedad() {
                    $data['fecha_especifica'] = '';
                   }            
                  $data['having'] = '(
-                                       (( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ))'.$data['fecha_especifica'].'
+                                       (( monto_restante <=0 ))'.$data['fecha_especifica'].'
                                     )';  
-                  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                  $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
               break;
          
 
@@ -1209,7 +1196,7 @@ public function impresion_ctas_antiguedad() {
         $data=$_POST;
          $nombre_completo=$this->session->userdata('nombre_completo');
         switch($extra_search) {
-        	case "vencidas":
+          case "vencidas":
                  $data['tipo']='vencidas';
                   if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
                                    $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
@@ -1222,12 +1209,12 @@ public function impresion_ctas_antiguedad() {
                     $data['fecha_especifica'] = '';
                   }
 
-    				    $data['having'] = '(
-    				                        ( ( monto_restante >0 ) OR ( monto_restante IS null ) ) '.$data['fecha_especifica'].'
-    				                      )';    
-    				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
-    				    					AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
-          		break;
+                $data['having'] = '(
+                                    ( ( monto_restante >0 ) OR ( monto_restante IS null ) ) '.$data['fecha_especifica'].'
+                                  )';    
+                $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar>0 ) 
+                          AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
+              break;
             case "xpagar":
 
                 $data['tipo']='porpagar';
@@ -1244,11 +1231,11 @@ public function impresion_ctas_antiguedad() {
                 }
 
 
-    				    $data['having'] = '(
-    				                         ( ( monto_restante >0 ) OR ( monto_restante IS null ) )  '.$data['fecha_especifica'].'
-    				                      )';  
-    				    $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
-    				    					 AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
+                $data['having'] = '(
+                                     ( ( monto_restante >0 ) OR ( monto_restante IS null ) )  '.$data['fecha_especifica'].'
+                                  )';  
+                $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
+                           AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
 
                      
                 break;
@@ -1266,12 +1253,12 @@ public function impresion_ctas_antiguedad() {
                   } else {
                    $data['fecha_especifica'] = '';
                   }            
-      					 $data['having'] = '(
-      					                         ( ( monto_restante <=0 ) OR  ((monto_restante IS null) AND  (id_tipo_pago=2) ) ) '.$data['fecha_especifica'].'
-      					                      )';  
-      					  $data["condicion"]=' AND ((m.id_tipo_pago=2) or (m.id_tipo_pago<>2)) '; 
+                 $data['having'] = '(
+                                         ( ( monto_restante <=0 )  ) '.$data['fecha_especifica'].'
+                                      )';  
+                  $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
 
-            	break;
+              break;
          
 
             default:
@@ -1280,126 +1267,126 @@ public function impresion_ctas_antiguedad() {
 
 
         $data['movimientos'] = $this->modelo_ctasxpagar->exportar_ctasxpagar($data);
-    	//print_r($data['movimientos']) ;
-    	//die;
+      //print_r($data['movimientos']) ;
+      //die;
 
         if ($data['movimientos']) {
             $this->export->to_excel($data['movimientos'], 'reporte_ctas_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
         }    
 
 
-    }	
+    } 
 
 
   
 
 
-/////////////////validaciones/////////////////////////////////////////	
+/////////////////validaciones/////////////////////////////////////////  
 
 
 
 
 public function valid_cero($str)
-	{
-		
-		 $regex = "/^([-0])*$/ix";
-		if ( preg_match( $regex, $str ) ){			
-			$this->form_validation->set_message( 'valid_cero','<b class="requerido">*</b> El <b>%s</b> no puede ser cero.' );
-			return FALSE;
-		} else {
-			return TRUE;
-		}
+  {
+    
+     $regex = "/^([-0])*$/ix";
+    if ( preg_match( $regex, $str ) ){      
+      $this->form_validation->set_message( 'valid_cero','<b class="requerido">*</b> El <b>%s</b> no puede ser cero.' );
+      return FALSE;
+    } else {
+      return TRUE;
+    }
 
-	}
-	
+  }
+  
 
-	function importe_valido( $str ){
-		 
-		if ((trim($str)=="") || (empty($str)) ) {
-			$str = "";
-			$regex = "/^$/";
-		} else
-		{
-			//$regex =  '/^[-+]?(((\\\\d+)\\\\.?(\\\\d+)?)|\\\\.\\\\d+)([eE]?[+-]?\\\\d+)?$/'; 	
-			$regex = "/^[+-]?(\d*\.?\d+([eE]?[+-]?\d+)?|\d+[eE][+-]?\d+)$/";
-		}
+  function importe_valido( $str ){
+     
+    if ((trim($str)=="") || (empty($str)) ) {
+      $str = "";
+      $regex = "/^$/";
+    } else
+    {
+      //$regex =  '/^[-+]?(((\\\\d+)\\\\.?(\\\\d+)?)|\\\\.\\\\d+)([eE]?[+-]?\\\\d+)?$/';  
+      $regex = "/^[+-]?(\d*\.?\d+([eE]?[+-]?\d+)?|\d+[eE][+-]?\d+)$/";
+    }
 
-		if ( ! preg_match( $regex, $str ) ){			
-			$this->form_validation->set_message( 'importe_valido','<b class="">*</b> La información introducida en <b>%s</b> no es válida.' );
-			return FALSE;
-		} else {
-			return TRUE;
-		}
-	}
-
-
-	
+    if ( ! preg_match( $regex, $str ) ){      
+      $this->form_validation->set_message( 'importe_valido','<b class="">*</b> La información introducida en <b>%s</b> no es válida.' );
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
 
 
-
-	public function valid_email($str)
-	{
-		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $str)) ? FALSE : TRUE;
-	}	
+  
 
 
+
+  public function valid_email($str)
+  {
+    return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $str)) ? FALSE : TRUE;
+  } 
 
 
 
 
 
 
-	function nombre_valido( $str ){
-		 $regex = "/^([A-Za-z ñáéíóúÑÁÉÍÓÚ]{2,60})$/i";
-		//if ( ! preg_match( '/^[A-Za-zÁÉÍÓÚáéíóúÑñ \s]/', $str ) ){
-		if ( ! preg_match( $regex, $str ) ){			
-			$this->form_validation->set_message( 'nombre_valido','<b class="requerido">*</b> La información introducida en <b>%s</b> no es válida.' );
-			return FALSE;
-		} else {
-			return TRUE;
-		}
-	}
-
-	function valid_phone( $str ){
-		if ( $str ) {
-			if ( ! preg_match( '/\([0-9]\)| |[0-9]/', $str ) ){
-				$this->form_validation->set_message( 'valid_phone', '<b class="requerido">*</b> El <b>%s</b> no tiene un formato válido.' );
-				return FALSE;
-			} else {
-				return TRUE;
-			}
-		}
-	}
 
 
+  function nombre_valido( $str ){
+     $regex = "/^([A-Za-z ñáéíóúÑÁÉÍÓÚ]{2,60})$/i";
+    //if ( ! preg_match( '/^[A-Za-zÁÉÍÓÚáéíóúÑñ \s]/', $str ) ){
+    if ( ! preg_match( $regex, $str ) ){      
+      $this->form_validation->set_message( 'nombre_valido','<b class="requerido">*</b> La información introducida en <b>%s</b> no es válida.' );
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
 
-	function valid_option( $str ){
-		if ($str == 0) {
-			$this->form_validation->set_message('valid_option', '<b class="requerido">*</b> Es necesario que selecciones una <b>%s</b>.');
-			return FALSE;
-		} else {
-			return TRUE;
-		}
-	}
+  function valid_phone( $str ){
+    if ( $str ) {
+      if ( ! preg_match( '/\([0-9]\)| |[0-9]/', $str ) ){
+        $this->form_validation->set_message( 'valid_phone', '<b class="requerido">*</b> El <b>%s</b> no tiene un formato válido.' );
+        return FALSE;
+      } else {
+        return TRUE;
+      }
+    }
+  }
 
-	function valid_date( $str ){
 
-		$arr = explode('-', $str);
-		if ( count($arr) == 3 ){
-			$d = $arr[0];
-			$m = $arr[1];
-			$y = $arr[2];
-			if ( is_numeric( $m ) && is_numeric( $d ) && is_numeric( $y ) ){
-				return checkdate($m, $d, $y);
-			} else {
-				$this->form_validation->set_message('valid_date', '<b class="requerido">*</b> El campo <b>%s</b> debe tener una fecha válida con el formato DD-MM-YYYY.');
-				return FALSE;
-			}
-		} else {
-			$this->form_validation->set_message('valid_date', '<b class="requerido">*</b> El campo <b>%s</b> debe tener una fecha válida con el formato DD-MM-YYYY.');
-			return FALSE;
-		}
-	}
+
+  function valid_option( $str ){
+    if ($str == 0) {
+      $this->form_validation->set_message('valid_option', '<b class="requerido">*</b> Es necesario que selecciones una <b>%s</b>.');
+      return FALSE;
+    } else {
+      return TRUE;
+    }
+  }
+
+  function valid_date( $str ){
+
+    $arr = explode('-', $str);
+    if ( count($arr) == 3 ){
+      $d = $arr[0];
+      $m = $arr[1];
+      $y = $arr[2];
+      if ( is_numeric( $m ) && is_numeric( $d ) && is_numeric( $y ) ){
+        return checkdate($m, $d, $y);
+      } else {
+        $this->form_validation->set_message('valid_date', '<b class="requerido">*</b> El campo <b>%s</b> debe tener una fecha válida con el formato DD-MM-YYYY.');
+        return FALSE;
+      }
+    } else {
+      $this->form_validation->set_message('valid_date', '<b class="requerido">*</b> El campo <b>%s</b> debe tener una fecha válida con el formato DD-MM-YYYY.');
+      return FALSE;
+    }
+  }
 
 
 

@@ -7,6 +7,7 @@
 
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 						<th width="70%">
+							<h1 style="font-size: 12px;"><b >Historico de Pagos por Proveedor</b></h1>
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
 							<p style="font-size: 10px;"><b >Entradas</b></p>
 						</th>
@@ -44,8 +45,9 @@
 						<?php 
 							 $nomb = ''; 
 							 $mov = 0; 
-							 $id_factura=0;
+							 $id_factura=0;							 
 							 $total = 0;
+
 							 $saldo = 0;
 
 							 $total2 = 0;
@@ -75,7 +77,9 @@
 
 						
 
-							<?php 
+							<?php  	//si hay un cambio total y saldo =0 
+									//y nombre, mov y id_factura toman nuevos valores
+							
 							if (($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) || ($id_factura != $movimiento->id_factura) ){ ?>
 								<tr>
 									<?php if ($nomb != $movimiento->nombre) { ?>
@@ -97,9 +101,17 @@
 								$id_factura=$movimiento->id_factura;
 								$total=0;
 								$saldo = 0;								
-								} //else {
-							?>		
-							<?php if ($movimiento->importe!=0) { ?>
+								} 
+							?>	
+
+
+
+
+
+
+							<?php if ($movimiento->importe!=0) { //si tiene importe pues que imprima documento, fecha e importe
+
+								?>
 								<tr>
 									<td width="25%" ></td>
 									<td width="10%" ></td> 
@@ -114,37 +126,18 @@
 								</tr>
 							<?php }
 
-							$total = number_format($movimiento->total, 2, '.', ','); // $total+ number_format($movimiento->total, 2, '.', ','); 
-							//$saldo = $saldo+ (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante);
+
+
+
+							//que sume total
+							$total = $movimiento->total; //number_format($movimiento->total, 2, '.', ','); 
 							$saldo = $saldo+ 
 								(($movimiento->id_documento_pago!=12)*$movimiento->importe*-1)+
 								(($movimiento->id_documento_pago==12)*$movimiento->importe);
 
-							//   $this->db->select("total+sum((pr.id_documento_pago <> 12)*pr.importe*-1)+sum((pr.id_documento_pago = 12)*pr.importe) AS monto_restante", FALSE);
-
-							/*$saldo2 = $saldo2+ 
-								(($movimiento->id_documento_pago!=12)*$movimiento->importe*-1)+
-								(($movimiento->id_documento_pago==12)*$movimiento->importe);
-								*/
-	
-
 							$total2 = $total2+ number_format($movimiento->total, 2, '.', ','); 
-							//$saldo2 = $saldo2+ (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante);
-
+							$total2 = $total2+$movimiento->total; // number_format($movimiento->total, 2, '.', ','); 
 							?> 
-
-
-							
-							
-							
-							
-
-							<!-- <td width="7%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td> -->	
-
-							
-						
-							
-								
 						
 					<?php endforeach; 
 

@@ -7,6 +7,7 @@
 
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 						<th width="70%">
+							<h1 style="font-size: 12px;"><b >Reporte de Pago General</b></h1>
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
 							<p style="font-size: 10px;"><b >Entradas</b></p>
 						</th>
@@ -125,16 +126,16 @@
 								<td width="14%" ></td>
 							<?php }
 
-							$total = $total+ number_format($movimiento->total, 2, '.', ','); 
-							$abono = $abono+ number_format($movimiento->abono, 2, '.', ','); 
-							$recargo = $recargo+ number_format($movimiento->recargo, 2, '.', ','); 
-							$descuento = $descuento+ number_format($movimiento->descuento, 2, '.', ','); 
+							$total = $total+ $movimiento->total; 
+							$abono = $abono+ $movimiento->abono; 
+							$recargo = $recargo+$movimiento->recargo; 
+							$descuento = $descuento+ $movimiento->descuento;
 							$saldo = $saldo+ (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante);
 
-							$total2 = $total2+ number_format($movimiento->total, 2, '.', ','); 
-							$abono2 = $abono2+ number_format($movimiento->abono, 2, '.', ','); 
-							$recargo2 = $recargo2+ number_format($movimiento->recargo, 2, '.', ','); 
-							$descuento2 = $descuento2+ number_format($movimiento->descuento, 2, '.', ','); 
+							$total2 = $total2+ $movimiento->total; 
+							$abono2 = $abono2+ $movimiento->abono; 
+							$recargo2 = $recargo2+ $movimiento->recargo; 
+							$descuento2 = $descuento2+ $movimiento->descuento;
 							$saldo2 = $saldo2+ (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante);
 
 							?> 

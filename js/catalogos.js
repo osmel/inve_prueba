@@ -738,7 +738,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 
      				 {
 		                "render": function ( data, type, row ) {
-						if (row[6]!=0) { //si esta autorizado a eliminar
+						if (row[10]!=0) { //si esta autorizado a eliminar
 							texto='<td>';
 								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
 								texto+=' class="btn btn-warning btn-sm btn-block" >';
@@ -757,7 +757,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 
 
 
-							return texto;	
+							return "textoaa";	
 		                },
 		                "targets": 5
 		            },
@@ -765,7 +765,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 		                "render": function ( data, type, row ) {
 
 
-	                	if (row[6]!=0) { //si esta autorizado a eliminar
+	                	if (row[11]!=0) { //si esta autorizado a eliminar
 	                	
 							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
@@ -5131,7 +5131,13 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		"columnDefs": [
 			    	 {
 		                "render": function ( data, type, row ) {
-							return row[13]+'<b/> Nro.'+row[1];	
+							if (row[13]==null) {
+								return '<b/> Nro.'+row[1];												
+							} else {
+								return row[13]+'<b/> Nro.'+row[1];		
+							}
+
+							
 		                },
 		                "targets": 1
 		            },
@@ -5161,12 +5167,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		                },
 		                "targets": 11
 		            },
-
-
-
-									
-
-
   					
   					{ 
 		                 "visible": false,
