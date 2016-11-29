@@ -233,6 +233,8 @@ public function historial_conteos($data){
                $data['vista']  = "tabla_historico_conteo";
                $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   
                $data['almacenes']   = $this->modelo->listado_almacenes();  
+               $data['proveedor']="";
+               $data['id_factura']=1;
                $data['productos']   = $this->catalogo->listado_productos_existente($data);  
 
               switch ($id_perfil) {    
@@ -283,7 +285,13 @@ function cargar_dependencia_existente(){
     $data['val_comp']        = $this->input->post('val_comp');
     $data['val_calida']        = $this->input->post('val_calida');
 
+    $data['id_factura']        = $this->input->post('id_factura');
+      
+
     $data['dependencia']        = $this->input->post('dependencia');
+    $data['proveedor']        = $this->input->post('proveedor');
+    //print_r($data);
+    //die;
 
     switch ($data['dependencia']) {
         case "producto_existente": //nunca será una dependencia
@@ -338,6 +346,8 @@ function conteos_opciones() {
                    $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
 
                     $data['almacenes']   = $this->modelo->listado_almacenes();  
+                    $data['id_factura']        = 1; //levante id_factura por defecto como tipo "factura"
+                    $data['proveedor']        = "";
                     $data['productos']   = $this->catalogo->listado_productos_existente($data);  
                     
                     $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
@@ -432,7 +442,7 @@ function conteos_opciones() {
 
   }
 
-public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_composicion,$id_calidad,$cantidad){
+public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_composicion,$id_calidad,$cantidad,$id_factura,$proveedor){
 
       if ( $this->session->userdata('session') !== TRUE ) {
           redirect('');
@@ -451,6 +461,9 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
            $data["id_composicion"] = base64_decode($id_composicion);       
                $data["id_calidad"] = base64_decode($id_calidad);  
                $data["cantidad"] = base64_decode($cantidad);  
+               
+               $data["id_factura"] = base64_decode($id_factura);  
+                $data["proveedor"] = base64_decode($proveedor);  
 
           switch ($id_perfil) {    
             case 1:
@@ -488,9 +501,11 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
                 $coleccion_id_operaciones = array();
            }   
 
+            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
             $data['dato']['vista']  = "tabla_conteos"; 
+
             
             $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
           switch ($id_perfil) {    
@@ -539,6 +554,9 @@ public function conteo3(){
              $data["id_color"]= $this->input->post("id_color");
        $data["id_composicion"]= $this->input->post("id_composicion");      
            $data["id_calidad"]= $this->input->post("id_calidad");  
+
+           $data["id_factura"]= $this->input->post("id_factura");  
+           $data["proveedor"]= $this->input->post("proveedor");  
 
             $dato["id"]= $this->input->post("id_color");
             $data["color"] = $this->catalogo->coger_color($dato)->color;
@@ -676,6 +694,7 @@ public function ajustes($data){
                 $coleccion_id_operaciones = array();
            }   
 
+            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 
@@ -736,9 +755,10 @@ public function entrada_sobrante($modulo,$retorno){
 
             $data['id_empresa'] =  $this->session->userdata('id_cliente_asociado');
             $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
-            $data['id_factura']=2; //remision
+
+            $data['id_factura']= $this->model_conteo_fisico->valor_tipo_factura($data); 
             $data['id_tipo_pago']=2; //contado
-            $data['movimiento'] = $this->model_conteo_fisico->consecutivo_operacion_entrada(1,$data['id_factura']); //cambio
+            $data['movimiento'] = $this->model_conteo_fisico->consecutivo_operacion_ajuste_positivo(1,$data['id_factura']); //cambio
             $data['productos'] = $this->model_conteo_fisico->anadir_producto_temporal($data);
 
            
@@ -820,7 +840,7 @@ public function validar_proceso_sobrante(){
 
     if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
-          $data['id_factura']=2; //remision
+          
 
           $data['dev'] = 0; 
 
@@ -831,6 +851,8 @@ public function validar_proceso_sobrante(){
 
 
             $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   //bodega1
+
+            $data['id_factura']= $this->model_conteo_fisico->valor_tipo_factura($data);             
 
             $data['cantidad_um'] =  json_decode(json_encode( $this->input->post('arreglo_cantidad_um') ),true  );
             $data['ancho'] =  json_decode(json_encode( $this->input->post('arreglo_ancho') ),true  );
@@ -915,12 +937,29 @@ public function validar_proceso_sobrante(){
     if (!($data['id_cliente'])) {
       $data['id_cliente'] =0;
     }
-
+    //$data['id_empresa']=46;
+    $data['id_almacen']   =  $this->session->userdata('id_almacen_ajuste');  
+    $data['id_empresa']= $this->model_conteo_fisico->valor_id_empresa($data); 
     $busqueda = $this->model_conteo_fisico->buscador_entrada($data);
     echo $busqueda;
   }
 
+/*
+ if  ($data['proveedor']!=' '){
+            $provee= 'AND ( prov.nombre LIKE  "%'.$data['proveedor'].'%" )'   ; 
+         } else {
+            $provee= '';
+         }
+         
+        
+          $activo  = ' and ( p.activo =  0 ) '; 
+          $where = '( 
+                        (m.id_almacen =  '.$id_almacen.' ) AND ( m.id_factura = '.$data['id_factura'].' ) '.$activo.$provee.'
+                     ) ' ; 
 
+
+
+*/
 
 
 //////////////////////////////////////////////////////////////////////////////////  
@@ -942,7 +981,8 @@ public function validar_proceso_sobrante(){
            $data['modulo']       = base64_decode($modulo);    
            $data['retorno']       = base64_decode($retorno);    
            $data['id_almacen']   =  $this->session->userdata('id_almacen_ajuste');  
-           
+
+            $data['id_factura']= $this->model_conteo_fisico->valor_tipo_factura($data);            
            
 
            $data['productos'] = $this->catalogo->listado_productos_unico();
@@ -963,6 +1003,8 @@ public function validar_proceso_sobrante(){
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
             $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
+
+             //$data['id_factura']= $this->model_conteo_fisico->valor_tipo_factura($data); 
                
             switch ($id_perfil) {    
               case 1:          
@@ -1113,6 +1155,7 @@ public function procesando_salida_ajuste_definitivo(){
            $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
            $data['id_tipo_factura'] = $this->input->post('id_tipo_factura'); 
            $data['id_almacen']     = $this->input->post('id_almacen');
+           //$data['movimiento'] = $this->model_conteo_fisico->consecutivo_operacion_ajuste_positivo(1,$data['id_factura']); //cambio
            $dato['encabezado']     = $this->model_conteo_fisico->procesando_operacion_salida($data); //871
            $dato['exito']  = true;
            echo json_encode($dato);
@@ -1211,6 +1254,7 @@ public function resumen_conteo(){
                 $coleccion_id_operaciones = array();
            }   
 
+            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 

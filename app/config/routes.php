@@ -706,7 +706,7 @@ $route['cargar_dependencia']   = 'inventario/cargar_dependencia';
 
 $route['informe_pendiente']   			= 'conteo_fisico/informe_pendiente';
 $route['procesando_informe_pendiente']  = 'conteo_fisico/procesando_informe_pendiente';
-$route['procesar_conteo/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 			= 'conteo_fisico/procesar_conteo/$1/$2/$3/$4/$5/$6';
+$route['procesar_conteo/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 			= 'conteo_fisico/procesar_conteo/$1/$2/$3/$4/$5/$6/$7/$8';
 
 		
 $route['confirmar_proceso_conteo']  = 'conteo_fisico/confirmar_proceso_conteo';

@@ -28,15 +28,15 @@ echo form_open('validar_agregar_producto', $attr);
 //para determinar el consecutivo
 
 if ($val_proveedor) {
-	 $consecutivo_actual = ( ($val_proveedor->id_factura==1) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
+	 $consecutivo_actual = ( ($val_proveedor->id_factura==1) ? $consecutivo->conse_ajuste_factura : $consecutivo->conse_ajuste_remision );
 } else {
-	$consecutivo_actual = $consecutivo->conse_factura;
+	$consecutivo_actual = $consecutivo->conse_ajuste_factura;
 }	
 
 
 ?>		
-<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
-<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
+<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_ajuste_factura+1; ?>">
+<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_ajuste_remision+1; ?>">
 
 <div class="container">
 

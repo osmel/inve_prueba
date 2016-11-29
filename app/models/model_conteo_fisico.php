@@ -268,7 +268,7 @@ public function buscador_historial_conteo($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen, //.$row->cantidad_royo,
+                                      2=>$imagen.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,
@@ -502,7 +502,7 @@ public function buscador_historico_conteo($data){
           $this->db->select('"'.$id_session.'" as id_usuario', false);
           $this->db->select('"'.$fecha_hoy.'" AS fecha_culminacion',false);
 
-          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante,  p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro");
+          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante,  p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro,p.id_factura,p.id_empresa");
          
           
           $this->db->from($this->conteo_almacen.' as p');
@@ -647,11 +647,12 @@ public function buscador_resumen_conteo($data){
 
           $id_session = $this->session->userdata('id');
 
-          $consecutivo = self::consecutivo_operacion_salida(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          //$consecutivo = self::consecutivo_operacion_salida(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          $consecutivo = self::consecutivo_operacion_ajuste_positivo(2,$data['id_tipo_factura']); //cambio
            
           //registros de entradas
           $this->db->select('id id_entrada, fecha_entrada,  fecha_salida, movimiento, id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad,devolucion, num_partida');
-          $this->db->select('referencia, id_medida, cantidad_um, cantidad_royo, ancho,  codigo, comentario, id_estatus, id_lote, consecutivo');
+          $this->db->select('referencia, id_medida, cantidad_um, cantidad_royo, ancho,  codigo, comentario, id_lote, consecutivo');
           $this->db->select('id_cargador, id_usuario, id_usuario_salida, fecha_mac, id_operacion, estatus_salida');
 
           $this->db->select('id_apartado,id_usuario_apartado, id_cliente_apartado,fecha_apartado');
@@ -662,6 +663,8 @@ public function buscador_resumen_conteo($data){
           //id_fac_orig id_tipo_pedido,id_tipo_factura, 
           $this->db->select('"'.$data['id_tipo_pedido'].'" AS id_tipo_pedido',FALSE);
           $this->db->select('"'.$data['id_tipo_factura'].'" AS id_tipo_factura',FALSE);
+
+          $this->db->select('"15" as id_estatus', false);       //normal OJO 
 
           $this->db->from($this->registros_entradas);
 
@@ -677,6 +680,7 @@ public function buscador_resumen_conteo($data){
           $this->db->delete($this->registros_entradas, array('id_usuario'=>$id_session,'estatus_salida'=>'1','id_almacen'=>$data["id_almacen"])); 
 
           //actualizar a registros_salidas el "mov_salida" al consecutivo q le toque
+          $this->db->set('id_estatus', 15, FALSE  );
           $this->db->set('mov_salida', $consecutivo, FALSE  );
           $this->db->where('id_usuario',$id_session);
           $this->db->where('id_operacion',2); //2
@@ -730,12 +734,10 @@ public function buscador_resumen_conteo($data){
           }
           
 
-          if ($data['id_tipo_pedido']==2) {
-               $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
-          }  else if ($data['id_tipo_factura']==1) {
-              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          if ($data['id_tipo_factura']==1) {
+              $this->db->set( 'conse_ajuste_factura', 'conse_ajuste_factura+1', FALSE  );  
           } else {
-              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              $this->db->set( 'conse_ajuste_remision', 'conse_ajuste_remision+1', FALSE  );  
           }
 
           $this->db->set( 'id_usuario', $id_session );
@@ -1064,7 +1066,7 @@ public function buscador_resumen_conteo($data){
 
 
  public function procesando_operacion( $data ){
-          $consecutivo = self::consecutivo_operacion_entrada(1,$data['id_factura']); //cambio
+          $consecutivo = self::consecutivo_operacion_ajuste_positivo(1,$data['id_factura']); //cambio
           //self::reordenar_new_temporal(); //cambio
           //self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
 
@@ -1142,9 +1144,9 @@ public function buscador_resumen_conteo($data){
 
           //actualizar (consecutivo) en tabla "operacion" 
           if ($data['id_factura']==1) {
-              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              $this->db->set( 'conse_ajuste_factura', 'conse_ajuste_factura+1', FALSE  );  
           } else {
-              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              $this->db->set( 'conse_ajuste_remision', 'conse_ajuste_remision+1', FALSE  );  
           }
 
           $this->db->set( 'id_usuario', $id_session );
@@ -1218,13 +1220,13 @@ public function anadir_producto_temporal( $data ){
               
               $this->db->select('"1" as id_operacion', false); //operacion 1 es entrada
               $this->db->select('"1" as id_medida', false); //mts
-              $this->db->select('"12" as id_estatus', false); //normal
+              $this->db->select('"15" as id_estatus', false);       //normal OJO 
               $this->db->select('"001" as id_lote', false); //lote 001
 
               $this->db->select('"'.$data['id_empresa'].'" as id_empresa', false);
-              $this->db->select('"'.$data['movimiento'].'" as movimiento', false);
+              $this->db->select('"'.$data['movimiento'].'" as movimiento', false); //consecutivo de ajuste
               $this->db->select('"'.$data['id_almacen'].'" as id_almacen', false);
-              $this->db->select('"'.$data['id_factura'].'" as id_factura', false);
+              $this->db->select('"'.$data['id_factura'].'" as id_factura', false);  //la factura
               $this->db->select('"'.$data['id_factura'].'" as id_fac_orig', false);
               $this->db->select('"'.$data['id_tipo_pago'].'" as id_tipo_pago', false);
 
@@ -1558,6 +1560,67 @@ public function anadir_producto_temporal( $data ){
         }     
 
 
+
+
+      public function valor_id_empresa( $data ){
+
+              $this->db->distinct();
+              $this->db->select("calm.id_empresa");  
+              $this->db->from($this->conteo_almacen.' As calm');
+              $where = '(
+                          (calm.id_almacen =  '.$data["id_almacen"].' )
+                        )';
+
+              $this->db->where($where);          
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 )
+                 return $result->row()->id_empresa;
+              else
+                 return false;
+              $result->free_result();   
+
+       }  
+
+      public function valor_tipo_factura( $data ){
+
+              $this->db->distinct();
+              $this->db->select("calm.id_factura");  
+              $this->db->from($this->conteo_almacen.' As calm');
+              $where = '(
+                          (calm.id_almacen =  '.$data["id_almacen"].' )
+                        )';
+
+              $this->db->where($where);          
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 )
+                 return $result->row()->id_factura;
+              else
+                 return false;
+              $result->free_result();   
+
+       }  
+
+
+      public function consecutivo_operacion_ajuste_positivo( $id,$id_factura ){
+          //id=1 entrada  id=2 salida
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_ajuste_factura,o.conse_ajuste_remision");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_ajuste_factura : $result->row()->conse_ajuste_remision );
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
+
        public function consecutivo_operacion_entrada( $id,$id_factura ){
               $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
               $this->db->from($this->operaciones.' As o');
@@ -1588,8 +1651,6 @@ public function anadir_producto_temporal( $data ){
 
                 $producto_filtro = addslashes($data['producto_filtro']); 
                 $color_filtro = $data['color_filtro']; 
-                //$ancho_filtro = number_format((float)$data['ancho_filtro'],2,'.','');  
-                //$ancho_filtro = (float)$data['ancho_filtro'];  
                 $ancho_filtro   = $data['ancho_filtro'];  
                 $factura_filtro = addslashes($data['factura_filtro']);           
                 $proveedor_filtro = addslashes($data['proveedor_filtro']);    
@@ -1646,9 +1707,17 @@ public function anadir_producto_temporal( $data ){
 
 
           
+          //AND (calm.id_empresa = m.id_empresa)
+          if ($data['id_empresa'] !=0){
+              $idid_empresa = ' AND (calm.id_empresa = m.id_empresa)';  
+          } else {
+              $idid_empresa =' ';
+          }
+          
+
           $this->db->select("prod.codigo_contable");
           $this->db->from($this->registros_entradas.' as m');
-          $this->db->join($this->conteo_almacen.' As calm' , 'calm.referencia = m.referencia');
+          $this->db->join($this->conteo_almacen.' As calm' , 'calm.referencia = m.referencia'.$idid_empresa);
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
@@ -1657,6 +1726,7 @@ public function anadir_producto_temporal( $data ){
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');         
 
 
+          
 
           $id_almacenid = ' AND (m.id_almacen =  '.$data["id_almacen"].' )' ;  
           
@@ -2221,6 +2291,7 @@ public function buscador_ajustes($data){
           $id_color= $data['id_color'];
           $id_composicion= $data['id_composicion'];
           $id_calidad= $data['id_calidad'];
+
           $id_session = $this->session->userdata('id');
 
           $consecutivo = self::consecutivo_operacion(50); //cambio
@@ -2233,7 +2304,13 @@ public function buscador_ajustes($data){
           $this->db->select("p.codigo_contable,p.grupo,p.referencia");    
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
-          $this->db->select('p.id_composicion,p.id_color,p.id_calidad');
+          $this->db->select('p.id_composicion,p.id_color,p.id_calidad,m.id_factura');
+          
+           if  ($data['proveedor']!=' '){
+              $this->db->select('m.id_empresa');
+           } else {
+              $this->db->select('0 as id_empresa', false);
+           }   
           
           //id_usuario, cantidad_royo,id_almacen
           $this->db->select("COUNT(m.referencia) as 'cantidad_royo'"); //cantidad_royo
@@ -2248,16 +2325,23 @@ public function buscador_ajustes($data){
           
           $this->db->from($this->productos.' as p');
           $this->db->join($this->registros_entradas.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = m.id_empresa','LEFT');
           
           /*$this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
           $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
           */
           
+         if  ($data['proveedor']!=' '){
+            $provee= 'AND ( prov.nombre LIKE  "%'.$data['proveedor'].'%" )'   ; 
+         } else {
+            $provee= '';
+         }
+         
         
           $activo  = ' and ( p.activo =  0 ) '; 
           $where = '( 
-                        (m.id_almacen =  '.$id_almacen.' )'.$activo.'
+                        (m.id_almacen =  '.$id_almacen.' ) AND ( m.id_factura = '.$data['id_factura'].' ) '.$activo.$provee.'
                      ) ' ; 
 
 
@@ -2491,7 +2575,7 @@ public function buscador_costos($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen, //.$row->cantidad_royo,
+                                      2=>$imagen.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,

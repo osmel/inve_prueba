@@ -1682,6 +1682,7 @@
             $this->db->where('p.activo',0);
             $this->db->where('m.id_almacen',$data['id_almacen']);
             $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('m.id_factura',$data['id_factura']);
 
 
             $this->db->order_by('c.color', 'asc'); 
@@ -1734,6 +1735,7 @@
             $this->db->where('p.descripcion', ($data['val_prod']) );
             $this->db->where('p.id_color', $data['val_color']);
             $this->db->where('m.id_almacen',$data['id_almacen']);
+            $this->db->where('m.id_factura',$data['id_factura']);
 
             $result = $this->db->get();
             
@@ -1779,6 +1781,8 @@
             $this->db->where('p.id_color', $data['val_color']);
             $this->db->where('p.id_composicion', $data['val_comp']);
             $this->db->where('m.id_almacen',$data['id_almacen']);
+            $this->db->where('m.id_factura',$data['id_factura']);
+
             $result = $this->db->get();
             
             if ( $result->num_rows() > 0 )
@@ -1941,7 +1945,7 @@
   //-----------consecutivo------------------
         public function listado_consecutivo($id=-1){
 
-          $this->db->select('o.id, o.operacion, o.consecutivo, o.conse_factura,o.conse_remision,o.conse_surtido');
+          $this->db->select('o.id, o.operacion, o.consecutivo, o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_ajuste_factura,o.conse_ajuste_remision'); 
           $this->db->from($this->operaciones .' as o');
 
           if ($id!=-1) {
@@ -4146,10 +4150,33 @@
 
           $this->db->distinct();
           $this->db->select('p.descripcion');
+          $this->db->select("p.descripcion nombre", FALSE);  
+          $this->db->select("p.descripcion id", FALSE);  
           $this->db->from($this->productos.' as p');
           $this->db->join($this->registros_entradas.' As m', 'm.referencia = p.referencia');
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = m.id_empresa','LEFT');
+         /*
           $this->db->where('p.activo',0);
           $this->db->where('m.id_almacen',$data['id_almacen']);
+          $this->db->where('m.id_factura',$data['id_factura']);
+          */
+         
+         if  ($data['proveedor']!=''){
+            $provee= 'AND ( prov.nombre LIKE  "%'.$data['proveedor'].'%" )'   ; 
+         } else {
+            $provee= '';
+         }
+         
+
+          $where = '(
+                      (
+                         ( p.activo = 0 ) AND ( m.id_almacen = '.$data['id_almacen'].' ) AND ( m.id_factura = '.$data['id_factura'].' ) 
+                      )'.$provee.'
+            ) ' ; 
+
+           $this->db->where($where); 
+
+
           $this->db->order_by('p.descripcion', 'asc'); 
 
           $result = $this->db->get();

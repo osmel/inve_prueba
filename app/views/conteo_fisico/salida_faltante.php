@@ -15,13 +15,23 @@
 
 <?php
 	$el_perfil = $this->session->userdata( 'id_perfil' );
-	$consecutivo_actual = $consecutivo->conse_surtido;
+	
+
+
+	$consecutivo_actual = ( ($id_factura==1) ? $consecutivo->conse_ajuste_factura : $consecutivo->conse_ajuste_remision );
+
+
 ?>
 
 
-<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
-<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
-<input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>">
+<input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_ajuste_factura+1; ?>">
+<input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_ajuste_remision+1; ?>">
+
+<input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
+
+<!-- <input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>"> -->
+
+
 
 <input type="hidden" id="modulo" name="modulo" value="<?php echo $modulo; ?>">
 
@@ -134,7 +144,7 @@
 											<select name="id_tipo_pedido_salida" id="id_tipo_pedido_salida" class="form-control">
 													<?php foreach ( $pedidos as $pedido ){ ?>
 															<?php 
-																	 if ($pedido->id==2) {
+																	 if ($pedido->id==1) {
 																			$seleccionado='selected';
 																		} else {
 																			$seleccionado='';
@@ -150,14 +160,22 @@
 
 
 					<!--Tipos de factura -->
-					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" style="display:none;">
+					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" >
 					    
 							<label for="id_tipo_factura_salida" class="col-sm-3 col-md-12">Tipo de factura</label>
 							<div class="col-sm-9 col-md-12">
 										<fieldset disabled>
 											<select name="id_tipo_factura_salida" id="id_tipo_factura_salida" class="form-control">
 													<?php foreach ( $facturas as $factura ){ ?>
-																<option value="<?php echo $factura->id; ?>" <?php echo $factura->tipo_factura; ?></option>
+															<?php 
+																	 if ($factura->id==$id_factura) {
+																			$seleccionado='selected';
+																		} else {
+																			$seleccionado='';
+																		}
+															?>
+
+																<option value="<?php echo $factura->id; ?>" <?php echo $seleccionado; ?> > <?php echo $factura->tipo_factura; ?></option>
 													<?php } ?>
 											</select>
 								    </fieldset>

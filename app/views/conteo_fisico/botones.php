@@ -60,7 +60,7 @@
 				</div>
 
 				<div class="row">
-				<br/>
+					<br/>
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>resumen_conteo"  
@@ -73,7 +73,7 @@
 
 
 
-<!-- Aqui comienza filtro	-->
+	<!-- Aqui comienza filtro	-->
 
 		<div class="col-md-12 form-horizontal" id="tab_filtro" >      
 						
@@ -156,12 +156,6 @@
 		           
 
 
-
-
-
-
-
-
  				<div class="row"> 
 					<!--Tipos de factura -->
 						<div class="col-xs-12 col-sm-6 col-md-3" >
@@ -172,7 +166,7 @@
 								    	que no sean facturaista 
 								    	ENTONCES lista editable -->
 										<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
-												<select name="id_tipo_factura" id="id_tipo_factura" pantalla="generar_pedidos1" class="form-control">
+												<select name="id_tipo_factura_existente" id="id_tipo_factura_existente" pantalla="generar_pedidos1" class="form-control" dependencia="producto_existente" nombre="un producto">
 													<!--<option value="0">Selecciona una opción</option>-->
 														<?php foreach ( $facturas as $factura ){ ?>
 																	<option value="<?php echo $factura->id; ?>"  ><?php echo $factura->tipo_factura; ?></option>
@@ -184,17 +178,29 @@
 						</div>		
 
 
-
+						<!--
 						<div class="col-xs-12 col-sm-6 col-md-4" >							
 								<div class="form-group">
 									<label for="descripcion">Cliente</label>
-									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
-										
+									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">										
 										<input  identificador="" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Empresa Relacionada...">
 										
 									</div>
 								</div>							
 						</div>
+						-->
+
+							<div id="proveedor_id" class="col-xs-12 col-sm-6 col-md-3">
+
+											<div class="form-group">
+												<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Proveedor</label>
+												<div class="col-sm-12 col-md-12">
+													 <input  type="text" name="editar_proveedor_historico" id="editar_proveedor_historico" vista="conteo_fisico" idproveedor="1" class="form-control buscar_proveedor_historico ttip" title="Campo predictivo. Comience a escribir y seleccione una opción para agregar un filtro de selección." autocomplete="off" spellcheck="false" placeholder="Buscar...">
+												</div>
+											</div>
+									
+								</div>		
+
 		        </div>
 							
 

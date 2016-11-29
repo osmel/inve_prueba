@@ -1458,7 +1458,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 
 		});
 
-jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_existente").on('change', function(e) {
+jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_existente, #id_tipo_factura_existente").on('change', function(e) {
 
 		var campo = jQuery(this).attr("name");   
  		 var val_prod = jQuery('#producto_existente option:selected').text();  		
@@ -1474,7 +1474,7 @@ jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_
 	        //limpiar la dependencia
 	        jQuery("#"+dependencia).html(''); 
 	        //cargar la dependencia
-	        console.log(dependencia);
+	       // console.log(dependencia);
 	        cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
         }
 
@@ -1490,7 +1490,7 @@ jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_
 	function cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre) {
 		
 		var url = '/cargar_dependencia_compra';	
-
+		//alert(jQuery('#id_tipo_factura_existente').val());
 		jQuery.ajax({
 		        url : '/cargar_dependencia_existente',
 		        data:{
@@ -1500,8 +1500,10 @@ jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_
 		        	val_color:val_color,
 		        	val_comp:val_comp,
 		        	val_calida:val_calida,
+		        	id_factura:jQuery('#id_tipo_factura_existente').val(),
+		        	proveedor : jQuery("#editar_proveedor_historico").val(),
 
-		        	dependencia:dependencia
+		        	dependencia:dependencia,
 		        },
 
 
@@ -1528,6 +1530,16 @@ jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_
 				
 					jQuery("#"+dependencia).trigger('change');
 
+					if (dependencia=='producto_existente') {
+						//console.log(dependencia);	
+						if ( jQuery('#producto_existente option').length >1 ) {
+							jQuery('#procesar_conteo').attr('disabled',false);
+						} else {
+							jQuery('#procesar_conteo').attr('disabled',true);
+						}
+					}
+					
+
                     return false;
 		        },
 		        error : function(jqXHR, status, error) {
@@ -1538,7 +1550,12 @@ jQuery("#producto_existente, #color_existente, #composicion_existente, #calidad_
 		    }); 
 	}
 
-
+	//cuando comienza 
+	if ( jQuery('#producto_existente option').length >1 ) {
+		jQuery('#procesar_conteo').attr('disabled',false);
+	} else {
+		jQuery('#procesar_conteo').attr('disabled',true);
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////Resumen COnteo///////////////////////////////////////////////////////////
@@ -2816,9 +2833,10 @@ jQuery('body').on('click','#procesar_conteo', function (e) {
 
 		   cantidad = jQuery.base64.encode(jQuery('#tabla_informe_pendiente').dataTable().fnSettings().aoData.length);
 
+	id_factura = jQuery.base64.encode(jQuery('#id_tipo_factura_existente').val());
+	 proveedor = jQuery.base64.encode( (jQuery("#editar_proveedor_historico").val()!='') ? jQuery("#editar_proveedor_historico").val() : ' ' );
 
-
-	var url = "/procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad+'/'+cantidad;
+	var url = "/procesar_conteo/"+id_almacen+'/'+id_descripcion+'/'+id_color+'/'+id_composicion+'/'+id_calidad+'/'+cantidad+'/'+id_factura+'/'+proveedor;
 
 	jQuery('#modalMessage').modal({
 		  show:'true',
@@ -4540,12 +4558,34 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
 							oTable._fnAjaxUpdate();
 					        break;
+					    
+					    case "conteo_fisico":
+										/*	        //
+								 var campo = "editar_proveedor_historico";
+						 		 var val_prod = jQuery('#producto_existente option:selected').text();  		
+						 		 var val_color = jQuery('#color_existente').val();  		  
+						 		 var val_comp = jQuery('#composicion_existente').val();  	
+						 		 var val_calida = jQuery('#calidad_existente').val();  		
+						         var dependencia = "producto_existente";
+						         var nombre = "un producto";
+						         
+
+						    	if (dependencia !="") {	    
+							        //limpiar la dependencia
+							        jQuery("#"+dependencia).html(''); 
+							        //cargar la dependencia
+							        cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
+						        }
 
 
-					    default:
-					        //
+										var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+										oTable._fnAjaxUpdate();
+										*/
 
 			              break;
+			            default: 
+			            	// 
+			               break;
 					}		
 
 
@@ -4557,7 +4597,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							var oTable =jQuery('#tabla_costo_rollo').dataTable();
 					    	oTable._fnAjaxUpdate();
 					        break;
-
 					    case "cuentas":
 							var oTable =jQuery('#tabla_ctas_vencidas').dataTable();
 							oTable._fnAjaxUpdate();
@@ -4566,11 +4605,38 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							var oTable =jQuery('#tabla_ctas_pagadas').dataTable();
 							oTable._fnAjaxUpdate();
 					        break;
-					    default:
-					        //
+					    case "conteo_fisico":
+
+											        //
+								 var campo = "editar_proveedor_historico";
+						 		 var val_prod = jQuery('#producto_existente option:selected').text();  		
+						 		 var val_color = jQuery('#color_existente').val();  		  
+						 		 var val_comp = jQuery('#composicion_existente').val();  	
+						 		 var val_calida = jQuery('#calidad_existente').val();  		
+						         var dependencia = "producto_existente";
+						         var nombre = "un producto";
+						         
+
+						    	if (dependencia !="") {	    
+							        //limpiar la dependencia
+							        jQuery("#"+dependencia).html(''); 
+							        //cargar la dependencia
+							        cargarDependencia_existente(campo,val_prod,val_color,val_comp,val_calida,dependencia,nombre);
+						        }
+
+
+										var oTable =jQuery('#tabla_informe_pendiente').dataTable();
+										oTable._fnAjaxUpdate();
+								
 			              break;
+			            default: 
+			            	// 
+			               break;
 					}		
 	});	
+
+
+
 
 /////////////////////////////////////////////////Historico de entradas/////////////////////////////////////////////////////////////////
 

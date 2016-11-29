@@ -39,5 +39,8 @@
 	<input  type="hidden" id="id_composicion" name="id_composicion" value="<?php echo $id_composicion; ?>">
 	<input  type="hidden" id="id_calidad" name="id_calidad" value="<?php echo $id_calidad; ?>">
 	
+	<input  type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
+	<input  type="hidden" id="proveedor" name="proveedor" value="<?php echo $proveedor; ?>">
+	
 	
 <?php echo form_close(); ?>
