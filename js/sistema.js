@@ -1670,6 +1670,7 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 		        data : { 
 		        		  dato: "valor",
 		        	id_factura: jQuery("#id_factura").val(),
+		        	id_estatus: jQuery("#id_estatus").val(),
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -1702,7 +1703,7 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
 						
 												$catalogo = e.target.name;
-												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
+												window.location.href = 'procesar_entrar/'+jQuery.base64.encode(data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val())+'/'+jQuery.base64.encode(jQuery("#id_estatus").val());
 									        	
 									        }
 								});			

@@ -259,7 +259,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion, m.num_partida,m.id_estatus');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
@@ -454,7 +454,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$columna6,
                                       7=>$columna7,
@@ -920,7 +920,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$columna6,
                                       7=>$columna7,
@@ -1302,7 +1302,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=> //
-                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'/'.base64_encode("reportes").'" 
+                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
                                           type="button" class="btn btn-success btn-block">'.$row->mov_salida.'</a>',
                                       6=>$columna6,
                                       7=>$columna7,
@@ -2007,7 +2007,7 @@
 
 
           $this->db->select('m.movimiento');
-          $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
+          $this->db->select('a.almacen,m.id_factura,m.id_fac_orig, m.id_estatus');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
@@ -2037,7 +2037,14 @@
              $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
           } else {
              $id_facturaid = '';
-          }         
+          }        
+
+          if ($data['id_estatus']!=0) {
+             
+             $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+          } else {
+             $id_estatusid = '';
+          }               
 
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
@@ -2052,7 +2059,7 @@
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )'.$fechas.$id_almacenid.$id_facturaid.' 
+                         ( m.id_operacion = '.$data["id_operacion"].' )    AND ( m.devolucion = 0 )'.$fechas.$id_almacenid.$id_facturaid.$id_estatusid.' 
                       ) 
 
                        AND
@@ -2080,7 +2087,7 @@
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura');
+          $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura,m.id_estatus');
 
           
           //ordenacion
@@ -2112,6 +2119,7 @@
                                       8=>number_format($row->sum_total, 2, '.', ','),
                                       9=>$row->devolucion,
                                       10=>$row->id_factura,
+                                      11=>$row->id_estatus,
                                       
 
                                     );
@@ -2193,7 +2201,7 @@ public function totales_importes($where){
 
 
               $this->db->where($where);          
-              $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura');
+              $this->db->group_by('m.movimiento,m.id_factura,a.almacen,p.nombre,m.factura,m.id_estatus');
               //$this->db->having($where);
 
              $result = $this->db->get();
@@ -2316,7 +2324,7 @@ public function buscador_historico_devolucion($data){
 
           //$this->db->distinct();                    
 
-          $this->db->select('m.movimiento,m.id_empresa,p.nombre, m.factura, m.id_operacion,m.devolucion');
+          $this->db->select('m.movimiento,m.id_empresa,p.nombre, m.factura, m.id_operacion,m.devolucion,m.id_estatus');
           $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
 
@@ -2413,6 +2421,7 @@ public function buscador_historico_devolucion($data){
                                       7=>number_format($row->sum_total, 2, '.', ','),
                                       8=>$row->devolucion,
                                       9=>$row->id_factura,
+                                      10=>$row->id_estatus,
                                       
 
                                     );
@@ -2632,7 +2641,7 @@ public function buscador_historico_salida($data){
           
           $this->db->select('a.almacen');
            $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
-          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura, m.id_estatus");          
 
           $this->db->select('sum(m.precio) as sum_precio');           
           $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
@@ -2668,6 +2677,16 @@ public function buscador_historico_salida($data){
              $id_facturaid = '';
           }         
 
+
+
+          if ($data['id_estatus']!=0) {
+             
+             $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+          } else {
+             $id_estatusid = '';
+          }         
+
+
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
                            $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
@@ -2682,7 +2701,7 @@ public function buscador_historico_salida($data){
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_almacenid.$id_facturaid.'  
+                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_almacenid.$id_facturaid.$id_estatusid.'  
                       ) 
 
                        AND
@@ -2709,7 +2728,7 @@ public function buscador_historico_salida($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.mov_salida,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.factura');
+          $this->db->group_by('m.mov_salida,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.factura,m.id_estatus');
 
           
           //ordenacion
@@ -2763,6 +2782,7 @@ public function buscador_historico_salida($data){
                                       11=>$row->id_tipo_pedido,
                                       12=>$row->id_tipo_factura,
                                       13=>$client,
+                                      14=>$row->id_estatus,
 
                                     );
                       }
@@ -2850,7 +2870,7 @@ public function totales_importes_salida($where){
 
               $this->db->where($where);          
 
-              $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura');
+              $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura,m.id_estatus');
 
              $result = $this->db->get();
 

@@ -54,14 +54,19 @@ class Pdfs_model extends CI_Model
           $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
           $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
 
-
-
           
           $this->db->from($this->historico_registros_entradas.' as m');
 
           $this->db->where('m.movimiento',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
           
+          if ($data['id_estatus']!=0) {
+            // $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+            $this->db->where('m.id_estatus',$data['id_estatus']);
+          } else {
+             //$id_estatusid = '';
+          }                      
+
           if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
             $this->db->where('m.id_factura',$data['id_factura']);
           }  
@@ -142,6 +147,14 @@ class Pdfs_model extends CI_Model
           $this->db->where('m.movimiento',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
 
+
+          if ($data['id_estatus']!=0) {
+            // $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+            $this->db->where('m.id_estatus',$data['id_estatus']);
+          } else {
+             //$id_estatusid = '';
+          }            
+
           if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
             $this->db->where('m.id_factura',$data['id_factura']);
           }  
@@ -217,6 +230,16 @@ class Pdfs_model extends CI_Model
           $this->db->where('m.mov_salida',$data['id_movimiento']);
           $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
           $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
+
+          if (!(isset($data['id_estatus']))) {
+             $this->db->where('m.id_estatus !=',15);
+          } else if ($data['id_estatus']==15) {
+             //$id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+             $this->db->where('m.id_estatus',$data['id_estatus']);
+          } else {
+             //$id_estatusid = '';
+            $this->db->where('m.id_estatus !=',15);
+          }                
 
           $this->db->order_by('m.id_lote', 'asc'); 
           $this->db->order_by('m.codigo', 'asc'); 

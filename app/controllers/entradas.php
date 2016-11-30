@@ -250,6 +250,7 @@ class Entradas extends CI_Controller {
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 		      $data['id_factura']   = $this->input->post('id_factura');
+		      $data['id_estatus']   = $this->input->post('id_estatus');
 
 		      $data['dev'] = 0; 
 
@@ -306,13 +307,14 @@ class Entradas extends CI_Controller {
 
 
 
-	public function procesar_entrar($num_mov,$id_factura){ 
+	public function procesar_entrar($num_mov,$id_factura,$id_estatus){ 
 
 		 if($this->session->userdata('session') === TRUE ){
 
 			$data['dev'] = 0;
 			$data['num_mov'] = base64_decode($num_mov);
 			$data['id_factura'] = base64_decode($id_factura);
+			$data['id_estatus'] = base64_decode($id_estatus);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -349,7 +351,7 @@ class Entradas extends CI_Controller {
 
 
 
-	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura){
+	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura,$id_estatus){
 
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -358,6 +360,9 @@ class Entradas extends CI_Controller {
 		      $id_movimiento= base64_decode($id_movimiento);
 		      $data['dev']= base64_decode($dev);
 		      $data['id_factura']= base64_decode($id_factura);
+		      
+		      $data['id_estatus']= base64_decode($id_estatus);
+
 
 		      
 
@@ -414,8 +419,11 @@ class Entradas extends CI_Controller {
 			      switch ($id_perfil) {    
 			        case 1:          
 
-						       
+						       //
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+						       //print_r($data);
+						       //print_r($data['movimientos']);
+						       //die;
 			                   $this->load->view( 'pdfs/pdfs_view',$data );
 			          break;
 			        case 2:

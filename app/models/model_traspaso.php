@@ -2119,7 +2119,7 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       5=>$row->precio,
                                       6=>$row->iva,
                                       7=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       8=>$row->nombre,
                                       9=>$row->id_lote.'-'.$row->consecutivo,
@@ -2398,7 +2398,7 @@ public function valores_movimientos_temporal(){
                                       5=>$row->precio,
                                       6=>$row->iva,
                                       7=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       8=>$row->nombre,
                                       9=>$row->id_lote.'-'.$row->consecutivo,

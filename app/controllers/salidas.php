@@ -508,7 +508,7 @@ public function validar_confirmar_salida_sino(){
 
 	
 
-	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura,$retorno){
+	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura,$retorno,$id_estatus){
 
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -517,7 +517,9 @@ public function validar_confirmar_salida_sino(){
 		      $id_movimiento= base64_decode($id_movimiento);
 		      $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
 		      $data["id_tipo_factura"] = base64_decode($id_tipo_factura);
+
 		      $data["retorno"] = base64_decode($retorno);
+		      $data["id_estatus"] = base64_decode($id_estatus);
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -546,7 +548,7 @@ public function validar_confirmar_salida_sino(){
 		      			} else {
 		      					//$data['retorno'] ="listado_salidas";	 //DETALLES DE REPORTE
 		      			}
-
+      
 					
 
 		      		}

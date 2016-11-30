@@ -45,8 +45,8 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				</div>	
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<!-- <a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>"  -->
-					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>" 
+					
+					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
 					
 
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
@@ -55,7 +55,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				</div>
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>"  
+					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>

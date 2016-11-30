@@ -165,7 +165,7 @@ class Reportes extends CI_Controller {
 			  
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
-
+               $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
 
 
 
@@ -221,6 +221,7 @@ class Reportes extends CI_Controller {
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
 
 		      switch ($id_perfil) {    
 		        case 1:          

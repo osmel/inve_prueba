@@ -157,7 +157,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->select('m.movimiento');
           $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
+          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago,m.id_estatus');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('p.dias_ctas_pagar');   
@@ -300,6 +300,7 @@ public function buscador_ctasxpagar($data){
                                       12=>$row->id_tipo_pago,
                                       13=>(($row->sepago==null) ? 0 : $row->sepago),
                                       14=>$row->id_factura,
+                                      15=>$row->id_estatus,
                                       
 
                                     );

@@ -334,15 +334,15 @@ $route['validar_eliminar_prod_temporal']    = 'entradas/validar_eliminar_prod_te
 $route['inf_ajax_temporal']    = 'entradas/inf_ajax_temporal';
 
 //procesamiento de entrada
-$route['procesar_entradas/(:any)/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3/$4';
+$route['procesar_entradas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3/$4/$5';
 
-$route['procesar_entrar/(:any)/(:any)']    = 'entradas/procesar_entrar/$1/$2';
+$route['procesar_entrar/(:any)/(:any)/(:any)']    = 'entradas/procesar_entrar/$1/$2/$3';
 
 $route['validar_proceso']    = 'entradas/validar_proceso';
 
 
-$route['generar_etiquetas/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3';
-$route['generar_notas/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3';
+$route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
+    $route['generar_notas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3/$4';
 
 $route['pdfs']    = 'pdfs/index';
 
@@ -355,12 +355,12 @@ $route['agregar_prod_salida']    		= 'salidas/agregar_prod_salida';
 $route['procesando_servidor_salida']    = 'salidas/procesando_servidor_salida';
 $route['quitar_prod_salida']		    = 'salidas/quitar_prod_salida';
 
-$route['generar_salida/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3';
+$route['generar_salida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3/$4';
 
 
 
 
-$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5/$6';
+$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5/$6/$7';
 
 $route['procesar_salidas']    = 'salidas/procesar_salidas';
 

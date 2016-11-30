@@ -231,9 +231,9 @@ public function historial_conteos($data){
 
                $data['modulo'] = 1;
                $data['vista']  = "tabla_historico_conteo";
-               $data['id_almacen']=$this->session->userdata('id_almacen_ajuste');   
-               $data['almacenes']   = $this->modelo->listado_almacenes();  
-               $data['proveedor']="";
+               $data['id_almacen'] =$this->session->userdata('id_almacen_ajuste');   
+               $data['almacenes'] = $this->modelo->listado_almacenes();  
+               $data['proveedor'] = "";
                $data['id_factura']=1;
                $data['productos']   = $this->catalogo->listado_productos_existente($data);  
 

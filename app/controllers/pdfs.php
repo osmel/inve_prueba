@@ -131,11 +131,12 @@ public function impresion_etiquetas1($codigo) {
         $pdf->Output($nombre_archivo, 'I');
     }
 
-  public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura){
+  public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
 
         $data['id_movimiento']       = base64_decode($id_movimiento);
         $data['id_tipo_pedido']      = base64_decode($id_tipo_pedido);
         $data['id_tipo_factura']     = base64_decode($id_tipo_factura);
+        $data['id_estatus']     = base64_decode($id_estatus);
         /////////////
 
         set_time_limit(0); 
@@ -201,11 +202,12 @@ public function impresion_etiquetas1($codigo) {
     }
 
 
-  public function generar_notas($id_movimiento,$dev,$id_factura) {
+  public function generar_notas($id_movimiento,$dev,$id_factura,$id_estatus) {
 
         $data['dev']= base64_decode($dev);    
         $data['id_movimiento']= base64_decode($id_movimiento);
         $data['id_factura']= base64_decode($id_factura);
+        $data['id_estatus']= base64_decode($id_estatus);
 
            
         /////////////
@@ -280,10 +282,11 @@ public function impresion_etiquetas1($codigo) {
     }
 
  
-    public function generar_etiquetas($id_movimiento,$dev,$id_factura) {
+    public function generar_etiquetas($id_movimiento,$dev,$id_factura,$id_estatus) {
         $data['dev']= base64_decode($dev);    
         $data['id_movimiento']= base64_decode($id_movimiento);
         $data['id_factura']= base64_decode($id_factura);
+        $data['id_estatus']= base64_decode($id_estatus);
 
         /////////////
 

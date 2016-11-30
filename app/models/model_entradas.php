@@ -836,7 +836,7 @@ public function totales_importes($where){
                   $this->db->select('sum(m.precio) as subtotal');           
                   $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
                   $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
-                 
+                  $this->db->select('m.id_estatus');
 
                   $this->db->from($this->registros_temporales.' as m');
 
@@ -935,11 +935,16 @@ public function totales_importes($where){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           
 
+          if ($data['id_estatus']!=0) {
+             $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+          } else {
+             $id_estatusid = '';
+          }    
 
           $where = '(
                       (
                         (( m.id_factura = '.$data['id_factura'].' ) OR ('.$data['dev'].'=1) )  AND
-                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 )
+                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 ) '.$id_estatusid.' 
                       ) 
 
             )';   

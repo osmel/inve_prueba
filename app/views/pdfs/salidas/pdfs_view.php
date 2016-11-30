@@ -64,7 +64,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 				<div class="col-sm-4 col-md-4" style="margin-bottom:25px">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>"  
+					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>

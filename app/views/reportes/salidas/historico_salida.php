@@ -60,6 +60,21 @@
 
 
 
+							<div id="estatus_id" class="col-xs-12 col-sm-6 col-md-2">
+								<div class="form-group">
+									<label for="estatus" class="col-sm-12 col-md-12">Estatus</label>
+									<div class="col-sm-12 col-md-12">
+										<select name="id_estatuss_historicos" vista="historico_salida" id="id_estatuss_historicos" class="form-control ttip" title="Seleccione el estatus del producto a consultar.">
+												<?php foreach ( $estatuss as $estatus ){ ?>
+														<option value="<?php echo $estatus->id; ?>"><?php echo $estatus->estatus; ?></option>
+												<?php } ?>
+										</select>
+									</div>
+								</div>
+							</div>							
+
+
+
 							<!--Tipos de almacen -->
 							<div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 								<div class="form-group">

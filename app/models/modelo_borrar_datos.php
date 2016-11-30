@@ -44,10 +44,12 @@
       
     }
 
+    //
 
-
-
+//
     //cuando se elimina un diseño en particular
+    //Hasta la victoria siempre querido comandante
+
     public function eliminar_todos(){
        
       
@@ -66,12 +68,12 @@
         $this->db->empty_table( $this->historico_conteo_almacen);
 
 
-        $this->db->empty_table( $this->registros_entradas);
+        $this->db->empty_table( $this->registros_entradas); //
         $this->db->empty_table( $this->registros_salidas);
         $this->db->empty_table( $this->registros_temporales);
         $this->db->empty_table( $this->registros_cambios);
         
-        $this->db->empty_table( $this->historico_registros_entradas);
+        $this->db->empty_table( $this->historico_registros_entradas); //
         $this->db->empty_table( $this->historico_registros_salidas);
         $this->db->empty_table( $this->historico_registros_traspasos);
         $this->db->empty_table( $this->historico_acceso);
@@ -86,8 +88,6 @@
          $this->db->empty_table( $this->historico_historial_compra   );
 
 
-
-        
         return "todo fue eliminado";
 
     }

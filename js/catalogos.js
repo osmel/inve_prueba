@@ -207,7 +207,7 @@ cuentas
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; // 
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -388,7 +388,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"'
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -584,7 +584,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -1275,7 +1275,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 							$otro_retorno="historico_conteo";
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode("historico_conteo")+'"'; ///historico_conteo
+								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode("historico_conteo")+'/'+jQuery.base64.encode(row[10])+'"'; //
 								texto+='type="button" class="btn btn-success btn-block">';
 								texto+=row[3];
 								texto+='</a>';
@@ -1318,7 +1318,7 @@ jQuery('#tabla_conteo_historico').dataTable( {
 							$otro_retorno="historico_conteo";
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(2)+'"'; // 
+								texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
 								texto+='type="button" class="btn btn-success btn-block">';
 								texto+=row[6];
 								texto+='</a>';
@@ -1343,6 +1343,18 @@ jQuery('#tabla_conteo_historico').dataTable( {
 
 		jQuery('#id_almacen_historicos, #id_factura_historicos, #foco_historicos, #id_tipo_factura_historicos, #id_estatuss_historicos').change(function(e) {
 					switch(jQuery(this).attr('vista')) {
+
+
+						case "historico_salida":
+							var oTable =jQuery('#tabla_historico_salida').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;
+
+					    case "historico_entrada":
+							var oTable =jQuery('#tabla_historico_entrada').dataTable();
+					    	oTable._fnAjaxUpdate();
+					        break;    
+
 						
 						case "tabla_historico_conteo":
 							var oTable =jQuery('#tabla_historico_conteo').dataTable();
@@ -2320,7 +2332,7 @@ jQuery('#tabla_ajustes').dataTable( {
 									if  ( settings.json.generales.faltante==2 ) {
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_faltante').css('display','block');
-										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0) );   
+										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(15) );   
 										//generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura)
 									} else {
 										jQuery("#hab_proceso").attr('disabled', false);					
@@ -4741,7 +4753,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];	
 					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
-					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
+					    d.id_factura = jQuery("#id_factura_historicos").val(); 			
+					    d.id_estatus = jQuery("#id_estatuss_historicos").val(); 			
 
 	         		 }
 	         		
@@ -4868,7 +4881,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_notas";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(row[11])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -5041,7 +5054,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';
@@ -5084,7 +5097,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						d.fecha_final = fecha[1];	
 					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
-
+					    d.id_estatus = jQuery("#id_estatuss_historicos").val(); 						
+					    
 
 	         		 }
 	         		
@@ -5224,7 +5238,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'"'; //
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+='Detalles';
 							texto+='</a>';

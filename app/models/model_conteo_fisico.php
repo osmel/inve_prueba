@@ -376,7 +376,7 @@ public function buscador_historico_conteo($data){
                  }                 
           
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          $this->db->select("p.consecutivo, p.filtro");
+          $this->db->select("p.consecutivo, p.filtro, p.id_factura, p.id_estatus"); //,
           $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
           $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
           $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
@@ -439,6 +439,8 @@ public function buscador_historico_conteo($data){
                                       6=>($row->mov_sobrante!=0) ? $row->mov_sobrante:"-",
                                       7=>$row->vendedor,
                                       8=>$filtro,
+                                      9=>$row->id_factura,
+                                      10=>$row->id_estatus,
                                     );                    
                            
 
@@ -502,7 +504,7 @@ public function buscador_historico_conteo($data){
           $this->db->select('"'.$id_session.'" as id_usuario', false);
           $this->db->select('"'.$fecha_hoy.'" AS fecha_culminacion',false);
 
-          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante,  p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro,p.id_factura,p.id_empresa");
+          $this->db->select("p.consecutivo, p.mov_faltante, p.mov_sobrante,  p.codigo_contable, p.grupo, p.referencia, p.imagen, p.descripcion, p.id_composicion, p.id_color, p.id_calidad,  p.fecha_mac, p.comentario, p.cantidad_royo, p.conteo1, p.conteo2, p.conteo3, p.num_conteo, p.estatus_conteo, p.id_almacen, p.fecha_creacion, p.faltante, p.sobrante, p.filtro,p.id_factura,p.id_empresa,p.id_estatus");
          
           
           $this->db->from($this->conteo_almacen.' as p');
@@ -749,6 +751,7 @@ public function buscador_resumen_conteo($data){
 
 
           
+          //$this->db->select('"15" as id_estatus', false); 
           $this->db->set( 'mov_faltante', $dato['num_movimiento'], FALSE  );  
           $this->db->set( 'faltante', 2, FALSE  );  
           $this->db->where('id_almacen',$data['id_almacen']);                
@@ -942,7 +945,7 @@ public function buscador_resumen_conteo($data){
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -1113,6 +1116,7 @@ public function buscador_resumen_conteo($data){
                   $this->db->select('sum(m.precio) as subtotal');           
                   $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
                   $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
+                  $this->db->select('"15" as id_estatus', false);       //normal OJO 
                  
 
                   $this->db->from($this->registros_temporales.' as m');
@@ -1856,7 +1860,7 @@ public function anadir_producto_temporal( $data ){
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -2318,6 +2322,7 @@ public function buscador_ajustes($data){
          
           $this->db->select('"'.$id_session.'" as id_usuario', false);
           $this->db->select('"'.$fecha_hoy.'" AS fecha_creacion',false);
+          $this->db->select('"15" as id_estatus', false); 
           
 
           
@@ -2497,7 +2502,7 @@ public function buscador_costos($data){
 
           
           $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
-          $this->db->select('p.imagen');
+          $this->db->select('p.imagen,p.id_estatus');
           $this->db->select('p.descripcion');
           $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
           $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");

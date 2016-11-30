@@ -282,7 +282,7 @@ class Devoluciones extends CI_Controller {
     
           $data['num_mov'] = $this->modelo_devolucion->procesando_operacion();
           $data['id_factura'] = 0; //porque pdfs_views espera un valor
-
+          $data['id_estatus'] = 13; //status de devolucion=13
           $this->load->library('ciqrcode');
           $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);
 
@@ -301,6 +301,7 @@ class Devoluciones extends CI_Controller {
               case 1:          
       
                    $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);
+                   
                          $this->load->view( 'pdfs/pdfs_view',$data );
                 break;
               case 2:
@@ -308,6 +309,7 @@ class Devoluciones extends CI_Controller {
               case 4:
                   if  (in_array(23, $coleccion_id_operaciones))  {                 
                          $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);
+                         
                          $this->load->view( 'pdfs/pdfs_view',$data );
                   }  else {
                     redirect('');      

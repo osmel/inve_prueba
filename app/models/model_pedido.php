@@ -444,7 +444,7 @@
                   foreach ($result->result() as $row) {
 
                          
-                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>';  
+                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>';  
                           
 
 
@@ -655,7 +655,7 @@
                   foreach ($result->result() as $row) {
 
 
-                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>'; 
+                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>'; 
 
 
 
@@ -1487,7 +1487,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
           //,m.movimiento,m.consecutivo
-          $this->db->select('m.id_usuario_apartado,m.peso_real, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_usuario_apartado,m.peso_real, m.id_estatus, m.id_cliente_apartado,m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('p.nombre comprador ');  
           $this->db->select('pr.nombre cliente ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
@@ -1596,7 +1596,7 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'" 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" 
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
@@ -1766,7 +1766,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado, m.peso_real, m.id_cliente_apartado, m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_usuario_apartado, m.id_estatus, m.peso_real, m.id_cliente_apartado, m.devolucion, m.num_partida');  //fecha falta
           $this->db->select('pr.nombre dependencia ');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
@@ -1886,7 +1886,7 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,

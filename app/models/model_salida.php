@@ -378,7 +378,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -650,7 +650,7 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       5=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'"
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
                                       6=>$row->nombre,
                                       7=>$row->id_lote.'-'.$row->consecutivo,
@@ -1190,6 +1190,17 @@
           $this->db->where('m.id_tipo_factura',$data["id_tipo_factura"]);
           $this->db->where('m.id_operacion',2);
           $this->db->where('m.mov_salida',$data['encabezado']['num_movimiento']);
+
+          if (!(isset($data['id_estatus']))) {
+             $this->db->where('m.id_estatus !=',15);
+          } else if ($data['id_estatus']==15) {
+             //$id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+             $this->db->where('m.id_estatus',$data['id_estatus']);
+          } else {
+             //$id_estatusid = '';
+            $this->db->where('m.id_estatus !=',15);
+          }               
+
 
           $this->db->order_by('m.id_lote', 'asc'); 
           $this->db->order_by('m.codigo', 'asc'); 
