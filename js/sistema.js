@@ -2974,10 +2974,15 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 		if ( jQuery('#botones').val() == "salida" ) {
 			if ( jQuery('#config_salida_activo').val() == 0 ) {
 				api.column(12).visible(false);		
-			}		
+			} else {
+				api.column(12).visible(true);		
+			}				
+
 		} else {
 			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(12).visible(false);		
+			} else {
+				api.column(12).visible(true);		
 			}	
 
 		}
@@ -3825,13 +3830,18 @@ jQuery('#tabla_home').dataTable( {
 		if ( jQuery('#botones').val() == "salida" ) {
 			if ( jQuery('#config_salida_activo').val() == 0 ) {
 				api.column(12).visible(false);		
-			}		
+			} else {
+				api.column(12).visible(true);		
+			}				
+
 		} else {
 			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(12).visible(false);		
+			} else {
+				api.column(12).visible(true);		
 			}	
-			
-		}
+
+		}		
 
 
 		switch(jQuery("#botones").val()) {
