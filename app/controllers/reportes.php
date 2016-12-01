@@ -27,30 +27,28 @@ class Reportes extends CI_Controller {
           $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
           if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
                 $coleccion_id_operaciones = array();
-           }   
-              $data['medidas']  = $this->catalogo->listado_medidas();
-              $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
-              $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
-              $data['productos'] = $this->catalogo->listado_productos_unico();
-              $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
-			  $dato['id'] = 7;
-		  	  $data['configuracion'] = $this->catalogo->coger_configuracion($dato);               
+           } 
+
+	              $data['medidas']  = $this->catalogo->listado_medidas();
+	             $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
+	                $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
+	             $data['productos'] = $this->catalogo->listado_productos_unico();
+	           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+	            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+						$dato['id'] = 7;
+			 $data['configuracion'] = $this->catalogo->coger_configuracion($dato);               
 
           switch ($id_perfil) {    
             case 1:          
-
                         $this->load->view( 'reportes/reportes',$data );
               break;
             case 2:
             case 3:
             case 4:
-                  if  (in_array(9, $coleccion_id_operaciones))  {                 
+                 if  (in_array(9, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'reportes/reportes',$data );
                  }   
               break;
-
-
             default:  
               redirect('');
               break;
@@ -59,9 +57,6 @@ class Reportes extends CI_Controller {
         else{ 
           redirect('');
         }  
-
-
-
 	}
 
 
