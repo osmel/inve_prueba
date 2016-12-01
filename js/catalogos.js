@@ -119,7 +119,7 @@ cuentas
 
 		}	
 
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(6).visible(false);		
 			}			
 
@@ -306,7 +306,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 			}	
 
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(6).visible(false);		
 			}			
 	    },
@@ -484,7 +484,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 			}	
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(6).visible(false);		
 			}			
 	    },
@@ -1729,6 +1729,7 @@ jQuery('table').on('click','.agregar_ajuste', function (e) {
 	proveedor = jQuery('.buscar_proveedor').typeahead("val");
 	cargador = jQuery('.buscar_cargador').typeahead("val");
 	movimiento = jQuery("#movimiento").val();
+	factura = jQuery("#factura").val();
 	id_almacen = jQuery("#id_almacen").val();
 	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
 	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
@@ -1747,6 +1748,7 @@ jQuery('table').on('click','.agregar_ajuste', function (e) {
 		        	id_cargador:cargador,
 		        	movimiento: movimiento,
 		        	id_almacen: id_almacen,
+		        	factura: factura,
 		        	id_tipo_pedido: id_tipo_pedido,
 		        	id_tipo_factura: id_tipo_factura,
 		        },
@@ -3654,8 +3656,8 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 });	
 
 /////////////////////////////////////////////////Status de pedido de compra/////////////////////////////////////////////////////////////////
-
-
+//
+//
 jQuery('#tabla_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
@@ -4809,7 +4811,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 			}	
 
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(5).visible(false);		
 			}	
 
@@ -5008,7 +5010,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 			}	
 
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(4).visible(false);		
 			}		
 
@@ -5155,7 +5157,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 			}	
 
 
-			if ( jQuery('#config_activo').val() == 0 ) {
+			if ( jQuery('#config_salida_activo').val() == 0 ) {
 				api.column(7).visible(false);		
 			}			
 

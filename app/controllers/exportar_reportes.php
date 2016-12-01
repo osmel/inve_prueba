@@ -41,7 +41,7 @@ class Exportar_reportes extends CI_Controller {
         $extra_search = ($this->input->post('extra_search'));
 
         $data=$_POST;
-        $dato['id'] = 7;
+        $dato['id'] = 7; //ok porq es para entrada y devolucion
         $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 
@@ -80,6 +80,10 @@ class Exportar_reportes extends CI_Controller {
 
 
             case "salida":
+
+                $dato['id'] = 10; //ok porq es solo para salida
+                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
                 $data['movimientos'] = $this->exportar_model->salida_home($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_salida_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);

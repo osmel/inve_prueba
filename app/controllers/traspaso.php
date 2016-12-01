@@ -50,7 +50,7 @@ public function modulo_traspaso(){
 
            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
-           $dato['id'] = 7;
+           $dato['id'] = 12;
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
            
@@ -103,7 +103,7 @@ public function modulo_traspaso(){
       } else {
 
 
-      $d_conf['id'] = 7;
+      $d_conf['id'] = 12;
       $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
       if (($d_conf['configuracion']->activo==1)) {  

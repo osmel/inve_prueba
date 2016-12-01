@@ -110,6 +110,9 @@ class Pdf_reportes extends CI_Controller {
                 /////
 
             case "salida":
+                  $dato['id'] = 10; //solo para salida
+                  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
                 $data['movimientos'] = $this->informes_model->salida_home($data);
                 $data['totales'] = $this->informes_model->totales_salidas($data);        
 

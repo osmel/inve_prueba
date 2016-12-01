@@ -182,7 +182,7 @@ public function impresion_etiquetas1($codigo) {
 
         $data['etiq_mov'] ="Salida";  
 
-       $dato['id'] = 7;
+       $dato['id'] = 10; //solo para salida
        $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
         $html = $this->load->view('pdfs/salidas/notas', $data, true);
@@ -265,7 +265,7 @@ public function impresion_etiquetas1($codigo) {
                 $data['etiq_mov'] ="Devolución";
           }
 
-        $dato['id'] = 7;
+        $dato['id'] = 10; //solo para salida
         $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
         $html = $this->load->view('pdfs/notas', $data, true);
         

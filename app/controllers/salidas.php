@@ -97,7 +97,7 @@ class Salidas extends CI_Controller {
      		   $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
-			   $dato['id'] = 7;
+			   $dato['id'] = 10;
                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 			   
@@ -199,7 +199,7 @@ class Salidas extends CI_Controller {
 			  }
 
 
-		      		$d_conf['id'] = 7;
+		      		$d_conf['id'] = 10;
 			$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
 			if (($d_conf['configuracion']->activo==1)) {  
@@ -346,7 +346,7 @@ class Salidas extends CI_Controller {
 				  }
 
 
-				$d_conf['id'] = 7;
+				$d_conf['id'] = 10;
 				$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
 				if (($d_conf['configuracion']->activo==1)) {  			      

@@ -52,8 +52,8 @@
 					</fieldset>			
 				</div>
 				
-				<?php if (($configuracion->activo==1)) {  ?> 
-					<div class="col-xs-12 col-sm-4 col-md-4">
+				
+					<div class="col-xs-12 col-sm-4 col-md-4" <?php echo 'style="display:'.( (($configuracion->activo==0) ) ? 'none':'block').'"'; ?>>
 						<?php if ($val_compra) { ?>
 						<fieldset class="disabledme" disabled>							
 						<?php } else { ?>
@@ -71,7 +71,7 @@
 							</div>
 						</fieldset>	
 					</div>
-				<?php }  ?> 	
+				
 
 					<!--almacen Asociado -->
 					<div class="col-xs-12 col-sm-6 col-md-4" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>

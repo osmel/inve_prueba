@@ -900,9 +900,6 @@ class Main extends CI_Controller {
 
 /////////////////////////////Hasta aqui la regilla de INICIO ///////////////////////////////////////
 
-
-
-
 	public function imprimir_reportes_apartado(){
 
 		 if($this->session->userdata('session') === TRUE ){
@@ -924,8 +921,6 @@ class Main extends CI_Controller {
 			   		set_time_limit(0); 
 			        ignore_user_abort(1);
 			        ini_set('memory_limit','512M'); 
-
-
 
 			        $this->load->library('Pdf');
 			        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);

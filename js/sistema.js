@@ -55,6 +55,13 @@ jQuery("#id_perfil").on('change', function(e) {
 
 		//console.log("data");
 
+		/*
+			La verdad, no siento molestia, siento indignación, porq de los amigos q tengo en el facebook, que son de nacionalidad cubana, 
+			ninguno fue perseguido politico, ninguno es hijo de desendencia millonaria $$$, ninguno a logrado rebasar las posibilidades que tenia en cuba,
+			ninguno esta en la lista de nuevo millonario $$$, los millonarios de $$$ en cuba se fueron junto con batista. Y aclaro millonario de $$$, pero ademas a ninguno en cuba lo conoci como oposición de fidel dentro de cuba, si lo que quieren es vender otra persona fuera de cuba se auto-engañan y mienten a los nuevos conocidos. que levante la mano, que tire la piedra aquel que no recibio apoyo de fidel o de la revolución cubana
+		*/
+
+
 		jQuery.ajax({
 		        //url : 'http://104.236.91.215/establecer_modulo',
 		        url : 'http://inventarios.dev.com/establecer_modulo',
@@ -2074,7 +2081,8 @@ jQuery.fn.dataTable.Api.register( 'column().data().sum()', function () {
 
 
 
-if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
+
+if ( jQuery('#config_entrada_activo').val() == 1 ) { //si tiene factura
 //home		
 		var existencia = ['Código', 'Producto', 'Color',  'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
 		var devolucion = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso','Factura', 'No. de Partida','Almacén'];
@@ -2095,7 +2103,8 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 
 } else { //sino tiene factura
 
-	//home		
+	//home	
+
 			var existencia = ['Código', 'Producto', 'Color',  'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
 			var devolucion = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
 			var apartado = ['Código', 'Producto', 'Color', 'Imagen', 'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha', 'No. de Partida','Almacén'];
@@ -2115,6 +2124,16 @@ if ( jQuery('#config_activo').val() == 1 ) { //si tiene factura
 	    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
 
 }
+
+
+if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
+
+		var salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso','Factura', 'No. de Partida','Almacén'];
+
+} else {
+			var salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso', 'No. de Partida','Almacén'];
+
+}	
 
 
 
@@ -2950,10 +2969,20 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 		}
 
 		 var api = this.api();
-		if ( jQuery('#config_activo').val() == 0 ) {
-			api.column(12).visible(false);		
-		}	
 
+		
+		if ( jQuery('#botones').val() == "salida" ) {
+			if ( jQuery('#config_salida_activo').val() == 0 ) {
+				api.column(12).visible(false);		
+			}		
+		} else {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
+				api.column(12).visible(false);		
+			}	
+
+		}
+
+		
 
 
 
@@ -3791,9 +3820,20 @@ jQuery('#tabla_home').dataTable( {
 
 		//quitar las columnas en cero y baja
 		 var api = this.api();
-		if ( jQuery('#config_activo').val() == 0 ) {
-			api.column(12).visible(false);		
-		}	
+
+
+		if ( jQuery('#botones').val() == "salida" ) {
+			if ( jQuery('#config_salida_activo').val() == 0 ) {
+				api.column(12).visible(false);		
+			}		
+		} else {
+			if ( jQuery('#config_entrada_activo').val() == 0 ) {
+				api.column(12).visible(false);		
+			}	
+			
+		}
+
+
 		switch(jQuery("#botones").val()) {
 		    case "cero":
 		    case "baja":

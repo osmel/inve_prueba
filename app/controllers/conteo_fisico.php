@@ -999,7 +999,7 @@ public function validar_proceso_sobrante(){
            
            $dato['id'] = $id_cliente_asociado;
            $data['nombre']   =  $this->catalogo->tomar_proveedor($dato)->nombre; 
-           $dato['id'] = 7;
+           $dato['id'] = 10;
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
             $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);

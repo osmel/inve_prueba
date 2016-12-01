@@ -84,19 +84,19 @@
 			</div>
 		</fieldset>	
 	</div>
-	<?php if (($configuracion->activo==1)) {  ?> 
-		<div class="col-xs-12 col-sm-4 col-md-2">
+	
+		<div class="col-xs-12 col-sm-4 col-md-2" style="display:<?php echo (($configuracion->activo==1)) ? 'block': 'none'; ?>" >
 			<fieldset disabled>							
 				<div class="form-group">
 				<label for="factura">Factura/Remisión</label>
 					<div>
-						<input value="1111" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">
+						<input value="F-Ajuste" type="text" class="form-control ttip" title="Introduzca un número de factura para continuar." id="factura" name="factura" placeholder="Factura">
 								
 					</div>
 				</div>
 			</fieldset>	
 		</div>
-	<?php }  ?> 	
+	
 </div>
 
 <div class="row">					

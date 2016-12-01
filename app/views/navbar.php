@@ -4,8 +4,11 @@
 	  $id_session = $this->session->userdata('id');
 	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 
-		$dato['id'] = 7;
-		$configuracion = $this->catalogo->coger_configuracion($dato); 
+		$dato['id'] = 7; //entrada
+		$configuracion_entrada = $this->catalogo->coger_configuracion($dato); 
+
+		$dato['id'] = 10; //salida
+		$configuracion_salida = $this->catalogo->coger_configuracion($dato); 
 
 		$dato['id'] = 8;
 		$this->session->set_userdata('config_almacen', $this->catalogo->coger_configuracion($dato));
@@ -79,7 +82,8 @@
 <input type="hidden" id="config_salida" name="config_salida" value="<?php echo $this->session->userdata('config_salida'); ?>">		
 
 <input type="hidden" id="config_almacen" name="config_almacen" value="<?php echo $config_almacen->activo; ?>" >
-<input type="hidden" id="config_activo" name="config_activo" value="<?php echo $configuracion->activo; ?>">
+<input type="hidden" id="config_entrada_activo" name="config_entrada_activo" value="<?php echo $configuracion_entrada->activo; ?>">
+<input type="hidden" id="config_salida_activo" name="config_salida_activo" value="<?php echo $configuracion_salida->activo; ?>">
 <input type="hidden" id="el_perfil" name="el_perfil" value="<?php echo $perfil; ?>">
 
 

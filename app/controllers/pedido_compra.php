@@ -86,7 +86,7 @@ impresion_reporte_compra
 
 
 
-         $dato['id'] = 7;
+         $dato['id'] = 11;
          $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
           //$data['movimientos'] = $this->model_traspaso->imprimir_detalle_general_traspaso_manual($data);        
@@ -174,7 +174,7 @@ public function proc_pedido_cambio(){
             $errores='';
 
         
-                $d_conf['id'] = 7;
+                $d_conf['id'] = 11;
                 $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
                 if (($d_conf['configuracion']->activo==1)) {  
@@ -277,9 +277,8 @@ public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
           $data['modulo']         = base64_decode($modulo);
           $data['retorno']         = base64_decode($retorno);
 
-          //print_r($data);
-          //die;
-          //Array ( [aprobado] => false [movimiento] => 1 [modulo] => 1 [retorno] => /pendiente_revision )
+         $dato['id'] = 11;
+         $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
           switch ($id_perfil) {    
             case 1:
@@ -357,7 +356,7 @@ public function detalle_revision($movimiento, $modulo){
            //Aqui busca el encabezado del pedido de compra
 
 
-          $dato['id'] = 7;
+          $dato['id'] = 11;
           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
            $data['proveedores']   = $this->modelo->coger_catalogo_proveedores(2);
@@ -539,6 +538,8 @@ public function modulo_pedido_compra($data){
            $data['mod']=5;      
            $data['cant'][5]   =  $this->model_pedido_compra->total_modulo($data);
 
+           $dato['id'] = 11;
+           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
            
 
           switch ($id_perfil) {    
@@ -592,7 +593,7 @@ public function nuevo_pedido_compra($url){
 
            $data['retorno'] = base64_decode($url);
 
-            $dato['id'] = 7;
+            $dato['id'] = 11;
             $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
            
@@ -709,7 +710,7 @@ function agregar_salida_compra(){
         redirect('');
       } else {
 
-          $d_conf['id'] = 7;
+          $d_conf['id'] = 11;
       $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
       if (($d_conf['configuracion']->activo==1)) {  
@@ -805,7 +806,7 @@ function quitar_salida_compra(){
 
         
 
-            $d_conf['id'] = 7;
+            $d_conf['id'] = 11;
         $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
         if (($d_conf['configuracion']->activo==1)) {  
@@ -872,6 +873,9 @@ function quitar_salida_compra(){
       
            $data['modulo']  = base64_decode($modulo); 
            $data['movimiento']  = base64_decode($movimiento); 
+
+           $dato['id'] = 11;
+           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
            //$data['retorno'] = base64_decode($modulo);
 

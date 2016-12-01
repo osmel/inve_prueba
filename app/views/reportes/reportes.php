@@ -215,8 +215,9 @@
 
 
 			                     
-								<fieldset <?php echo 'style="display:'.(($configuracion->activo==0) ? 'none':'block' ).'"'; ?> >
-									<div class="col-xs-12 col-sm-6 col-md-1" id="bloque_factura">
+								
+									<div class="col-xs-12 col-sm-6 col-md-1" id="bloque_factura" <?php echo 'style="display:'.(($configuracion->activo==0) ? 'none':'block' ).'"'; ?> >
+									
 											<div class="form-group">
 											<label id="label_proveedor" for="descripcion" class="col-sm-12 col-md-12">Factura</label>
 												<div class="col-sm-12 col-md-12">
@@ -224,7 +225,7 @@
 												</div>
 											</div>
 									</div>	
-								</fieldset>		
+								
 							</div>	
 
 

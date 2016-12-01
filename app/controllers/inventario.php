@@ -18,12 +18,12 @@ class Inventario extends CI_Controller {
   //Filtro La lista que es dependiente a un elemento padre
   function cargar_dependencia(){
     
-    $data['campo']        = $this->input->post('campo');
+    $data['campo']           = $this->input->post('campo');
 
     $data['val_prod']        = $this->input->post('val_prod');
-    $data['val_color']        = $this->input->post('val_color');
+    $data['val_color']       = $this->input->post('val_color');
     $data['val_comp']        = $this->input->post('val_comp');
-    $data['val_calida']        = $this->input->post('val_calida');
+    $data['val_calida']      = $this->input->post('val_calida');
 
     $data['dependencia']        = $this->input->post('dependencia');
 
