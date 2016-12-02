@@ -158,7 +158,7 @@
 
 					<!--Cliente Asociado -->
 					<div class="form-group">
-						<label for="id_cliente" class="col-sm-3 col-md-2 control-label">Empresa Relacionada</label>
+						<label for="id_cliente" class="col-sm-3 col-md-2 control-label">Sucursal</label>
 						<div class="col-sm-9 col-md-10">
 						<?php  if ( $this->session->userdata( 'id_perfil' ) != 1 ){ ?>											
 							<fieldset disabled>

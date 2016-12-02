@@ -241,8 +241,8 @@
           $this->db->select('p.id, p.uid, p.codigo, p.nombre,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 
 
           $this->db->select("( CASE WHEN ( LOCATE('1', p.coleccion_id_actividad) >0)  THEN 'Proveedor' else '' END ) AS p1",FALSE);
-          $this->db->select("( CASE WHEN ( LOCATE('2', p.coleccion_id_actividad) >0)  THEN 'Cliente' else '' END ) AS p2",FALSE);
-          $this->db->select("( CASE WHEN ( LOCATE('3', p.coleccion_id_actividad) >0)  THEN 'Empresa Relacionada' else '' END ) AS p3",FALSE);
+          $this->db->select("( CASE WHEN ( LOCATE('2', p.coleccion_id_actividad) >0)  THEN 'Sucursal' else '' END ) AS p2",FALSE);
+          $this->db->select("( CASE WHEN ( LOCATE('3', p.coleccion_id_actividad) >0)  THEN 'Cliente' else '' END ) AS p3",FALSE);
 
           $this->db->select("p.dias_ctas_pagar");
 

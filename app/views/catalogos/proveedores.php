@@ -20,18 +20,18 @@
 		<div class="row">
 			<br>
 			<div class="col-xs-12 col-sm-12 col-md-12 marginbuttom">
-				<div class="col-xs-12 col-sm-12 col-md-12"><h4>Catálogo de Proveedores / Clientes</h4></div>
+				<div class="col-xs-12 col-sm-12 col-md-12"><h4>Catálogo de Proveedores / Clientes / Sucursales</h4></div>
 			</div>	
 
 			<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
-				<a href="<?php echo base_url(); ?>nuevo_proveedor" type="button" class="btn btn-success btn-block">Nuevo proveedor</a>
+				<a href="<?php echo base_url(); ?>nuevo_proveedor" type="button" class="btn btn-success btn-block">Nuevo</a>
 			</div>
 
 		</div>
 		<br>
 		<div class="container row">
 		<div class="panel panel-primary">
-			<div class="panel-heading">Listado de proveedores</div>
+			<div class="panel-heading">Listado</div>
 			<div class="panel-body">
 				<div class="col-md-12">
 					<div class="table-responsive">
@@ -42,7 +42,7 @@
 								<thead>
 									<tr>
 										<th class="text-center cursora" width="15%">Código</th>
-										<th class="text-center cursora" width="20%">Proveedor </th>
+										<th class="text-center cursora" width="20%">Nombre </th>
 										<th class="text-center cursora" width="15%">Teléfono</th>
 										<th class="text-center cursora" width="15%">Actividad comercial </th>
 										<th class="text-center " width="5%"><strong>Días de Créditos</strong></th>

@@ -11,13 +11,13 @@
 <div class="container">
 		<br>	
 	<div class="row">
-		<div class="col-sm-8 col-md-8"><h4>Nuevo proveedor</h4></div>
+		<div class="col-sm-8 col-md-8"><h4>Nuevo</h4></div>
 	</div>
 	<br>
 	<div class="container row">
 
 		<div class="panel panel-primary">
-			<div class="panel-heading">Datos del proveedor</div>
+			<div class="panel-heading">Datos</div>
 			<div class="panel-body">
 
 				<div class="col-sm-6 col-md-6">

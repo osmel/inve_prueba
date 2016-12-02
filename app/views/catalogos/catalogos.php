@@ -58,7 +58,7 @@
 						<div class="col-md-3"></div>
 
 							<div class="col-md-6">
-								<a href="<?php echo base_url(); ?>proveedores" type="button" class="btn btn-primary btn-lg btn-block">Proveedores / Clientes</a>
+								<a href="<?php echo base_url(); ?>proveedores" type="button" class="btn btn-primary btn-lg btn-block">Proveedores / Clientes / Sucursales</a>
 							</div>
 
 						<div class="col-md-3"></div>
