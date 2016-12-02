@@ -159,7 +159,7 @@
  				<div class="row conteo_principal" style="display:none;">
 					<!--Tipos de factura -->
 						<div class="col-xs-12 col-sm-6 col-md-3" >
-								<div class="form-group">
+								
 									<label for="descripcion">Tipo de Factura</label>
 								    <!--Los administradores o con permisos de entrada 
 								    	Y que no este inhabilitado y 
@@ -174,7 +174,7 @@
 													<!--rol de usuario -->
 												</select>
 									    </div>
-								</div>
+								
 						</div>		
 
 

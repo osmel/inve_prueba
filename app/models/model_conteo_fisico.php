@@ -2004,7 +2004,7 @@ public function buscador_ajustes($data){
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
 
           
-          $this->db->select("p.id,p.consecutivo, p.grupo,p.referencia");    //p.codigo_contable,
+          $this->db->select("p.id,p.consecutivo, p.grupo,p.referencia,id_factura");    //p.codigo_contable,
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
           $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
@@ -2097,6 +2097,7 @@ public function buscador_ajustes($data){
                                       11=>$row->num_conteo,
                                       12=>abs($row->cantidad_royo-$row->conteo3),
                                       13=>$row->codigo_contable,
+                                      14=>$row->id_factura,
                                     );                    
 
                             $num_conteo = $row->num_conteo;
@@ -2350,6 +2351,7 @@ public function buscador_ajustes($data){
                      ) ' ; 
 
 
+
          $where_cond ='Todos;';
 
          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
@@ -2419,6 +2421,12 @@ public function buscador_ajustes($data){
           $objeto = $result->result();
 
           //copiar a tabla "registros"
+          
+          
+          
+
+          $where_cond= "<b>Tipo de Factura:</b> ".(($data['id_factura']!=1) ? "Factura " : "Remisión ").';'.(($data['proveedor']!=' ') ? "<b>Proveedor:</b> ".$data['proveedor'] : '').';'.$where_cond;
+
           foreach ($objeto as $key => $value) {
               $value->filtro = $where_cond;
               $this->db->insert($this->conteo_almacen, $value); 

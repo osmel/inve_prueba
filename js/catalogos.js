@@ -2334,7 +2334,8 @@ jQuery('#tabla_ajustes').dataTable( {
 									if  ( settings.json.generales.faltante==2 ) {
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_faltante').css('display','block');
-										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(2)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(15) );   
+										//  public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
+										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );   
 										//generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura)
 									} else {
 										jQuery("#hab_proceso").attr('disabled', false);					
@@ -2347,8 +2348,8 @@ jQuery('#tabla_ajustes').dataTable( {
 									if (settings.json.generales.sobrante==2){
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_sobrante').css('display','block');
-										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
-										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(2) );   
+										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
+										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
 
 									} else {
 										jQuery("#hab_proceso").attr('disabled', false);					
