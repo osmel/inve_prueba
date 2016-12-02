@@ -34,7 +34,7 @@
 						<div class="row">	
 								<div class="col-sm-4 col-md-5" style="margin-top:0px;">
 									<div class="form-group">
-										<label for="descripcion" class="col-sm-12 col-md-12">Empresa Asociada/Núm. Pedido</label>
+										<label for="descripcion" class="col-sm-12 col-md-12">Cliente/Núm. Pedido</label>
 											<input type="text" disabled class="form-control" id="etiq_comprador" name="etiq_comprador" placeholder="Iniciativa Textil">
 									</div>
 								</div>
@@ -48,7 +48,7 @@
 
 								<div class="col-sm-4 col-md-4">
 									<div class="form-group">
-										<label for="descripcion" class="col-sm-12 col-md-12">Dependencia</label>
+										<label for="descripcion" class="col-sm-12 col-md-12">Sucursal</label>
 											<input type="text" disabled class="form-control" id="etiq_cliente" name="etiq_cliente" placeholder="34534534554">
 									</div>
 								</div>							

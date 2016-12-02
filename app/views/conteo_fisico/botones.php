@@ -178,18 +178,7 @@
 						</div>		
 
 
-						<!--
-						<div class="col-xs-12 col-sm-6 col-md-4" >							
-								<div class="form-group">
-									<label for="descripcion">Cliente</label>
-									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">										
-										<input  identificador="" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Empresa Relacionada...">
-										
-									</div>
-								</div>							
-						</div>
-						-->
-
+						
 							<div id="proveedor_id" class="col-xs-12 col-sm-6 col-md-3">
 
 											<div class="form-group">

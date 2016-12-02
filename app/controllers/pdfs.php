@@ -265,7 +265,7 @@ public function impresion_etiquetas1($codigo) {
                 $data['etiq_mov'] ="Devolución";
           }
 
-        $dato['id'] = 10; //solo para salida
+        $dato['id'] = 7; //solo para salida
         $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
         $html = $this->load->view('pdfs/notas', $data, true);
         

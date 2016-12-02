@@ -6808,11 +6808,11 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
 
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
-				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_cliente').text("Cliente");
 				jQuery('#label_vendedor').text("Vendedor");
 				
 			} else {
-				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_cliente').text("Sucursal");
 				jQuery('#label_vendedor').text("Num. Mov");
 			}
 				
@@ -7359,11 +7359,11 @@ jQuery('#traspaso_general_detalle').dataTable( {
 		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
 
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
-				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_cliente').text("Cliente");
 				jQuery('#label_vendedor').text("Vendedor");
 				
 			} else {
-				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_cliente').text("Sucursal");
 				jQuery('#label_vendedor').text("Num. Mov");
 			}
 				
@@ -7543,11 +7543,11 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 		    jQuery('#etiq_motivos').html( settings.json.datos.motivos);
 
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
-				jQuery('#label_cliente').text("Empresa Asociada");
+				jQuery('#label_cliente').text("Cliente");
 				jQuery('#label_vendedor').text("Vendedor");
 				
 			} else {
-				jQuery('#label_cliente').text("Cliente");
+				jQuery('#label_cliente').text("Sucursal");
 				jQuery('#label_vendedor').text("Num. Mov");
 			}
 				

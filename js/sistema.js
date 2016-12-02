@@ -2148,9 +2148,9 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura'];
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 			
-			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-			var pedido_pendiente = ['Vendedor', 'Dependencia','Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
-			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
+			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
 
@@ -2171,9 +2171,9 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 			
-			var apartado_pendiente = ['Vendedor', 'Dependencia','Empresa Asociada', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
-			var pedido_pendiente = ['Vendedor', 'Dependencia','Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
-			var pedido_completo = ['Pedido realizado por:', 'Dependencia','Empresa Asociada/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
+			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén']; //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
 
@@ -6289,14 +6289,14 @@ jQuery('#pedido_completo_detalle').dataTable( {
 			
 			if (settings.json.datos.tipo_apartado=="Vendedor") {
 				jQuery('#label_cliente').text("Vendedor");
-				jQuery('#label_vendedor').text("Empresa Asociada/Núm. Pedido");
+				jQuery('#label_vendedor').text("Cliente/Núm. Pedido");
 
 				
 				jQuery('#etiq_num_mov').val(  settings.json.datos.cliente+'  Nro.'+jQuery('#consecutivo_venta').val());
 				jQuery('#etiq_cliente').val(  settings.json.datos.num_mov);	
 			} else {//pedidos internos
 				jQuery('#label_cliente').text("Vendedor");
-				jQuery('#label_vendedor').text("Empresa Asociada/Núm. Pedido");
+				jQuery('#label_vendedor').text("Cliente/Núm. Pedido");
 
 				jQuery('#etiq_num_mov').val(  ((settings.json.datos.cliente_pedido!=null)?settings.json.datos.cliente_pedido:'')+' Nro.'+settings.json.datos.num_mov);
 				jQuery('#etiq_cliente').val(  settings.json.datos.cliente);
