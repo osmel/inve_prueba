@@ -1435,7 +1435,7 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
           
           $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
           $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
-          $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, cantidad_royo, ancho');
+          $this->db->select('id_composicion, id_calidad, referencia, id_medida, factura, cantidad_um, cantidad_royo, ancho');
           $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
           $this->db->select('fecha_entrada,consecutivo_venta');
 

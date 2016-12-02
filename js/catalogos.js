@@ -3718,6 +3718,14 @@ jQuery('#tabla_pedido_compra').dataTable( {
 						i : 0;
 			};
 
+
+		if ( (jQuery("#config_compra_activo").val() == 1)  ) {
+			api.column(3).visible(true);
+		} else {
+			api.column(3).visible(false);
+		}	
+
+
 		if  (data.length>0) {   
 
 				//invisible columna de revisar para el caso de cancelar						

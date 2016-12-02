@@ -3066,7 +3066,16 @@ jQuery('#existencia_reporte').click(function (e) {
 
 
 	jQuery('#factura_reporte').val('');
+
+	/*
+	if (jQuery('#config_entrada_activo').val()==1 ) {
+		jQuery('#bloque_factura').css('display','block');
+	} else {
+		jQuery('#bloque_factura').css('display','none');
+	}*/
+
 	jQuery('#bloque_factura').css('display','block');
+
 	jQuery('.bloque_totales').css('display','block');
 
 
@@ -3121,7 +3130,14 @@ jQuery('#salida_reporte').click(function (e) {
 
     
     jQuery('#factura_reporte').val('');
-    jQuery('#bloque_factura').css('display','block');
+
+    
+    if (jQuery('#config_salida_activo').val()==1 ) {
+		jQuery('#bloque_factura').css('display','block');
+	} else {
+		jQuery('#bloque_factura').css('display','none');
+	}
+
    	jQuery('.bloque_totales').css('display','block');
 
 

@@ -10,6 +10,13 @@
 		$dato['id'] = 10; //salida
 		$configuracion_salida = $this->catalogo->coger_configuracion($dato); 
 
+		$dato['id'] = 11; //compra
+		$configuracion_compra = $this->catalogo->coger_configuracion($dato); 
+
+		$dato['id'] = 12; //traspaso
+		$configuracion_traspaso = $this->catalogo->coger_configuracion($dato); 
+
+
 		$dato['id'] = 8;
 		$this->session->set_userdata('config_almacen', $this->catalogo->coger_configuracion($dato));
 
@@ -84,6 +91,9 @@
 <input type="hidden" id="config_almacen" name="config_almacen" value="<?php echo $config_almacen->activo; ?>" >
 <input type="hidden" id="config_entrada_activo" name="config_entrada_activo" value="<?php echo $configuracion_entrada->activo; ?>">
 <input type="hidden" id="config_salida_activo" name="config_salida_activo" value="<?php echo $configuracion_salida->activo; ?>">
+<input type="hidden" id="config_compra_activo" name="config_compra_activo" value="<?php echo $configuracion_compra->activo; ?>">
+<input type="hidden" id="config_traspaso_activo" name="config_traspaso_activo" value="<?php echo $configuracion_traspaso->activo; ?>">
+
 <input type="hidden" id="el_perfil" name="el_perfil" value="<?php echo $perfil; ?>">
 
 
