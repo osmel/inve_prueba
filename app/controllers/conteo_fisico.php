@@ -145,14 +145,9 @@ public function generar_historico_inventarios(){
 
         $data['movimientos'] = $this->model_conteo_fisico->reporte_historico_conteo($data);
 
-        $html = $this->load->view('pdfs/conteos/resumen_conteos11', $data, true);
+        $html = $this->load->view('pdfs/conteos/resumen_conteos', $data, true);
 
-        
-        //print_r( $data['movimientos'][0] );
-        //die;
-        
-
-        
+              
 
 
         $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
