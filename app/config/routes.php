@@ -773,7 +773,10 @@ $route['procesando_conteo_historico']   	= 'conteo_fisico/procesando_conteo_hist
 $route['generar_conteos_historico/(:any)/(:any)/(:any)'] 	 = 'conteo_fisico/generar_conteos_historico/$1/$2/$3';
 
 
-$route['generar_historico_inventarios/(:any)'] 	 = 'conteo_fisico/generar_historico_inventarios/$1';
+//$route['generar_historico_inventarios/(:any)'] 	 = 'conteo_fisico/generar_historico_inventarios/$1';
+
+$route['generar_historico_inventarios'] 	 = 'conteo_fisico/generar_historico_inventarios';
+
 
 $route['almacen_ajuste_conteo']   	= 'conteo_fisico/almacen_ajuste_conteo';
 

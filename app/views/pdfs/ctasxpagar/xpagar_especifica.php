@@ -29,18 +29,19 @@
 						<th width="14%">Proveedor</th>
 
 						<th width="5%">Mov.</th>
+						<th width="10%">Factura</th>
 						
-						<th width="5%">Almacén</th>
+						<th width="7%">Almacén</th>
 						<th width="8%">Fecha Emisión</th>
 						<th width="8%">Fecha Vencimiento</th>
 
-						<th width="10%">Cargos</th>
-						<th width="10%">Abonos</th>
-						<th width="10%">Recargos</th>
-						<th width="10%">Descuentos</th>
+						<th width="8%">Cargos</th>
+						<th width="8%">Abonos</th>
+						<th width="8%">Recargos</th>
+						<th width="8%">Descuentos</th>
 
-						<th width="10%">Saldo</th>		
-						<th width="10%">Días por Vencer</th>		
+						<th width="8%">Saldo</th>		
+						<th width="8%">Días por Vencer</th>		
 						
 										
 						
@@ -76,23 +77,23 @@
 							<td width="29%" >
 
 							</td>								
-							<td width="10%" >
+							<td width="22%" >
 								<b style="font-size:14px;">Subtotal: </b>
 								
 							</td>									
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($total, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($abono, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($recargo, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="11%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($descuento, 2, '.', ','); ?></b>
 							</td>		
 							<td width="13%" >
@@ -142,16 +143,17 @@
 
 
 							<td width="5%" ><?php echo $movimiento->movimiento; ?></td>		
-							
-							<td width="5%" ><?php echo $movimiento->almacen; ?></td>
+							<td width="10%" ><?php echo $movimiento->factura; ?></td>
+
+							<td width="7%" ><?php echo $movimiento->almacen; ?></td>
 							<td width="8%" ><?php echo $movimiento->fecha; ?></td>
 							<td width="8%" ><?php echo $movimiento->fecha_vencimiento; ?></td>
-							<td width="10%" ><?php echo number_format($movimiento->total, 2, '.', ','); ?></td>
-							<td width="10%" ><?php echo number_format($movimiento->abono, 2, '.', ','); ?></td>
-							<td width="10%" ><?php echo number_format($movimiento->recargo, 2, '.', ','); ?></td>
-							<td width="10%" ><?php echo number_format($movimiento->descuento, 2, '.', ','); ?></td>
-							<td width="10%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
-							<td width="10%" ><?php echo abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar); ?></td>
+							<td width="8%" ><?php echo number_format($movimiento->total, 2, '.', ','); ?></td>
+							<td width="8%" ><?php echo number_format($movimiento->abono, 2, '.', ','); ?></td>
+							<td width="8%" ><?php echo number_format($movimiento->recargo, 2, '.', ','); ?></td>
+							<td width="8%" ><?php echo number_format($movimiento->descuento, 2, '.', ','); ?></td>
+							<td width="8%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+							<td width="8%" ><?php echo abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar); ?></td>
 						</tr>
 					<?php endforeach; ?>
 
@@ -160,26 +162,26 @@
 							<td width="29%" >
 
 							</td>								
-							<td width="10%" >
+							<td width="22%" >
 								<b style="font-size:14px;">Subtotal: </b>
 								
 							</td>									
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($total, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($abono, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($recargo, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="11%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($descuento, 2, '.', ','); ?></b>
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo, 2, '.', ','); ?></b>
 							</td>		
 
@@ -204,26 +206,26 @@
 							<td width="29%" >
 
 							</td>								
-							<td width="10%" >
+							<td width="22%" >
 								<b style="font-size:14px;">Total: </b>
 								
 							</td>									
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($total2, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($abono2, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($recargo2, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="11%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($descuento2, 2, '.', ','); ?></b>
 							</td>		
-							<td width="10%" >
+							<td width="8%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo2, 2, '.', ','); ?></b>
 							</td>		
 

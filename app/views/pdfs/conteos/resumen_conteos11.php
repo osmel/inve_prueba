@@ -57,7 +57,6 @@
 						<tr>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->consecutivo; ?></td>		
 							<?php
-
 								   $arreglo= explode(";", $movimiento->filtro);
 		                           $filtro =''; 
 		                           for ($i=0; $i < count($arreglo); $i++) { 
@@ -65,11 +64,9 @@
 		                                $filtro .= (($i!=0) ? '<br/>': '').$arreglo[$i];
 		                             }
 		                           }
-
-
 							?>
 
-							<td width="40%" style="border-top: 1px solid #222222;"><?php echo $filtro; ?></td>		
+							<td width="40%" style="border-top: 1px solid #222222;"><?php print_r(addslashes($movimiento->filtro) ); ?></td>		
 
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo ($movimiento->cant_faltante>0) ? "Si":"No"; ?></td>	
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo ($movimiento->mov_faltante!=0) ? "Si":"No"; ?></td>	

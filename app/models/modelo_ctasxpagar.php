@@ -15,24 +15,24 @@
 
       
         //usuarios
-      $this->usuarios    = $this->db->dbprefix('usuarios');
+      $this->usuarios                 = $this->db->dbprefix('usuarios');
         //catalogos     
-      $this->actividad_comercial     = $this->db->dbprefix('catalogo_actividad_comercial');
-      $this->cargadores             = $this->db->dbprefix('catalogo_cargador');
+      $this->actividad_comercial      = $this->db->dbprefix('catalogo_actividad_comercial');
+      $this->cargadores               = $this->db->dbprefix('catalogo_cargador');
       
-      $this->estratificacion_empresa = $this->db->dbprefix('catalogo_estratificacion_empresa');
+      $this->estratificacion_empresa  = $this->db->dbprefix('catalogo_estratificacion_empresa');
       
-      $this->productos               = $this->db->dbprefix('catalogo_productos');
-      $this->proveedores             = $this->db->dbprefix('catalogo_empresas');
-      $this->unidades_medidas        = $this->db->dbprefix('catalogo_unidades_medidas');
+      $this->productos                = $this->db->dbprefix('catalogo_productos');
+      $this->proveedores              = $this->db->dbprefix('catalogo_empresas');
+      $this->unidades_medidas         = $this->db->dbprefix('catalogo_unidades_medidas');
 
-      $this->operaciones             = $this->db->dbprefix('catalogo_operaciones');
-      $this->movimientos               = $this->db->dbprefix('movimientos');
+      $this->operaciones              = $this->db->dbprefix('catalogo_operaciones');
+      $this->movimientos              = $this->db->dbprefix('movimientos');
       $this->registros_temporales               = $this->db->dbprefix('temporal_registros');
-      $this->registros               = $this->db->dbprefix('registros_entradas');
+      $this->registros                = $this->db->dbprefix('registros_entradas');
       
 
-      $this->colores                 = $this->db->dbprefix('catalogo_colores');
+      $this->colores                  = $this->db->dbprefix('catalogo_colores');
       
       $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
 
@@ -940,7 +940,7 @@ public function impresion_pagosrealizados($data){
          
           
           //encabezado
-          $this->db->select('pr.movimiento, a.almacen, p.nombre');
+          $this->db->select('pr.movimiento, pr.factura, a.almacen, p.nombre');
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);
@@ -1010,7 +1010,7 @@ public function impresion_ctasxpagar($data){
           $id_almacen= $data['id_almacen'];
           $id_factura= $data['id_factura'];
 
-          $this->db->select('m.movimiento');
+          $this->db->select('m.movimiento, m.factura');
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
@@ -1250,7 +1250,7 @@ public function impresion_ctas_especificas($data){
           $id_almacen= $data['id_almacen'];
           $id_factura= $data['id_factura'];
 
-          $this->db->select('m.movimiento');
+          $this->db->select('m.movimiento,m.factura');
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago,m.id_factura');
 
@@ -1379,7 +1379,7 @@ public function impresion_ctas_detalladas($data){
           $id_factura= $data['id_factura'];
 
           $this->db->select('p.nombre');
-          $this->db->select('m.movimiento');
+          $this->db->select('m.movimiento,m.factura');
           $this->db->select('m.total');
           $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('pr.importe');
@@ -1489,7 +1489,7 @@ public function impresion_ctas_antiguedad($data){
           $id_almacen= $data['id_almacen'];
           $id_factura= $data['id_factura'];
 
-          $this->db->select('m.movimiento');
+          $this->db->select('m.movimiento,m.factura');
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
@@ -1621,7 +1621,7 @@ public function exportar_ctasxpagar($data){
           $id_factura= $data['id_factura'];
 
 
-          $this->db->select('m.movimiento');
+          $this->db->select('m.movimiento,m.factura');
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 

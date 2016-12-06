@@ -95,34 +95,67 @@
 
 
 public function reporte_historico_conteo($data){
-         // $cadena = addslashes($data['search']['value']);
+          $cadena = addslashes($data['busqueda']);
           
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          $this->db->select("p.consecutivo,p.filtro");
+          $this->db->select("p.consecutivo , p.filtro"); //
+          //$this->db->select("2 as filtro");
           $this->db->select("p.cantidad_royo, p.conteo3, p.mov_faltante, p.mov_sobrante");
           $this->db->select("sum(p.cantidad_royo>p.conteo3)*1 as cant_faltante", FALSE);
           $this->db->select("sum(p.cantidad_royo<p.conteo3)*1 as cant_sobrante", FALSE);
           $this->db->select("prov.nombre AS vendedor",FALSE);
           
-          
-          
           $this->db->from($this->historico_conteo_almacen.' as p');
           $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
           $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+          $this->db->join($this->proveedores.' As provee' , 'provee.id = p.id_empresa','LEFT');  
 
-          /*     (
-                        ( p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
-                        (p.mov_faltante LIKE  "%'.$cadena.'%") OR
-                        (p.mov_sobrante LIKE  "%'.$cadena.'%") 
-                       ) AND
-          */
+          if ($data["id_almacen"]==0){
+            $id_almacenid = '';
+          } else {
+            $id_almacenid = ' AND (p.id_almacen =  '.$data["id_almacen"].')';   
+          }
+          
+
+
+          if ($data["id_factura"]==0){
+            $id_facturaid = '';
+          } else {
+            $id_facturaid = ' AND (p.id_factura =  '.$data["id_factura"].')';   
+          }
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((p.fecha_creacion),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((p.fecha_creacion),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }            
+
+
+          
+          if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
+            $proveedorid= 'and ( provee.nombre =  "'.addslashes($data['proveedor']).'" ) ';
+          } else {
+            $proveedorid = '';
+          }
 
           $where = '(
-                       ( (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3) )
+                      
+                      (
+                        (p.filtro LIKE  "%'.$cadena.'%" ) OR 
+                        (p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
+                        (p.mov_faltante LIKE  "%'.$cadena.'%") OR
+                        (p.mov_sobrante LIKE  "%'.$cadena.'%") 
+                       ) AND (  (p.num_conteo>=3)'.$id_almacenid.$id_facturaid.$fechas.$proveedorid.' )
 
             ) ' ;                         
 
-          $this->db->where($where);
+          $this->db->where($where);          
+
 
           $this->db->group_by('p.consecutivo');
 
@@ -387,7 +420,40 @@ public function buscador_historico_conteo($data){
           $this->db->from($this->historico_conteo_almacen.' as p');
           $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
           $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+          $this->db->join($this->proveedores.' As provee' , 'provee.id = p.id_empresa','LEFT');  
 
+          if ($data["id_almacen"]==0){
+            $id_almacenid = '';
+          } else {
+            $id_almacenid = ' AND (p.id_almacen =  '.$data["id_almacen"].')';   
+          }
+          
+
+
+          if ($data["id_factura"]==0){
+            $id_facturaid = '';
+          } else {
+            $id_facturaid = ' AND (p.id_factura =  '.$data["id_factura"].')';   
+          }
+
+          $fechas = ' ';
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $fechas .= ' AND ( ( DATE_FORMAT((p.fecha_creacion),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((p.fecha_creacion),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } else {
+           $fechas .= ' ';
+          }            
+
+
+          
+          if ( (addslashes($data['proveedor'])!="")  && (addslashes($data['proveedor'])!= null) ) {
+            $proveedorid= 'and ( provee.nombre =  "'.addslashes($data['proveedor']).'" ) ';
+          } else {
+            $proveedorid = '';
+          }
 
           $where = '(
                       
@@ -396,7 +462,7 @@ public function buscador_historico_conteo($data){
                         (p.consecutivo LIKE  "%'.$cadena.'%" ) OR 
                         (p.mov_faltante LIKE  "%'.$cadena.'%") OR
                         (p.mov_sobrante LIKE  "%'.$cadena.'%") 
-                       ) AND ( (p.id_almacen =  '.$data["id_almacen"].') AND  (p.num_conteo>=3) )
+                       ) AND (  (p.num_conteo>=3)'.$id_almacenid.$id_facturaid.$fechas.$proveedorid.' )
 
             ) ' ;                         
 
@@ -466,14 +532,13 @@ public function buscador_historico_conteo($data){
               }
 
               $result->free_result();   
-              
-              
       }  
 
         public function total_ajustes_historico($where){
              $this->db->from($this->historico_conteo_almacen.' as p');
              $this->db->join($this->usuarios.' As us' , 'us.id = p.id_usuario','LEFT');
              $this->db->join($this->proveedores.' As prov' , 'prov.id = us.id_cliente','LEFT');
+             $this->db->join($this->proveedores.' As provee' , 'provee.id = p.id_empresa','LEFT');  
 
               $this->db->where($where);
               $this->db->group_by('p.consecutivo');
@@ -2412,6 +2477,7 @@ public function buscador_ajustes($data){
           $where_total = '(cantidad_royo>0)';          
  
          
+
 
 
 

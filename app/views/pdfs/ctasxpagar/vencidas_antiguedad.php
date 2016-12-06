@@ -29,13 +29,14 @@
 					<tr>
 						<th width="15%">Proveedor</th>
 						<th width="6%">Mov.</th>
+						<th width="8%">Factura</th>
 						<th width="7%">Almacén</th>
 						<th width="10%">Fecha Emisión</th>
 						<th width="10%">Fecha Vencimiento</th>
-						<th width="13%">de 1 a 7</th>
-						<th width="13%">de 8 a 14</th>
-						<th width="13%">de 15 o más</th>
-						<th width="13%">Saldo</th>		
+						<th width="11%">de 1 a 7</th>
+						<th width="11%">de 8 a 14</th>
+						<th width="11%">de 15 o más</th>
+						<th width="11%">Saldo</th>		
 						<!-- <th width="6%">Días por Vencer</th>	-->
 					</tr>
 				</thead>
@@ -66,23 +67,23 @@
 							<td width="36%" >
 
 							</td>								
-							<td width="11%" >
+							<td width="19%" >
 								<b style="font-size:14px;">Subtotal: </b>
 								
 							</td>									
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo1, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo2, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo3, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo, 2, '.', ','); ?></b>
 							</td>
 							
@@ -137,6 +138,7 @@
 
 
 							<td width="6%" ><?php echo $movimiento->movimiento; ?></td>		
+							<td width="8%" ><?php echo $movimiento->factura; ?></td>
 							
 							<td width="7%" ><?php echo $movimiento->almacen; ?></td>
 							<td width="10%" ><?php echo $movimiento->fecha; ?></td>
@@ -144,29 +146,27 @@
 							
 							
 							<?php if (abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar)<=7) { ?>
-								<td width="13%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+								<td width="11%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
 							<?php } else { ?>
-								<td width="13%" >0.00</td>
+								<td width="11%" >0.00</td>
 							<?php } ?>	
 							
 							<?php if ((abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar)>=8) &&(abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar)<=14)) { ?>
-								<td width="13%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+								<td width="11%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
 							<?php } else { ?>
-								<td width="13%" >0.00</td>
+								<td width="11%" >0.00</td>
 							<?php } ?>	
 
 							
 							<?php if (abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar)>=15) { ?>
-								<td width="13%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+								<td width="11%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
 							<?php } else { ?>
-								<td width="13%" >0.00</td>
+								<td width="11%" >0.00</td>
 							<?php } ?>	
 							
 
-							<td width="13%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
+							<td width="11%" ><?php echo (($movimiento->monto_restante==null) ? $movimiento->total : $movimiento->monto_restante); ?></td>
 
-							<!-- <td width="6%" ><?php echo abs($movimiento->diferencia_dias-$movimiento->dias_ctas_pagar); ?></td> -->
-						
 							
 							
 						</tr>
@@ -177,23 +177,23 @@
 							<td width="36%" >
 
 							</td>								
-							<td width="11%" >
+							<td width="19%" >
 								<b style="font-size:14px;">Subtotal: </b>
 								
 							</td>									
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo1, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo2, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo3, 2, '.', ','); ?></b>
 								
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo, 2, '.', ','); ?></b>
 							</td>
 							
@@ -218,22 +218,22 @@
 							<td width="36%" >
 
 							</td>								
-							<td width="11%" >
+							<td width="19%" >
 								<b style="font-size:14px;">Total: </b>
 								
 							</td>									
 							
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo21, 2, '.', ','); ?></b>
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo22, 2, '.', ','); ?></b>
 							</td>		
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo23, 2, '.', ','); ?></b>
 							</td>																
 							
-							<td width="13%" >
+							<td width="11%" >
 								<b style="font-size:14px;"><?php echo number_format($saldo20, 2, '.', ','); ?></b>
 							</td>		
 						</tr>

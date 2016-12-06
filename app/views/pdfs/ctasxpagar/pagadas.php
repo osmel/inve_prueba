@@ -26,9 +26,10 @@
 					<tr>
 
 						<th width="5%">Mov.</th>
-						<th width="10%">Tipo Pago  </th>
-						<th width="10%">Almacén</th>
-						<th width="25%">Proveedor</th>
+						<th width="6%">Factura</th>
+						<th width="8%">Tipo Pago  </th>
+						<th width="8%">Almacén</th>
+						<th width="23%">Proveedor</th>
 						
 						<th width="10%">Fecha Creación</th>
 						<th width="10%">Fecha Vencimiento</th>
@@ -45,9 +46,10 @@
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
 							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>					
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_pago; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
-							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
+							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>		
+							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_pago; ?></td>
+							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
+							<td width="23%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha_pagada; ?></td>

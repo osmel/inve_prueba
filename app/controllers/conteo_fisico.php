@@ -15,6 +15,19 @@ class Conteo_fisico extends CI_Controller {
 
     $this->load->library(array('email')); 
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
+
+
+$this->load->library('form_validation');
+$this->load->library('session');
+$this->load->helper('form');
+$this->load->helper('url');
+$this->load->library('cart');
+
+$this->load->helper('string');
+$this->load->library('email');
+$this->load->library("Pdf");
+
+
   }
 
 
@@ -88,9 +101,76 @@ class Conteo_fisico extends CI_Controller {
 
 
 
+public function generar_historico_inventarios(){
+        $data=$_POST;
 
-   public function generar_historico_inventarios($id_almacen){
-        $data['id_almacen']       = base64_decode($id_almacen);
+
+        /////////////
+
+        set_time_limit(0); 
+        ignore_user_abort(1);
+        ini_set('memory_limit','512M'); 
+
+        $this->load->library('Pdf');
+        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle('Titulo Generación de Etiqueta');
+        $pdf->SetSubject('Subtitulo');
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+ 
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+ 
+
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+ 
+        $pdf->setFontSubsetting(true);
+
+        $pdf->SetFont('Times', '', 8,'','true');
+
+ 
+        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+ 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        $pdf->SetMargins(10, 10, 10,true);
+        
+        $pdf->SetAutoPageBreak(true, 10);
+
+        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+
+        $data['movimientos'] = $this->model_conteo_fisico->reporte_historico_conteo($data);
+
+        $html = $this->load->view('pdfs/conteos/resumen_conteos11', $data, true);
+
+        
+        //print_r( $data['movimientos'][0] );
+        //die;
+        
+
+        
+
+
+        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+ 
+        $nombre_archivo = utf8_decode("Conteos_".$data['id_almacen'].".pdf");
+        $pdf->Output($nombre_archivo, 'I');
+
+
+
+    }
+
+/*
+
+   //public function generar_historico_inventarios($id_almacen){
+    public function generar_historico_inventarios(){
+        $data=$_POST;
+
+        //$data['id_almacen']       = base64_decode($id_almacen);
         /////////////
 
         set_time_limit(0); 
@@ -149,10 +229,11 @@ class Conteo_fisico extends CI_Controller {
         $nombre_archivo = utf8_decode("Conteos_".$data['id_almacen'].".pdf");
         $pdf->Output($nombre_archivo, 'I');
 
+  }
+
+  */
 
 
-    }
-  
   public function procesando_conteo_historico(){
       $data=$_POST;
       $this->session->set_userdata('id_almacen_ajuste', $data['id_almacen']);
@@ -229,13 +310,15 @@ public function historial_conteos($data){
                     $coleccion_id_operaciones = array();
                }                 
 
-               $data['modulo'] = 1;
-               $data['vista']  = "tabla_historico_conteo";
-               $data['id_almacen'] =$this->session->userdata('id_almacen_ajuste');   
-               $data['almacenes'] = $this->modelo->listado_almacenes();  
-               $data['proveedor'] = "";
-               $data['id_factura']=1;
-               $data['productos']   = $this->catalogo->listado_productos_existente($data);  
+                   $data['modulo'] = 1;
+                   $data['vista']  = "tabla_historico_conteo";
+               $data['id_almacen'] = $this->session->userdata('id_almacen_ajuste');   
+                $data['almacenes'] = $this->modelo->listado_almacenes();  
+                $data['proveedor'] = "";
+               $data['id_factura'] = 1;
+               $data['productos']  = $this->catalogo->listado_productos_existente($data);
+
+               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');  
 
               switch ($id_perfil) {    
                 case 1: 

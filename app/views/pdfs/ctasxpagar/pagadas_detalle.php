@@ -28,9 +28,11 @@
 
 						<th width="25%">Proveedor</th>
 						<th width="10%">Mov.</th>
-						<th width="10%">Almacén</th>
+						<th width="7%">Factura</th>
+
+						<th width="8%">Almacén</th>
 						
-						<th width="15%">Tipo</th>
+						<th width="10%">Tipo</th>
 						<th width="15%">Operación</th>
 						<th width="10%">Fecha</th>
 						<th width="15%" style="text-align:right;">Importe</th>
@@ -88,9 +90,10 @@
 										<td width="25%" ></td>
 									<?php }	?>
 									<td width="10%" ><?php echo $movimiento->movimiento; ?></td>		
-									<td width="10%" ><?php echo $movimiento->almacen; ?></td>
+									<td width="7%" ><?php echo $movimiento->factura; ?></td>		
+									<td width="8%" ><?php echo $movimiento->almacen; ?></td>
 									
-									<td width="15%" ><?php echo $movimiento->tipo_factura; ?></td>
+									<td width="10%" ><?php echo $movimiento->tipo_factura; ?></td>
 									<td width="15%" ><b>Cargo</b></td>
 									<td width="10%" ><?php echo $movimiento->fecha; ?></td>
 									<td width="15%" style="text-align:right;"><?php echo number_format($movimiento->total, 2, '.', ','); ?></td>
