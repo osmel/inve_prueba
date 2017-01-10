@@ -74,7 +74,7 @@
 			</div>
 		</fieldset>	
 	</div>
-	<div class="col-xs-12 col-sm-4 col-md-3">
+	<div class="col-xs-12 col-sm-4 col-md-3" style="display:none;">
 		<fieldset disabled>
 			<div class="form-group">
 				<label for="descripcion">Cargador</label>

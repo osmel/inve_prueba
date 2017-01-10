@@ -301,7 +301,7 @@ public function buscador_historial_conteo($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen.$row->cantidad_royo,
+                                      2=>$imagen,//.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,
@@ -744,7 +744,7 @@ public function buscador_resumen_conteo($data){
           $objeto = $result->result();
           
           //eliminar los registros en "registros_entradas"
-          $this->db->delete($this->registros_entradas, array('id_usuario'=>$id_session,'estatus_salida'=>'1','id_almacen'=>$data["id_almacen"])); 
+          $this->db->delete($this->registros_entradas, array('id_usuario_salida'=>$id_session,'estatus_salida'=>'1','id_almacen'=>$data["id_almacen"])); 
 
           //actualizar a registros_salidas el "mov_salida" al consecutivo q le toque
           $this->db->set('id_estatus', 15, FALSE  );
@@ -2149,7 +2149,7 @@ public function buscador_ajustes($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen.$row->conteo3,
+                                      2=>$imagen, //.$row->conteo3,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,
@@ -2491,7 +2491,7 @@ public function buscador_ajustes($data){
           
           
 
-          $where_cond= "<b>Tipo de Factura:</b> ".(($data['id_factura']!=1) ? "Factura " : "Remisión ").';'.(($data['proveedor']!=' ') ? "<b>Proveedor:</b> ".$data['proveedor'] : '').';'.$where_cond;
+          $where_cond= "<b>Tipo de Factura:</b> ".(($data['id_factura']==1) ? "Factura " : "Remisión ").';'.(($data['proveedor']!=' ') ? "<b>Proveedor:</b> ".$data['proveedor'] : '').';'.$where_cond;
 
           foreach ($objeto as $key => $value) {
               $value->filtro = $where_cond;
@@ -2654,7 +2654,7 @@ public function buscador_costos($data){
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$imagen.$row->cantidad_royo,
+                                      2=>$imagen,//.$row->cantidad_royo,
                                       3=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,

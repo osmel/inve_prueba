@@ -2540,6 +2540,8 @@
               $this->db->where('id_usuario_apartado', $id_session );
               $this->db->where('id_apartado', 4 );
 
+              $this->db->where('peso_real', 0);
+
               $this->db->update($this->registros );
 
               //actualizar (consecutivo) en tabla "operacion"   == "generar_pedido"

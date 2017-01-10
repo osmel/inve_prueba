@@ -61,11 +61,8 @@ class Pdfs_model extends CI_Model
           $this->db->where('m.devolucion',$data['dev']);
           
           if ($data['id_estatus']!=0) {
-            // $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
             $this->db->where('m.id_estatus',$data['id_estatus']);
-          } else {
-             //$id_estatusid = '';
-          }                      
+          }
 
           if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
             $this->db->where('m.id_factura',$data['id_factura']);
@@ -83,21 +80,33 @@ class Pdfs_model extends CI_Model
 
         }     
 
-
-
-
       public function totales_salidas($data){
-
           
             $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
             $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
             $this->db->select("COUNT(m.id_medida) as 'pieza'");
             $this->db->select("sum(m.peso_real) as 'peso_real'");
+            $this->db->select('sum(m.precio) as sum_precio');           
+            $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
+            $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
 
             $this->db->from($this->historico_registros_salidas.' as m');
 
             $this->db->where('m.id_operacion',2);
             $this->db->where('m.mov_salida',$data['id_movimiento']);
+            $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
+            $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
+
+            if (!(isset($data['id_estatus']))) {
+               $this->db->where('m.id_estatus !=',15);
+            } else if ($data['id_estatus']==15) {
+               $this->db->where('m.id_estatus',$data['id_estatus']);
+            } else {
+              $this->db->where('m.id_estatus !=',15);
+            }    
+
+
+
   
             $result = $this->db->get();
 
@@ -133,6 +142,8 @@ class Pdfs_model extends CI_Model
           $this->db->select('co.composicion');
           $this->db->select('m.peso_real');
           $this->db->select('a.almacen');
+
+          $this->db->select('m.id_factura');
           
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1

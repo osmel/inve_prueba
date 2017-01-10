@@ -2728,7 +2728,7 @@ public function buscador_historico_salida($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.mov_salida,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.factura,m.id_estatus');
+          $this->db->group_by('m.mov_salida,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.id_estatus'); //m.factura,
 
           
           //ordenacion
@@ -2870,7 +2870,7 @@ public function totales_importes_salida($where){
 
               $this->db->where($where);          
 
-              $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.factura,m.id_estatus');
+              $this->db->group_by('m.mov_salida,m.id_almacen,m.id_cliente,m.id_estatus'); //m.factura,
 
              $result = $this->db->get();
 

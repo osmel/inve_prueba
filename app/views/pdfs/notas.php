@@ -22,8 +22,11 @@
 								<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
 						</th>
 						<th width="30%" style="text-align:right;">
-						  	
-							<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
+						<?php if ($movimientos[0]->id_factura!=2) { ?>
+								<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
+							<?php } ?>	
+
+						
 						</th>
 
 					</tr>

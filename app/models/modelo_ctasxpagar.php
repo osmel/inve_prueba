@@ -940,7 +940,7 @@ public function impresion_pagosrealizados($data){
          
           
           //encabezado
-          $this->db->select('pr.movimiento, pr.factura, a.almacen, p.nombre');
+          $this->db->select('pr.movimiento,  a.almacen, p.nombre');
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('subtotal');           
           $this->db->select("iva", FALSE);

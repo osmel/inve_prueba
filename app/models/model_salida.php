@@ -765,9 +765,12 @@
 
              $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
 
+             /*
              if  (isset($data['factura'])) {
               $this->db->select('"'.addslashes($data['factura']).'" AS factura',false); 
-             } 
+             } */
+
+             $this->db->select('factura');
 
              $this->db->select('"'.htmlspecialchars($data['id_cliente']).'" AS id_cliente',false);
              $this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);

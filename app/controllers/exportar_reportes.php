@@ -131,14 +131,6 @@ class Exportar_reportes extends CI_Controller {
             default:
         }
 
-
-
-
     }
-
-
-
-
-
 
 }
