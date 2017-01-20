@@ -288,11 +288,11 @@
  <br>
 
 	<div class="row">
-		<div class="col-sm-4 col-md-4">	</div>
+		<div class="col-sm-4 col-md-<?php echo ( $el_perfil!=1 ) ? 4:8; ?>">	</div>
 		<div class="col-sm-4 col-md-4 marginbuttom">
 			<a href="<?php echo $retorno; ?>" type="button" class="btn btn-danger btn-block">Regresar</a>
 		</div>
-		<div class="col-sm-4 col-md-4">
+		<div class="col-sm-4 col-md-4"  <?php echo 'style="display:'.( ( $el_perfil!=1 ) ? 'block':'none').'"'; ?>  >
 				<button id="proc_aprobado" type="button"  class="btn btn-success btn-block">
 					<span class="">Confirmar y guardar</span>
 				</button>

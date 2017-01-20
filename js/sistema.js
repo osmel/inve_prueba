@@ -63,8 +63,9 @@ jQuery("#id_perfil").on('change', function(e) {
 
 
 		jQuery.ajax({
+				url : '/establecer_modulo',
 		        //url : 'http://104.236.91.215/establecer_modulo',
-		        url : 'http://inventarios.dev.com/establecer_modulo',
+		        //url : 'http://inventarios.dev.com/establecer_modulo',
 		        //url : 'establecer_modulo',
 		        data:{
 		        	hash_url:hash_url

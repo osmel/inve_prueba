@@ -2669,9 +2669,10 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 		        url : url,
 		        type : 'POST',
 		       	data : { 
-		        	arreglo_cantidad:arreglo_cantidad,
+		        	
 		        	id_almacen:id_almacen,		
 		        	modulo:modulo,
+		        	arreglo_cantidad:arreglo_cantidad,
 		        },
 		        dataType : 'json',
 		        success : function(data) {	
@@ -3546,7 +3547,7 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 				jQuery("#disa_reportes").attr('disabled', true);					
 		}
 
-
+			
 	    return pre
   	} ,  	
 
@@ -3747,9 +3748,12 @@ jQuery('#tabla_pedido_compra').dataTable( {
 				if ( (jQuery("#mi_perfil").val() != '2') ) {
 					switch(jQuery("#modulo").val()) {
 					    case '2':
-					    case '3':
 						    	api.column(8).visible(false);
 						    	api.column(9).visible(false);
+
+					    case '3':
+						    	//api.column(8).visible(false);
+						    	//api.column(9).visible(false);
 					        break;
 					    default:
 			              break;

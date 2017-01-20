@@ -2430,6 +2430,7 @@
 
             $this->db->set( 'id_usuario_apartado', $id_session, FALSE  );
             $this->db->set( 'id_apartado', 4);
+            $this->db->set( 'peso_real', 0); //esto es para q aparezca en 0 el peso_real cdo haga pedido
             $this->db->set( 'fecha_apartado', $fecha_hoy);  
             $this->db->set( 'id_cliente_apartado', $data['id_movimiento']);
             $this->db->set( 'consecutivo_venta', $data['id_cliente']);
@@ -2540,7 +2541,7 @@
               $this->db->where('id_usuario_apartado', $id_session );
               $this->db->where('id_apartado', 4 );
 
-              $this->db->where('peso_real', 0);
+              //$this->db->where('peso_real', 0);
 
               $this->db->update($this->registros );
 

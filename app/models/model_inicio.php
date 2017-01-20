@@ -1474,6 +1474,7 @@ precio_nodisp
 
                 $this->db->set( 'id_tipo_factura', $data['id_tipo_factura']);
                 $this->db->set( 'id_tipo_pedido', $data['id_tipo_pedido']);
+                $this->db->set( 'peso_real', 0); //esto es para q aparezca en 0 el peso_real cdo haga pedido
 
 
                 $this->db->update($this->registros );

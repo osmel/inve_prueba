@@ -683,6 +683,8 @@ public function procesando_conteos(){
 public function procesar_por_conteo(){
 
 
+       
+      
        if($this->session->userdata('session') === TRUE ){
             $id_perfil=$this->session->userdata('id_perfil');
 
@@ -694,7 +696,37 @@ public function procesar_por_conteo(){
             $errores='';
 
 
-              $data['cantidad'] =  json_decode(json_encode( $this->input->post('arreglo_cantidad') ),true  );
+                //para big data ("datos grandes"). Para leer arreglo
+                       $rawdata = file_get_contents('php://input');
+                       $urldecoded = urldecode($rawdata);
+                       $pairs = explode("&", $urldecoded);
+                        $todo = array();
+                        $vars = array();
+                        foreach ($pairs as $pair) {
+                            $nv = explode("=", $pair);
+                            $name = urldecode($nv[0]);
+                            $value = urldecode($nv[1]);
+                            $pos = strpos($name, 'arreglo_cantidad');
+                                if ($pos !== false) {
+                                  parse_str($name.'='.$value, $output);
+                                  $todo[] = $output;
+                                }
+                            }
+
+                  
+                        foreach ($todo as $key => $value) {
+                          foreach ($value['arreglo_cantidad'] as $key1 => $value1) {
+                            foreach ($value1 as $key2 => $value2) {
+                              $vars[$key1][$key2] = $value2;
+                            }  
+                           } 
+                        }
+
+
+
+              $data['cantidad'] = $vars;
+                // json_decode(json_encode( $this->input->post('arreglo_cantidad') ),true  );
+      
             $data['id_almacen'] =   $this->input->post('id_almacen');
                 $data['modulo'] =   $this->input->post('modulo');
             

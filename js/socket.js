@@ -3,7 +3,7 @@ $(function(){
   window.MY_Socket = {
     
   // Instanciar al "cliente Socket.IO" y conectar con el servidor
-	//socket : io.connect('http://104.236.91.215:8080'),
+	//socket : io.connect('http://162.243.163.167:8080'),
   socket : io.connect('http://localhost:8080'),
 	//socket : io.connect('http://localhost:8080'),
   // Configurar los controladores de eventos iniciales para el cliente Socket.IO
