@@ -859,6 +859,39 @@ jQuery('body').on('click','.impresion_ctas', function (e) {
 
 //2- imprimir
 
+jQuery('body').on('click','.impresion_ctas_especificas_rapida', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_especificas', { //_rapida
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
 jQuery('body').on('click','.impresion_ctas_especificas', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
@@ -893,6 +926,39 @@ jQuery('body').on('click','.impresion_ctas_especificas', function (e) {
 });
 
 //3- imprimir
+jQuery('body').on('click','.impresion_ctas_detalladas_rapida', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_detalladas', { //_rapida
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
 jQuery('body').on('click','.impresion_ctas_detalladas', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
@@ -926,7 +992,6 @@ jQuery('body').on('click','.impresion_ctas_detalladas', function (e) {
 	
 });
 
-
 //4- imprimir
 jQuery('body').on('click','.impresion_ctas_antiguedad', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
@@ -944,6 +1009,39 @@ jQuery('body').on('click','.impresion_ctas_antiguedad', function (e) {
 
 
     abrir('POST', 'impresion_ctas_antiguedad', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_operacion: id_operacion,
+			
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+			id_almacen:id_almacen,
+			id_factura:id_factura,
+	    fecha_inicial2:fecha_inicial2,
+		  fecha_final2:fecha_final2,
+		  proveedor:proveedor,   			
+
+    }, '_blank' );
+		        
+	
+});
+
+jQuery('body').on('click','.impresion_ctas_antiguedad_rapida', function (e) {
+  	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
+	    extra_search = jQuery(this).attr('tipo'); 
+		id_operacion=1;
+		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+	    id_almacen = jQuery("#id_almacen_historicos").val(); 
+	    id_factura = jQuery("#id_factura_historicos").val(); 
+		var fecha = (jQuery('.fecha_historicos[tipo="'+extra_search+'"]').val()).split(' / ');
+		fecha_inicial2 = fecha[0];
+		fecha_final2 = fecha[1];	    
+		proveedor = jQuery("#editar_proveedor_historico").val(); 	   
+
+
+    abrir('POST', 'impresion_ctas_antiguedad', { //_rapida
     			busqueda:busqueda,
 			extra_search:extra_search,
 			id_operacion: id_operacion,

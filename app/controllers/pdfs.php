@@ -356,7 +356,7 @@ public function impresion_etiquetas1($codigo) {
 
 
 
-        $html = $this->load->view('pdfs/etiq_new', $data, true);
+        $html = $this->load->view('pdfs/etiq_new_rapida', $data, true);
         echo $html;       
     }
 

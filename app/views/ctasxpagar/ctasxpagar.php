@@ -15,6 +15,8 @@
 
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
+	$config_impresion= $this->session->userdata('config_impresion');
+
 
 ?>   
 					<div class="col-md-2" > </div>
@@ -171,9 +173,15 @@
 									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="vencidas">Historico de Pagos por proveedor</a>
 								</div>								
 								-->
+
+
 								<div class="col-sm-3 col-md-3 marginbuttom">
-									<a type="button" class="btn btn-success btn-block impresion_ctas_antiguedad" tipo="vencidas">Antiguedad</a>
+									<a type="button" class="btn btn-success btn-block impresion_ctas_antiguedad_rapida" tipo="vencidas">Antiguedad</a>
 								</div>								
+
+								<div class="col-sm-3 col-md-3 marginbuttom"  <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<a type="button" class="btn btn-success btn-block impresion_ctas_antiguedad" tipo="vencidas">PDF Antiguedad</a>
+								</div>							
 
 
 			                </fieldset>	
@@ -270,9 +278,14 @@
 									<a id="exportar_ctasxpagar" type="button" class="btn btn-success btn-block exportar_ctas" tipo="xpagar" >Exportar</a>
 								</div>
 
-								<div class="col-sm-3 col-md-3 marginbuttom">
-									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas" tipo="xpagar">Reporte de Pago General</a>
+								<div class="col-sm-3 col-md-3 marginbuttom" >
+									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas_rapida" tipo="xpagar">Reporte de Pago General</a>
 								</div>								
+
+								<div class="col-sm-3 col-md-3 marginbuttom"  <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<a type="button" class="btn btn-success btn-block impresion_ctas_especificas" tipo="xpagar">PDF Reporte de Pago General</a>
+								</div>								
+
 								<!--
 								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="xpagar">Historico de Pagos por proveedor</a>
@@ -384,7 +397,10 @@
 								-->							
 
 								<div class="col-sm-3 col-md-3 marginbuttom">
-									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="pagadas">Historico de Pagos por proveedor</a>
+									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas_rapida" tipo="pagadas">Historico de Pagos por proveedor</a>
+								</div>									
+								<div class="col-sm-3 col-md-3 marginbuttom"  <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<a type="button" class="btn btn-success btn-block impresion_ctas_detalladas" tipo="pagadas">PDF Historico de Pagos por proveedor</a>
 								</div>									
 
 							</fieldset>			

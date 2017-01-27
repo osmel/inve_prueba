@@ -694,6 +694,10 @@ $route['impresion_ctas_detalladas']			= 'ctasxpagar/impresion_ctas_detalladas';
 $route['impresion_ctas_antiguedad']			= 'ctasxpagar/impresion_ctas_antiguedad';
 
 
+$route['impresion_ctas_especificas_rapida']			= 'ctasxpagar/impresion_ctas_especificas_rapida';
+$route['impresion_ctas_detalladas_rapida']			= 'ctasxpagar/impresion_ctas_detalladas_rapida';
+$route['impresion_ctas_antiguedad_rapida']			= 'ctasxpagar/impresion_ctas_antiguedad_rapida';
+
 $route['impresion_ctas_detalle']			= 'ctasxpagar/impresion_ctas_detalle';
 
 
