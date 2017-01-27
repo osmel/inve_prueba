@@ -22,12 +22,9 @@ if (ltrim($retorno)=="") {
 		$regreso = " Regresar";
 }
 
-
+	$config_impresion= $this->session->userdata('config_impresion');
  
 
-//print_r($movimientos->devolucion);
-
-    //print_r($retorno);
   
 $hidden = array('id_movimiento'=>$num_mov,'id_factura'=>$id_factura); 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas1','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
@@ -41,25 +38,51 @@ echo form_open('pdfs/generar', $attr,$hidden );
 			<div class="panel-body">		
 					
 					
-				<div class="col-sm-6 col-md-6">
+				<div class="col-sm-<?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 6:0).'"'; ?> col-md-<?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 6:0).'"'; ?>">
 				</div>	
+
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
 					
-					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
+					<a href="<?php echo base_url(); ?>generar_etiquetas_rapida/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
 					
 
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
 						
 					</a>
+
+				
 				</div>
+
+				
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
+					<a href="<?php echo base_url(); ?>generar_notas_rapida/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>
 
+
+				<div class="col-sm-3 col-md-3" <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+					<label for="descripcion" class="col-sm-12 col-md-12"></label>
+					
+				
+
+					<a href="<?php echo base_url(); ?>generar_etiquetas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
+					
+
+						type="button" class="btn btn-success btn-block" target="_blank">PDF etiquetas
+						
+					</a>
+				</div>				
+
+
+				<div class="col-sm-3 col-md-3" <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+					<label for="descripcion" class="col-sm-12 col-md-12"></label>
+					<a href="<?php echo base_url(); ?>generar_notas/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
+						type="button" class="btn btn-success btn-block" target="_blank">PDF nota
+					</a>
+				</div>
 
 
 			<div class="col-sm-12 col-md-12" style="margin-top:20px;">

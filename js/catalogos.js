@@ -2357,14 +2357,20 @@ jQuery('#tabla_ajustes').dataTable( {
 									if (settings.json.generales.sobrante==2){
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_sobrante').css('display','block');
+										
+										jQuery('#imp_etiq_rapida').attr('href','/generar_etiquetas_rapida/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
 										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
+
+										jQuery('#imp_nota_rapida').attr('href','/generar_notas_rapida/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
 										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
 
 									} else {
 										jQuery("#hab_proceso").attr('disabled', false);					
 
 										jQuery('#imp_sobrante').css('display','none');
+										jQuery('#imp_etiq_rapida').attr("href","");   
 										jQuery('#imp_etiq').attr("href","");   
+										jQuery('#imp_nota_rapida').attr("href","");   
 										jQuery('#imp_nota').attr("href","");   
 									}
 								}	
@@ -5510,6 +5516,57 @@ jQuery('.fecha_costo').daterangepicker(
 		oTable._fnAjaxUpdate();
 
 	});	
+
+
+
+
+//Agregar las estradas a salidas
+jQuery('body').on('click','#impresion_rapido_costo', function (e) {
+
+	  	  busqueda      = jQuery('input[type=search]').val();
+	   extra_search = 'reportes_costo'; //jQuery("#botones").val(); 
+	   id_estatus = jQuery("#id_estatuss_costo").val(); 
+	   id_almacen = jQuery("#id_almacen_costo").val(); 
+
+	   id_descripcion = jQuery("#producto").val(); 
+	   if (id_descripcion !='') {
+	   	  id_descripcion = jQuery('#producto option:selected').text();
+	   }
+
+	   id_color = jQuery("#color").val(); 
+	   id_composicion = jQuery("#composicion").val(); 
+	   id_calidad = jQuery("#calidad").val(); 
+		
+		factura_reporte = jQuery('#factura_costo').val();					
+
+		proveedor = jQuery("#editar_proveedor_costo").val(); 	   
+
+		var fecha = (jQuery('.fecha_costo').val()).split(' / ');
+
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+
+
+    abrir('POST', 'imprimir_rapida', {
+    			busqueda:busqueda,
+			extra_search:extra_search,
+			id_estatus:id_estatus,
+			id_almacen: id_almacen,
+
+			id_descripcion:id_descripcion, 
+			id_color:id_color, 
+			id_composicion:id_composicion, 
+			id_calidad:id_calidad,
+
+			factura_reporte: factura_reporte,
+
+			proveedor:proveedor, 
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+    }, '_blank' );
+		        
+	
+});
 
 
 

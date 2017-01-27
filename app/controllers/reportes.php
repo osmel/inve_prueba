@@ -38,6 +38,8 @@ class Reportes extends CI_Controller {
 						$dato['id'] = 7;
 			 $data['configuracion'] = $this->catalogo->coger_configuracion($dato);               
 
+			 
+
           switch ($id_perfil) {    
             case 1:          
                         $this->load->view( 'reportes/reportes',$data );
@@ -45,7 +47,7 @@ class Reportes extends CI_Controller {
             case 2:
             case 3:
             case 4:
-                 if  (in_array(9, $coleccion_id_operaciones))  {                 
+                 if ( (in_array(9, $coleccion_id_operaciones)) || (in_array(61, $coleccion_id_operaciones)) ) {                 
                             $this->load->view( 'reportes/reportes',$data );
                  }   
               break;
@@ -304,7 +306,7 @@ class Reportes extends CI_Controller {
             case 2:
             case 3:
             case 4:
-                  if  (in_array(9, $coleccion_id_operaciones))  {                 
+                  if  (in_array(61, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'reportes/costo_inventario/costo_inventario',$data );
                  }   
               break;
@@ -358,7 +360,7 @@ public function procesando_costo_inventario(){ //13=>$row->num_partida,
             case 2:
             case 3:
             case 4:
-                  if  (in_array(9, $coleccion_id_operaciones))  {                 
+                  if  (in_array(61, $coleccion_id_operaciones))  {                 
                             $this->load->view( 'reportes/costo_inventario/costo_rollo',$data );
                  }   
               break;

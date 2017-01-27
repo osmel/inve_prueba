@@ -1,5 +1,7 @@
 	<?php 
 
+		$config_impresion= $this->session->userdata('config_impresion');
+
 		$id_almacen_ajuste = 	$this->session->userdata( 'id_almacen_ajuste' );
 		//echo $id_almacen_ajuste;
 	 ?>
@@ -115,17 +117,36 @@
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
 									
-									<a id="imp_etiq" href="" 
+									<a id="imp_etiq_rapida" href="" 
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
 									</a>
 								</div>
 
+								
+
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a id="imp_nota" href=""  
+									<a id="imp_nota_rapida" href=""  
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 									</a>
 								</div>
+
+								<div class="col-sm-3 col-md-3" <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									
+									<a id="imp_etiq" href="" 
+										type="button" class="btn btn-success btn-block" target="_blank">PDF etiquetas
+									</a>
+								</div>
+
+								<div class="col-sm-3 col-md-3" <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<label for="descripcion" class="col-sm-12 col-md-12"></label>
+									<a id="imp_nota" href=""  
+										type="button" class="btn btn-success btn-block" target="_blank">PDF nota
+									</a>
+								</div>
+
+
 							</fieldset>						
 
 

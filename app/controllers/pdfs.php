@@ -131,6 +131,33 @@ public function impresion_etiquetas1($codigo) {
         $pdf->Output($nombre_archivo, 'I');
     }
 
+
+  public function generar_salida_rapida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
+
+        $data['id_movimiento']       = base64_decode($id_movimiento);
+        $data['id_tipo_pedido']      = base64_decode($id_tipo_pedido);
+        $data['id_tipo_factura']     = base64_decode($id_tipo_factura);
+        $data['id_estatus']     = base64_decode($id_estatus);
+        /////////////
+
+        $data['movimientos'] = $this->modelo_pdf->listado_salida($data);
+
+        $data['totales'] = $this->modelo_pdf->totales_salidas($data);      
+
+        $data['etiq_mov'] ="Salida";  
+
+       $dato['id'] = 10; //solo para salida
+       $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
+        $html = $this->load->view('pdfs/salidas/notas_rapida', $data, true);
+        
+
+        echo $html;
+
+
+    }
+
+
   public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
 
         $data['id_movimiento']       = base64_decode($id_movimiento);
@@ -199,6 +226,41 @@ public function impresion_etiquetas1($codigo) {
 
 
 
+    }
+
+
+
+  public function generar_notas_rapida($id_movimiento,$dev,$id_factura,$id_estatus) {
+
+        $data['dev']= base64_decode($dev);    
+        $data['id_movimiento']= base64_decode($id_movimiento);
+        $data['id_factura']= base64_decode($id_factura);
+        $data['id_estatus']= base64_decode($id_estatus);
+
+
+
+
+        $data['movimientos'] = $this->modelo_pdf->listado_registros($data);
+
+        $data['totales'] = $this->modelo_pdf->totales_entradas($data);
+
+
+        
+
+
+          if  ($data['dev'] == 0) {
+                $data['etiq_mov'] ="Entrada";
+          }
+          
+          if  ($data['dev'] == 1) {
+                $data['etiq_mov'] ="Devolución";
+          }
+
+        $dato['id'] = 7; //solo para salida
+        $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+        $html = $this->load->view('pdfs/notas_rapida', $data, true);
+        
+        echo $html;
     }
 
 
@@ -279,6 +341,23 @@ public function impresion_etiquetas1($codigo) {
 // Este método tiene varias opciones, consulte la documentación para más información.
         $nombre_archivo = utf8_decode("Entrada_".$data['id_movimiento'].".pdf");
         $pdf->Output($nombre_archivo, 'I');
+    }
+
+
+
+
+   public function generar_etiquetas_rapida($id_movimiento,$dev,$id_factura,$id_estatus) {
+        $data['dev']= base64_decode($dev);    
+        $data['id_movimiento']= base64_decode($id_movimiento);
+        $data['id_factura']= base64_decode($id_factura);
+        $data['id_estatus']= base64_decode($id_estatus);
+
+        $data['movimientos'] = $this->modelo_pdf->listado_registros($data);
+
+
+
+        $html = $this->load->view('pdfs/etiq_new', $data, true);
+        echo $html;       
     }
 
  

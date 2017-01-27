@@ -14,6 +14,8 @@
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 
+	$config_impresion= $this->session->userdata('config_impresion');
+
 ?>
 
 
@@ -225,12 +227,17 @@
 						   	<div class="notif-bot-pedidos"></div>
 							
 							<fieldset id="disa_reportes" disabled>
-								<div class="col-sm-4 col-md-4 marginbuttom">
-									<a id="impresion_reporte_costo" type="button" class="btn btn-success btn-block">Imprimir</a>
+								
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a id="impresion_rapido_costo" type="button" class="btn btn-success btn-block">Imprimir</a>
 								</div>
 
-								<div class="col-sm-4 col-md-4 marginbuttom">
+								<div class="col-sm-3 col-md-3 marginbuttom">
 									<a id="exportar_reportes_costo" type="button" class="btn btn-success btn-block">Exportar</a>
+								</div>
+
+								<div class="col-sm-3 col-md-3 marginbuttom" <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+									<a id="impresion_reporte_costo" type="button" class="btn btn-success btn-block">PDF</a>
 								</div>
 
 							</fieldset>			

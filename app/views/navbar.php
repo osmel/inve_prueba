@@ -4,6 +4,13 @@
 	  $id_session = $this->session->userdata('id');
 	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 
+
+  		$dato['id'] = 13; //impresion lenta
+		$this->session->set_userdata('config_impresion', $this->catalogo->coger_configuracion($dato));
+
+		$config_impresion= $this->session->userdata('config_impresion');
+
+
 		$dato['id'] = 7; //entrada
 		$configuracion_entrada = $this->catalogo->coger_configuracion($dato); 
 
@@ -85,6 +92,7 @@
 ?>	
 
 
+<input type="hidden" id="config_impresion" name="config_impresion" value="<?php echo $config_impresion->activo; ?>" >
 
 <input type="hidden" id="config_salida" name="config_salida" value="<?php echo $this->session->userdata('config_salida'); ?>">		
 
@@ -156,7 +164,7 @@
 					<?php } ?>						
 
 
-					 <?php if ( ( $perfil == 1 ) || (in_array(9, $coleccion_id_operaciones)) ) { ?>
+					 <?php if ( ( $perfil == 1 ) || (in_array(9, $coleccion_id_operaciones)) || (in_array(61, $coleccion_id_operaciones)) ) { ?>
 						<li id="bar_reportes">
 							<a title="Sección de reportes." href="<?php echo base_url(); ?>reportes" class="ttip color-blanco">Reportes</a> 
 						</li>

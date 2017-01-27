@@ -23,6 +23,7 @@
 	}
     
 
+	$config_impresion= $this->session->userdata('config_impresion');
   
 $hidden = array('id_movimiento'=>$encabezado['num_movimiento']); 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas1','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
@@ -64,8 +65,15 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 				<div class="col-sm-4 col-md-4" style="margin-bottom:25px">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
+					<a href="<?php echo base_url(); ?>generar_salida_rapida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
+					</a>
+				</div>				
+
+				<div class="col-sm-4 col-md-4"  <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
+					<label for="descripcion" class="col-sm-12 col-md-12"></label>
+					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
+						type="button" class="btn btn-success btn-block" target="_blank">PDF nota
 					</a>
 				</div>
 

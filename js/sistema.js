@@ -1174,6 +1174,70 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
 
 
 
+
+jQuery('body').on('click','#impresion_rapida', function (e) {
+	
+
+	//codigo = jQuery.base64.encode('1420150716lTvr62600130072015_1'); //jQuery("#editar_prod_inven").val(); 
+	
+	  //$('input[type=search]').on('search', function () {	
+
+	  	  busqueda      = jQuery('input[type=search]').val();
+	   extra_search = jQuery("#botones").val(); 
+	   id_estatus = jQuery("#id_estatuss").val(); 
+	   id_almacen = jQuery("#id_almacen_reporte").val(); 
+
+	   id_factura = jQuery("#id_factura_reporte").val(); 
+
+
+	     				   //datos del producto
+	   //id_descripcion = jQuery("#producto").val(); 
+	   //id_descripcion = jQuery('#producto option:selected').text();
+
+	   id_descripcion = jQuery("#producto").val(); 
+	   if (id_descripcion !='') {
+	   	  id_descripcion = jQuery('#producto option:selected').text();
+	   }
+	   //alert(id_descripcion);
+
+	   id_color = jQuery("#color").val(); 
+	   id_composicion = jQuery("#composicion").val(); 
+	   id_calidad = jQuery("#calidad").val(); 
+		
+		factura_reporte = jQuery('#factura_reporte').val();					
+
+		proveedor = jQuery("#editar_proveedor_reporte").val(); 	   
+
+		var fecha = (jQuery('.fecha_reporte').val()).split(' / ');
+
+		fecha_inicial = fecha[0];
+		fecha_final = fecha[1];
+
+
+    abrir('POST', 'imprimir_rapida', {
+    			busqueda:busqueda,
+    			id_factura:id_factura,
+			extra_search:extra_search,
+			id_estatus:id_estatus,
+			id_almacen: id_almacen,
+
+			id_descripcion:id_descripcion, 
+			id_color:id_color, 
+			id_composicion:id_composicion, 
+			id_calidad:id_calidad,
+
+			factura_reporte: factura_reporte,
+
+			proveedor:proveedor, 
+			fecha_inicial:fecha_inicial, 
+			fecha_final: fecha_final,
+    }, '_blank' );
+		        
+	
+});
+
+
+
 //Agregar las estradas a salidas
 jQuery('body').on('click','#impresion_reporte', function (e) {
 	

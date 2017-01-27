@@ -342,7 +342,9 @@ $route['validar_proceso']    = 'entradas/validar_proceso';
 
 
 $route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
+$route['generar_etiquetas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas_rapida/$1/$2/$3/$4';
     $route['generar_notas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3/$4';
+    $route['generar_notas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas_rapida/$1/$2/$3/$4';
 
 $route['pdfs']    = 'pdfs/index';
 
@@ -356,6 +358,7 @@ $route['procesando_servidor_salida']    = 'salidas/procesando_servidor_salida';
 $route['quitar_prod_salida']		    = 'salidas/quitar_prod_salida';
 
 $route['generar_salida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3/$4';
+$route['generar_salida_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida_rapida/$1/$2/$3/$4';
 
 
 
@@ -783,6 +786,7 @@ $route['almacen_ajuste_conteo']   	= 'conteo_fisico/almacen_ajuste_conteo';
 /////////////////////////////new_implementacion////////////////////////
 
 $route['imprimir_reportes']    = 'pdf_reportes/imprimir_reportes';
+$route['imprimir_rapida']    = 'pdf_reportes/imprimir_rapida';
 
 $route['procesando_cat_producto']    = 'catalogos/procesando_cat_producto';
 
