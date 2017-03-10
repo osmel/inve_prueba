@@ -397,8 +397,8 @@
           $this->db->select('m.peso_real');
           $this->db->select('m.precio, m.iva');
 
-           $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
-           $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);
+           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total", FALSE);
 
 
 
@@ -468,7 +468,7 @@
                                       10=>$row->metros,
                                       11=>$row->kilogramos,  
                                       12=>$row->peso_real,  
-                                      13=>$row->precio, 
+                                      13=>$row->precio*$row->cantidad_um, 
                                       14=>$row->iva, 
                                       15=>$row->sum_iva, 
                                       16=>$row->sum_total, 
@@ -524,9 +524,9 @@
 
 public function totales_importes($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(precio*cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(precio*cantidad_um*iva))/100 as iva", FALSE);
+           $this->db->select("SUM(precio*cantidad_um)+(SUM(precio*cantidad_um*iva))/100 as total", FALSE);
    
           $this->db->from($this->registros_temporales.' as m');
           $this->db->where($where);
@@ -833,9 +833,9 @@ public function totales_importes($where){
                   $this->db->select('m.fecha_mac, m.id_operacion,m.id_usuario');
                   $this->db->select('m.comentario');
                   
-                  $this->db->select('sum(m.precio) as subtotal');           
-                  $this->db->select("sum(m.precio*m.iva)/100 as iva", FALSE);
-                  $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as total", FALSE);
+                  $this->db->select('sum(m.precio*m.cantidad_um) as subtotal');           
+                  $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as iva", FALSE);
+                  $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as total", FALSE);
                   $this->db->select('m.id_estatus');
 
                   $this->db->from($this->registros_temporales.' as m');
@@ -920,9 +920,9 @@ public function totales_importes($where){
 
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
 
-          $this->db->select('(m.precio) as sum_precio');           
-          $this->db->select("(m.precio*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio)+(((m.precio*m.iva))/100) as sum_total", FALSE);
+          $this->db->select('(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
 
           $this->db->select("prod.codigo_contable");            

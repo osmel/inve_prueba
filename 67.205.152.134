@@ -1,0 +1,78 @@
+server {
+    listen       80 default_server;
+    listen       [::]:80 default_server;
+    server_name  67.205.152.134;       # _;
+    root        /gluster/www;
+    rewrite_log  on;
+    index index.html index.php;
+
+    # Load configuration files for the default server block.
+    #include /etc/nginx/default.d/*.conf;
+
+    if ($host ~* ^www\.(.*))  {
+        set $host_without_www $1;
+        rewrite ^/(.*)$ $scheme://$host_without_www/$1 permanent;
+    }
+
+    # canonicalize codeigniter url end points
+    # if your default controller is something other than "welcome" you should change the following
+
+    if ($request_uri ~* ^(/main(/index)?|/index(.php)?)/?$)    {
+        rewrite ^(.*)$ / permanent;
+    }
+
+    # removes trailing "index" from all controllers
+    if ($request_uri ~* index/?$) {
+        rewrite ^/(.*)/index/?$ /$1 permanent;
+    }
+
+    # removes trailing slashes (prevents SEO duplicate content issues)
+    if (!-d $request_filename) {
+        rewrite ^/(.+)/$ /$1 permanent;
+    }
+
+    # removes access to "system" folder, also allows a "System.php" controller
+    if ($request_uri ~* ^/core)    {
+        rewrite ^/(.*)$ /index.php?/$1 last;
+        break;
+    }
+
+    # unless the request is for a valid file (image, js, css, etc.), send to bootstrap
+    if (!-e $request_filename)  {
+        rewrite ^/(.*)$ /index.php?/$1 last;
+        break;
+    }
+
+    # use fastcgi for all php files
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param HASH_ENCRYPT gtg5igLZasUC3xNfDlvTGBxxkoMuR6FaCYw5;
+        fastcgi_param ENCRYPT_KEY eTkFHqausC34vmldkSrLkMwX13kqpDg1CYOd;
+
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        if (!-f $document_root$fastcgi_script_name) {
+                return 404;
+        }
+
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 256 4k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+
+    }
+
+    # deny access to apache .htaccess files
+    location ~ /\.htaccess {
+        deny all;
+    }
+
+    error_page 404 /404.html;
+    location = /40x.html    {
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+    }
+}

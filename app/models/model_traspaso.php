@@ -132,9 +132,9 @@
           $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
           $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
           $this->db->select("COUNT(m.id_medida) as 'pieza'");
-          $this->db->select("SUM(m.precio) as subtotal", FALSE);
-          $this->db->select("(SUM(m.precio*m.iva))/100 as iva", FALSE);
-          $this->db->select("SUM(m.precio)+(SUM(m.precio*m.iva))/100 as total", FALSE);
+          $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+          $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+          $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
               
               
 
@@ -302,9 +302,9 @@
 
 public function totales_importes_traspaso($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
            $this->db->from($this->historico_registros_traspasos.' as m');
           $this->db->where($where);
@@ -430,7 +430,9 @@ public function totales_importes_traspaso($where){
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado, m.consecutivo');  
-          $this->db->select("((m.precio*m.iva))/100 as iva", FALSE);
+
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
 
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
@@ -548,8 +550,8 @@ public function totales_importes_traspaso($where){
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->precio, 2, '.', ','), 
-                                      6=>number_format($row->iva, 2, '.', ','),                                       
+                                      5=>number_format($row->subtotal, 2, '.', ','), 
+                                      6=>number_format($row->sum_iva, 2, '.', ','),                                       
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
                                       9=>$row->almacen,
@@ -736,9 +738,9 @@ public function totales_importes_traspaso($where){
           $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
           $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
           $this->db->select("COUNT(m.id_medida) as 'pieza'");
-           $this->db->select("SUM(m.precio) as subtotal", FALSE);
-           $this->db->select("(SUM(m.precio*m.iva))/100 as iva", FALSE);
-           $this->db->select("SUM(m.precio)+(SUM(m.precio*m.iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
 
           
 
@@ -928,9 +930,9 @@ public function totales_importes_traspaso($where){
 
 public function totales_importes_traspaso_especifico($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
            $this->db->from($this->registros_entradas.' as m');
           $this->db->where($where);
@@ -1056,8 +1058,8 @@ public function totales_importes_traspaso_especifico($where){
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,  m.fecha_apartado, m.consecutivo');  
 
-          $this->db->select("((m.precio*m.iva))/100 as iva", FALSE);
-          //$this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);          
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+
 
 
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
@@ -1326,7 +1328,9 @@ public function totales_importes_traspaso_especifico($where){
 
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,  m.fecha_apartado, m.consecutivo');  
-          $this->db->select("((m.precio*m.iva))/100 as iva", FALSE);
+
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
 
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida,m.comentario_traspaso');
           
@@ -1431,8 +1435,8 @@ public function totales_importes_traspaso_especifico($where){
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->precio, 2, '.', ','), 
-                                      6=>number_format($row->iva, 2, '.', ','), 
+                                      5=>number_format($row->subtotal, 2, '.', ','), 
+                                      6=>number_format($row->sum_iva, 2, '.', ','), 
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
                                       9=>$row->almacen,
@@ -1523,6 +1527,8 @@ public function totales_importes_traspaso_especifico($where){
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal'); 
 
           $this->db->select('p.nombre comprador , m.id_apartado');  
 
@@ -1618,9 +1624,9 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
 
 
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
            $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
            $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
            $this->db->select("COUNT(m.id_medida) as 'pieza'");
@@ -1767,6 +1773,8 @@ public function total_imprimir_detalle_general_traspaso_manual($data){
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');
+
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.iva, m.fecha_apartado, m.consecutivo');  
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida,m.cantidad_um,comentario_traspaso');
           
@@ -1864,9 +1872,9 @@ public function totales_imprimir_traspaso_historico_detalle($data){
                       )
             )';   
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
            $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
            $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
            $this->db->select("COUNT(m.id_medida) as 'pieza'");
@@ -2035,8 +2043,9 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
-          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);          
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total", FALSE);          
           $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->registros.' as m');
@@ -2116,8 +2125,8 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>$row->precio,
-                                      6=>$row->iva,
+                                      5=>number_format($row->subtotal, 2, '.', ','),
+                                      6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>
                                            '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
@@ -2311,8 +2320,11 @@ public function valores_movimientos_temporal(){
          
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-          $this->db->select("((m.precio*iva))/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as sum_total", FALSE);          
+          
+          
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total", FALSE);                
           
           $this->db->select("num_control, comentario_traspaso, id_usuario_traspaso", FALSE);
           $this->db->select("prod.codigo_contable");  
@@ -2395,8 +2407,9 @@ public function valores_movimientos_temporal(){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>$row->precio,
-                                      6=>$row->iva,
+                                      
+                                      5=>number_format($row->subtotal, 2, '.', ','),
+                                      6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>
                                            '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
@@ -2457,9 +2470,9 @@ public function valores_movimientos_temporal(){
      
     public function totales_importes($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           $this->db->from($this->registros.' as m');
           $this->db->where($where);
@@ -2666,9 +2679,13 @@ public function valores_movimientos_temporal(){
           $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
           $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
           $this->db->select("COUNT(m.id_medida) as 'pieza'");
-          $this->db->select("SUM(m.precio) as subtotal", FALSE);
-          $this->db->select("(SUM(m.precio*m.iva))/100 as iva", FALSE);
-          $this->db->select("SUM(m.precio)+(SUM(m.precio*m.iva))/100 as total", FALSE);
+          
+          $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+          $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+          $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+
+
+
            
           
           $this->db->from($this->historico_registros_traspasos.' as m');          
@@ -2799,9 +2816,9 @@ public function totales_imprimir_traspaso_historico($data){
 
             )';  
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
            $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
            $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
            $this->db->select("COUNT(m.id_medida) as 'pieza'");

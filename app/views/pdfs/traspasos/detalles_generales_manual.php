@@ -43,7 +43,7 @@
 						<th width="10%">Ancho</th>
 						<?php if ($configuracion->activo==1) { ?> 
 							<th width="9%">Lote</th>
-							<th width="8%">Precio</th>
+							<th width="8%">Subtotal</th>
 						<?php } else { ?> 	
 							<th width="17%">Lote</th>
 						<?php }  ?> 
@@ -67,7 +67,7 @@
 							
 							<?php if ($configuracion->activo==1) { ?> 
 								<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
-								<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio+($movimiento->precio*$movimiento->iva)/100; ?></td>
+								<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->subtotal; ?></td>
 							<?php } else {  ?> 	
 								<td width="17%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
 							<?php }  ?> 	

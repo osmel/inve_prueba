@@ -51,8 +51,11 @@ $active_record = TRUE;
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
 $db['default']['password'] = 'root';
-/*$db['default']['database'] = 'iniciativatextilalmacen';*/
-$db['default']['database'] = 'inventarios';
+
+/*$db['default']['database'] = 'iniciativatextilalmacen';
+$db['default']['database'] = 'inventario_servidor';
+*/
+$db['default']['database'] = 'invent_prueba';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'inven_';
 $db['default']['pconnect'] = TRUE;

@@ -2014,9 +2014,9 @@
           $this->db->select("MAX(m.devolucion) devolucion",false);
           $this->db->select("MAX( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
           
-          $this->db->select('sum(m.precio) as sum_precio');           
-          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
+          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
 
           
@@ -2164,9 +2164,9 @@
     
 public function totales_importes($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -2328,9 +2328,9 @@ public function buscador_historico_devolucion($data){
           $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
 
-          $this->db->select('sum(m.precio) as sum_precio');           
-          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
+          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
           
           $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
@@ -2465,9 +2465,9 @@ public function buscador_historico_devolucion($data){
    
 public function totales_importes_devolucion($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -2643,9 +2643,9 @@ public function buscador_historico_salida($data){
            $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
           $this->db->select("tf.tipo_factura,m.id_tipo_factura, m.id_estatus");          
 
-          $this->db->select('sum(m.precio) as sum_precio');           
-          $this->db->select("sum(m.precio*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(m.precio)+((sum(m.precio*m.iva))/100) as sum_total", FALSE);
+          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
           $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
 
@@ -2827,9 +2827,9 @@ public function buscador_historico_salida($data){
    
 public function totales_importes_salida($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');

@@ -1551,6 +1551,9 @@
 
 
 
+//SELECT * FROM `inven_catalogo_colores` WHERE 
+//(LOCATE((left (color,1)), "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789") =0)
+
     // para el cuadro de colores
      public function lista_colores_ajax($data) {
             $this->db->cache_on();
@@ -1566,7 +1569,16 @@
                              )
                   ) ' ; 
 
-            }else{
+            } elseif ($data['indice'] == "*"){
+
+                $where = '(   
+                              (LOCATE((left (color,1)), "ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz0123456789") =0)
+
+                  ) ' ; 
+
+                 
+
+            } else {
                   $where = '(
                             
                             (

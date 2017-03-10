@@ -2069,6 +2069,13 @@
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.iva, m.fecha_apartado, m.consecutivo');  
+
+          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
+
+
+
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -2203,8 +2210,9 @@
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>$row->precio,
-                                      6=>$row->iva,
+                                      5=>number_format($row->sum_precio, 2, '.', ','),
+                                      6=>number_format($row->sum_iva, 2, '.', ','),
+
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
                                       9=>$row->almacen,

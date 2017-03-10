@@ -50,9 +50,9 @@ class Pdfs_model extends CI_Model
           $this->db->select("COUNT(m.id_medida) as 'pieza'");
           $this->db->select("SUM(m.peso_real) as 'peso_real'");
 
-          $this->db->select('sum(m.precio) as sum_precio');           
-          $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
+          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
           
           $this->db->from($this->historico_registros_entradas.' as m');
@@ -85,10 +85,10 @@ class Pdfs_model extends CI_Model
             $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
             $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
             $this->db->select("COUNT(m.id_medida) as 'pieza'");
-            $this->db->select("sum(m.peso_real) as 'peso_real'");
-            $this->db->select('sum(m.precio) as sum_precio');           
-            $this->db->select("sum(precio*iva)/100 as sum_iva", FALSE);
-            $this->db->select("sum(precio)+((sum(precio*iva))/100) as sum_total", FALSE);
+            $this->db->select("sum(m.peso_real*m.cantidad_um) as 'peso_real'");
+            $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
+            $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+            $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
             $this->db->from($this->historico_registros_salidas.' as m');
 

@@ -209,7 +209,7 @@
  
     $(document).ready(function() {
         mostrarColores(null, "#");
-        var alfabeto = "#ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+        var alfabeto = "#ABCDEFGHIJKLMNÑOPQRSTUVWXYZ*";
         for (var i = 0; i < alfabeto.length; i++) {
             if (i === 0) {	//color:#007698;
                 var enlace = "<a onclick='mostrarColores(this,0);' style='text-decoration:underline;color:#000000;margin-top:5px;cursor:pointer;display:inline-block;'>" + alfabeto.charAt(i) + "</a><br />";

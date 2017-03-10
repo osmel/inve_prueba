@@ -165,6 +165,9 @@ class Main extends CI_Controller {
 		if ( $this->form_validation->run() == FALSE ){
 			echo validation_errors('<span class="error">','</span>');
 		} else {
+
+			redirect('/');
+				/*
 				$data['email']		=	$this->input->post('email');
 				$correo_enviar      =   $data['email'];
 	            $data 				= 	$this->security->xss_clean($data);  
@@ -185,6 +188,7 @@ class Main extends CI_Controller {
 	            } else {
 	            	echo '<span class="error">¡Ups! tus datos no son correctos, verificalos e intenta nuevamente por favor.</span>';
 	            }
+	            */
 		}
 	}		
 
@@ -418,45 +422,45 @@ class Main extends CI_Controller {
 	//edicion del especialista o el perfil del especialista o administrador activo
 	function actualizar_perfil( $uid = '' ){
 
-      $id=$this->session->userdata('id');
+	      $id=$this->session->userdata('id');
 
-	  if ($uid=='') {
-			$uid= $id;
-			$data['retorno']='';
-	  }
+		  if ($uid=='') {
+				$uid= $id;
+				$data['retorno']='';
+		  }
 
-      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-            $coleccion_id_operaciones = array();
-      }   
+	      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+	            $coleccion_id_operaciones = array();
+	      }   
 
 
-	  $id_perfil=$this->session->userdata('id_perfil');
-		
-    //Administrador con permiso a todo ($id_perfil==1)
-    //usuario solo viendo su PERFIL  OR (($id_perfil!=1) and ($id==$uid) )
-    //Con permisos de usuarios OR (in_array(5, $coleccion_id_operaciones)) 
-		if	( ($id_perfil==1) OR (($id_perfil!=1) and ($id==$uid) ) OR (in_array(5, $coleccion_id_operaciones)) ) {
-			$data['perfiles']		= $this->modelo->coger_catalogo_perfiles();
-			$data['clientes']   = $this->modelo->coger_catalogo_clientes(2);
-			$data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-			$data['usuario'] = $this->modelo->coger_catalogo_usuario( $uid );
-
+		  $id_perfil=$this->session->userdata('id_perfil');
 			
-			$data['operaciones'] = $this->modelo->listado_operaciones();
+	    //Administrador con permiso a todo ($id_perfil==1)
+	    //usuario solo viendo su PERFIL  OR (($id_perfil!=1) and ($id==$uid) )
+	    //Con permisos de usuarios OR (in_array(5, $coleccion_id_operaciones)) 
+			if	( ($id_perfil==1) OR (($id_perfil!=1) and ($id==$uid) ) OR (in_array(5, $coleccion_id_operaciones)) ) {
+				$data['perfiles']		= $this->modelo->coger_catalogo_perfiles();
+				$data['clientes']   = $this->modelo->coger_catalogo_clientes(2);
+				$data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+				$data['usuario'] = $this->modelo->coger_catalogo_usuario( $uid );
+
+				
+				$data['operaciones'] = $this->modelo->listado_operaciones();
 
 
 
-	        $data['id']  = $uid;
-			if ( $data['usuario'] !== FALSE ){
-					$this->load->view('usuarios/editar_usuario',$data);
-			} else {
-						redirect('');
-			}
-		} else
-		{
-			 redirect('');
-		}	
+		        $data['id']  = $uid;
+				if ( $data['usuario'] !== FALSE ){
+						$this->load->view('usuarios/editar_usuario',$data);
+				} else {
+							redirect('');
+				}
+			} else
+			{
+				 redirect('');
+			}	
 	}
 	
 	function validacion_edicion_usuario(){

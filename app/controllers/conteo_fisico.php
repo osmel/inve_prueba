@@ -1104,7 +1104,7 @@ public function validar_proceso_sobrante(){
 
            $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
            
-           $dato['id'] = 1;
+           $dato['id'] = 3;
            $data['cargador']   =  $this->catalogo->coger_cargador($dato)->nombre; 
            
            $dato['id'] = $id_cliente_asociado;
