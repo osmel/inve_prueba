@@ -3264,14 +3264,61 @@ jQuery('#tabla_costo_rollo').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9,11]
+	                "targets": [0,2,3,4] //,5,6,7,8,9,11
 	            },
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[21];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[11];	
+	                },
+	                "targets": [11]
+	            },	            
 
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [10,12,13,14,18, 15,16,17,18,19]
-	            }
+	                "targets": [12,13,14,15,16,17,18,19,20,21]
+	            }	            
+
+	            
 	],
 
  "rowCallback": function( row, data ) {
@@ -5400,7 +5447,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 	});		
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var existencia_costo_inventario = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'precio','iva', 'Tipo Factura', 'No. Movimiento','Proveedor', 'Ingreso'];
+var existencia_costo_inventario = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'Precio', 'SubTotal', 'iva', 'Tipo Factura', 'No. Movimiento','Proveedor', 'Ingreso'];
 
 jQuery('#id_estatuss_costo').change(function(e) {
 		
@@ -5940,13 +5987,58 @@ jQuery('#tabla_costo_inventario').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9,11]
+	                "targets": [0,2,3,4] //5,6,7,8,9,11
 	            },
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[21];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[11];	
+	                },
+	                "targets": [11]
+	            },	            
 
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [10,12,13,14,18, 15,16,17,18,19]
+	                "targets": [12,13,14,15,16,17,18,19,20,21]
 	            }
 	],
 
@@ -6014,7 +6106,7 @@ var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',
 var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Total Metro','Total Kgs','Detalle']; //
 */
 var arr_general_traspaso = ['Traspaso', 'Proceso','Almacén', 'Fecha', 'Motivo',  'Número',  'Responsable','Dependencia','Total Metro','Total Kgs','Pieza','Subtotal','Iva','Detalle']; //
-var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'SubTotal', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
+var arr_traspaso_historico_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Precio', 'SubTotal', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 
 
@@ -6206,13 +6298,56 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9]
+	                "targets": [0,2,3,4,18]
 	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[18];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+
+
+
+
+
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[12];	
 	                },
-	                "targets": [10]
+	                "targets": [11]
 	            },
 
 	            {
@@ -6223,11 +6358,11 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 						texto+='</button></td>';
 						return texto;	
 	                },
-	                "targets": 11
+	                "targets": 12
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [12,13,14,15,16,17]
+	                 "targets": [13,14,15,16,17,18]
 	            }		            
 	        ],
 });	
@@ -6472,13 +6607,52 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9]
+	                "targets": [0,2,3,4]
 	            },
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[18];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[12];	
 	                },
-	                "targets": [10]
+	                "targets": [11]
 	            },
 
 	            {
@@ -6489,11 +6663,11 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 						texto+='</button></td>';
 						return texto;	
 	                },
-	                "targets": 11
+	                "targets": 12
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [12,13,14,15,16,17]
+	                 "targets": [13,14,15,16,17,18]
 	            }		            
 	        ],
 });	
@@ -7022,13 +7196,65 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4], //,5,6,7,8,9,13
 	            },
+
+				{ 
+	                "render": function ( data, type, row ) {
+	                		return data;
+	                },
+	                "targets": [0,2,3,4]
+	            },
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[18];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[13];	
+	                },
+	                "targets": [11]
+	            },	            
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15,16,17],
+	                "targets": [12,13,14,15,16,17,18],
 	            }		            
 
 	],	
@@ -7575,14 +7801,62 @@ jQuery('#traspaso_general_detalle').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4],
+	            },
+
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[18];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[13];	
+	                },
+	                "targets": [11]
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15,16,17],
+	                "targets": [12,13,14,15,16,17,18], //10,11,
 	            }			            
+
+	            
 
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
@@ -7758,13 +8032,59 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,2,3,4,5,6,7,8,9,13],
+	                "targets": [0,2,3,4], //,5,6,7,8,9,13
+	            },
+
+
+				{ 
+	                "render": function ( data, type, row ) {
+						return row[18];	
+	                },
+	                "targets": [5]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[5];	
+	                },
+	                "targets": [6]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [7]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[7];	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[8];	
+	                },
+	                "targets": [9]
+	            },
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[13];	
+	                },
+	                "targets": [11]
 	            },
 
 
     			{ 
 	                 "visible": false,
-	                "targets": [10,11,12,14,15,16,17],
+	                "targets": [12,13,14,15,16,17,18], //10,11,
 	            }		
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {

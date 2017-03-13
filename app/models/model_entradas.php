@@ -473,6 +473,7 @@
                                       15=>$row->sum_iva, 
                                       16=>$row->sum_total, 
                                       17=>$row->codigo_contable, 
+                                      18=>$row->precio,
 
                                                                           
                                     );

@@ -2217,7 +2217,7 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
-			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
+			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Precio','Subtotal','IVA','Total', 'Quitar']; 
 
 	        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
 	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
@@ -2240,7 +2240,7 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén'];
 
-			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Subtotal','IVA','Total', 'Quitar']; 
+			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Precio','Subtotal','IVA','Total', 'Quitar']; 
 
 	        var producto_color	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Apartar','Almacén'];
 	        var producto_color1	= ['Código', 'Lote','Cantidad', 'Ancho','Entrada','Almacén'];
@@ -8038,6 +8038,7 @@ jQuery('#tabla_productos').dataTable( {
     },	
 
    "columnDefs": [
+   				
    				{ 
 		                "render": function ( data, type, row ) {
 		                		if (row[17]!='') {
@@ -8049,12 +8050,14 @@ jQuery('#tabla_productos').dataTable( {
 		                },
 		                "targets": [2]   //el 3 es la imagen q ya viene formada desde el modelo
 		        },  
+    			
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
 	                "targets": [1,3,4,5]
 	            },
+    			
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[12];	
@@ -8068,6 +8071,7 @@ jQuery('#tabla_productos').dataTable( {
 	                },
 	                "targets": [7]
 	            },
+
     			{ 
 	                "render": function ( data, type, row ) {
 						return row[8];	
@@ -8082,18 +8086,26 @@ jQuery('#tabla_productos').dataTable( {
 	                "targets": [9]
 	            },
 
-    			{ 
+    			{  //precio
+	                "render": function ( data, type, row ) {
+						
+						return number_format(parseFloat(row[18]), 2, '.', ',');	
+	                },
+	                "targets": [10]
+	            },
+
+    			{ //subtotal
 	                "render": function ( data, type, row ) {
 						
 						return number_format(parseFloat(row[13]), 2, '.', ',');	
 	                },
-	                "targets": [10]
+	                "targets": [11]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
 						return number_format(parseFloat((row[13]*row[14])/100), 2, '.', ',');	
 	                },
-	                "targets": [11]
+	                "targets": [12]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
@@ -8102,7 +8114,7 @@ jQuery('#tabla_productos').dataTable( {
 
 						return number_format((parseFloat(row[13])+parseFloat((row[13]*row[14])/100)), 2, '.', ',');	
 	                },
-	                "targets": [12]
+	                "targets": [13]
 	            },	            	
 
     			{ 
@@ -8116,11 +8128,11 @@ jQuery('#tabla_productos').dataTable( {
 						return texto;	
 
 	                },
-	                "targets": [13]
+	                "targets": [14]
 	            },
     			{ 
 	                 "visible": false,
-	                "targets": [0,14,15,16,17] //11,12
+	                "targets": [0,15,16,17,18] //11,12
 	            }
 
 	],	

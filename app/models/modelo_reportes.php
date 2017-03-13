@@ -2641,7 +2641,7 @@ public function buscador_historico_salida($data){
           
           $this->db->select('a.almacen');
            $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
-          $this->db->select("tf.tipo_factura,m.id_tipo_factura, m.id_estatus");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura, m.id_estatus,m.precio");          
 
           $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
           $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);

@@ -50,10 +50,11 @@
 						</th>
 					</tr>
 					<tr>
-						<th width="30%">Código</th>
-						<th width="25%">Descripción</th>
+						<th width="25%">Código</th>
+						<th width="20%">Descripción</th>
 						<th width="8%">Color</th>
 						<th width="10%">Cantidad</th>
+						<th width="10%">Precio</th>
 						<th width="10%">Ancho</th>
 						<?php if ($configuracion->activo==1) { ?> 
 							<th width="9%">Lote</th>
@@ -71,12 +72,13 @@
 						<tr>
 
 							
-							<td width="30%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
+							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
+							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;">
 								<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
 							</td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?> <?php echo $movimiento->medida; ?></td>
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?> </td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
 							
 							<?php if ($configuracion->activo==1) { ?> 

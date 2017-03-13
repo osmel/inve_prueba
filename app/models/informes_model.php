@@ -111,7 +111,12 @@ class Informes_model extends CI_Model
           $this->db->select('CONCAT(m.cantidad_um," ",u.medida) as cantidad', false);
           $this->db->select('CONCAT(m.ancho," ","cm") as ancho', false);
           
-          $this->db->select("m.precio,((m.precio*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("m.precio", FALSE);
+           $this->db->select("(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+
+
           $this->db->select("tff.tipo_factura t_factura");  
 
           $this->db->select('m.movimiento');
@@ -309,9 +314,9 @@ class Informes_model extends CI_Model
            $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
            $this->db->select("COUNT(m.id_medida) as 'pieza'");
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
        
 

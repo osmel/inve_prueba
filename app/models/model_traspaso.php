@@ -563,7 +563,8 @@ public function totales_importes_traspaso($where){
                                       14=>$row->id_factura_original,
                                       15=>$row->codigo_contable,                                      
                                       16=>$row->metros,                                      
-                                      17=>$row->kilogramos,                                      
+                                      17=>$row->kilogramos,                           
+                                      18=>number_format($row->precio, 2, '.', ','),                                                  
                                       
 
                                               
@@ -1194,6 +1195,7 @@ public function totales_importes_traspaso_especifico($where){
                                       15=>$row->codigo_contable,
                                       16=>$row->metros,
                                       17=>$row->kilogramos,                                        
+                                      18=>number_format($row->precio, 2, '.', ','), 
 
                                                                    
                                     );
@@ -1448,7 +1450,8 @@ public function totales_importes_traspaso_especifico($where){
                                       14=>$row->id_factura_original,
                                       15=>$row->codigo_contable,        
                                       16=>$row->metros,
-                                      17=>$row->kilogramos,                               
+                                      17=>$row->kilogramos,                         
+                                      18=>number_format($row->precio, 2, '.', ','),       
                                     );
 
                             ///////////////////////////////
@@ -2140,6 +2143,7 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
                                       15=>$row->sum_iva,
                                       16=>$row->sum_total,
                                       17=>$row->codigo_contable,                                         
+                                      18=>number_format($row->precio, 2, '.', ','), 
                                     );
                       }
 
@@ -2422,7 +2426,8 @@ public function valores_movimientos_temporal(){
                                       14=>$row->kilogramos,
                                       15=>$row->sum_iva,
                                       16=>$row->sum_total,                                      
-                                      17=>$row->codigo_contable
+                                      17=>$row->codigo_contable,
+                                      18=>number_format($row->precio, 2, '.', ','),
 
                                     );
                       }

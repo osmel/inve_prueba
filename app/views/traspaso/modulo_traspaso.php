@@ -224,6 +224,7 @@
 									<th style="width:5%;">Color</th>
 									<th style="width:5%;">Cant.</th>
 									<th style="width:5%;">Ancho</th>
+									<th style="width:5%;">Precio</th>
 									<th style="width:5%;">SubTotal</th>
 									<th style="width:5%;">Iva</th>
 									<th style="width:5%;">No. Mov.</th>			
@@ -337,6 +338,7 @@
 									<th style="width:5%;">Color</th>
 									<th style="width:5%;">Cant.</th>
 									<th style="width:5%;">Ancho</th>
+									<th style="width:5%;">Precio</th>
 									<th style="width:5%;">Subtotal</th>
 									<th style="width:5%;">Iva</th>
 									<th style="width:5%;">No. Mov.</th>			

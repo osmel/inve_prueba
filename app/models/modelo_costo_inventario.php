@@ -122,9 +122,9 @@
 
 public function totales_importes_historica($where){
 
-           $this->db->select("SUM(m.precio) as subtotal", FALSE);
-           $this->db->select("(SUM(m.precio*m.iva))/100 as iva", FALSE);
-           $this->db->select("SUM(m.precio)+(SUM(m.precio*m.iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           
           $this->db->from($this->historico_registros_entradas.' as m');
@@ -306,7 +306,12 @@ public function totales_importes_historica($where){
           $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
 
-          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+ 
+           $this->db->select("(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+
+
           $this->db->select("tff.tipo_factura t_factura");  
 
           $this->db->from($this->historico_registros_entradas.' as m');
@@ -442,7 +447,7 @@ public function totales_importes_historica($where){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->precio, 2, '.', ','),
+                                      5=>number_format($row->subtotal, 2, '.', ','),
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
@@ -460,6 +465,7 @@ public function totales_importes_historica($where){
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
                                       20=>$row->id_factura,
+                                      21=>number_format($row->precio, 2, '.', ','),
 
                                       
 
@@ -647,8 +653,13 @@ public function totales_importes_historica($where){
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia,m.id_factura,m.id_fac_orig');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio,  m.codigo, m.comentario');
-          //$this->db->select('m.iva');
-          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+          
+
+          $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
+          $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
+
+
           
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color, p.nombre');
@@ -815,7 +826,7 @@ public function totales_importes_historica($where){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->precio, 2, '.', ','),
+                                      5=>number_format($row->subtotal, 2, '.', ','),
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
@@ -833,6 +844,7 @@ public function totales_importes_historica($where){
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
                                       20=>$row->id_factura,
+                                      21=>number_format($row->precio, 2, '.', ','),
 
                                       
 
@@ -882,9 +894,9 @@ public function totales_importes_historica($where){
     
 public function totales_importes($where){
 
-           $this->db->select("SUM(precio) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio)+(SUM(precio*iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
    
           $this->db->from($this->registros.' as m');
           $this->db->where($where);
