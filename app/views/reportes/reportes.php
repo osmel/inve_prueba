@@ -109,16 +109,31 @@
 								Costo por rollo
 							</a>
 						</div>
-					<?php } ?>		
+					<?php } ?>
 
-					<!--
-				    <div class="col-xs-12 col-sm-3 col-md-2">
+					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>listado_ctasxpagar" type="button" class="btn btn-info btn-block ttip" title="Ver cuentas por pagar.">
-							Cuenta por pagar
+						<a href="<?php echo base_url(); ?>consulta_proveedor"  
+							type="button" class="btn btn-warning btn-block ttip" title="Listado de proveedores." style="font-size:13px;">Consultas por Proveedor
 						</a>
 					</div>
-					-->
+
+					<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>consulta_producto" type="button" class="btn btn-warning btn-block ttip" title="Listado de productos." style="font-size:13px;">
+							Consultas por Productos
+						</a>
+					</div>
+
+					<div class="col-xs-12 col-sm-3 col-md-2">
+						<label for="descripcion" class="col-sm-12 col-md-12"></label>
+						<a href="<?php echo base_url(); ?>consulta_totales" type="button" class="btn btn-warning btn-block ttip" title="Totales de productos." style="font-size:13px;">
+							Reportes Totales
+						</a>
+					</div>
+
+
+
 
 				</div>
 
@@ -146,7 +161,9 @@
 													<?php foreach ( $facturas as $factura ){ ?>
 																<option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
 													<?php } ?>
-												<!--rol de usuario -->
+
+												<!--	<option value="3">Surtidos</option>	
+												rol de usuario -->
 											</select>
 								    
 

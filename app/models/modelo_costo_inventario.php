@@ -12,7 +12,7 @@
       $this->key_hash    = $_SERVER['HASH_ENCRYPT'];
       $this->timezone    = 'UM1';
       date_default_timezone_set('America/Mexico_City'); 
-
+ 
       
         //usuarios
       $this->usuarios    = $this->db->dbprefix('usuarios');
@@ -91,18 +91,18 @@
 
       public function total_registros_entrada_historica($where){
 
-              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); //, FALSE
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); //, FALSE
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               
 
               $this->db->from($this->historico_registros_entradas.' as m');
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-              $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
-              $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                                   
-              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+              //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+              $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'          
+              $this->db->join($this->colores.' As c' , 'c.id = m.id_color');//,'LEFT'
+              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+              $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
 
               $this->db->where($where);
@@ -122,18 +122,18 @@
 
 public function totales_importes_historica($where){
 
-           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
-           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
-           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal"); //, FALSE
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva"); //, FALSE
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
    
           
           $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                               
-          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
           $this->db->where($where);
 
@@ -209,6 +209,7 @@ public function totales_importes_historica($where){
                    case '13':
                         $columna = 'm.num_partida';
                      break;
+                     
                    case '14':
                         $columna = 'm.id_almacen';
                      break;                       
@@ -269,18 +270,22 @@ public function totales_importes_historica($where){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento)");  //, FALSE
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia,m.id_factura,m.id_fac_orig');
-          $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
+          //m.id_empresa,m.id_operacion, m.id_color, m.id_composicion, m.id_calidad,m.id_medida,   m.id_cargador, m.id_usuario,
+          //m.id, m.referencia, m.cantidad_royo,  , m.comentario, fecha_apartado,
+          //$this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
+          $this->db->select('m.movimiento, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select('m.id_factura,m.id_fac_orig');
+          $this->db->select('m.ancho, m.precio, m.codigo');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color, p.nombre');
-          $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
+          
 
 
-          $this->db->select('m.cantidad_um, u.medida');
+          $this->db->select('m.cantidad_um, u.medida, m.devolucion');
 
+          /*
           $this->db->select('
                         CASE m.id_apartado
                           WHEN "1" THEN "ab1d1d"
@@ -294,33 +299,34 @@ public function totales_importes_historica($where){
                            ELSE "No Apartado"
                         END AS apartado
             ',False);
+          */
 
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
 
           $this->db->select("( CASE WHEN  (m.devolucion <> 0)  THEN 'red'  
                                     WHEN  (m.id_apartado <> 0)  THEN 'morado' 
                                     ELSE 'black' END )
-                             AS color_devolucion", FALSE);   
+                             AS color_devolucion");    //, FALSE
                       
-          $this->db->select("a.almacen");
+          //$this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
 
  
-           $this->db->select("(m.precio*m.cantidad_um) as subtotal", FALSE);
-           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
-           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+           $this->db->select("(m.precio*m.cantidad_um) as subtotal"); //, FALSE
+           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva"); //, FALSE
+           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
 
 
           $this->db->select("tff.tipo_factura t_factura");  
 
           $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');          
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');                               
-          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';//' OR (m.consecutivo LIKE  "%'.$cadena.'%") ';
@@ -369,41 +375,30 @@ public function totales_importes_historica($where){
           
             $where_total='';
 
-          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-          }    
 
-          elseif
-           ( 
-               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-          }  
+            if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                }     
 
-          elseif 
-           ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-          }  
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                } 
 
-          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-          }  
+
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                }
+
+
+                //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                    $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                }                                    
+
 
 
          $this->db->where($where.$donde.$fechas); //
@@ -461,7 +456,7 @@ public function totales_importes_historica($where){
                                       14=>$row->color_devolucion,
                                       15=>$row->factura,
                                       16=>$row->num_partida,
-                                      17=>$row->almacen,
+                                      17=>"alm", //$row->almacen,
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
                                       20=>$row->id_factura,
@@ -475,7 +470,7 @@ public function totales_importes_historica($where){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_registros_entrada_histo($where_total) ),  
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_registros_entrada_histo($where_total) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "totales"            => 
@@ -648,30 +643,32 @@ public function totales_importes_historica($where){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+          //$this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+          //$this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento)");  //, FALSE
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia,m.id_factura,m.id_fac_orig');
-          $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio,  m.codigo, m.comentario');
-          
+          //m.id,m.id_empresa,m.id_operacion, ,m.id_fac_orig, m.id_cargador, m.id_usuario, m.id_color, m.id_composicion, m.id_calidad, m.referencia,
+          //m.id_medida,m.cantidad_royo,, m.comentario, fecha_apartado,
+          $this->db->select('m.movimiento, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select('m.id_factura,  m.ancho, m.precio,  m.codigo');
 
           $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
-          $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva"); //, FALSE
+          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total"); //, FALSE
 
 
           
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre');
-          $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
+          $this->db->select('c.hexadecimal_color, c.color');
+          
 
-          $this->db->select("tff.tipo_factura t_factura");  
+          $this->db->select("tff.tipo_factura t_factura, p.nombre");  
           
           
 
           $this->db->select('m.cantidad_um, u.medida');
 
-          $this->db->select('
+          /*$this->db->select('
                         CASE m.id_apartado
                           WHEN "1" THEN "ab1d1d"
                            WHEN "2" THEN "f1a914"
@@ -683,30 +680,30 @@ public function totales_importes_historica($where){
 
                            ELSE "No Apartado"
                         END AS apartado
-            ',False);
+            ',False);*/
 
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
          
 
           $this->db->select("( CASE WHEN  (m.devolucion <> 0)  THEN 'red'  
                                     WHEN  (m.id_apartado <> 0)  THEN 'morado' 
                                     ELSE 'black' END )
-                             AS color_devolucion", FALSE);   
+                             AS color_devolucion");    //, FALSE
           
-          $this->db->select("a.almacen");
+          //$this->db->select("a.almacen");
 
-          $this->db->select("prod.codigo_contable");  
+          $this->db->select("prod.codigo_contable, m.devolucion");  
 
 
 
           $this->db->from($this->registros.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
           
 
@@ -743,44 +740,28 @@ public function totales_importes_historica($where){
           $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
 
 
+               if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                }     
+
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                } 
 
 
-          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-          }    
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                }
 
-          elseif
-           ( 
-               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-          }  
 
-          elseif 
-           ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-          }  
-
-          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-          }  
-
+                //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                    $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                }
 
           $where_total.= $donde.$fechas; //$donde.
 
@@ -840,7 +821,7 @@ public function totales_importes_historica($where){
                                       14=>$row->color_devolucion,
                                       15=>$row->factura,
                                       16=>$row->num_partida,
-                                      17=>$row->almacen,
+                                      17=>"alm", //$row->almacen,
                                       18=>$row->proceso_traspaso,
                                       19=>$row->codigo_contable,
                                       20=>$row->id_factura,
@@ -853,7 +834,7 @@ public function totales_importes_historica($where){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_registros_entrada_home($data) ),  
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_registros_entrada_home($data) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "totales"            =>  array("pieza"=>intval( self::total_campos_entrada_home($data)->pieza ), "metro"=>floatval( self::total_campos_entrada_home($data)->metros ), "kilogramo"=>floatval( self::total_campos_entrada_home($data)->kilogramos )), 
@@ -894,9 +875,9 @@ public function totales_importes_historica($where){
     
 public function totales_importes($where){
 
-           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
-           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
-           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal"); //, FALSE
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva"); //, FALSE
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
    
           $this->db->from($this->registros.' as m');
           $this->db->where($where);
@@ -931,8 +912,8 @@ public function totales_importes($where){
 
       public function total_campos_entrada_home($data){
 
-              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); //, FALSE
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); //, FALSE
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               
              

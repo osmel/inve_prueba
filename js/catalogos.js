@@ -5691,6 +5691,9 @@ jQuery('body').on('click','#impresion_rapido_costo', function (e) {
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 
+		var oTable =jQuery('#tabla_costo_inventario').DataTable();
+		    order = oTable.order();
+
 
     abrir('POST', 'imprimir_rapida', {
     			busqueda:busqueda,
@@ -5708,6 +5711,13 @@ jQuery('body').on('click','#impresion_rapido_costo', function (e) {
 			proveedor:proveedor, 
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
+
+
+			columna : order[0][0],
+      		orden : order[0][1],
+
+
+
     }, '_blank' );
 		        
 	

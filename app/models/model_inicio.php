@@ -915,7 +915,7 @@ precio_nodisp
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.grupo)"); // , FALSE
 
           $this->db->select(
 
@@ -929,14 +929,15 @@ precio_nodisp
 
           //20151127rzF1429
           //20151126JRr7206
-
-
-          $this->db->select('p.referencia,p.grupo');
-          $this->db->select('p.descripcion, p.minimo, p.precio'); //, p.imagen
           //$this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion", FALSE);  
-          $this->db->select("ca.calidad", FALSE);  
+          //p.referencia,p.minimo,,  p.precio
+          //$this->db->select("co.composicion", FALSE);  
+          //$this->db->select("ca.calidad", FALSE);  
           $this->db->select("COUNT(m.referencia) as 'suma'");
+
+          $this->db->select('p.grupo');
+          $this->db->select('p.descripcion'); //, p.imagen
+          
 
         
          if ($id_almacen!=0) {
@@ -954,21 +955,21 @@ precio_nodisp
           //$this->db->select("a.almacen");
           $this->db->select("p.codigo_contable");  
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'p.referencia = m.referencia'.$id_almacenid.$id_tipo_facturaid,'LEFT');
+          $this->db->join($this->colores.' As c', 'c.id = p.id_color'); // ,'LEFT' 
+          //$this->db->join($this->composiciones.' As co', 'co.id = p.id_composicion','LEFT'); // 
+          //$this->db->join($this->calidades.' As ca', 'ca.id=p.id_calidad','LEFT'); // 
+          $this->db->join($this->registros.' As m', 'm.referencia = p.referencia'.$id_almacenid.$id_tipo_facturaid,'LEFT'); //
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
 
 
-          //filtro de busqueda
+          //filtro de busqueda 
+          //OR (co.composicion LIKE  "%'.$cadena.'%")  OR  ( ca.calidad LIKE  "%'.$cadena.'%" ) 
           $where = '(
                       
                       
                       (
                         ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (p.minimo LIKE  "%'.$cadena.'%")  OR
-                        ( p.precio LIKE  "%'.$cadena.'%" ) OR (c.color LIKE  "%'.$cadena.'%") OR (co.composicion LIKE  "%'.$cadena.'%")  OR
-                        ( ca.calidad LIKE  "%'.$cadena.'%" ) 
+                        ( p.precio LIKE  "%'.$cadena.'%" ) OR (c.color LIKE  "%'.$cadena.'%") 
                        )
 
             ) ' ;   
@@ -1053,7 +1054,7 @@ precio_nodisp
                       $datos=$datas;
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_productos_agrupados($where_total) ),  
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_productos_agrupados($where_total) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $datas, 
                       ));

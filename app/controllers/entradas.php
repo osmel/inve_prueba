@@ -246,11 +246,44 @@ class Entradas extends CI_Controller {
 	//validando si se puede procesar la entrada
 
 	public function validar_proceso(){ 
+		//print_r("expression");
+					
+					/*
+					$this->load->library('ciqrcode');
+			        //hacemos configuraciones
+
+					//$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+
+			        $data['movimientos'][0]="TRYq42100125032017164036_8";
+			        $data['movimientos'][1]="bOaZ0890012603201711339_1";
+			        $data['movimientos'][2]="EodR5430012603201711339_1";
+			        $data['movimientos'][3]="qljS74000125032017174558_251";
+
+			        $data['movimientos'][0]="AHvIX10800125032017164036_4";
+			        $data['movimientos'][1]="APsyT0970012503201715304_2";
+			        $data['movimientos'][2]="Ahudb6700012603201723017_2";
+
+
+			        foreach ($data['movimientos'] as $mikey ) {
+
+			        	//print_r($mikey);
+			          
+				        $params['data'] = $mikey;
+				        $params['level'] = 'H';
+				        $params['size'] = 30;
+				        $params['savename'] = FCPATH.'qr_code/'.$mikey.'.png';
+				        $this->ciqrcode->generate($params);    
+				        
+				      
+			        }
+			    die;  */  
+
+		//die;
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 		      $data['id_factura']   = $this->input->post('id_factura');
-		      $data['id_estatus']   = $this->input->post('id_estatus');
+		      $data['id_estatus']   = 0; //$this->input->post('id_estatus');
 
 		      $data['dev'] = 0; 
 
@@ -274,7 +307,7 @@ class Entradas extends CI_Controller {
 
 					$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 
-			        
+			        //print_r($data['movimientos']); die;
 			        foreach ($data['movimientos'] as $key => $value) {
 			          
 				        $params['data'] = $value->codigo;
@@ -314,7 +347,8 @@ class Entradas extends CI_Controller {
 			$data['dev'] = 0;
 			$data['num_mov'] = base64_decode($num_mov);
 			$data['id_factura'] = base64_decode($id_factura);
-			$data['id_estatus'] = base64_decode($id_estatus);
+			//$data['id_estatus'] = base64_decode($id_estatus);
+			 $data['id_estatus']   = 0; 
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {

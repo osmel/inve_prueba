@@ -790,12 +790,27 @@ public function totales_importes($where){
 
         //procesando operaciones
         public function procesando_operacion( $data ){
-          $consecutivo = self::consecutivo_operacion(1,$data['id_factura']); //cambio
-          self::reordenar_new_temporal(); //cambio
-          self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
 
           $id_session = $this->session->userdata('id');
           $fecha_hoy = date('Y-m-d H:i:s');  
+
+          $consecutivo = self::consecutivo_operacion(1,$data['id_factura']); //cambio
+
+          //actualizar (consecutivo) en tabla "operacion" 
+          if ($data['id_factura']==1) {
+              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          } else {
+              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+          }
+
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',1);
+          $this->db->update($this->operaciones);
+
+
+          self::reordenar_new_temporal(); //cambio
+          self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
+
              
           //aqui lista todos los datos que fueron entrados por un usuario especifico   
           $this->db->select('id_empresa, factura, id_descripcion, id_color, id_composicion, id_calidad, referencia, num_partida,id_almacen,id_factura,id_fac_orig,iva, id_tipo_pago');
@@ -866,16 +881,7 @@ public function totales_importes($where){
 
           //fin de  agregar "historico_ctasxpagar"
 
-          //actualizar (consecutivo) en tabla "operacion" 
-          if ($data['id_factura']==1) {
-              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
-          } else {
-              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
-          }
-
-          $this->db->set( 'id_usuario', $id_session );
-          $this->db->where('id',1);
-          $this->db->update($this->operaciones);
+         
 
           //eliminar los registros en "temporal_registros" del usuario 
           $this->db->delete($this->registros_temporales, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'])); 

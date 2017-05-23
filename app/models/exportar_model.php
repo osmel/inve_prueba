@@ -1310,7 +1310,7 @@ class Exportar_model extends CI_Model
           $donde = '';
          if ($id_empresa!="") {
             $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
-            $donde .= ' AND ( m.id_cliente  =  '.$id_empre.' ) ';
+            $donde .= ' AND ( m.consecutivo_venta  =  '.$id_empre.' ) ';
         } else 
         {
            $donde .= ' ';
@@ -1348,7 +1348,9 @@ class Exportar_model extends CI_Model
           $this->db->select('CONCAT(m.cantidad_um, u.medida) cantidad', false);
           $this->db->select('CONCAT(m.ancho, " cm") ancho', false);
           $this->db->select('m.mov_salida');
-          $this->db->select('p.nombre Cliente');
+          //$this->db->select('p.nombre Cliente');
+          $this->db->select('us.nombre as Cliente', FALSE);  
+
           $this->db->select('CONCAT(m.id_lote,"-",m.consecutivo) lote', false);
           $this->db->select('DATE_FORMAT((m.fecha_salida),"%d-%m-%Y") egreso', false); //'d-m-Y'
           
@@ -1365,7 +1367,9 @@ class Exportar_model extends CI_Model
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); //
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+
 
                                
 
@@ -1389,11 +1393,23 @@ class Exportar_model extends CI_Model
             $id_almacenid = '';
           }
 
+          /*
           if ($data['id_factura']!=0) {
               $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
           } else {
               $id_facturaid = '';
           } 
+          */
+
+
+          $id_factura= $data['id_factura'];    
+
+          if ($id_factura!=0) {
+             $id_factura = (($id_factura==3) ? 0 : $id_factura);
+             $id_facturaid = ' and ( m.id_tipo_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }             
 
 
 
@@ -1547,11 +1563,11 @@ class Exportar_model extends CI_Model
 
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid,'LEFT');
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid); //,'LEFT'
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); //,'LEFT'
 
           $where = '(
                       
@@ -1568,8 +1584,8 @@ class Exportar_model extends CI_Model
 
           $this->db->where($where);
 
-
-          $this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
           //paginacion
 
                 //ordenacion
@@ -1598,6 +1614,23 @@ class Exportar_model extends CI_Model
 
 
     public function buscador_cero_baja($data){
+
+        $id_empresa= addslashes($data['proveedor']);
+           $id_empresaid = '';
+             if ($id_empresa!="") {
+                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                    if (!($id_empre)) {
+                      $id_empre =0;
+                    }                  
+
+                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
+
+            } else 
+            {
+               $id_empresaid .= ' ';
+            }          
+            $id_empresaid .= '';        
 
 
           $cadena = addslashes($data['busqueda']);
@@ -1648,11 +1681,11 @@ class Exportar_model extends CI_Model
 
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid,'LEFT');
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); //,'LEFT'
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); //,'LEFT'
 
           if ($estatus=="cero") {
             $activo  = ' and ( p.activo =  0 ) ';  
@@ -1721,7 +1754,8 @@ class Exportar_model extends CI_Model
 
           $this->db->order_by('p.referencia', 'asc'); 
 
-          $this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
           //paginacion
 
 
@@ -1731,11 +1765,9 @@ class Exportar_model extends CI_Model
           }   
 
           if ($estatus=="baja") {
-              
-
+ 
               $this->db->having('((existencias>0) AND (existencias < p.minimo))');
               $where_total = '((existencias>0) AND (existencias < p.minimo))';
-
 
 
           }             
@@ -1759,7 +1791,6 @@ class Exportar_model extends CI_Model
 
 
       }        
-
 
 
 

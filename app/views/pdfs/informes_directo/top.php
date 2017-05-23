@@ -8,6 +8,7 @@
 </head>
 <body>
 
+<?php date_default_timezone_set('America/Mexico_City');  ?>
 <div class="container">
 	<div>
 		<div>
@@ -16,7 +17,7 @@
 				<thead>
 					<tr>
 						<td colspan="6" style="border-top: 1px solid #222222; ">
-							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
+							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A',  strtotime ( gmt_to_local( 'UM1', time(), TRUE)  ) );  ?></span>
 							<p><b >Top 10</b></p>
 						</td>
 						<td colspan="2" style="border-top: 1px solid #222222; ">

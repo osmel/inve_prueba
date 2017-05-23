@@ -21,48 +21,26 @@ class Pedidos extends CI_Controller {
     $data['campo']        = $this->input->post('campo');
 
     $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_prod_id']        = $this->input->post('val_prod_id');
+
     $data['val_comp']        = $this->input->post('val_comp');
-    $data['val_ancho']        = $this->input->post('val_ancho');
+    $data['val_ancho']        = (float)$this->input->post('val_ancho');
+    $data['val_ancho_cad']        = $this->input->post('val_ancho');
     $data['val_color']        = $this->input->post('val_color');
     $data['val_proveedor']        = $this->input->post('val_proveedor');
 
     $data['dependencia']        = $this->input->post('dependencia');
 
-    switch ($data['dependencia']) {
-        case "producto_pedido": //nunca será una dependencia
-            $elementos  = $this->modelo_pedido->listado_productos();
-            break;
-        case "composicion_pedido":
-            $elementos  = $this->modelo_pedido->lista_composiciones($data);
-            break;
-        case "ancho_pedido":
-            $elementos  = $this->modelo_pedido->lista_ancho($data);
-            break;
-        case "color_pedido":
-            $elementos  = $this->modelo_pedido->lista_colores($data);
-            break;
 
-        case "proveedor_pedido":
-            $elementos  = $this->modelo_pedido->lista_proveedores($data);
-            break;
+			$elementos['producto_pedido']  = $this->modelo_pedido->listado_productos_completa($data);
+        	$elementos['composicion_pedido']  = $this->modelo_pedido->lista_composiciones_completa($data);
+            $elementos['ancho_pedido']  = $this->modelo_pedido->lista_ancho_completa($data);
+            $elementos['color_pedido']  = $this->modelo_pedido->lista_colores_completa($data);
+            $elementos['proveedor_pedido']  = $this->modelo_pedido->lista_proveedores_completa($data);
 
-        default:
-    }
+    echo json_encode($elementos); 
 
 
-
-      $variables = array();
-    if ($elementos != false)  {     
-         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
-            if ($data['dependencia']=="color_pedido"){
-              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => $valor->hexadecimal_color)); 
-            } else {
-              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => "FFFFFF"));  
-            }
-       }
-    }  
-
-     echo json_encode($variables);
   }
 
 

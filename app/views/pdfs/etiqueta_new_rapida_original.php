@@ -16,14 +16,14 @@
 						<table style="width: 378px; font-family: Arial, sans-serif;">
 							<tbody>
 								<tr>
-								  <td style="height: 348px; text-align: center; vertical-align: middle;">
+								  <td style="height: 378px; text-align: center; vertical-align: middle;">
 										<table style="display: inline-block; text-align: left;  " >
 											<tbody >
 
 
 												<tr >
-													<td style="font-size: 12px; width:200px;height:100px;">
-														<p style="margin-top: 0px; line-height: 15px;">
+													<td style="font-size: 11px; width:200px;height:100px;">
+														<p style="margin-top: 10px; line-height: 15px;">
 															Iniciativa Textil S.A. de C.V.<br>
 															Calle de Venustiano Carranza <br>
 															131-1 Centro. Delegación Cuauhtémoc<br>
@@ -70,7 +70,7 @@
 
 													<!-- -->
 													<td rowspan="6" style="text-align:right;  width:100px; margin:0px; padding:0px;">
-														<?php echo '<img src="'.base_url().'qr_code/'.$movimiento->codigo.'.png" width="110px" height="110px"/>'; ?>
+														<?php echo '<img src="'.base_url().'qr_code/'.$movimiento->codigo.'.png" width="85px" height="85px"/>'; ?>
 													</td>
 												</tr>
 

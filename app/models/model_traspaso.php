@@ -103,16 +103,17 @@
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.consecutivo_traspaso)"); // , FALSE
+          //m.id_usuario_apartado, ,m.id_fac_orig, p.nombre comprador,
+          $this->db->select('m.id_apartado apartado');   
 
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso,m.id_factura,m.id_fac_orig');  
-          $this->db->select('p.nombre comprador, m.id_apartado apartado');   
+          $this->db->select('m.id_cliente_apartado,consecutivo_venta, m.fecha_apartado,m.comentario_traspaso,m.id_factura');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
-          $this->db->select('pr.nombre as dependencia', FALSE);
+          $this->db->select('pr.nombre as dependencia'); //, FALSE
 
 
-          $this->db->select('m.consecutivo_traspaso', FALSE);
-          $this->db->select('m.mov_salida', FALSE);
+          $this->db->select('m.consecutivo_traspaso'); //, FALSE
+          $this->db->select('m.mov_salida'); //, FALSE
           
 
           $this->db->select('
@@ -125,16 +126,16 @@
 
           $this->db->select("a.almacen");
           $this->db->select("m.consecutivo_venta");
-          $this->db->select("tp.tipo_pedido tip_pedido", false);          
+          $this->db->select("tp.tipo_pedido tip_pedido"); //, false
           $this->db->select("tf.tipo_factura");          
 
 
-          $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
-          $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
+          $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros"); //, FALSE
+          $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos"); //, FALSE
           $this->db->select("COUNT(m.id_medida) as 'pieza'");
-          $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
-          $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
-          $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+          $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal"); //, FALSE
+          $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva"); //, FALSE
+          $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
               
               
 
@@ -142,11 +143,11 @@
           
           $this->db->from($this->historico_registros_traspasos.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); //,'LEFT'
+          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado'); //,'LEFT'
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura'); //,'LEFT'
 
 
           if ($id_almacen!=0) {
@@ -261,7 +262,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_traspaso_historico($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_traspaso_historico($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
 
@@ -326,8 +327,8 @@ public function totales_importes_traspaso($where){
 
  public function totales_campos_traspaso($where){
 
-              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); //, FALSE
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); //, FALSE
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
              
                $this->db->from($this->historico_registros_traspasos.' as m');
@@ -423,21 +424,22 @@ public function totales_importes_traspaso($where){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado, m.num_partida');  //fecha falta
-          $this->db->select('pr.nombre dependencia ');  
-          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
-          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
+          //m.id_usuario_apartado,
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id_cliente_apartado)"); // , FALSE
+          $this->db->select('m.id_cliente_apartado, m.num_partida');  //fecha falta
+          $this->db->select('pr.nombre dependencia');  
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente'); //, FALSE
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor'); //, FALSE
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado, m.consecutivo');  
 
           $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
-          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva"); //, FALSE
 
           $this->db->select('c.hexadecimal_color,c.color nombre_color, m.ancho, um.medida');
           
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
 
           $this->db->select('p.nombre comprador , m.id_apartado');  
 
@@ -470,8 +472,8 @@ public function totales_importes_traspaso($where){
 
           $this->db->select("a.almacen");
 
-          
-          $this->db->select("m.id_factura,m.id_fac_orig,m.id_factura_original,m.id_tipo_factura, m.id_tipo_pedido");
+            //m.id_fac_orig, m.id_factura_original,
+          $this->db->select("m.id_factura,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
@@ -486,15 +488,15 @@ public function totales_importes_traspaso($where){
 
           $this->db->from($this->historico_registros_traspasos.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
-          $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
-          $this->db->join($this->colores.' As c', 'm.id_color = c.id','LEFT');
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); //,'LEFT'
+          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->colores.' As c', 'm.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura'); //,'LEFT'
+          $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
           //filtro de busqueda
 
@@ -599,7 +601,7 @@ public function totales_importes_traspaso($where){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_completo_especifico($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_completo_especifico($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "datos"            =>  array(
@@ -2034,29 +2036,38 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
  
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario');
+          //m.id_empresa,,m.id_factura ,  m.factura,, m.id_operacion, , m.referencia
+          //$this->db->select('m.id_color, m.id_composicion, m.id_calidad');
+          //m.id_medida, m.cantidad_royo,m.iva,, m.comentario
+          
+          $this->db->select('m.id, m.movimiento,m.id_fac_orig, m.id_descripcion,m.devolucion, m.num_partida');
+          
+          $this->db->select('m.cantidad_um,  m.ancho, m.precio, m.codigo');
+          
+
+          
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
-
           $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_apartado');
-         
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+
+           
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
+
 
           $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
-          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total", FALSE);          
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva"); //, FALSE
+          $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total"); //, FALSE
+          
           $this->db->select("prod.codigo_contable");  
 
           $this->db->from($this->registros.' as m');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT'); //
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); //,'LEFT'
+          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT'); //,'LEFT'
          
           //filtro de busqueda
 
@@ -2151,7 +2162,7 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_entrada_home($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_entrada_home($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
@@ -2189,13 +2200,13 @@ ADD  `num_control` VARCHAR( 30 ) NOT NULL ;
 
   public function total_campos_salida_home($where) {
 
-              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); //, FALSE
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); //, FALSE
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               
              
               $this->db->from($this->registros.' as m');
-              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
+              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT'); //,'LEFT'
 
               $this->db->where($where);
 
@@ -2475,9 +2486,9 @@ public function valores_movimientos_temporal(){
      
     public function totales_importes($where){
 
-           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal", FALSE);
-           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva", FALSE);
-           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total", FALSE);
+           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal"); //, FALSE
+           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva"); //, FALSE
+           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
    
           $this->db->from($this->registros.' as m');
           $this->db->where($where);

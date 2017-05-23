@@ -54,8 +54,10 @@ $db['default']['password'] = 'root';
 
 /*$db['default']['database'] = 'iniciativatextilalmacen';
 $db['default']['database'] = 'inventario_servidor';
-*/
+
 $db['default']['database'] = 'invent_prueba';
+*/
+$db['default']['database'] = 'bd_inventarios';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = 'inven_';
 $db['default']['pconnect'] = TRUE;

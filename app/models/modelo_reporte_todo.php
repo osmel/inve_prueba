@@ -105,9 +105,9 @@
                  $order = 'desc';
            } 
           switch ($columa_order) {
-                   /*case '0':
+                   case '0':
                         $columna = 'm.codigo';
-                     break;*/
+                     break;
                    case '1':
                         $columna = 'm.id_descripcion';
                      break;
@@ -123,22 +123,20 @@
                    case '5':
                         $columna = 'm.movimiento';
                      break;
-                   /*case '6':
+                   case '6':
                           if ($estatus=="apartado") {
                               $columna= 'pr.nombre';
                           }  else {
                               $columna= 'p.nombre';
                           }  
-                     break;*/
-                   case '6':
+                     break;
+                   case '7':
                           if ($estatus=="apartado") {
                               $columna= 'm.id_apartado';
                           }  else {
                               $columna= 'm.id_lote, m.consecutivo';  
                           }  
                      break;
-
-                     /*
                    case '8':
                         $columna = 'm.fecha_entrada';
                      break;
@@ -152,8 +150,7 @@
                      break;
                    case '14':
                         $columna = 'm.id_almacen';
-                     break;    
-                     */                   
+                     break;                       
                    default:
                        $columna = 'm.id';
                        $order = 'DESC';                       
@@ -204,7 +201,6 @@
 
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia'); 
-              $this->db->select('m.id_apartado'); 
           }
           $this->db->select('m.cantidad_um, u.medida');
           $this->db->select('
@@ -337,28 +333,28 @@
                               $columna7=$row->id_lote.'-'.$row->consecutivo; 
                               $columna6= $row->nombre;
                           }  
-
-
-                             $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$row->id_descripcion,
-                                          2=> $row->color.
-                                            '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                          3=>$row->cantidad_um.' '.$row->medida,
-                                          4=>$row->ancho.' cm',
-                                          5=>
-                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
-                                          6=>$columna7,//id_lote
-                                          7=>$row->metros, // 9
-                                          8=>$row->kilogramos,  //10
-                                          9=>$row->color_devolucion, //11
-                                          10=>$row->proceso_traspaso, //15
-                                          11=>$row->codigo_contable, //16
-                                        );                    
-                          
-                          
-
+                          $dato[]= array(
+                                      0=>$row->codigo,
+                                      1=>$row->id_descripcion,
+                                      2=> $row->color.
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      3=>$row->cantidad_um.' '.$row->medida,
+                                      4=>$row->ancho.' cm',
+                                      5=>
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
+                                      6=>$columna6,
+                                      7=>$columna7,
+                                      8=> date( 'd-m-Y', strtotime($fecha)),
+                                      9=>$row->metros,
+                                      10=>$row->kilogramos,
+                                      11=>$row->color_devolucion,
+                                      12=>$row->factura,
+                                      13=>$row->num_partida,
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
+                                    );                    
                       }
 
                       return json_encode ( array(
@@ -405,134 +401,7 @@
               else
                  return False;
               $result->free_result();              
-       }   
-
-
-
-
-
-
-public function detalle_entrada_home($data){
-
-          $estatus= $data['extra_search'];
-          
-          $this->db->select('m.id, m.movimiento, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.num_partida'); 
-          $this->db->select('m.codigo, m.ancho, m.devolucion'); 
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,   m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre');
-          if ($estatus=="apartado") {
-              $this->db->select('pr.nombre as dependencia'); 
-              $this->db->select('m.id_apartado'); 
-          }
-          $this->db->select('m.cantidad_um, u.medida');
-          $this->db->select('
-                        CASE m.id_apartado
-                          WHEN "1" THEN "ab1d1d"
-                           WHEN "2" THEN "f1a914"
-                           WHEN "3" THEN "14b80f"
-                           WHEN "4" THEN "ab1d1d"
-                           WHEN "5" THEN "f1a914"
-                           WHEN "6" THEN "14b80f"
-                           ELSE "No Apartado"
-                        END AS apartado
-            ',False);
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
-          $this->db->select("( CASE WHEN  (m.devolucion <> 0)  THEN 'red'  
-                                    WHEN  (m.id_apartado <> 0)  THEN 'morado' 
-                                    ELSE 'black' END )
-                             AS color_devolucion");  
-          $this->db->select("prod.codigo_contable");  
-
-          $this->db->select("a.almacen");  
-          $this->db->select("prod.imagen");  
-          
-          $this->db->from($this->registros.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
-          if ($estatus=="apartado") {
-              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado'); 
-              $this->db->join($this->proveedores.' As pr', 'us.id_cliente = pr.id'); 
-          }    
-
-
-          $where = '( m.codigo =  "'.$data["identificador"].'" ) ' ;                              
-
-
-          
-          $this->db->where($where); //
-            
-
-          $result = $this->db->get();
-
-              
-              $data['estatus'] = $estatus;
-              if ( $result->num_rows() > 0 ) {
-                    
-                   $retorno= "reportes";   
-                  foreach ($result->result() as $row) {
-
-                            if  (isset($row->imagen)) {
-                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
-                              if (file_exists($nombre_fichero)) {
-                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
-
-                              } else {
-                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                              }
-                            } else {
-                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                            }
-
-
-
-                          if ($estatus=="apartado") {
-                              $fecha= $row->fecha_apartado;
-                              if (($row->id_apartado) >=4) {
-                                $tip_apart= " (Tienda)";
-                              } else {
-                                $tip_apart= " (Vendedor)";
-                              }  
-                              $columna6= $row->dependencia.$tip_apart;
-                              $columna7= 
-                              '<div style="background-color:#'.$row->apartado.';display:block;width:15px;height:15px;margin:0 auto;"></div>';
-                          }  else {
-                              $fecha= $row->fecha_entrada;
-                              $columna7=$row->id_lote.'-'.$row->consecutivo; 
-                              $columna6= $row->nombre;
-                          }  
-
-
-                             $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$columna6,//proveedor o dependencia
-                                          2=> date( 'd-m-Y', strtotime($fecha)),
-                                          3=>$row->num_partida,
-                                          4=>$row->almacen,
-                                          5=>$imagen,
-                                        );                    
-                          
-                          
-
-                      }
-
-                      return json_encode ( array(
-                        "data"            =>  $dato, 
-                      ));
-              }   
-              else {
-                  $output = array(
-                    "aaData" => array(),
-                  );
-                  $array[]="";
-                  return json_encode($output);
-              }
-              $result->free_result();           
-      }  
-
+       }    
 
 
 
@@ -559,9 +428,9 @@ public function detalle_entrada_home($data){
                  $order = 'desc';
            } 
           switch ($columa_order) {
-                   /*case '0':
+                   case '0':
                         $columna = 'm.codigo';
-                     break;*/
+                     break;
                    case '1':
                         $columna = 'm.id_descripcion';
                      break;
@@ -577,13 +446,12 @@ public function detalle_entrada_home($data){
                    case '5':
                         $columna = 'm.mov_salida';
                      break;
-                   /*case '6':
-                              $columna= 'us.nombre';
-                     break;*/
                    case '6':
+                              $columna= 'us.nombre';
+                     break;
+                   case '7':
                               $columna= 'm.id_lote, m.consecutivo';  
                      break;
-                    /*  
                    case '8':
                         $columna = 'm.fecha_salida';
                      break;
@@ -598,7 +466,6 @@ public function detalle_entrada_home($data){
                    case '14':
                         $columna = 'm.id_almacen';
                      break;                       
-                     */
                    default:
                        $columna = 'm.id';
                        $order = 'DESC';                       
@@ -768,25 +635,30 @@ public function detalle_entrada_home($data){
                               $columna6= $row->nombre;
                           }  
 
-
-                         
-                             $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$row->id_descripcion,
-                                          2=> $row->color.
-                                            '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                          3=>$row->cantidad_um.' '.$row->medida,
-                                          4=>$row->ancho.' cm',
-                                          5=> //
+                           $dato[]= array(
+                                      0=>$row->codigo,
+                                      1=>$row->id_descripcion,
+                                      2=> $row->color.
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      3=>$row->cantidad_um.' '.$row->medida,
+                                      4=>$row->ancho.' cm',
+                                      5=> //
                                           '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
                                           type="button" class="btn btn-success btn-block">'.$row->mov_salida.'</a>',
-                                          6=>$columna7,//id_lote
-                                          7=>$row->metros, // 9
-                                          8=>$row->kilogramos,  //10
-                                          9=>$row->color_devolucion, //11
-                                          10=>$row->proceso_traspaso, //15
-                                          11=>$row->codigo_contable, //16
-                                        );                    
+                                      6=>$row->nom_cliente, //$columna6
+                                      7=>$columna7,
+                                      8=> date( 'd-m-Y', strtotime($row->fecha_salida)),
+                                      9=>$row->metros,
+                                      10=>$row->kilogramos,
+                                      11=>$row->color_devolucion,
+                                      12=>$row->factura,
+                                      13=>$row->num_partida,
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
+
+                                      
+                                    );                    
                       }
 
                       return json_encode ( array(
@@ -831,132 +703,6 @@ public function detalle_entrada_home($data){
        }  
 
 
-
-public function detalle_salida_home($data){
-
-          $estatus= $data['extra_search'];
-         
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          
-          $this->db->select('m.id, m.mov_salida, m.factura, m.id_descripcion,  m.num_partida'); //m.id_empresa, m.id_operacion,
-          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura, m.fecha_salida');
-          $this->db->select('m.ancho,  m.codigo');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color , p.nombre');
-          $this->db->select('us.nombre as nom_cliente');    
-          $this->db->select('p.nombre cliente,ca.nombre cargador');  
-          if ($estatus=="apartado") {
-              $this->db->select('pr.nombre as dependencia'); 
-          }
-          $this->db->select('m.cantidad_um, u.medida');
-          $this->db->select('
-                        CASE m.id_apartado
-                          WHEN "1" THEN "ab1d1d"
-                           WHEN "2" THEN "f1a914"
-                           WHEN "3" THEN "14b80f"
-                           
-                           WHEN "4" THEN "ab1d1d"
-                           WHEN "5" THEN "f1a914"
-                           WHEN "6" THEN "14b80f"
-
-                           ELSE "No Apartado"
-                        END AS apartado
-            ',False);
-
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
-          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion"); 
-          $this->db->select("prod.codigo_contable");  
-
-          $this->db->select('a.almacen, prod.imagen, m.fecha_salida');
-          
-         
-          $this->db->from($this->historico_registros_salidas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente'); 
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');                  
-
-
-          if ($estatus=="apartado") {
-              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado'); 
-              $this->db->join($this->proveedores.' As pr', 'us.id_cliente = pr.id'); 
-          }    
-             
-
-          $where = '( m.codigo =  "'.$data["identificador"].'" ) ' ;                              
-
-          
-          $this->db->where($where); 
-
-
-          $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-
-                  foreach ($result->result() as $row) {
-                            if  (isset($row->imagen)) {
-                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
-                              if (file_exists($nombre_fichero)) {
-                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
-
-                              } else {
-                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                              }
-                            } else {
-                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                            }
-
-                          if ($estatus=="apartado") {
-
-                              if (($row->id_apartado) >=4) {
-                                $tip_apart= " (Tienda)";
-                              } else {
-                                $tip_apart= " (Vendedor)";
-                              }  
-                              $columna6= $row->dependencia.$tip_apart;
-                              $columna7= 
-                              '<div style="background-color:#'.$row->apartado.';display:block;width:15px;height:15px;margin:0 auto;"></div>';
-                          }  else {
-                              $columna7=$row->id_lote.'-'.$row->consecutivo; 
-                              $columna6= $row->nombre;
-                          }  
-
-
-                             $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$columna6,//proveedor o dependencia
-                                          2=>date( 'd-m-Y', strtotime($row->fecha_salida)),
-                                          3=>$row->num_partida,
-                                          4=>$row->almacen,
-                                          5=>$imagen,
-                                        );      
-
-                
-                      }
-
-                      return json_encode ( array(
-                        
-                        
-                        "data"            =>  $dato, 
-                        
-                      ));
-              }   
-              else {
-                  $output = array(
-                        "aaData" => array(),
-                  );
-                  $array[]="";
-                  return json_encode($output);
-              }
-              $result->free_result();           
-      }         
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -980,9 +726,9 @@ public function detalle_salida_home($data){
            } 
 
           switch ($columa_order) {
-                   /*case '0':
+                   case '0':
                         $columna = 'm.codigo';
-                     break;*/
+                     break;
                    case '1':
                         $columna = 'm.id_descripcion';
                      break;
@@ -998,13 +744,12 @@ public function detalle_salida_home($data){
                    case '5':
                         $columna = 'm.movimiento';
                      break;
-                   /*case '6':
-                              $columna= 'p.nombre';
-                     break;*/
                    case '6':
+                              $columna= 'p.nombre';
+                     break;
+                   case '7':
                               $columna= 'm.id_lote, m.consecutivo';  
                      break;
-                     /*
                    case '8':
                         $columna = 'm.fecha_entrada';
                      break;
@@ -1020,7 +765,7 @@ public function detalle_salida_home($data){
                         $columna = 'm.id_almacen';
                      break;                       
 
-                   */
+                   
                    default:
                        $columna = 'm.id';
                        $order = 'DESC';                       
@@ -1193,30 +938,28 @@ public function detalle_salida_home($data){
                               $columna7=$row->id_lote.'-'.$row->consecutivo; 
                               $columna6= $row->nombre;
                           }  
-
-                            
-                             $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$row->id_descripcion,
-                                          2=> $row->color.
-                                            '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                          3=>$row->cantidad_um.' '.$row->medida,
-                                          4=>$row->ancho.' cm',
-                                          5=>
-                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
-                                          6=>$columna7,//id_lote
-                                          7=>$row->metros, // 9
-                                          8=>$row->kilogramos,  //10
-                                          9=>$row->color_devolucion, //11
-                                          10=>$row->proceso_traspaso, //15
-                                          11=>$row->codigo_contable, //16
-                                        );             
-
-                              
-
-
-                                            
+                           $dato[]= array(
+                                      0=>$row->codigo,
+                                      1=>$row->id_descripcion,
+                                      2=> $row->color.
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      3=>$row->cantidad_um.' '.$row->medida,
+                                      4=>$row->ancho.' cm',
+                                      5=>
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
+                                      6=>$columna6,
+                                      7=>$columna7,
+                                      8=> date( 'd-m-Y', strtotime($fecha)),
+                                      9=>$row->metros,
+                                      10=>$row->kilogramos,
+                                      11=>$row->color_devolucion,
+                                      12=>$row->factura,
+                                      13=>$row->num_partida,
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
+                                    );                    
                       }
 
                       return json_encode ( array(
@@ -1247,11 +990,9 @@ public function detalle_salida_home($data){
               $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); 
               $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); 
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
-            
-
+             
               $this->db->from($this->historico_registros_entradas.' as m');
-              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-              $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');           
+              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado'); 
               $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
               $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
               $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
@@ -1268,116 +1009,7 @@ public function detalle_salida_home($data){
        }       
 
   
- public function detalle_entrada_devolucion($data){
 
-          $estatus= $data['extra_search'];
-
-          $this->db->select('m.id, m.movimiento,m.factura, m.id_fac_orig, m.id_descripcion,  m.num_partida,m.id_estatus');
-          $this->db->select('m.ancho, m.codigo'); 
-          $this->db->select('m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre, m.devolucion');
-          $this->db->select('m.cantidad_um, u.medida');
-          $this->db->select('
-                        CASE m.id_apartado
-                          WHEN "1" THEN "ab1d1d"
-                           WHEN "2" THEN "f1a914"
-                           WHEN "3" THEN "14b80f"
-                           
-                           WHEN "4" THEN "ab1d1d"
-                           WHEN "5" THEN "f1a914"
-                           WHEN "6" THEN "14b80f"
-
-                           ELSE "No Apartado"
-                        END AS apartado
-            ',False);
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
-          $this->db->select("( CASE WHEN  (m.devolucion <> 0)  THEN 'red'  
-                                    WHEN  (m.id_apartado <> 0)  THEN 'morado' 
-                                    ELSE 'black' END )
-                             AS color_devolucion");    
-          $this->db->select("prod.codigo_contable");  
-
-          $this->db->select("prod.imagen, a.almacen");  
-
-
-          $this->db->from($this->historico_registros_entradas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');           
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
-
-          $where = '( m.codigo =  "'.$data["identificador"].'" ) ' ;
-
-          $this->db->where($where); //
-
-
-            $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-
-                   $retorno= "reportes";   
-                  foreach ($result->result() as $row) {
-
-                     if  (isset($row->imagen)) {
-                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
-                              if (file_exists($nombre_fichero)) {
-                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
-
-                              } else {
-                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                              }
-                            } else {
-                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                            }
-
-                          if ($estatus=="apartado") {
-                              $fecha= $row->fecha_apartado;
-                              if (($row->id_apartado) >=4) {
-                                $tip_apart= " (Tienda)";
-                              } else {
-                                $tip_apart= " (Vendedor)";
-                              }  
-                              $columna6= $row->dependencia.$tip_apart;
-                              $columna7= 
-                              '<div style="background-color:#'.$row->apartado.';display:block;width:15px;height:15px;margin:0 auto;"></div>';
-                          }  else {
-                              $fecha= $row->fecha_entrada;
-                              $columna7=$row->id_lote.'-'.$row->consecutivo; 
-                              $columna6= $row->nombre;
-                          }  
-
-                                        $dato[]= array(
-                                          0=>$row->codigo,
-                                          1=>$columna6,//proveedor o dependencia
-                                          2=>date( 'd-m-Y', strtotime($fecha)),
-                                          3=>$row->num_partida,
-                                          4=>$row->almacen,
-                                          5=>$imagen,
-                                        );      
-                
-                      }
-
-                      return json_encode ( array(
-                        
-                        "data"            =>  $dato, 
-                        
-
-                      ));
-                    
-              }  else {
-                  $output = array(
-                  
-                      "aaData" => array(),
-                  );
-                  
-                  return json_encode($output);
-              }
-              $result->free_result();           
-
-
- }  
     
 
 
@@ -1421,35 +1053,36 @@ public function detalle_salida_home($data){
            } 
 
           switch ($columa_order) {
-                   /*case '0':
+                   case '0':
                         $columna = 'p.referencia';
                      break;
-                     */
                    case '1':
                         $columna = 'p.descripcion';
                      break;
                    case '2':
                         $columna = 'suma'; 
                      break;
-                   
                    case '3':
+                        $columna = 'p.imagen'; 
+                     break;
+                   case '4':
                         $columna = 'c.color';
                      break;
-                   
-                   case '4':
-                              $columna= 'co.composicion';
-                     break;
                    case '5':
-                              $columna= 'ca.calidad';
+                        $columna = 'p.comentario';
                      break;
                    case '6':
+                              $columna= 'co.composicion';
+                     break;
+                   case '7':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '8':
                         $columna = 'p.precio';
                      break;
-                   
-                   /*case '14':
+                   case '14':
                         $columna = 'm.id_almacen';
                      break;                       
-                     */
                    default:
                        $columna = 'suma'; 
                        $order = 'DESC';                       
@@ -1556,24 +1189,26 @@ public function detalle_salida_home($data){
                                 $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
                             }
 
-                              $dato[]= array(
+                           $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma, //
-                                      3=> $row->nombre_color.                                      
+                                      2=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
+                                      3=> $imagen,
+                                      4=> $row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                      4=>$row->composicion,  //6
-                                      5=>$row->calidad,   //7
-                                      6=>$row->precio,   //8
-                                      7=>$row->metros,   //9
-                                      8=>$row->kilogramos, //10
-                                      9=>"black",  //11
-                                      10=>$row->proceso_traspaso, //15
-                                      11=>$row->codigo_contable,  //16
+                                      5=> "comentario", //$row->comentario, 
+                                      6=>$row->composicion,
+                                      7=>$row->calidad,
+                                      8=>$row->precio,
+                                      9=>$row->metros,
+                                      10=>$row->kilogramos,
+                                      11=>"black",
+                                      12=>"--",
+                                      13=>"--", 
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
                                     );                    
-                            
-
-                          
                       }
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
@@ -1600,130 +1235,6 @@ public function detalle_salida_home($data){
       }  
 
 
-
- public function detalle_cero_baja($data){
-        $id_empresa= addslashes($data['proveedor']);
-           $id_empresaid = '';
-             if ($id_empresa!="") {
-                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
-
-                    if (!($id_empre)) {
-                      $id_empre =0;
-                    }                  
-
-                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
-
-            } else 
-            {
-               $id_empresaid .= ' ';
-            }          
-          $id_empresaid .= '';
-          
-          $estatus= $data['extra_search'];
-          $id_almacen= $data['id_almacen'];
-          $id_factura= $data['id_factura'];
-
-          //$estatus= $data['extra_search'];
-          
-          
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          
-          $this->db->select("COUNT(m.referencia) as 'suma'");
-          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad'); 
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
-
-          
-         
-          if ($id_almacen!=0) {
-            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-            $id_almacenid = '';
-          }   
-
-          if ($id_factura!=0) {
-            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
-          } else {
-            $id_facturaid = '';
-          }   
-          $this->db->select("p.codigo_contable");  
-          $this->db->select("p.imagen,a.almacen,p.comentario"); 
-
-          $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); 
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-
-        
-
-          $where = '( m.referencia =  "'.$data["identificador"].'" ) ' ;
-
-          $this->db->where($where);
-          
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); 
-
-         if ($estatus=="cero") {
-              $this->db->having('suma <= 0');
-              $where_total = 'suma <= 0';
-          }   
-          if ($estatus=="baja") {
-              $this->db->having('((suma>0) AND (suma < p.minimo))');
-              $where_total = '((suma>0) AND (suma < p.minimo))';
-          }             
-          
-          $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-
-          
-                  foreach ($result->result() as $row) {
-                            if  (isset($row->imagen)) {
-                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
-                              if (file_exists($nombre_fichero)) {
-                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
-
-                              } else {
-                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                              }
-                            } else {
-                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                            }
-
-
-
-                             $dato[]= array(
-                                          0=>$row->referencia,
-                                          1=>$row->almacen,  
-                                          2=>$imagen,
-                                          3=>$row->comentario,
-                                          
-                                        );   
-
-
-                             
-                       
-                      }
-                      return json_encode ( array(
-                        "data"            =>  $dato, 
-                      ));
-                    
-              }   
-              else {
-                  $output = array(
-                  "aaData" => array()
-                  );
-                  $array[]="";
-                  return json_encode($output);
-              }
-
-              $result->free_result();   
-      }  
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1738,43 +1249,42 @@ public function detalle_salida_home($data){
           $id_factura= $data['id_factura'];
           $columa_order = $data['order'][0]['column'];
           $order = $data['order'][0]['dir'];
-           
            if ($data['draw'] ==0) {  
                  $columa_order ='-1';
                  $order = 'DESC';
            } 
 
           switch ($columa_order) {
-                   /*
                    case '0':
                         $columna = 'p.referencia';
                      break;
-                     */
                    case '1':
                         $columna = 'p.descripcion';
                      break;
                    case '2':
                         $columna = 'suma'; 
                      break;
-                   
                    case '3':
+                        $columna = 'p.imagen'; 
+                     break;
+                   case '4':
                         $columna = 'c.color';
                      break;
-                   
-                   case '4':
-                              $columna= 'co.composicion';
-                     break;
                    case '5':
-                              $columna= 'ca.calidad';
+                        $columna = 'p.comentario';
                      break;
                    case '6':
+                              $columna= 'co.composicion';
+                     break;
+                   case '7':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '8':
                         $columna = 'p.precio';
                      break;
-                   /*
                     case '14':
                         $columna = 'm.id_almacen';
                      break;                       
-                     */
 
                    default:
                        $columna = 'suma'; 
@@ -1869,24 +1379,26 @@ public function detalle_salida_home($data){
                               $imagen='<a type="button" href="img/sinimagen.png" border="0" width="75" height="75" target="_blank" class="button">Ver Imagen</a>';
                           }
 
-                                $dato[]= array(
+                           $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>$row->suma, //
-                                      3=> $row->nombre_color.                                      
+                                      2=>$row->suma,
+                                      3=> $imagen,
+                                      4=>$row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
-                                      4=>$row->composicion,  //6
-                                      5=>$row->calidad,   //7
-                                      6=>$row->precio,   //8
-                                      7=>$row->metros,   //9
-                                      8=>$row->kilogramos, //10
-                                      9=>"black",  //11
-                                      10=>$row->proceso_traspaso, //15
-                                      11=>$row->codigo_contable,  //16
+                                      5=> "comentario", //$row->comentario, 
+                                      6=>$row->composicion,
+                                      7=>$row->calidad,
+                                      8=>$row->precio,
+                                      9=>$row->metros,
+                                      10=>$row->kilogramos,
+                                      11=>"black",
+                                      12=>"--",
+                                      13=>"--",
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
                                     );                    
-
-
-                        
                       }
 
                       return json_encode ( array(
@@ -1914,111 +1426,6 @@ public function detalle_salida_home($data){
       }        
 
 
-
-  public function detalle_top($data){
-
-          
-          $id_almacen= $data['id_almacen'];
-          $id_factura= $data['id_factura'];
-          $id_session = $this->db->escape($this->session->userdata('id'));
-
-          $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)");  
-          $this->db->select('p.referencia, m.proceso_traspaso'); 
-          $this->db->select('p.descripcion, p.imagen, p.precio');
-          $this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion");   
-          $this->db->select("ca.calidad");   
-          $this->db->select("a.almacen, p.comentario, p.imagen");   
-          //$this->db->select("p.imagen,a.almacen,p.comentario"); 
-          $fechas = ' ';
-          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
-                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
-                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
-                          
-                            $fechas .= ' AND ( ( DATE_FORMAT((m.fecha_salida),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_salida),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
-
-
-                          
-          } else {
-           $fechas .= ' ';
-          }
-          $this->db->select("COUNT(m.referencia) as 'suma'");
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
-          if ($id_almacen!=0) {
-            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
-          } else {
-            $id_almacenid = '';
-          }   
-
-          if ($id_factura!=0) {
-            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
-          } else {
-            $id_facturaid = '';
-          }   
-          $this->db->select("p.codigo_contable");  
-
-          $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid); 
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); 
-
-          
-          $where = '( m.referencia =  "'.$data["identificador"].'" ) ' ;
-          $this->db->where($where);
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
-          
-
-          $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-
-                  foreach ($result->result() as $row) {
-                         
-                            if  (isset($row->imagen)) {
-                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
-                              if (file_exists($nombre_fichero)) {
-                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
-
-                              } else {
-                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                              }
-                            } else {
-                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
-                            }
-
-
-
-                             $dato[]= array(
-                                          0=>$row->referencia,
-                                          1=>$row->almacen,  
-                                          2=>$imagen,
-                                          3=>$row->comentario,
-                                          
-                                        );   
-                  
-
-                      }
-
-                      return json_encode ( array(
-                        "data"            =>  $dato, 
-                      ));
-                    
-              }   
-              else {
-                  $output = array(
-                    "aaData" => array()
-                  );
-                  $array[]="";
-                  return json_encode($output);
-              }
-
-              $result->free_result();   
-              
-
-      }      
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2724,6 +2131,350 @@ public function totales_importes_salida($where){
 
 
 
+
+
+
+      
+/*
+
+       $str= 'SELECT p.referencia, p.comentario, m.proceso_traspaso, p.descripcion, p.minimo, p.precio, c.hexadecimal_color, c.color nombre_color, co.composicion, ca.calidad, COUNT(m.referencia) as suma, ( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros, ( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos, a.almacen, p.codigo_contable FROM (inven_catalogo_productos as p) JOIN inven_catalogo_colores As c ON p.id_color = c.id JOIN inven_catalogo_composicion As co ON p.id_composicion = co.id JOIN inven_catalogo_calidad As ca ON p.id_calidad = ca.id JOIN inven_registros_entradas As m ON m.referencia= p.referencia and m.id_estatus=12 JOIN inven_catalogo_almacenes As a ON a.id = m.id_almacen WHERE ( ( ( p.referencia LIKE "%%" ) OR (p.descripcion LIKE "%%") OR (CONCAT("Optimo:",p.minimo) LIKE "%%") OR (c.color LIKE "%%") OR (p.comentario LIKE "%%") OR (co.composicion LIKE "%%") OR ( ca.calidad LIKE "%%" ) OR ( p.precio LIKE "%%" ) ) ) GROUP BY p.referencia, p.descripcion, p.minimo, p.precio, c.hexadecimal_color, c.color, co.composicion, ca.calidad HAVING ((suma>0) AND (suma < p.minimo)) ORDER BY suma DESC LIMIT 30, 10';
+
+       $query = $this->db->query($str);
+
+
+        return json_encode($query->result());
+
+*/
+
+
+
+
+  public function buscador_existencias_baja($data){
+
+
+
+
+
+
+        $id_empresa= addslashes($data['proveedor']);
+           $id_empresaid = '';
+             if ($id_empresa!="") {
+                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                    if (!($id_empre)) {
+                      $id_empre =0;
+                    }                  
+
+                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
+
+            } else 
+            {
+               $id_empresaid .= ' ';
+            }          
+            $id_empresaid .= '';
+
+
+
+
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          $estatus= $data['extra_search'];
+
+                   //productos
+          //$id_descripcion= $data['id_descripcion'];
+          $id_descripcion= addslashes($data['id_descripcion']);
+          $id_color= $data['id_color'];
+          $id_composicion= $data['id_composicion'];
+          $id_calidad= $data['id_calidad'];
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
+          $columa_order = $data['order'][0]['column'];
+
+          $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==0) {  //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'DESC';
+           } 
+
+
+
+      
+          switch ($columa_order) {
+                   case '0':
+                        $columna = 'p.referencia';
+                     break;
+                   case '1':
+                        $columna = 'p.descripcion';
+                     break;
+                   case '2':
+                        $columna = 'suma'; // y suma = COUNT(m.referencia) p.minimo
+                     break;
+                   case '3':
+                        //$columna = 'p.imagen'; //
+                     break;
+                   case '4':
+                        $columna = 'c.color';
+                     break;
+                   case '5':
+                        $columna = 'p.comentario';
+                     break;
+                   case '6':
+                              $columna= 'co.composicion';
+                     break;
+                   case '7':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '8':
+                        $columna = 'p.precio';
+                     break;
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+
+                   
+                   default:
+                       /*$columna = 'p.referencia';*/
+                       $columna = 'suma'; //'p.id';
+                       $order = 'DESC';                       
+                     break;
+                 }           
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          //$this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)");  
+
+          /*
+          , p.comentario,
+          ,  p.precio
+
+            $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+            $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+            $this->db->select("a.almacen");
+
+          */
+
+
+            $this->db->select("m.proceso_traspaso, p.precio");   //a.almacen,  p.comentario
+
+
+           $this->db->select('p.referencia');
+          $this->db->select('p.minimo, p.descripcion'); //
+          $this->db->select('c.hexadecimal_color,c.color nombre_color'); //
+          $this->db->select("co.composicion");  
+          $this->db->select("ca.calidad");  
+          $this->db->select("COUNT(m.referencia) as 'suma'");
+
+         
+          if ($id_almacen!=0) {
+            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+            $id_almacenid = '';
+          }   
+
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }   
+
+
+           
+
+
+
+          $this->db->select("p.codigo_contable");  
+          $this->db->from($this->productos.' as p');
+
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); 
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); 
+
+
+
+          $activo ='';
+
+          $where = '(
+                      
+                      (
+                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (CONCAT("Optimo:",p.minimo) LIKE  "%'.$cadena.'%")  OR
+                        (c.color LIKE  "%'.$cadena.'%") OR (p.comentario LIKE  "%'.$cadena.'%")  OR
+                        (co.composicion LIKE  "%'.$cadena.'%")  OR
+                        ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
+                        ( p.precio LIKE  "%'.$cadena.'%" ) 
+                       )'.$activo.'
+
+            ) ' ; 
+
+
+         
+
+                $where_cond="";        
+
+
+                if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+                   $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+                }     
+
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+                    $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+                } 
+
+
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+                   $where_cond.= (($where_cond!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+                }
+
+
+                
+                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                    $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+                    $where_cond.= (($where_cond!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+                }
+
+            
+    
+          
+
+          $this->db->where($where);
+
+          $this->db->order_by($columna, $order); 
+
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo,  p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad"); //p.imagen,
+          //paginacion
+          //c.hexadecimal_color,c.color,co.composicion,ca.calidad (estos conforman la referencia )
+
+
+              $this->db->having('((suma>0) AND (suma < p.minimo))');
+              $where_total = '((suma>0) AND (suma < p.minimo))';
+          
+ 
+
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+                    
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+                    
+
+
+                  foreach ($result->result() as $row) {
+
+                           $dato[]= array(
+                                      0=>$row->referencia, 
+                                      1=>$row->descripcion,
+                                      2=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
+                                      3=> "img", //$imagen,
+
+                                       // '<img src="'.base_url().'uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,'.')).'_thumb'.substr($row->imagen,strrpos($row->imagen,'.')).'" border="0" width="75" height="75">',
+                                      4=>$row->nombre_color.                                      
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      5=>"comentario", //$row->comentario, 
+                                      6=>$row->composicion,
+                                      7=>$row->calidad,
+                                      8=>$row->precio,
+                                      9=>"m", //$row->metros,
+                                      10=>"k", //$row->kilogramos,
+                                      11=>"black",
+                                      12=>"--",
+                                      13=>"--", 
+                                      14=>"alm", //$row->almacen,
+                                      15=>$row->proceso_traspaso,
+                                      16=>$row->codigo_contable,
+
+
+
+                                    );                    
+
+
+
+                      }
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => intval( self::total_existencias_baja($where_total,$where_cond) ),  
+                        "recordsFiltered" => $registros_filtrados, //0, 
+                        "data"            =>  $dato, 
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+              }
+
+              $result->free_result();   
+              
+
+      }        
+
+
+
+
+
+  public function total_existencias_baja($where, $where_cond){
+              $id_session = $this->session->userdata('id');
+
+              $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+              $this->db->select("COUNT(m.referencia) as 'suma'");
+
+              $this->db->from($this->productos.' as p');
+
+              $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
+              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
+              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
+              $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12'); //.$id_almacenid.$id_facturaid.$id_empresaid    ,'LEFT'
+              //$this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); 
+
+
+              if  ($where_cond!='') {
+                $this->db->where($where_cond);
+              }  
+
+              $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+
+              //$this->db->group_by("p.referencia,p.descripcion, p.minimo,  p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad"); //p.imagen,
+              
+              $this->db->having($where);
+
+
+             $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                  $found_rows = $cantidad_consulta->row(); 
+                  $registros_filtrados =  ( (int) $found_rows->cantidad);
+              }  
+              
+              $cant = $registros_filtrados;
+     
+              if ( $cant > 0 )
+                 return $cant;
+              else
+                 return 0;         
+       }
 
 
   } 

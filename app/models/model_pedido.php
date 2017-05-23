@@ -102,6 +102,8 @@
         }   
 
 
+         
+
 
         public function lista_composiciones($data){
 
@@ -123,7 +125,7 @@
         }   
 
 
-      public function lista_ancho($data){
+ public function lista_ancho($data){
             
             $this->db->distinct();
             $this->db->select("CONCAT(p.ancho,' cm') nombre", FALSE);  
@@ -142,7 +144,6 @@
             $result->free_result();
         }   
 
-
         public function lista_colores($data){
 
             $this->db->distinct();
@@ -156,7 +157,7 @@
             $this->db->where('p.id_composicion', $data['val_comp']);
             $this->db->where('p.ancho', floatval($data['val_ancho']));
 
-           // $this->db->order_by('c.color', 'asc'); 
+            $this->db->order_by('c.color', 'asc'); 
             
 
 
@@ -168,12 +169,6 @@
                return False;
             $result->free_result();
         }    
-
-
-
-
-
-
         public function lista_proveedores($data){
 
             $this->db->distinct();
@@ -196,9 +191,262 @@
             else
                return False;
             $result->free_result();
+        }          
+
+
+
+
+
+          public function listado_productos_completa($data){
+
+                //$this->db->distinct();
+                $this->db->select('p.id');
+                $this->db->select('p.descripcion nombre');
+
+                $this->db->select('"'.$data['val_prod_id'].'" as activo', false);
+
+                $this->db->from($this->productos.' as p');
+                //$this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+                $this->db->join($this->registros_entradas.' As c', 'p.descripcion = c.id_descripcion');                     
+
+
+              $filtro="";        
+
+                if ($data['val_comp'] !=0) {
+                  $filtro.= (($filtro!="") ? " and " : "") . "(c.id_composicion = '".$data["val_comp"]."') ";
+                } 
+
+                if  ($data['val_ancho']!=0){
+                   $filtro.= (($filtro!="") ? " and " : "") . "(c.ancho = ".$data["val_ancho"].") ";
+                }
+
+                if  ($data['val_color']!=0){
+                   $filtro.= (($filtro!="") ? " and " : "") . "(c.id_color = ".$data["val_color"].") ";
+                }
+
+                if  ($data['val_proveedor']!=0){
+                   $filtro.= (($filtro!="") ? " and " : "") . "(c.id_empresa = ".$data["val_proveedor"].") ";
+                }
+
+
+                if ($filtro !=""){
+                  $this->db->where( $filtro );               
+                }
+
+
+                $this->db->group_by( 'nombre' );               
+                
+
+                
+                $result = $this->db->get();
+
+                  if ( $result->num_rows() > 0 )
+                     return $result->result();
+                  else
+                     return False;
+                  $result->free_result();
+        }     
+
+
+        public function lista_composiciones_completa($data){
+
+            $this->db->distinct();
+            $this->db->select("c.composicion nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select($data['val_comp'].' as activo', false);
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id','LEFT');
+
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_ancho']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.ancho = ".$data["val_ancho"].") ";
+            }
+
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+            }
+
+            if  ($data['val_proveedor']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_empresa = ".$data["val_proveedor"].") ";
+            }
+
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+            }
+
+
+
+            
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }         
+
+
+      
+
+        public function lista_ancho_completa($data){
+            
+            $this->db->distinct();
+            $this->db->select('CONCAT(p.ancho," cm") nombre',false);  
+            $this->db->select('p.ancho id');  
+            //$this->db->select('"'.$data['val_ancho_cad'].'" as activo', false);
+            $this->db->select($data['val_ancho'].' as activo', false);
+            $this->db->from($this->registros_entradas.' as p');
+            
+          
+            $filtro="";        
+
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_comp']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = ".$data["val_comp"].") ";
+            }
+
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+            }
+
+            if  ($data['val_proveedor']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_empresa = ".$data["val_proveedor"].") ";
+            }
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+            }
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        } 
+
+
+
+
+
+        public function lista_colores_completa($data){
+
+            $this->db->distinct();
+            $this->db->select("c.color nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select("c.hexadecimal_color", FALSE);  
+            $this->db->select($data['val_color'].' as activo', false);
+
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+            
+
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_comp']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = ".$data["val_comp"].") ";
+            }
+
+            if  ($data['val_ancho']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.ancho = ".$data["val_ancho"].") ";
+            }
+
+            if  ($data['val_proveedor']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_empresa = ".$data["val_proveedor"].") ";
+            }
+
+            
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+
+            }
+
+
+
+
+            $this->db->order_by('c.color', 'asc'); 
+            
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }    
+
+
+          
+
+
+     public function lista_proveedores_completa($data){
+
+            $this->db->distinct();
+            $this->db->select('c.nombre nombre');  //, FALSE
+            $this->db->select('c.id');  //, FALSE
+            $this->db->select($data['val_proveedor'].' as activo', false);
+            //$this->db->select('p.id_descripcion, p.id_composicion, p.ancho, p.id_color, p.id_empresa');  
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->proveedores.' As c', 'p.id_empresa = c.id','LEFT');
+            
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_comp']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = ".$data["val_comp"].") ";
+            }
+
+            if  ($data['val_ancho']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.ancho = ".$data["val_ancho"].") ";
+            }
+
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+            }
+
+            if  ($data['val_proveedor']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_empresa = ".$data["val_proveedor"].") ";
+            }
+
+
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+
+            }
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
         }            
-
-
 
 
 
@@ -280,30 +528,32 @@
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)", FALSE); //
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
+          //m.id_empresa, m.id_factura, m.id_operacion,
+          //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          //m.id_medida,m.id_cargador, m.id_usuario, ,  m.fecha_mac fecha
+          $this->db->select('m.id, m.movimiento, m.factura,  m.id_descripcion, m.devolucion, m.num_partida');
+          $this->db->select('m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
+          $this->db->select(' m.id_lote, m.consecutivo');
 
-          $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_apartado');
+          $this->db->select('m.id_fac_orig,m.id_estatus, c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_apartado');
 
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-          $this->db->select("prod.imagen", FALSE);
-
-          $this->db->select("a.almacen");
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
+          $this->db->select("prod.imagen"); //, FALSE
+          //$this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
           
 
           $this->db->from($this->registros.' as m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          //$this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
+          
           
 
           //filtro de busqueda
@@ -342,72 +592,37 @@
           $where_total = '( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$id_tipo_facturaid;
 
 
-         
-          if ( 
-            (($id_proveedor!="0") AND ($id_proveedor!="") AND ($id_proveedor!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($ancho!=0) ) 
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
+            //$filtro="";        
 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where .= ' AND ( m.ancho  =  '.$ancho.' ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_empresa  =  "'.$id_proveedor.'" )';
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                } 
 
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.ancho  =  '.$ancho.' ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_empresa  =  "'.$id_proveedor.'" )';
+                if  (($ancho!=0) ) {
+                   $where.= (($where!="") ? " and " : "") . "( m.ancho  =  ".$ancho." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.ancho  =  ".$ancho." )";
+                }
 
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                }
 
-          }    
+                if   (($id_proveedor!="0") AND ($id_proveedor!="") AND ($id_proveedor!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_empresa  =  '".$id_proveedor."' )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_empresa  =  '".$id_proveedor."' )";
+                }
 
-          elseif 
-           ( 
-            (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($ancho!=0) ) //(($ancho!="0") AND ($ancho!="") AND ($ancho!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-           ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where .= ' AND ( m.ancho  =  '.$ancho.' ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.ancho  =  '.$ancho.' ) AND  ( m.id_color  =  '.$id_color.' )';
+                //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
+                if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                }
 
-          }  
+                
 
-
-          elseif
-           ( 
-              (($ancho!=0) ) //(($ancho!="0") AND ($ancho!="") AND ($ancho!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where .= ' AND ( m.ancho  =  '.$ancho.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.ancho  =  '.$ancho.' ) ';
-
-          } 
-
-
-          elseif
-           ( 
-               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              
-          }  
-
-
-          
-          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-          }  
-          
+        
   
           $this->db->where($where);
     
@@ -477,7 +692,7 @@
                                       12=>$row->metros,
                                       13=>$row->kilogramos,                                      
                                       14=>$row->imagen,
-                                      15=>$row->almacen,
+                                      15=>"alm", //$row->almacen,
                                       16=>$row->codigo_contable,
                                     );
                       }
@@ -487,7 +702,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_pedido_home($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_pedido_home($where_total) ), 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
@@ -517,8 +732,8 @@
 
    public function total_campos_salida_home($where) {
 
-              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+              $this->db->select("SUM((id_medida =1) * cantidad_um) as metros"); //, FALSE
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos"); //, FALSE
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               
              
@@ -2070,9 +2285,10 @@
 
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.iva, m.fecha_apartado, m.consecutivo');  
 
-          $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
-          $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
-          $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
+                    $this->db->select('(m.precio*m.cantidad_um) as sum_precio');           
+          $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
+          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
+
 
 
 
@@ -2959,8 +3175,48 @@ SELECT `precio`, `iva`, `codigo`, `consecutivo_venta`, `id_factura`, `id_pedido`
 
 
 
+       //para cancelar pedidos cada 24hrs
+    public function cancelar_traspaso_pedido_horario(){  
+                $porciento_aplicar = 16;                 
+                
+                $this->db->set( 'iva', '((id_factura_original = 1)*'.$porciento_aplicar.')', false);
+                $this->db->set( 'incluir', 0);
+                $this->db->set( 'id_factura', 'id_factura_original', false);
+                $this->db->set( 'id_factura_original', 0, false);
+                $this->db->set( 'consecutivo_venta', 0);
+                $where = '(
+                          ((id_apartado =5) OR (id_apartado =6)) AND ( id_cliente_apartado <>0)
+                                and (TIMESTAMPDIFF(HOUR,fecha_apartado,  NOW()) >=24)
+                                AND ( id_factura_original <>  0 ) AND ( incluir =  1 )
+                      )';   
+                $this->db->where($where);                
+                $this->db->update($this->registros );
+
+                //cancelarlos
+                $this->db->set( 'fecha_vencimiento', '' ); 
+                $this->db->set( 'id_prorroga', 0);
+                $this->db->set( 'fecha_apartado', '' );  
+                $this->db->set( 'id_cliente_apartado', 0 );
+                $this->db->set( 'id_apartado', 0);
+                $this->db->set( 'id_usuario_apartado', '');
+                $this->db->set( 'id_tipo_pedido', 0, false);
+                $this->db->set( 'id_tipo_factura', 0, false);
+                $this->db->set( 'consecutivo_venta', 0);
 
 
+                $where = '(
+                          ((id_apartado =5) OR (id_apartado =6)) AND ( id_cliente_apartado <>0)
+                                and (TIMESTAMPDIFF(HOUR,fecha_apartado,  NOW()) >=24)
+                      )';   
+                $this->db->where($where);                
+                $this->db->update($this->registros );
+
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;                
+
+          }   
 
 
 

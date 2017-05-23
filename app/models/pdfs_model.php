@@ -85,7 +85,7 @@ class Pdfs_model extends CI_Model
             $this->db->select("SUM((m.id_medida =1) * m.cantidad_um) as metros", FALSE);
             $this->db->select("SUM((m.id_medida =2) * m.cantidad_um) as kilogramos", FALSE);
             $this->db->select("COUNT(m.id_medida) as 'pieza'");
-            $this->db->select("sum(m.peso_real*m.cantidad_um) as 'peso_real'");
+            $this->db->select("sum(m.peso_real) as 'peso_real'");
             $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
             $this->db->select("sum(m.precio*m.cantidad_um*m.iva)/100 as sum_iva", FALSE);
             $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
@@ -127,8 +127,9 @@ class Pdfs_model extends CI_Model
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario,prod.codigo_contable');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
+          $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
 
-          $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
+          //$this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
 
           $this->db->select('
                         CASE m.id_estatus
@@ -199,11 +200,12 @@ class Pdfs_model extends CI_Model
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
 
-          $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
+          //$this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
+          $this->db->select("(DATE_FORMAT(m.fecha_salida,'%d-%m-%Y %H:%i')) as fecha",false);
 
           $this->db->select('c.hexadecimal_color,c.color, u.medida,p.nombre cliente, ca.nombre cargador');
 
-          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
+          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre,' ',us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
           
 
           

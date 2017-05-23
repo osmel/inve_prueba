@@ -18,7 +18,7 @@
 
 							<tr>
 								<td colspan="8" style="border-top: 1px solid #222222; ">
-										<span><b>Vendedor: </b> <?php echo $movimientos[0]->cliente; ?></span><br>
+										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
 										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida; ?></span><br>
@@ -45,7 +45,7 @@
 
 								<td colspan="2" style="border-top: 1px solid #222222; ">
 									<?php if ($movimientos[0]->id_tipo_factura!=2) { ?>
-										<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
+										<?php echo '<img src="'.base_url().'img/unnamed.png" width="190px" height="auto"/>'; ?>
 									<?php } ?>	
 								</td>
 							</tr>
@@ -103,11 +103,11 @@
 								<tr>
 									<td colspan="10" style="border-top: 1px solid #222222; ">
 											
-
+											<!--
 											<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span> 
 											<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->sum_iva, 2, '.', ','); ?></span>
 											<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->sum_total, 2, '.', ','); ?></span><br>
-											
+											-->
 
 
 											<?php  if ($totales->metros>0) { ?>	

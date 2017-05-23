@@ -597,6 +597,9 @@ class Main extends CI_Controller {
     if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 
+          
+          $this->modelo_pedido->cancelar_traspaso_pedido_horario();
+
           $data['nodefinido_todavia']        = '';
           $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
           $data['productos'] = $this->catalogo->listado_productos_unico();
@@ -648,34 +651,6 @@ class Main extends CI_Controller {
         }	
 	}
 
-
-
-	/////////////////////////////Presentacion de la regilla de DASHBOARD////////////////////////////
-		//existencia 
-	public function procesando_home(){
-		$data=$_POST;
-		$estatus= $data['extra_search'];
-		switch ($estatus) {
-			
-			case 'existencia':  //910
-			case 'apartado':
-				$busqueda = $this->modelo_dashboard->buscador_entrada_home($data); //13 1246
-			   break;
-			  
-			case 'devolucion':
-				$busqueda = $this->modelo_dashboard->buscador_devolucion_home($data); //12 445
-			   break;
-			   
-			case 'baja':
-			case 'cero':
-				$busqueda = $this->modelo_dashboard->buscador_cero_baja($data); //12 1493
-			   break;
-			default:
-				break;
-		}
-		echo $busqueda;
-		die;
-	}
 
 	/////////////////////////////Presentacion de la regilla de INICIO ///////////////////////////////////////
 		//devolucion y defecto

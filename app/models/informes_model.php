@@ -31,6 +31,12 @@ class Informes_model extends CI_Model
                   $this->historico_registros_salidas = $this->db->dbprefix('historico_registros_salidas');
                   $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
 
+                
+                $this->tipos_pedidos                         = $this->db->dbprefix('catalogo_tipos_pedidos');
+                $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
+
+
+
                     //usuarios
                   $this->usuarios    = $this->db->dbprefix('usuarios');
 
@@ -54,6 +60,62 @@ class Informes_model extends CI_Model
           $id_almacen= $data['id_almacen'];
 
           $factura_reporte = addslashes($data['factura_reporte']);
+
+
+            switch ($data['columna']) {
+                   case '0':
+                        $columna = 'm.codigo';
+                     break;
+                   case '1':
+                        $columna = 'm.id_descripcion';
+                     break;
+                   case '2':
+                        $columna = 'c.color';
+                     break;
+                   case '3':
+                        $columna = 'm.cantidad_um';
+                     break;
+                   case '4':
+                        $columna = 'm.ancho';
+
+                     break;
+                   case '5':
+                        $columna = 'm.precio';
+                     break;
+                   case '6':                          
+                              $columna= 'subtotal';                          
+                     break;
+                   case '7':                          
+                              $columna= 'sum_iva';                            
+                     break;
+
+                   case '8':                          
+                              $columna= 't_factura';                            
+                     break;
+
+                   case '9':                          
+                              $columna= 'm.movimiento';                            
+                     break;
+
+                   case '10':                          
+                              $columna= 'p.nombre';                            
+                     break;
+
+                   case '11':
+                        $columna = 'm.fecha_entrada';
+                     break;
+
+          
+                   
+                   default:
+                       $columna = 'm.id';
+                     break;
+                 }                    
+
+
+ 
+          
+
 
 
        
@@ -216,7 +278,7 @@ class Informes_model extends CI_Model
        
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+            $this->db->order_by($columna, $data['orden']); 
 
           $result = $this->db->get();
 
@@ -1023,7 +1085,56 @@ class Informes_model extends CI_Model
 
           $factura_reporte = addslashes($data['factura_reporte']);
 
-          
+          switch ($data['columna']) {
+                   case '0':
+                        $columna = 'm.codigo';
+                     break;
+                   case '1':
+                        $columna = 'm.id_descripcion';
+                     break;
+                   case '2':
+                        $columna = 'c.color';
+                     break;
+                   case '3':
+                        $columna = 'm.cantidad_um';
+                     break;
+                   case '4':
+                        $columna = 'm.ancho';
+                     break;
+                   case '5':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '6':
+                              $columna= 'p.nombre';
+                     break;
+                   case '7':
+                              $columna= 'm.id_lote, m.consecutivo';  
+                     break;
+                   case '8':
+                        $columna = 'm.fecha_entrada';
+                     break;
+
+                   case '12': //'9':
+                        $columna = 'm.factura';
+                     break;
+
+                   case '13':
+                        $columna = 'm.num_partida';
+                     break;
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+
+                   
+                   default:
+                       /*$columna = 'm.factura';
+                       $order = 'asc';
+                       */
+                       $columna = 'm.id';
+                       $order = 'DESC';                       
+                     break;
+                 }                 
+           
 
 
 
@@ -1225,7 +1336,8 @@ class Informes_model extends CI_Model
 
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+            $this->db->order_by($columna, $data['orden']); 
+
 
           $result = $this->db->get();
 
@@ -1480,6 +1592,64 @@ class Informes_model extends CI_Model
 
           $factura_reporte = addslashes($data['factura_reporte']);
 
+            switch ($data['columna']) {
+                   case '0':
+                        $columna = 'm.codigo';
+                     break;
+                   case '1':
+                        $columna = 'm.id_descripcion';
+                     break;
+                   case '2':
+                        $columna = 'c.color';
+                     break;
+                   case '3':
+                        $columna = 'm.cantidad_um';
+                     break;
+                   case '4':
+                        $columna = 'm.ancho';
+                     break;
+                   case '5':
+                        $columna = 'm.movimiento';
+                     break;
+                   case '6':
+                          if ($estatus=="apartado") {
+                              $columna= 'pr.nombre';
+                          }  else {
+                              $columna= 'p.nombre';
+                          }  
+                     break;
+                   case '7':
+                          if ($estatus=="apartado") {
+                              $columna= 'm.id_apartado';
+                          }  else {
+                              $columna= 'm.id_lote, m.consecutivo';  
+                          }  
+                     break;
+                   case '8':
+                        $columna = 'm.fecha_entrada';
+                     break;
+
+                   case '12': //'9':
+                        $columna = 'm.factura';
+                     break;
+
+                   case '13':
+                        $columna = 'm.num_partida';
+                     break;
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+
+                   
+                   default:
+                       /*$columna = 'm.factura';
+                       $order = 'asc'; */
+                       $columna = 'm.id';
+                       $order = 'DESC';                       
+
+                     break;
+                 }              
+
 
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
@@ -1680,7 +1850,7 @@ class Informes_model extends CI_Model
     
           //ordenacion
 
-          $this->db->order_by('m.factura', 'asc'); 
+            $this->db->order_by($columna, $data['orden']); 
           //paginacion
           //$this->db->limit($largo,$inicio); 
 
@@ -1725,7 +1895,7 @@ class Informes_model extends CI_Model
           $donde = '';
          if ($id_empresa!="") {
             $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
-            $donde .= ' AND ( m.id_cliente  =  '.$id_empre.' ) ';
+            $donde .= ' AND ( m.consecutivo_venta  =  '.$id_empre.' ) ';
         } else 
         {
            $donde .= ' ';
@@ -1790,12 +1960,22 @@ class Informes_model extends CI_Model
           } else {
             $id_almacenid = ''; 
           }
-
+          /*
           if ($data['id_factura']!=0) {
               $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
           } else {
               $id_facturaid = '';
-          } 
+          } */
+
+          $id_factura= $data['id_factura'];    
+
+          if ($id_factura!=0) {
+             $id_factura = (($id_factura==3) ? 0 : $id_factura);
+             $id_facturaid = ' and ( m.id_tipo_factura =  '.$id_factura.' ) ';  
+          } else {
+             $id_facturaid = '';
+          }   
+
           $where = '(
                       (
                          ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.$id_facturaid.'
@@ -1896,10 +2076,61 @@ class Informes_model extends CI_Model
           $id_almacen= $data['id_almacen'];
 
 
+        switch ($data['columna']) {
+                   case '0':
+                        $columna = 'm.codigo';
+                     break;
+                   case '1':
+                        $columna = 'm.id_descripcion';
+                     break;
+                   case '2':
+                        $columna = 'c.color';
+                     break;
+                   case '3':
+                        $columna = 'm.cantidad_um';
+                     break;
+                   case '4':
+                        $columna = 'm.ancho';
+                     break;
+                   case '5':
+                        $columna = 'm.mov_salida';
+                     break;
+                   case '6':
+                             $columna= 'us.nombre';
+                     break;
+                   case '7':
+                              $columna= 'm.id_lote, m.consecutivo';  
+                     break;
+                   case '8':
+                        $columna = 'm.fecha_salida';
+                     break;
+
+                   case '12': //'9':
+                        $columna = 'm.factura';
+                     break;
+
+                   case '13':
+                        $columna = 'm.num_partida';
+                     break;
+
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+                   
+                   default:
+                       /*$columna = 'm.factura';
+                       $order = 'asc';
+                       */
+                       $columna = 'm.mov_salida';
+                       $order = 'ASC';                       
+                     break;
+                 }           
+
+
           $donde = '';
          if ($id_empresa!="") {
             $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
-            $donde .= ' AND ( m.id_cliente  =  '.$id_empre.' ) ';
+            $donde .= ' AND ( m.consecutivo_venta  =  '.$id_empre.' ) ';
         } else 
         {
            $donde .= ' ';
@@ -1938,8 +2169,10 @@ class Informes_model extends CI_Model
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.fecha_entrada');
-          $this->db->select('c.hexadecimal_color, c.color , p.nombre');
-          $this->db->select('m.cliente, m.cargador, m.fecha_salida');
+          $this->db->select('c.hexadecimal_color, c.color ');
+          $this->db->select('m.cliente, m.cargador, m.fecha_salida'); //, p.nombre
+
+          $this->db->select('us.nombre as nombre', FALSE);    //
           
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia', FALSE);
@@ -1969,12 +2202,23 @@ class Informes_model extends CI_Model
           $this->db->select("a.almacen");         
           $this->db->select("prod.codigo_contable");  
 
+          $this->db->select("tp.tipo_pedido");          
+          
+          $this->db->select("tf.tipo_factura");          
+
+          $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); //
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
 
 
                                
@@ -1999,12 +2243,16 @@ class Informes_model extends CI_Model
               $id_almacenid = '';
           }
 
+      
 
-           if ($data['id_factura']!=0) {
-              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+           $id_factura= $data['id_factura'];    
+
+          if ($id_factura!=0) {
+             $id_factura = (($id_factura==3) ? 0 : $id_factura);
+             $id_facturaid = ' and ( m.id_tipo_factura =  '.$id_factura.' ) ';  
           } else {
-              $id_facturaid = '';
-          } 
+             $id_facturaid = '';
+          }   
 
           $where = '(
                       (
@@ -2067,7 +2315,8 @@ class Informes_model extends CI_Model
 
     
           //ordenacion
-          $this->db->order_by('m.factura', 'asc');
+          //$this->db->order_by('m.factura', 'asc');
+          $this->db->order_by($columna, $data['orden']); 
 
           //paginacion
           $this->db->limit($largo,$inicio); 
@@ -2149,11 +2398,11 @@ class Informes_model extends CI_Model
               $id_facturaid = '';
           }            
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid,'LEFT');
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid); //,'LEFT'
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); //,'LEFT'
 
           $where = '(
                       
@@ -2170,8 +2419,9 @@ class Informes_model extends CI_Model
 
           $this->db->where($where);
 
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
 
-          $this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
           //paginacion
 
                 //ordenacion
@@ -2201,6 +2451,23 @@ class Informes_model extends CI_Model
 
     public function buscador_cero_baja($data){
 
+          $id_empresa= addslashes($data['proveedor']);
+           $id_empresaid = '';
+             if ($id_empresa!="") {
+                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                    if (!($id_empre)) {
+                      $id_empre =0;
+                    }                  
+
+                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
+
+            } else 
+            {
+               $id_empresaid .= ' ';
+            }          
+            $id_empresaid .= '';      
+
 
           $cadena = addslashes($data['busqueda']);
           $inicio = 0; //$data['start'];
@@ -2219,6 +2486,47 @@ class Informes_model extends CI_Model
           $id_color= $data['id_color'];
           $id_composicion= $data['id_composicion'];
           $id_calidad= $data['id_calidad'];
+
+
+          switch ($data['columna']) {
+                   case '0':
+                        $columna = 'p.referencia';
+                     break;
+                   case '1':
+                        $columna = 'p.descripcion';
+                     break;
+                   case '2':
+                        $columna = 'suma'; // y suma = COUNT(m.referencia) p.minimo
+                     break;
+                   case '3':
+                        $columna = 'p.imagen'; //
+                     break;
+                   case '4':
+                        $columna = 'c.color';
+                     break;
+                   case '5':
+                        $columna = 'p.comentario';
+                     break;
+                   case '6':
+                              $columna= 'co.composicion';
+                     break;
+                   case '7':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '8':
+                        $columna = 'p.precio';
+                     break;
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+
+                   
+                   default:
+                       /*$columna = 'p.referencia';*/
+                       $columna = 'suma'; //'p.id';
+                       $order = 'DESC';                       
+                     break;
+                 }            
 
 
           $id_session = $this->db->escape($this->session->userdata('id'));
@@ -2252,11 +2560,11 @@ class Informes_model extends CI_Model
 
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid,'LEFT');
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); //,'LEFT'
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); //,'LEFT'
 
           if ($estatus=="cero") {
             $activo  = ' and ( p.activo =  0 ) ';  
@@ -2323,10 +2631,11 @@ class Informes_model extends CI_Model
 
           $this->db->where($where);
 
-          $this->db->order_by('p.referencia', 'asc'); 
+            $this->db->order_by($columna, $data['orden']); 
 
-          $this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
           //paginacion
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
 
 
          if ($estatus=="cero") {

@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-
+<?php date_default_timezone_set('America/Mexico_City');  ?>
 
 <div class="container">
 	<div>
@@ -8,7 +8,7 @@
 				<tbody>
 					<tr>
 						<th width="70%">
-							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
+							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A',  strtotime ( gmt_to_local( 'UM1', time(), TRUE)  ) );  ?></span>
 							<p style="font-size: 13px;"><b >Totales</b></p>
 							<p style="font-size: 13px;"><b >Almacén:</b><?php echo $almacen; ?></p>
 						</th>

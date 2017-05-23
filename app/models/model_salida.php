@@ -942,7 +942,8 @@
           $this->db->select('m.id_descripcion, m.id_color, m.id_composicion, m.id_calidad, m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,  m.codigo');
           $this->db->select('m.comentario, m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.id_usuario_salida, m.fecha_mac, m.id_operacion, m.estatus_salida');
           
-          $this->db->select('ca.nombre cargador, p.nombre cliente');
+          $this->db->select('ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
 
           $this->db->select('m.id_apartado, m.id_usuario_apartado, m.id_cliente_apartado,m.fecha_apartado');
 
@@ -961,8 +962,22 @@
 
 
           $this->db->from($this->registros_salidas.' As m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_cliente','LEFT');
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+
+/*
+sasad
+
+          $this->db->select('m.mov_salida,ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
+          $this->db->from($this->historico_registros_salidas.' As m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_salida','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+
+*/
+
+
           //$this->db->join($this->catalogo_destinos.' As de' , 'de.id = m.id_destino','LEFT'); 
 
 
@@ -1160,7 +1175,7 @@
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
           
           //$this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN id_usuario_apartado ELSE '".$id_session."' END ) AS id_usuario_apartado", FALSE);
-          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre, us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
+          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre,' ', us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
           
           $this->db->select("( CASE WHEN m.id_apartado = 3 THEN m.consecutivo_venta ELSE m.id_cliente_apartado END ) AS mov_pedido", FALSE);
           
@@ -1540,11 +1555,17 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
 
           ///datos a retornar
 
-          $this->db->select('m.mov_salida,ca.nombre cargador, p.nombre cliente');
+          
+
+
+          $this->db->select('m.mov_salida,ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
           $this->db->from($this->historico_registros_salidas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          
           if ($data["id_almacen"]!=0) {
                             $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
                         } else {
@@ -1845,11 +1866,15 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
 
           ///datos a retornar
 
-          $this->db->select('m.mov_salida,ca.nombre cargador, p.nombre cliente');
+          $this->db->select('m.mov_salida,ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
           $this->db->from($this->historico_registros_salidas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');          
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          
+
           if ($data["id_almacen"]!=0) {
                             $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
                         } else {

@@ -814,12 +814,11 @@
                  
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.codigo, p.nombre,  p.direccion, p.telefono,  p.coleccion_id_actividad, p.id_usuario, p.fecha_mac'); 
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)", FALSE); //
+            //p.uid,  p.direccion,p.coleccion_id_actividad, p.id_usuario, p.fecha_mac
+          $this->db->select('p.id,  p.codigo, p.nombre,  p.telefono'); 
           $this->db->from($this->proveedores.' as p');
           $this->db->join($this->historico_registros_entradas.' As he', 'he.id_empresa = p.id');          
-
 
           //filtro de busqueda
 
@@ -854,7 +853,7 @@
           //ordenacion
           $this->db->order_by($columna, $order); 
 
-          $this->db->group_by("p.codigo,p.nombre, p.telefono, p.coleccion_id_actividad");
+          $this->db->group_by("p.codigo"); //,p.nombre, p.telefono, p.coleccion_id_actividad
 
           //paginacion
           $this->db->limit($largo,$inicio); 
@@ -889,7 +888,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_consulta_producto($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_consulta_producto($where_total) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato 
                       ));
@@ -958,19 +957,17 @@
 
          
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.referencia,  p.comentario');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho');
-          $this->db->select('p.id_usuario, p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
-
-          $this->db->select('prov.nombre proveedor, he.id_empresa');
-          
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)", FALSE); //
+          //p.uid, ,  p.comentario,  p.id_composicion, p.id_color,p.id_calidad,,p.precio,p.ancho, p.id_usuario, p.fecha_mac,
+          //$this->db->select('prov.nombre proveedor, he.id_empresa');
+          $this->db->select('p.id,  p.referencia');
+          $this->db->select('p.descripcion, p.minimo, p.imagen');
+          $this->db->select('c.hexadecimal_color,c.color nombre_color');
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->historico_registros_entradas.' As he', 'he.referencia = p.referencia','RIGHT');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->proveedores.' As prov' , 'prov.id = he.id_empresa','LEFT');
+          $this->db->join($this->historico_registros_entradas.' As he', 'he.referencia = p.referencia'); //,'RIGHT'
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); // ,'LEFT'
+          $this->db->join($this->proveedores.' As prov' , 'prov.id = he.id_empresa'); //,'LEFT'
 
           //(SELECT DISTINCT referencia FROM  "inven_historico_registros_entradas")
           //filtro de busqueda
@@ -1006,7 +1003,7 @@
           //grupo
 
   
-          $this->db->group_by("p.descripcion,p.referencia, p.minimo, p.imagen, c.color");
+          $this->db->group_by("p.descripcion,p.referencia, p.minimo"); //, p.imagen, c.color
 
 
           //paginacion
@@ -1053,7 +1050,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_consulta_proveedor($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_consulta_proveedor($where_total) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato 
                       ));

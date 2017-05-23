@@ -392,16 +392,20 @@ echo form_open('validar_edicion_producto', $attr);
 
 					<div class="row">
 					
-							<div class="col-sm-4 col-md-4"></div>	
+							<div class="col-sm-4 col-md-<?php echo ( ( $this->session->userdata( 'id_perfil' ) != 2  ) ? 4:8 ); ?>"></div>	
 							
 							<div class="col-sm-4 col-md-4 marginbuttom">
 								<a id="impresion" type="button" class="btn btn-success btn-block">Imprimir Etiqueta</a>
 							</div>
 						    
+								<?php if  ( $this->session->userdata( 'id_perfil' ) != 2  ) { ?>
+									 	<div class="col-sm-4 col-md-4">
+											<input type="submit" class="btn btn-success btn-block" value="Cambiar caracteristicas"/>
+										</div>
 
-							<div class="col-sm-4 col-md-4">
-								<input type="submit" class="btn btn-success btn-block" value="Cambiar caracteristicas"/>
-							</div>
+								<?php }  ?>	
+								
+
 
 					</div>
 

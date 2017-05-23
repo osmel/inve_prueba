@@ -26,115 +26,10 @@
 				<!-- <div class="col-sm-12 col-md-12" style="margin-bottom:10px"> -->
 				<div class="row">
 					<?php if ( ( $el_perfil == 1 ) || (in_array(9, $coleccion_id_operaciones)) ) { ?>					
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button id="existencia_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar productos con existencia en almacén.">Existencias</button>							
-						</div>						
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button id="salida_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar las salidas de productos.">Salidas</button>							
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="apartado_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar sólo productos con apartado individual y/o confirmado.">Apartados</button>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="cero_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar productos agotados.">Existencias Cero</button>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="baja_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar productos con existencia por debajo del mínimo.">Existencias Bajas</button>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="top_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar los productos con mayor.">TOP 10</button>
-						</div>
-
-						<!--  		-->
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="entrada_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar histórico de entradas.">Entrada</button>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<button  id="devolucion_reporte" type="button" class="btn btn-danger btn-block ttip" title="Mostrar histórico de productos devueltos.">Devolución</button>
-						</div>
-
-
-						<!--  		-->
-						
-						<div class="col-xs-12 col-sm-3 col-md-2">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>listado_notas"  
-								type="button" class="btn btn-info btn-block ttip" title="Ver listado de entradas.">Hist. Entradas
-							</a>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>listado_salidas" type="button" class="btn btn-info btn-block ttip" title="Ver listado de salidas.">
-								Hist. Salidas
-							</a>
-						</div>
-
-						<div class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>listado_devolucion"  
-								type="button" class="btn btn-info btn-block ttip" title="Ver listado de salidas devueltas.">Hist. Devolución
-							</a>
-						</div>
-
 						<div id="disponibilidad"  class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
 									<button  id="ver_filtro" type="button" class="btn btn-success btn-block ttip" title="Mostrar u ocultar filtros.">Filtros</button>
 						</div>
 					<?php } ?>		
-
-					<?php if ( ( $el_perfil == 1 ) || (in_array(61, $coleccion_id_operaciones)) ) { ?>						
-
-						<div class="col-xs-12 col-sm-3 col-md-2">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>listado_traspaso" type="button" class="btn btn-info btn-block ttip" title="Ver listado de traspasos.">
-								Hist. Traspasos
-							</a>
-						</div>
-
-					    <div class="col-xs-12 col-sm-3 col-md-2">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>costo_inventario" type="button" class="btn btn-info btn-block ttip" title="Ver Costo de Inventario.">
-								Costo de Inventario
-							</a>
-						</div>
-					    <div class="col-xs-12 col-sm-3 col-md-2">
-							<label for="descripcion" class="col-sm-12 col-md-12"></label>
-							<a href="<?php echo base_url(); ?>costo_rollo" type="button" class="btn btn-info btn-block ttip" title="Ver Costo de Inventario.">
-								Costo por rollo
-							</a>
-						</div>
-					<?php } ?>
-
-
-
-					<div class="col-xs-12 col-sm-3 col-md-2">
-						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>consulta_proveedor"  
-							type="button" class="btn btn-warning btn-block ttip" title="Listado de proveedores." style="font-size:13px;">Consultas por Proveedor
-						</a>
-					</div>
-
-					<div class="col-xs-12 col-sm-3 col-md-2">
-						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>consulta_producto" type="button" class="btn btn-warning btn-block ttip" title="Listado de productos." style="font-size:13px;">
-							Consultas por Productos
-						</a>
-					</div>
-
-					<div class="col-xs-12 col-sm-3 col-md-2">
-						<label for="descripcion" class="col-sm-12 col-md-12"></label>
-						<a href="<?php echo base_url(); ?>consulta_totales" type="button" class="btn btn-warning btn-block ttip" title="Totales de productos." style="font-size:13px;">
-							Reportes Totales
-						</a>
-					</div>
-
-
 
 				</div>
 
@@ -369,7 +264,7 @@
 							</fieldset>			
 							<br>
 							<section>
-								<table id="tabla_reporte" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
+								<table id="tabla_existencias_baja" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">
 									<!--
 	
 									-->

@@ -225,6 +225,13 @@
 
 <!--  -->	<h4>Filtros: </h4>	 
 
+			<div class="row">
+				<button id="limpiar_filtro" type="button" class="btn btn-success">
+					Limpiar filtros
+				</button>
+			</div>
+
+
 				<div class="row">
 		                  <div class="col-xs-12 col-sm-6 col-md-3">
 		                     <div class="form-group">

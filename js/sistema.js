@@ -1173,6 +1173,21 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
 });
 
 
+		/*
+         $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          $estatus= $data['extra_search'];
+          $id_estatus= $data['id_estatus'];
+          $id_empresa= addslashes($data['proveedor']);
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+
+          $factura_reporte = $data['factura_reporte'];
+
+          $columa_order = $data['order'][0]['column'];
+                 $order = $data['order'][0]['dir'];
+                 */
 
 
 jQuery('body').on('click','#impresion_rapida', function (e) {
@@ -1214,6 +1229,9 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 		fecha_final = fecha[1];
 
 
+		var oTable =jQuery('#tabla_reporte').DataTable();
+		order = oTable.order();
+
     abrir('POST', 'imprimir_rapida', {
     			busqueda:busqueda,
     			id_factura:id_factura,
@@ -1231,10 +1249,14 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 			proveedor:proveedor, 
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
+			columna : order[0][0],
+			orden : order[0][1],
     }, '_blank' );
 		        
 	
 });
+
+
 
 
 
@@ -1975,7 +1997,8 @@ jQuery('body').on('click','#conf_devolucion', function (e) {
 
 		if  ( (hash_url=="/") )   {  
 				comienzo=true;  //para indicar que start comience en 0;
-				var oTable =jQuery('#tabla_home').dataTable();
+				//var oTable =jQuery('#tabla_home').dataTable();
+				var oTable =jQuery('#tabla_reporte').dataTable();
 				oTable._fnAjaxUpdate();
     	}	
 
@@ -2808,7 +2831,383 @@ jQuery('#exportar_reporte').click(function (e) {
 
     
 
+
+/*
+var rep_existencia = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+var rep_apartado = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha', 'No. de Partida','Almacén'];
+var rep_salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso', 'No. de Partida','Almacén'];
+var rep_entrada = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+var rep_devolucion = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
+var rep_cero = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+var rep_baja = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+var rep_top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+*/
+
+var rep_existencia = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Lote'];
+  var rep_apartado = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Tipo Apartado']; //Lote
+    var rep_salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Lote'];
+   var rep_entrada = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Lote'];
+var rep_devolucion = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Lote'];
+
+      var rep_cero = ['Referencia', 'Producto', 'Existencias', 'Color', 'Composición', 'Calidad', 'Precio'];
+	  var rep_baja = ['Referencia', 'Producto', 'Existencias', 'Color', 'Composición', 'Calidad', 'Precio'];
+	   var rep_top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Color', 'Composición', 'Calidad', 'Precio'];
+
 jQuery('#tabla_reporte').dataTable( {
+		
+	  "pagingType": "full_numbers",
+ 	  "order": [[ 6, "asc" ]],
+
+      "fnPreDrawCallback": function (oSettings) {
+		if (comienzo) {
+			oSettings._iDisplayStart = 0;  //comienza en cero siempre q cambia de botones
+			comienzo=false;
+		}
+      },
+
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_reporte",
+         		"type": "POST",
+         		 "data": function ( d ) {
+						if (comienzo) {
+							 d.start=0;	 //comienza en cero siempre q cambia de botones
+							 d.draw =0;
+						}
+
+						d.extra_search = jQuery("#botones").val(); 
+						d.id_estatus = jQuery("#id_estatuss").val(); 
+						d.id_almacen = jQuery("#id_almacen_reporte").val(); 
+						d.id_factura = jQuery("#id_factura_reporte").val(); 
+
+						//datos del producto
+						d.id_descripcion = jQuery("#producto").val(); 
+						if (d.id_descripcion !='') {
+							  d.id_descripcion = jQuery('#producto option:selected').text();
+						}
+						d.id_color = jQuery("#color").val(); 
+						d.id_composicion = jQuery("#composicion").val(); 
+						d.id_calidad = jQuery("#calidad").val(); 
+						d.factura_reporte = jQuery('#factura_reporte').val();					
+						d.proveedor = jQuery("#editar_proveedor_reporte").val(); 	   
+						var fecha = (jQuery('.fecha_reporte').val()).split(' / ');
+						d.fecha_inicial = fecha[0];
+						d.fecha_final = fecha[1];
+    			 }
+     },   
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+		}	
+		if (settings.json.recordsTotal==0) {
+			jQuery("#disa_reportes").attr('disabled', true);					
+		} else {
+			jQuery("#disa_reportes").attr('disabled', false);					
+		}
+	    return pre
+  	} ,    
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				total_metro = api
+					.column( 7 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 8 )
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_pieza = (end-start);	
+			switch(jQuery("#botones").val()) {
+			    case "salida":
+			    case "existencia":
+			    case "apartado":
+				case "devolucion":
+				case "entrada":
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+			        break;
+			    default:
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');			        
+	              break;
+			}
+		} else 	{
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');			        
+		}
+    },
+   "columnDefs": [
+
+				  { 
+                "className":'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": '',
+                "targets": [0]  //0,
+              },
+				{ 
+		                "render": function ( data, type, row ) {  
+		                		if (row[11]!='') { //row[11] codigo contable
+		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[11];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                },
+		                "targets": [1]   //descripcion+codigo contable
+		        },   	
+    			{ 
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [2,3,4,5,6] //,7,8,12,13,14
+	            },
+    			{ 
+	                 "visible": false,
+	                "targets": [7,8,9,10,11] //,15,16
+	            }
+	],
+ "rowCallback": function( row, data ) {
+	    if ( data[9] == "red" ) {
+	      jQuery('td', row).addClass( "danger" );
+	    }
+	    if ( data[9] == "morado" ) {
+	      jQuery('td', row).addClass( "success" );
+	    }
+	    if ( data[10] == 1 ) {
+	      jQuery('td', row).addClass( "warning" );
+	    }
+	  },		
+
+    "fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		switch(jQuery("#botones").val()) {
+		    
+		   case "existencia":
+		        var arreglo =rep_existencia;
+		        break;
+		    case "apartado":
+		        var arreglo =rep_apartado;
+		        break;
+		    case "salida":
+		        var arreglo =rep_salida;
+		        break;
+		    case "entrada":
+		          var arreglo =rep_entrada;
+		        break;
+		    case "devolucion":
+		          var arreglo =rep_devolucion;
+		        break;
+		    case "cero":
+		        var arreglo =rep_cero;
+		        break;
+		    case "baja":
+		        var arreglo =rep_baja;
+		        break;
+		    case "top":
+		        var arreglo =rep_top;
+		        break;
+		    default:
+		}
+
+	    var api = this.api();
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+    	}
+	},
+	"language": {  
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
+
+
+    jQuery('#tabla_reporte tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var td = $(this).closest('tr > td');
+        var row = jQuery('#tabla_reporte').DataTable().row( tr );
+        //console.log(row);
+  
+          //console.log($('#tabla_rep_general').DataTable().row( tr ).data());
+          //console.log(tabla.row());
+
+        
+        if ( row.child.isShown() ) { //si la fila esta "abierta" entonces "cerrarla"
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            //si la fila esta "cerrada" entonces "abrirla"
+            
+
+
+						extra_search = jQuery("#botones").val(); 
+						id_estatus = jQuery("#id_estatuss").val(); 
+						id_almacen = jQuery("#id_almacen_reporte").val(); 
+						id_factura = jQuery("#id_factura_reporte").val(); 
+
+						//datos del producto
+						id_descripcion = jQuery("#producto").val(); 
+						if (id_descripcion !='') {
+							  id_descripcion = jQuery('#producto option:selected').text();
+						}
+						id_color = jQuery("#color").val(); 
+						id_composicion = jQuery("#composicion").val(); 
+						id_calidad = jQuery("#calidad").val(); 
+						factura_reporte = jQuery('#factura_reporte').val();					
+						proveedor = jQuery("#editar_proveedor_reporte").val(); 	   
+						var fecha = (jQuery('.fecha_reporte').val()).split(' / ');
+						fecha_inicial = fecha[0];
+						fecha_final = fecha[1];
+						var d= row.data();
+						//console.log(d[0]);
+
+                 $.ajax({
+                        url: "/procesando_detalle_reporte",
+                        type: 'POST',
+                        dataType: "json",
+                        data: {
+                        	   identificador : d[0],
+                        		   busqueda  : jQuery('input[type=search]').val(),
+								extra_search : extra_search,
+								  id_estatus : id_estatus,
+								  id_almacen : id_almacen,
+								  id_factura : id_factura,
+								//datos del producto
+							  id_descripcion : id_descripcion,
+								    id_color : id_color,
+							   id_composicion:id_composicion,
+								   id_calidad:id_calidad,
+							  factura_reporte:factura_reporte,
+							  	    proveedor:proveedor,
+								        fecha:fecha,
+								fecha_inicial:fecha_inicial,
+								  fecha_final:fecha_final
+                         },
+                        success: function(datos){
+
+                        		if (datos.data) {
+
+                        			
+                        				var etq_existencia = ['Código', 'Proveedor',   'Ingreso', 'No. de Partida','Almacén','Imagen'];
+										  var etq_apartado = ['Código', 'Dependencia', 'Fecha',   'No. de Partida','Almacén', 'Imagen']; //'Tipo Apartado',
+										    var etq_salida = ['Código', 'Cliente',     'Egreso',  'No. de Partida','Almacén', 'Imagen'];
+
+										   var etq_entrada = ['Código', 'Proveedor',   'Ingreso', 'No. de Partida','Almacén', 'Imagen'];
+										var etq_devolucion = ['Código', 'Proveedor',   'Ingreso', 'No. de Partida','Almacén'];
+									
+										      var etq_cero = ['Referencia', 'Almacén',  'Imagen',  'Especificaciones'];
+										      var etq_baja = ['Referencia', 'Almacén',  'Imagen',  'Especificaciones'];
+										       var etq_top = ['Referencia', 'Almacén',  'Imagen',  'Especificaciones'];
+							
+
+											
+
+
+									switch(jQuery("#botones").val()) {
+										   case "existencia":
+										        var arreglo =etq_existencia;
+										        break;
+										    case "apartado":
+										        var arreglo =etq_apartado;
+										        break;
+										    case "salida":
+										        var arreglo =etq_salida;
+										        break;
+										    case "entrada":
+										          var arreglo =etq_entrada;
+										        break;
+										    case "devolucion":
+										          var arreglo =etq_devolucion;
+										        break;
+										    case "cero":
+										        var arreglo =etq_cero;
+										        break;
+										    case "baja":
+										        var arreglo =etq_baja;
+										        break;
+										    case "top":
+										        var arreglo =etq_top;
+										        break;
+										    default:
+										}
+
+
+										var html	= '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+									    
+											for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+									    		
+												     html+= '<tr>';
+												     html+=       '<td>'+arreglo[i]+'</td>';
+												     html+=       '<td>'+datos.data[0][i]+'</td>';
+												     html+=   '</tr>';
+
+									    	}
+									    	html	+= '</table>';
+
+		                        		 $cad ='<div>'+html+'</div>';
+										 row.child( $cad ).show();
+		                                  tr.addClass('shown');
+                                }  
+
+
+                        }
+                });        						
+
+
+
+        } //fin else
+
+
+
+
+    } );
+
+
+
+jQuery('#tabla_reporte_OLD').dataTable( {
 		
 	  "pagingType": "full_numbers",
  	  "order": [[ 9, "asc" ]],
@@ -2827,63 +3226,46 @@ jQuery('#tabla_reporte').dataTable( {
             	"url" : "procesando_reporte",
          		"type": "POST",
          		 "data": function ( d ) {
-         		 	   if (comienzo) {
-         		 	   	 d.start=0;	 //comienza en cero siempre q cambia de botones
-         		 	   	 d.draw =0;
-         		 	   }
+						if (comienzo) {
+							 d.start=0;	 //comienza en cero siempre q cambia de botones
+							 d.draw =0;
+						}
 
-     				   d.extra_search = jQuery("#botones").val(); 
-     				     d.id_estatus = jQuery("#id_estatuss").val(); 
-     				     d.id_almacen = jQuery("#id_almacen_reporte").val(); 
-     				     d.id_factura = jQuery("#id_factura_reporte").val(); 
+						d.extra_search = jQuery("#botones").val(); 
+						d.id_estatus = jQuery("#id_estatuss").val(); 
+						d.id_almacen = jQuery("#id_almacen_reporte").val(); 
+						d.id_factura = jQuery("#id_factura_reporte").val(); 
 
-
-     				   //datos del producto
-     				   d.id_descripcion = jQuery("#producto").val(); 
-     				   if (d.id_descripcion !='') {
-     				   	  d.id_descripcion = jQuery('#producto option:selected').text();
-     				   }
-
-
-
-     				   //
-     				   d.id_color = jQuery("#color").val(); 
-     				   d.id_composicion = jQuery("#composicion").val(); 
-     				   d.id_calidad = jQuery("#calidad").val(); 
-	
+						//datos del producto
+						d.id_descripcion = jQuery("#producto").val(); 
+						if (d.id_descripcion !='') {
+							  d.id_descripcion = jQuery('#producto option:selected').text();
+						}
+						d.id_color = jQuery("#color").val(); 
+						d.id_composicion = jQuery("#composicion").val(); 
+						d.id_calidad = jQuery("#calidad").val(); 
 						d.factura_reporte = jQuery('#factura_reporte').val();					
-
-					   d.proveedor = jQuery("#editar_proveedor_reporte").val(); 	   
-
+						d.proveedor = jQuery("#editar_proveedor_reporte").val(); 	   
 						var fecha = (jQuery('.fecha_reporte').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];
-     				   
     			 }
      },   
-
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 	    if (settings.json.totales) {
 		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
-		  
 			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
 			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
-
 		} else {
 		    jQuery('#total_pieza').html( 'Total de piezas: 0');
 			jQuery('#total_kg').html( 'Total de kgs: 0.00');
 			jQuery('#total_metro').html('Total de mts: 0.00');
-
 		}	
-
-
-
-			if (settings.json.recordsTotal==0) {
-				jQuery("#disa_reportes").attr('disabled', true);					
-			} else {
-				jQuery("#disa_reportes").attr('disabled', false);					
-			}
-
+		if (settings.json.recordsTotal==0) {
+			jQuery("#disa_reportes").attr('disabled', true);					
+		} else {
+			jQuery("#disa_reportes").attr('disabled', false);					
+		}
 	    return pre
   	} ,    
 
@@ -2914,37 +3296,28 @@ jQuery('#tabla_reporte').dataTable( {
 			    case "salida":
 			    case "existencia":
 			    case "apartado":
-
 				case "devolucion":
 				case "entrada":
-
 			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
 			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
 			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
-
-
 			        break;
 			    default:
 			        jQuery('#pieza').html('Total de piezas: 0');
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');			        
-
 	              break;
 			}
 		} else 	{
 			        jQuery('#pieza').html('Total de piezas: 0');
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');			        
-
 		}
-
 		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
 			api.column(14).visible(false);		
 		}	else {
 			api.column(14).visible(true);		
 		}
-		
-	
     },
    "columnDefs": [
 				{ 
@@ -2954,71 +3327,48 @@ jQuery('#tabla_reporte').dataTable( {
 		                		} else {
 		                			return row[1];
 		                		}
-		                		
 		                },
 		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
 		        },   	
-
-
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
 	                "targets": [0,2,3,4,5,6,7,8,12,13,14]
 	            },
-
-	            
     			{ 
 	                 "visible": false,
 	                "targets": [9,10,11,15,16]
 	            }
 	],
-/*
-
-$this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
-11=>$row->color_devolucion,
-*/
  "rowCallback": function( row, data ) {
-	    // Bold the grade for all 'A' grade browsers
 	    if ( data[11] == "red" ) {
 	      jQuery('td', row).addClass( "danger" );
 	    }
-
 	    if ( data[11] == "morado" ) {
 	      jQuery('td', row).addClass( "success" );
 	    }
-
 	    if ( data[15] == 1 ) {
 	      jQuery('td', row).addClass( "warning" );
 	    }
-
-
-
 	  },		
-
-
 
     "fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
 		switch(jQuery("#botones").val()) {
-		    case "salida":
-		        var arreglo =salida;
-		        break;
-
 		    case "existencia":
 		        var arreglo =existencia_informe;
 		        break;
-
-		    case "devolucion":
-		          var arreglo =devolucion_informe;
+		    case "apartado":
+		        var arreglo =apartado_informe;
 		        break;
-
+		    case "salida":
+		        var arreglo =salida;
+		        break;
 		    case "entrada":
 		          var arreglo =entrada;
 		        break;
-
-
-		    case "apartado":
-		        var arreglo =apartado_informe;
+		    case "devolucion":
+		          var arreglo =devolucion_informe;
 		        break;
 		    case "cero":
 		        var arreglo =cero_informe;
@@ -3029,57 +3379,40 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 		    case "top":
 		        var arreglo =top;
 		        break;
-
 		    default:
 		}
 
-		 var api = this.api();
-
-		
+	    var api = this.api();
 		if ( jQuery('#botones').val() == "salida" ) {
 			if ( jQuery('#config_salida_activo').val() == 0 ) {
 				api.column(12).visible(false);		
 			} else {
 				api.column(12).visible(true);		
 			}				
-
 		} else {
 			if ( jQuery('#config_entrada_activo').val() == 0 ) {
 				api.column(12).visible(false);		
 			} else {
 				api.column(12).visible(true);		
 			}	
-
 		}
-
-		
-
-
 
 		switch(jQuery("#botones").val()) {
 		    case "cero":
 		    case "baja":
 		    case "top":
-		        
-		        //api.column(9).visible(false);		
 		        api.column(13).visible(false);		
 		        api.column(14).visible(false);		
 		        break;
-
-		    default:
-		    	//api.column(9).visible(true);		
+	    default:
 		        api.column(13).visible(true);		
 		        api.column(14).visible(true);		
 		      break;  
-
 		}
-
-
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
     		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
     	}
 	},
-
 	"language": {  
 		"lengthMenu": "Mostrar _MENU_ registros por página",
 		"zeroRecords": "No hay registros",
@@ -3105,6 +3438,17 @@ $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) A
 	},
 });	
 
+
+
+
+
+
+
+
+
+
+
+
 jQuery("#foco").focusout(function (e) {
  //alert('sadasd');
 
@@ -3115,8 +3459,18 @@ jQuery("#foco").focusout(function (e) {
 });
 
 
+
+
+
+
+
+
+
+
+
+
 jQuery('#existencia_reporte').click(function (e) {
-	
+	jQuery('#proveedor_id').siblings().css('display','block');		
 
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
@@ -3125,7 +3479,26 @@ jQuery('#existencia_reporte').click(function (e) {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
 
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
+
+	/*
+		<select name="id_factura_reporte" id="id_factura_reporte" class="form-control">
+				<option value="0">Todos</option>	
+																				<option value="1">Factura</option>
+																				<option value="2">Remisión</option>
+																	<option value="3">Surtidos</option>	
+			<!--rol de usuario -->
+		</select>
+
+	*/
 
 
 
@@ -3184,6 +3557,7 @@ jQuery('#existencia_reporte').click(function (e) {
 });
 
 jQuery('#salida_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
@@ -3191,7 +3565,13 @@ jQuery('#salida_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
     
     jQuery('#factura_reporte').val('');
@@ -3222,7 +3602,7 @@ jQuery('#salida_reporte').click(function (e) {
 
 	jQuery('#label_proveedor').text("Cliente");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
-	jQuery('#editar_proveedor_reporte').attr('idproveedor','2');
+	jQuery('#editar_proveedor_reporte').attr('idproveedor','3');
 
 	jQuery('.leyen_home').css('display','none');
 
@@ -3238,6 +3618,7 @@ jQuery('#salida_reporte').click(function (e) {
 
 
 jQuery('#apartado_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
@@ -3245,7 +3626,14 @@ jQuery('#apartado_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 	jQuery('#factura_reporte').val('');
@@ -3272,7 +3660,7 @@ jQuery('#apartado_reporte').click(function (e) {
 
 	jQuery('#label_proveedor').text("Cliente");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
-	jQuery('#editar_proveedor_reporte').attr('idproveedor','2');
+	jQuery('#editar_proveedor_reporte').attr('idproveedor','1');
 
 
 
@@ -3283,6 +3671,7 @@ jQuery('#apartado_reporte').click(function (e) {
 });
 
 jQuery('#cero_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
@@ -3290,7 +3679,13 @@ jQuery('#cero_reporte').click(function (e) {
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 	jQuery('#factura_reporte').val('');
@@ -3329,13 +3724,20 @@ jQuery('#cero_reporte').click(function (e) {
 
 jQuery('#baja_reporte').click(function (e) {
 
+
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
 
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 	jQuery('#factura_reporte').val('');
@@ -3344,7 +3746,9 @@ jQuery('#baja_reporte').click(function (e) {
 
 	jQuery('#label_reporte').text("Reportes de Existencias Bajas");
 	jQuery('#estatus_id').css('display','none');
-	jQuery('#proveedor_id').css('display','none');
+	
+	//jQuery('#proveedor_id').css('display','none');
+	jQuery('#proveedor_id').css('display','block'); //**
 
 	jQuery('#fecha_id').css('display','none');
 	jQuery('#example2').css('display','block');
@@ -3355,14 +3759,17 @@ jQuery('#baja_reporte').click(function (e) {
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
 
+
 	jQuery('.leyen_home').css('display','none');
 	jQuery('.leyenda').css('display','none');	
 	jQuery('.leyenda_devolucion').css('display','none');
 
+	jQuery('#proveedor_id').parent().css('display','block'); //***
+	jQuery('#proveedor_id').siblings().css('display','none'); //***
+
 	jQuery('#label_proveedor').text("Proveedor");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
 	jQuery('#editar_proveedor_reporte').attr('idproveedor','1');
-
 
 	
 
@@ -3374,13 +3781,20 @@ jQuery('#baja_reporte').click(function (e) {
 
 
 jQuery('#top_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 
 	jQuery('.fecha_reporte').val('');
 	jQuery('#id_estatuss option:eq(0)').prop('selected', 'selected');
 	if ( jQuery("#mi_perfil").val() !='2') {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 	jQuery('#factura_reporte').val('');
@@ -3418,6 +3832,7 @@ jQuery('#top_reporte').click(function (e) {
 //nuevo reportes
 
 jQuery('#entrada_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 	
 
 	jQuery('.fecha_reporte').val('');
@@ -3427,7 +3842,13 @@ jQuery('#entrada_reporte').click(function (e) {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
 
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 	jQuery('#factura_reporte').val('');
@@ -3478,6 +3899,7 @@ jQuery('#entrada_reporte').click(function (e) {
 
 
 jQuery('#devolucion_reporte').click(function (e) {
+	jQuery('#proveedor_id').siblings().css('display','block');	
 	
 
 	jQuery('.fecha_reporte').val('');
@@ -3487,7 +3909,14 @@ jQuery('#devolucion_reporte').click(function (e) {
 		jQuery('#id_almacen_reporte option:eq(0)').prop('selected', 'selected');
 	}
 	
-	jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+	//jQuery('#id_factura_reporte option:eq(0)').prop('selected', 'selected');
+
+	jQuery('#id_factura_reporte').html(''); 
+	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	//jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+
 
 
 
@@ -3614,364 +4043,10 @@ jQuery('#devolucion_reporte').click(function (e) {
 
 
 
-/////////////////////////buscar proveedores home
-
-	// busqueda de proveedors reportes
-	var consulta_proveedor_home = new Bloodhound({
-	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
-	   queryTokenizer: Bloodhound.tokenizers.whitespace,
-	   //remote:'catalogos/buscador?key=%QUERY&nombre='+jQuery('.buscar_proveedor_reporte').attr("name")+'&idproveedor='+jQuery('.buscar_proveedor_reporte').attr("idproveedor"),
-
-	  remote: {
-	        url: 'catalogos/buscador?key=%QUERY',
-	        replace: function () {
-	            var q = 'catalogos/buscador?key='+encodeURIComponent(jQuery('.buscar_proveedor_home').typeahead("val"));
-					q += '&nombre='+encodeURIComponent(jQuery('.buscar_proveedor_home.tt-input').attr("name"));
-				    q += '&idproveedor='+encodeURIComponent(jQuery('.buscar_proveedor_home.tt-input').attr("idproveedor"));
-	            
-	            return  q;
-	        }
-	    },   
-
-	});
-
-
-
-	consulta_proveedor_home.initialize();
-
-	jQuery('.buscar_proveedor_home').typeahead(
-		{
-			  hint: true,
-		  highlight: true,
-		  minLength: 1
-		},
-
-		 {
-	  
-	  name: 'buscar_proveedor_home',
-	  displayKey: 'descripcion', //
-	  source: consulta_proveedor_home.ttAdapter(),
-	   templates: {
-	   			//header: '<h4>'+jQuery('.buscar_proveedor_reporte').attr("name")+'</h4>',
-			    suggestion: function (data) {  
-					return '<p><strong>' + data.descripcion + '</strong></p>'+
-					 '<div style="background-color:'+ '#'+data.hexadecimal_color + ';display:block;width:15px;height:15px;margin:0 auto;"></div>';
-
-		   }
-	    
-	  }
-	});
-
-	jQuery('.buscar_proveedor_home').on('typeahead:selected', function (e, datum,otro) {
-	    comienzo=true;  //para indicar que start comience en 0;
-	    key = datum.key;
-		var oTable =jQuery('#tabla_home').dataTable();
-		oTable._fnAjaxUpdate();
-
-
-	});	
-
-	jQuery('.buscar_proveedor_home').on('typeahead:closed', function (e) {
-		comienzo=true;  //para indicar que start comience en 0;
-		var oTable =jQuery('#tabla_home').dataTable();
-		oTable._fnAjaxUpdate();
-
-	});	
-
 
 ////////////////// Aqui comienza DASHBOARD////////////////////////////////////////////////////////////
 
-    jQuery("#factura_dashboard").on('keyup', function(e) {
-		comienzo=true;  //para indicar que start comience en 0;
-		var oTable =jQuery('#tabla_home').dataTable();
-		oTable._fnAjaxUpdate();
-    });
-
-
-
-jQuery('#tabla_home').dataTable( {
-	  "pagingType": "full_numbers",
-      "fnPreDrawCallback": function (oSettings) {
-		if (comienzo) {
-			oSettings._iDisplayStart = 0;  //comienza en cero siempre q cambia de botones
-			comienzo=false;
-		}
-      },
-
-	"order": [[ 13, "asc" ]],
-	"processing": true,
-	"serverSide": true,
-	"ajax": {
-            	"url" : "procesando_home",
-         		"type": "POST",
-         		 "data": function ( d ) {
-         		 	   if (comienzo) {
-         		 	   	 d.start=0;	 //comienza en cero siempre q cambia de botones
-         		 	   	 d.draw =0;         		 	   	
-         		 	   }
-     				   d.extra_search = jQuery("#botones").val(); //$('#extra').val();
-     					
-     				   //datos del producto
-     				   //d.id_descripcion = jQuery("#producto").val(); 
-     				   d.id_descripcion = jQuery("#producto").val(); 
-     				   if (d.id_descripcion !='') {
-     				   	  d.id_descripcion = jQuery('#producto option:selected').text();
-     				   }
-
-
-
-     				   d.id_color = jQuery("#color").val(); 
-     				   d.id_composicion = jQuery("#composicion").val(); 
-     				   d.id_calidad = jQuery("#calidad").val(); 
-						
-					   d.proveedor = jQuery("#editar_proveedor_home").val(); 	   
-					   
-					   d.factura_dashboard = jQuery('#factura_dashboard').val();	
-
-					    d.id_estatus = jQuery("#id_estatus_home").val(); 
-					    d.id_almacen = jQuery("#id_almacen_home").val(); 
-					    d.id_factura = jQuery("#id_factura_home").val(); 
-						var fecha = (jQuery('.fecha_home').val()).split(' / ');
-						d.fecha_inicial = fecha[0];
-						d.fecha_final = fecha[1];
-
-    			 }
-         		
-     },   
-
-
-  "fnPreDrawCallback": function (oSettings) {
-		if (comienzo) {
-			oSettings._iDisplayStart = 0;  //comienza en cero siempre q cambia de botones
-			comienzo=false;
-		}
-  },
-
-"infoCallback": function( settings, start, end, max, total, pre ) {
-    if (settings.json.totales) {
-	    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
-		jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
-		jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
-	} else {
-	    jQuery('#total_pieza').html( 'Total de piezas: 0');
-		jQuery('#total_kg').html( 'Total de kgs: 0.00');
-		jQuery('#total_metro').html('Total de mts: 0.00');
-
-	}	
-    return pre;
-  } ,
-
-
-"rowCallback": function( row, data ) {
-	    // Bold the grade for all 'A' grade browsers
-	    if ( data[13] == "red" ) {
-	      jQuery('td', row).addClass( "danger" );
-	    }
-
-	    if ( data[13] == "morado" ) {
-	      jQuery('td', row).addClass( "success" );
-	    }
-
-
-	    if ( data[17] == 1 ) {
-	      jQuery('td', row).addClass( "warning" );
-	    }
-
-	  },	   
-
- "footerCallback": function( tfoot, data, start, end, display ) {
-		   var api = this.api(), data;
-		   
-			var intVal = function ( i ) {
-				return typeof i === 'string' ?
-					i.replace(/[\$,]/g, '')*1 :
-					typeof i === 'number' ?
-						i : 0;
-			};
-
-		if  (data.length>0) {   
-				total_metro = api
-					.column( 10 )
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );
-
-				total_kilogramo = api
-					.column( 11)
-					.data()
-					.reduce( function (a, b) {
-						return intVal(a) + intVal(b);
-					} );
-
-				total_pieza = (end-start);	
-
-			switch(jQuery("#botones").val()) {
-			    case "existencia":
-			    case "devolucion":
-			    case "apartado":
-			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
-			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
-			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
-
-
-		        break;
-			    default:
-			        jQuery('#pieza').html('Total de piezas: 0');
-			        jQuery('#metro').html('Total de mts: 0.00');
-					jQuery('#kg').html('Total de kgs: 0.00');			        
-
-	              break;
-			}
-		} else 	{
-			        jQuery('#pieza').html('Total de piezas: 0');
-			        jQuery('#metro').html('Total de mts: 0.00');
-					jQuery('#kg').html('Total de kgs: 0.00');			        
-
-		}	
-
-		if (( jQuery('#config_almacen').val() == 0 ) && (jQuery('#el_perfil').val()==2) ) {
-			api.column(16).visible(false);		
-		}	else {
-			api.column(16).visible(true);		
-		}
-		
-
-
-		
-
-
-  },
-
-   "columnDefs": [
-				{ 
-		                "render": function ( data, type, row ) {
-		                		if (row[18]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[18];	
-		                		} else {
-		                			return row[1];
-		                		}
-		                		
-		                },
-		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
-		        },   	   
-    			{ 
-	                "render": function ( data, type, row ) {
-						return data;	
-	                },
-	                "targets": [0,2,4,5,6,7,8,12,13,14,16] //,11 //3,
-	            },
-
-	            
-				{ 
-	                "render": function ( data, type, row ) {
-                            //prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[15])+'" data-toggle="modal" data-target="#myModaldashboard">';
-                            prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[15])+'/'+jQuery.base64.encode(row[1])+'" data-toggle="modal" data-target="#myModaldashboard">';
-                               prod+= row[3];
-                            prod+='</a>';
-                            
-                            return prod; 
-	                },
-	                "targets": [3] //,11
-	            },	            
-
-    			{ 
-	                 "visible": false,
-	                "targets": [10,11,13,15,17,18]
-	            }
-
-	            ],
-         
-"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
-	
-		switch(jQuery("#botones").val()) {
-		    case "existencia":
-		        var arreglo =existencia;
-		        break;
-		    case "devolucion":
-		          var arreglo =devolucion;
-		        break;
-		    case "apartado":
-		        var arreglo =apartado;
-		        break;
-		    case "cero":
-		        var arreglo =cero;
-		        break;
-		    case "baja":
-		        var arreglo =baja;
-		        break;
-		    default:
-		        //default 
-		}
-
-		//quitar las columnas en cero y baja
-		 var api = this.api();
-
-
-		if ( jQuery('#botones').val() == "salida" ) {
-			if ( jQuery('#config_salida_activo').val() == 0 ) {
-				api.column(12).visible(false);		
-			} else {
-				api.column(12).visible(true);		
-			}				
-
-		} else {
-			if ( jQuery('#config_entrada_activo').val() == 0 ) {
-				api.column(12).visible(false);		
-			} else {
-				api.column(12).visible(true);		
-			}	
-
-		}		
-
-
-		switch(jQuery("#botones").val()) {
-		    case "cero":
-		    case "baja":
-		        api.column(9).visible(false);		
-		        api.column(14).visible(false);		
-		        api.column(16).visible(false);		
-		        break;
-
-		    default:
-		    	api.column(9).visible(true);		
-		        api.column(14).visible(true);		
-		        api.column(16).visible(true);		
-		      break;  
-
-		}
-
-
-	for (var i=0; i<=arreglo.length-1; i++) { 
-    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
-    	}
-	 
-},
-	"language": {  
-		"lengthMenu": "Mostrar _MENU_ registros por página",
-		"zeroRecords": "No hay registros",
-		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-		"infoEmpty": "No hay registros disponibles",
-		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
-		"emptyTable":     "No hay registros",
-		"infoPostFix":    "",
-		"thousands":      ",",
-		"loadingRecords": "Leyendo...",
-		"processing":     "Procesando...",
-		"search":         "Buscar:",
-		"paginate": {
-			"first":      "Primero",
-			"last":       "Último",
-			"next":       "Siguiente",
-			"previous":   "Anterior"
-		},
-		"aria": {
-			"sortAscending":  ": Activando para ordenar columnas ascendentes",
-			"sortDescending": ": Activando para ordenar columnas descendentes"
-		},
-	},
-				
-});	
+  
 
 
 
@@ -3981,286 +4056,7 @@ jQuery('#tabla_home').dataTable( {
 
 
 
-jQuery('#id_estatus_home').change(function(e) {
-	comienzo=true; //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	oTable._fnAjaxUpdate();		
-});
 
-jQuery('#id_almacen_home').change(function(e) {
-	comienzo=true; //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	oTable._fnAjaxUpdate();		
-});
-
-jQuery('#id_factura_home').change(function(e) {
-	comienzo=true; //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	oTable._fnAjaxUpdate();		
-});
-
-
-jQuery('.fecha_home').daterangepicker(
-	  { 
-    locale: { cancelLabel: 'Cancelar',
-    		  applyLabel: 'Aceptar',
-    		  fromLabel : 'Desde',
-    		  toLabel: 'Hasta',
-    		  monthNames : "ene._feb._mar_abr._may_jun_jul._ago_sep._oct._nov._dec.".split("_"),
-    		  daysOfWeek: "Do_Lu_Ma_Mi_Ju_Vi_Sa".split("_"),
-     } , 
-    separator: ' / ',
-    format: 'DD-MM-YYYY',
-    //startDate: fecha_hoy, //'2014/09/01',
-    //endDate: fecha_hoy //'2014/12/31'
-  }
-);
-
-jQuery('.fecha_home').on('apply.daterangepicker', function(ev, picker) {
-	//comienzo=true; //para indicar que start comience en 0;
-	comienzo=true;  //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	oTable._fnAjaxUpdate();
-
-});
-
-
-
-jQuery('#existencia_home').click(function (e) {
-	
-
-
-	jQuery('.leyen_home').css('display','block');
-	jQuery('.leyenda').css('display','none');
-	//jQuery('.leyenda_devolucion').css('display','none');
-
-
-	jQuery('.fecha_home').val('');
-	jQuery('#id_estatus_home option:eq(0)').prop('selected', 'selected');
-
-	if ( jQuery("#mi_perfil").val() !='2') {
-		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
-	}
-
-	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
-
-	
-
-	jQuery('#factura_dashboard').val('');
-	jQuery('#bloque_factura').css('display','block');
-
-	jQuery('.bloque_totales').css('display','block');
-
-
-
-	jQuery('#label_home').text("Existencias");
-	
-	jQuery('#estatus_id').css('display','block');
-	jQuery('#proveedor_id').css('display','block');
-	jQuery('#fecha_id').css('display','block');
-	jQuery('#example2').css('display','block');
-
-
-	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
-	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
-	jQuery('#color option:eq(0)').prop('selected', 'selected');
-	jQuery('#producto option:eq(0)').prop('selected', 'selected');
-
-
-	jQuery('#label_proveedor').text("Proveedor");
-	jQuery('#editar_proveedor_home').typeahead("val",'');
-	jQuery('#editar_proveedor_home').attr('idproveedor','1');
-
-	//jQuery('.leyenda').css('display','none');
-	//jQuery('.leyenda_devolucion').css('display','none');
-
-	comienzo=true;  //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	jQuery('#botones').val('existencia');
-	oTable._fnAjaxUpdate();
-});
-
-
-jQuery('#devolucion_home').click(function (e) {
-	
-
-	jQuery('.leyen_home').css('display','none');
-	jQuery('.leyenda').css('display','none');
-	jQuery('.fecha_home').val('');
-	jQuery('#id_estatus_home option:eq(0)').prop('selected', 'selected'); // lista
-
-	if ( jQuery("#mi_perfil").val() !='2') {
-		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
-	}
-	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
-
-
-	jQuery('#factura_dashboard').val('');
-	jQuery('#bloque_factura').css('display','block');
-
-	jQuery('.bloque_totales').css('display','block');
-
-
-
-	jQuery('#label_home').text("Devoluciones");
-	
-	jQuery('#estatus_id').css('display','none'); // bloque del estatus
-
-	jQuery('#proveedor_id').css('display','none');
-	jQuery('#fecha_id').css('display','block');
-	jQuery('#example2').css('display','block');
-
-
-	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
-	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
-	jQuery('#color option:eq(0)').prop('selected', 'selected');
-	jQuery('#producto option:eq(0)').prop('selected', 'selected');
-
-
-	jQuery('#label_proveedor').text("Proveedor");
-	jQuery('#editar_proveedor_home').typeahead("val",'');
-	jQuery('#editar_proveedor_home').attr('idproveedor','1');
-
-	comienzo=true;  //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	jQuery('#botones').val('devolucion');
-	oTable._fnAjaxUpdate();
-});
-
-jQuery('#apartado_home').click(function (e) {
-
-	jQuery('.leyen_home').css('display','none');
-	jQuery('.leyenda').css('display','block');
-	jQuery('.fecha_home').val('');
-	jQuery('#id_estatus_home option:eq(0)').prop('selected', 'selected');
-	
-	if ( jQuery("#mi_perfil").val() !='2') {
-		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
-	}
-	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
-
-
-	jQuery('#factura_dashboard').val('');
-	jQuery('#bloque_factura').css('display','none');
-	jQuery('.bloque_totales').css('display','block');
-
-	jQuery('#label_home').text("Apartados");
-
-	jQuery('#estatus_id').css('display','block');
-	jQuery('#proveedor_id').css('display','block');
-
-	jQuery('#fecha_id').css('display','block');
-	jQuery('#example2').css('display','block');
-
-
-	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
-	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
-	jQuery('#color option:eq(0)').prop('selected', 'selected');
-	jQuery('#producto option:eq(0)').prop('selected', 'selected');
-
-	//jQuery('.leyenda').css('display','block');
-	//jQuery('.leyenda_devolucion').css('display','none');
-
-	jQuery('#label_proveedor').text("Cliente");
-	jQuery('#editar_proveedor_home').typeahead("val",'');
-	jQuery('#editar_proveedor_home').attr('idproveedor','2');
-
-
-
-	comienzo=true;  //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	jQuery('#botones').val('apartado');
-	oTable._fnAjaxUpdate();
-});
-
-jQuery('#cero_home').click(function (e) {
-
-	jQuery('.leyen_home').css('display','none');
-	jQuery('.leyenda').css('display','none');	
-	jQuery('.fecha_home').val('');
-	jQuery('#id_estatus_home option:eq(0)').prop('selected', 'selected');
-	if ( jQuery("#mi_perfil").val() !='2') {
-		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
-	}
-	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
-	
-
-	jQuery('#label_home').text("Existencias Cero");
-
-	jQuery('#factura_dashboard').val('');
-	jQuery('#bloque_factura').css('display','none');
-	jQuery('.bloque_totales').css('display','none');
-
-	jQuery('#estatus_id').css('display','none');
-	jQuery('#proveedor_id').css('display','none');
-
-	jQuery('#fecha_id').css('display','none');
-	jQuery('#example2').css('display','block');
-
-
-	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
-	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
-	jQuery('#color option:eq(0)').prop('selected', 'selected');
-	jQuery('#producto option:eq(0)').prop('selected', 'selected');
-
-	//jQuery('.leyenda').css('display','none');
-	//jQuery('.leyenda_devolucion').css('display','none');
-
-	jQuery('#label_proveedor').text("Proveedor");
-	jQuery('#editar_proveedor_home').typeahead("val",'');
-	jQuery('#editar_proveedor_home').attr('idproveedor','1');
-
-	
-
-	comienzo=true;  //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	jQuery('#botones').val('cero');
-	oTable._fnAjaxUpdate();
-});
-
-jQuery('#baja_home').click(function (e) {
-
-    jQuery('.leyen_home').css('display','none');
-    jQuery('.leyenda').css('display','none');
-	jQuery('.fecha_home').val('');
-	jQuery('#id_estatus_home option:eq(0)').prop('selected', 'selected');
-	if ( jQuery("#mi_perfil").val() !='2') {
-		jQuery('#id_almacen_home option:eq(0)').prop('selected', 'selected');
-	}
-	jQuery('#id_factura_home option:eq(0)').prop('selected', 'selected');
-	
-
-	jQuery('#factura_dashboard').val('');
-	jQuery('#bloque_factura').css('display','none');
-	jQuery('.bloque_totales').css('display','none');
-
-	jQuery('#label_home').text("Existencias Bajas");
-
-	jQuery('#estatus_id').css('display','none');
-	jQuery('#proveedor_id').css('display','none');
-
-	jQuery('#fecha_id').css('display','none');
-	jQuery('#example2').css('display','block');
-
-
-	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
-	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
-	jQuery('#color option:eq(0)').prop('selected', 'selected');
-	jQuery('#producto option:eq(0)').prop('selected', 'selected');
-
-	//jQuery('.leyenda').css('display','none');	
-	//jQuery('.leyenda_devolucion').css('display','none');
-
-	jQuery('#label_proveedor').text("Proveedor");
-	jQuery('#editar_proveedor_home').typeahead("val",'');
-	jQuery('#editar_proveedor_home').attr('idproveedor','1');
-
-
-	comienzo=true; //para indicar que start comience en 0;
-	var oTable =jQuery('#tabla_home').dataTable();
-	jQuery('#botones').val('baja');
-	oTable._fnAjaxUpdate();
-});
 
 ////////////////// hasta aqui la de DashBoard////////////////////////////////////////////////////////////
 
@@ -7116,8 +6912,12 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 
 
 
+
+
 	//,  #proveedor_pedido
     jQuery("#producto_pedido, #composicion_pedido, #ancho_pedido, #color_pedido, #proveedor_pedido").on('change', function(e) {
+    	
+    	
 		 var campo = jQuery(this).attr("name");   
  		 var val_prod = jQuery('#producto_pedido option:selected').text();  		  //elemento** id
  		 var val_comp = jQuery('#composicion_pedido').val();  		  //elemento** id
@@ -7125,15 +6925,16 @@ jQuery('body').on('click','#conf_pedido', function (e) {
  		 var val_color = jQuery('#color_pedido').val();  		  //elemento** id
  		 var val_proveedor = jQuery('#proveedor_pedido').val();  		  //elemento** id
 
-         var dependencia = jQuery(this).attr("dependencia"); //color composicion
+         var dependencia = jQuery(this).attr("name"); //color composicion
          var nombre = jQuery(this).attr("nombre");           //color composicion
         
-    	if (dependencia !="") {	    
+        //alert(dependencia);
+    	//if (dependencia !="") {	    
 	        //limpiar la dependencia
-	        jQuery("#"+dependencia).html(''); 
+	        //jQuery("#"+dependencia).html(''); 
 	        //cargar la dependencia
 	        cargarDependencia_pedido(campo,val_prod,val_comp, val_ancho, val_color,val_proveedor,dependencia,nombre);
-        }
+        //}
 
 
 		var hash_url = window.location.pathname;
@@ -7152,6 +6953,7 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 
 
 
+	
 
 	function cargarDependencia_pedido(campo,val_prod,val_comp, val_ancho, val_color,val_proveedor,dependencia,nombre) {
 		
@@ -7160,7 +6962,7 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 		        url : 'cargar_dependencia_pedido',
 		        data:{
 		        	campo:campo,
-	        	
+		        	val_prod_id : jQuery('#producto_pedido option:selected').val(),  		  //elemento** id
 		        	val_prod:val_prod,
 		        	val_comp:val_comp,
 		        	val_ancho: val_ancho,
@@ -7175,6 +6977,38 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 		        dataType : 'json',
 		        success : function(data) {
 		        		
+		        		
+
+		        			var $elArray = new Array();
+							
+							$elArray['producto_pedido']  = 'un producto';
+				        	$elArray['composicion_pedido']  = 'una composición';
+				            $elArray['ancho_pedido']  = 'un ancho';
+				            $elArray['color_pedido']  = 'un color';
+				            $elArray['proveedor_pedido']  = 'un proveedor';
+
+		        		jQuery.each(data, function (dep, valor) {
+		        			
+		        			jQuery("#"+dep).html(''); 
+
+		        			jQuery("#"+dep).append('<option value="0" >Seleccione '+$elArray[dep]+' </option>'); //+valor.nombre+
+
+		        				jQuery.each(valor, function (i, value) {
+		        					
+		        					hexadecimal_color = (value.hexadecimal_color)  ? (value.hexadecimal_color) : 'ffff';
+
+		        					if (dep=="producto_pedido") { //caso de producto
+		        					 jQuery("#"+dep).append('<option '+ ( (value.nombre==value.activo) ? 'selected' : '') +' value="' + value.nombre + '" style="background-color:#'+hexadecimal_color+' !important;" >' + value.nombre + '</option>');     	
+		        					} else {
+		        						jQuery("#"+dep).append('<option '+ ( (parseInt(value.id)==parseInt(value.activo)) ? 'selected' : '') +' value="' + value.id + '" style="background-color:#'+hexadecimal_color+' !important;" >' + value.nombre + '</option>');     	
+		        					}
+		        					
+
+		        					
+		        				});
+		        		});
+
+	                 /*
 	                 jQuery("#"+dependencia).append('<option value="0" >Seleccione '+nombre+'</option>');
                     
 					if (data != "[]") {
@@ -7185,10 +7019,19 @@ jQuery('body').on('click','#conf_pedido', function (e) {
                             }
                         });
 
-	                } 	
+	                } 	*/
 					
 				
-					jQuery("#"+dependencia).trigger('change');
+					//jQuery("#"+dependencia).trigger('change');
+
+
+					/*
+					if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}*/
+
 
                     return false;
 		        },
@@ -7199,6 +7042,23 @@ jQuery('body').on('click','#conf_pedido', function (e) {
 		        }
 		    }); 
 	}
+
+
+jQuery('body').on('click','#limpiar_filtro', function (e) {
+	// alert('aa');
+
+	//jQuery('#producto_pedido option:selected').att('selectedIndex', 0); 
+	jQuery('#producto_pedido option:eq(0)').prop('selected', 'selected');
+	jQuery('#composicion_pedido option:eq(0)').prop('selected', 'selected');
+	jQuery('#ancho_pedido option:eq(0)').prop('selected', 'selected');
+	jQuery('#color_pedido option:eq(0)').prop('selected', 'selected');
+	jQuery('#proveedor_pedido option:eq(0)').prop('selected', 'selected');
+
+
+	jQuery("#producto_pedido").trigger('change');
+
+});	
+
 
 jQuery('#id_almacen_generar_pedido').change(function(e) {
 	comienzo=true; //para indicar que start comience en 0;
@@ -7221,7 +7081,7 @@ jQuery('#pedido_entrada').dataTable( {
          		"type": "POST",
          		 "data": function ( d ) {
          		 	   if (comienzo) {
-         		 	   	 d.start=0;	 //comienza en cero siempre q cambia de botones
+         		 	   	 //d.start=0;	 //comienza en cero siempre q cambia de botones
          		 	   	 d.draw =0;
          		 	   }
 
@@ -7230,6 +7090,8 @@ jQuery('#pedido_entrada').dataTable( {
 	 				  if (d.id_descripcion !='') {
    				   	    d.id_descripcion = jQuery('#producto_pedido option:selected').text();
 	 				  }
+
+	 				  d. val_prod_id = jQuery('#producto_pedido option:selected').val();
 
 
  		 				d.id_composicion = jQuery('#composicion_pedido').val();  		  
@@ -7402,6 +7264,15 @@ jQuery('#pedido_entrada').dataTable( {
 	            }	            
 	        ],
 });	
+
+
+
+  //cuando entre por vez primera, q actualice todas las dependencia
+	var hash_url = window.location.pathname;
+	if  ( (hash_url=="/generar_pedidos") )   {  
+		//jQuery("#producto_pedido, #composicion_pedido, #ancho_pedido, #color_pedido, #proveedor_pedido").trigger('change');
+		jQuery("#producto_pedido").trigger('change');
+	}	
 
 
 
@@ -8381,12 +8252,12 @@ jQuery('body').on('click','#impresion', function (e) {
 
 ////////////////////////////ordenar////////////////////////////////////////////////
 
-
+/*
 	jQuery(".tabla_ordenadas").tablesorter(); 
 	jQuery("#tablahome1").tablesorter(); 
 	jQuery("#tablahome2").tablesorter(); 
 	jQuery("#tablahome3").tablesorter(); 
-
+*/
 
 
 

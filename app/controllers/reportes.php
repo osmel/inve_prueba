@@ -16,6 +16,9 @@ class Reportes extends CI_Controller {
 	}
 
 
+
+	
+
 //***********************Todos los catalogos**********************************//
 	public function listado_reportes(){
 		
@@ -68,19 +71,17 @@ class Reportes extends CI_Controller {
 		$data=$_POST;
 		$estatus= $data['extra_search'];  //$row=> 
 		switch ($estatus) {
-			case 'salida':
-				$busqueda = $this->modelo_reportes->buscador_salida_home($data); //13 782
-			   break;
 			case 'existencia':
 			case 'apartado':
 				$busqueda = $this->modelo_reportes->buscador_entrada_home($data); //13 443
 			   break;
-
+			case 'salida':
+				$busqueda = $this->modelo_reportes->buscador_salida_home($data); //13 782
+			   break;
 			case 'devolucion':
 			case 'entrada':
 				$busqueda = $this->modelo_reportes->buscador_entrada_devolucion($data); //13 443
 			   break;
-
 			case 'baja':
 			case 'cero':
 				$busqueda = $this->modelo_reportes->buscador_cero_baja($data); //13 1049
@@ -96,6 +97,38 @@ class Reportes extends CI_Controller {
 		}
 		echo $busqueda;
 	}
+
+
+public function procesando_detalle_reporte(){ 
+		$data=$_POST;
+
+		$estatus= $data['extra_search'];  
+		switch ($estatus) {
+			case 'existencia':
+			case 'apartado':
+				$busqueda = $this->modelo_reportes->detalle_entrada_home($data); //412
+			   break;
+			case 'salida':
+				$busqueda = $this->modelo_reportes->detalle_salida_home($data); //837
+			   break;
+			case 'devolucion':
+			case 'entrada':
+				$busqueda = $this->modelo_reportes->detalle_entrada_devolucion($data); //1263
+			   break;
+			case 'baja':
+			case 'cero':
+				$busqueda = $this->modelo_reportes->detalle_cero_baja($data); //1614
+			   break;
+			case 'top':
+				$busqueda = $this->modelo_reportes->detalle_top($data); //1947
+			   break;
+			default:
+				break;
+		}
+		echo $busqueda;
+		
+}
+
 
 //////////////////////////////////devolucion///////////////////////
 

@@ -560,6 +560,7 @@ $route['impresion_etiquetas/(:any)']    = 'pdfs/impresion_etiquetas/$1';
 /////////////////////////////////////////////Listado de todas las reportes
 $route['reportes']						= 'reportes/listado_reportes';
 $route['procesando_reporte']    		= 'reportes/procesando_reporte';
+$route['procesando_detalle_reporte']    		= 'reportes/procesando_detalle_reporte'; //nuevo
 
 $route['listado_notas']    = 'reportes/listado_notas';
 $route['listado_salidas']    = 'reportes/listado_salidas';
@@ -573,6 +574,8 @@ $route['procesando_historico_devolucion']    = 'reportes/procesando_historico_de
 $route['procesando_historico_salida']    = 'reportes/procesando_historico_salida';
 
 
+$route['existencias_baja']						= 'reportes/existencias_baja';
+$route['procesando_existencias_baja']			= 'reportes/procesando_existencias_baja';
 
 
 

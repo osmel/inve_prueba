@@ -7,7 +7,7 @@
 		
 </head>
 <body>
-
+<?php date_default_timezone_set('America/Mexico_City');  ?>
 
 		<div class="container">
 			<div>
@@ -28,8 +28,10 @@
 
 							<tr>
 								<td colspan="8" style="border-top: 1px solid #222222; ">
-									<span> <b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
+									
+									<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A',  strtotime ( gmt_to_local( 'UM1', time(), TRUE)  ) );  ?></span>
 									<p ><b >  Apartados</b></p>
+									<span><b>Tipo de Salida: </b> <?php echo $factura;  ?></span>
 
 
 									<table style="width: 80%; font-size:10px;">

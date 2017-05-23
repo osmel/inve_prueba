@@ -289,8 +289,139 @@
 
 ///////////////////////////////devolucion_Home////////////////////////////
 
+ public function buscador_cero_baja($data){
 
-    public function buscador_cero_baja($data){
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          $estatus= $data['extra_search'];
+
+
+          
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)"); 
+
+           $this->db->select('p.referencia');
+          $this->db->select('p.descripcion, p.minimo,  p.precio'); //p.imagen,
+          $this->db->select('c.hexadecimal_color,c.color nombre_color');
+          $this->db->select("co.composicion");   //, FALSE
+          $this->db->select("ca.calidad");   //, FALSE
+          $this->db->select("COUNT(m.referencia) as 'suma'");
+
+          //$this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          //$this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+
+
+          //$this->db->select_sum('p.referencia');
+          //$this->db->select('(SELECT SUM(m.referencia) FROM '.$this->registros.' As m WHERE m.referencia="REF-20150311-joTj810") AS suma', FALSE); 
+
+          $this->db->from($this->productos.' as p');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->registros.' As m', 'p.referencia = m.referencia'); //,'LEFT'
+
+      //filtro de busqueda
+
+          $where = '(
+                      
+                      (
+                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (p.minimo LIKE  "%'.$cadena.'%")  OR
+                        ( p.precio LIKE  "%'.$cadena.'%" ) OR (c.color LIKE  "%'.$cadena.'%") OR (co.composicion LIKE  "%'.$cadena.'%")  OR
+                        ( ca.calidad LIKE  "%'.$cadena.'%" ) 
+                       )
+
+            ) ' ;   
+
+          $this->db->where($where);
+
+          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
+          //paginacion
+
+          if ($estatus=="cero") {
+              $this->db->having('suma <= 0');
+          }   
+
+          if ($estatus=="baja") {
+              //$this->db->having('suma < p.minimo');
+              $this->db->having('((suma>0) AND (suma < p.minimo))');
+
+
+          }   
+          
+          
+
+          $this->db->limit($largo,$inicio); 
+
+
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+
+                  foreach ($result->result() as $row) {
+                          //'<img src="'.base_url().'uploads/productos/thumbnail/'.substr($row->imagen,0,strrpos($row->imagen,'.')).'_thumb'.substr($row->imagen,strrpos($row->imagen,'.')).'" border="0" width="75" height="75">',                        
+                           
+                           $dato[]= array(
+                                      0=>$row->referencia, //referencia
+                                      1=>$row->descripcion,
+                                      2=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
+                                      3=>'<img src="img/sinimagen.png" border="0" width="75" height="75">',
+                                        //'<img src="'.base_url().'uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,'.')).'_thumb'.substr($row->imagen,strrpos($row->imagen,'.')).'" border="0" width="75" height="75">',
+                                      4=>$row->nombre_color,
+                                      5=>
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      6=>$row->composicion,
+                                      7=>$row->calidad,
+                                      8=>$row->precio,
+                                      9=>"metro", //$row->metros,
+                                      10=>"kilo", //$row->kilogramos,
+
+                                    );                    
+                      }
+
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_productos() ),  //$recordsTotal
+                        "recordsFiltered" => $registros_filtrados, //intval( $result->num_rows() ),   //$recordsFiltered
+                        "data"            =>  $dato, //self::data_output( $columns, $data )
+                      ));
+                    
+              }   
+              else {
+                  //cuando este vacio la tabla que envie este
+                //http://www.datatables.net/forums/discussion/21311/empty-ajax-response-wont-render-in-datatables-1-10
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+                  
+
+              }
+
+              $result->free_result();   
+              
+
+      }  
+
+
+
+
+
+
+
+    public function buscador_cero_baja_OLD($data){
 
           $cadena = addslashes($data['search']['value']);
           $inicio = $data['start'];
