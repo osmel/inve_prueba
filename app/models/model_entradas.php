@@ -306,20 +306,6 @@
 ////////////////////////"http://inventarios.dev.com/pedidos"///////////////////////////////////////////////////////////////
     
     // 1ra regilla de "/pedidos"
-      public function total_productos_temporales($where){
-
-              $this->db->from($this->registros_temporales.' as m');
-              $this->db->where($where);
-
-              $result = $this->db->get();
-              $cant = $result->num_rows();
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-
-       }     
 
     public function buscador_productos_temporales($data){
 
@@ -386,32 +372,28 @@
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-
-                    
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
+                  //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+                    // m.movimiento,id_empresa,m.factura, m.id_operacion,m.id_medida,m.cantidad_royo,, m.comentario, m.id_cargador, m.id_usuario,
+                  //, m.fecha_mac fecha
+          $this->db->select('m.id, m.id_descripcion,  m.num_partida');
+          $this->db->select(' m.cantidad_um,  m.ancho, m.precio, m.codigo');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo');
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
           $this->db->select('m.peso_real');
-          $this->db->select('m.precio, m.iva');
-
-           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva", FALSE);
-           $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total", FALSE);
-
-
-
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select('m.iva');
+          $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva");
+          $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as sum_total");
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
           $this->db->select("prod.codigo_contable");  
 
 
           $this->db->from($this->registros_temporales.' as m');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
         
         
           //filtro de busqueda
@@ -474,6 +456,7 @@
                                       16=>$row->sum_total, 
                                       17=>$row->codigo_contable, 
                                       18=>$row->precio,
+                                      19=>$row->id_estatus,
 
                                                                           
                                     );
@@ -483,7 +466,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    =>intval( self::total_productos_temporales($where_total) ),  
+                        "recordsTotal"    =>$registros_filtrados, 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos ), "peso"=>floatval( self::totales_campos_salida($where_total)->peso )),  
@@ -499,7 +482,7 @@
               else {
                   $output = array(
                   "draw" =>  intval( $data['draw'] ),
-                  "recordsTotal" => 0, //intval( self::total_productos_temporales($where_total) ),  
+                  "recordsTotal" => 0, 
                   "recordsFiltered" =>0,
                   "aaData" => array(),
                    "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos ), "peso"=>floatval( self::totales_campos_salida($where_total)->peso )),  
@@ -525,9 +508,9 @@
 
 public function totales_importes($where){
 
-           $this->db->select("SUM(precio*cantidad_um) as subtotal", FALSE);
-           $this->db->select("(SUM(precio*cantidad_um*iva))/100 as iva", FALSE);
-           $this->db->select("SUM(precio*cantidad_um)+(SUM(precio*cantidad_um*iva))/100 as total", FALSE);
+           $this->db->select("SUM(precio*cantidad_um) as subtotal");
+           $this->db->select("(SUM(precio*cantidad_um*iva))/100 as iva");
+           $this->db->select("SUM(precio*cantidad_um)+(SUM(precio*cantidad_um*iva))/100 as total");
    
           $this->db->from($this->registros_temporales.' as m');
           $this->db->where($where);

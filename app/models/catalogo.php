@@ -1033,26 +1033,6 @@
 
 ///////////
 
-        public function total_cat_productos($data){
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->from($this->productos.' as p');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-
-              if ($data['where_total']!=''){
-                $this->db->where($data['where_total']);
-              }
-
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
 
 
       public function buscador_cat_producto($data){
@@ -1122,7 +1102,7 @@
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
           
           $this->db->select('p.id, p.uid, p.referencia,  p.comentario,p.consecutivo');
           $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho,p.codigo_contable');
@@ -1131,10 +1111,9 @@
           $this->db->select('co.composicion, ca.calidad, p.activo');
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
 
           
           //filtro de busqueda
@@ -1255,7 +1234,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_cat_productos($data) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_cat_productos($data) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato 
                       ));

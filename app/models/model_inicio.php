@@ -79,26 +79,7 @@
 
 
 
-
-        public function total_apartado_vendedores($data){
-              $id_session = $this->session->userdata('id');
-
-
-              $this->db->from($this->registros.' as m');
-              $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-              
-              if ($data['where']) {
-                $this->db->where($data['where']);  
-              }
-              
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
+    
 
 
       public function buscador_apartado_vendedores($data){
@@ -152,25 +133,24 @@
 
           
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
           
-                    
-          $this->db->select('m.id,  m.factura, m.id_descripcion, m.id_operacion,m.devolucion');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
+          //m.id_operacion,, m.devolucion,  m.factura,m.id_medida, m.cantidad_royo, ,  m.comentario, m.id_cargador,,  m.id_usuario, m.fecha_mac fecha
+          //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id, m.codigo,m.id_descripcion');
+          
+          $this->db->select('m.cantidad_um,  m.ancho, m.precio');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo');
 
-          $this->db->select('c.hexadecimal_color, u.medida');
-
-
+          $this->db->select('c.color, c.hexadecimal_color, u.medida');
 
           $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
           
 
           //filtro de busqueda
@@ -228,6 +208,7 @@
                                       7=>$row->id,
                                       8=>$row->almacen,
                                       9=>$row->codigo_contable,          
+                                      10=>$row->id_estatus,    
                                     );
                       }
 
@@ -236,7 +217,7 @@
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_apartado_vendedores($misdatos) ), 
+                        "recordsTotal"    => $registros_filtrados, //
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"         =>  array("pieza"=>intval( self::total_campos($misdatos)->pieza ), 
@@ -602,10 +583,10 @@ precio_nodisp
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               $this->db->select("sum(m.precio) as 'precio'");
               
-             
-              $this->db->from($this->registros_entradas.' as m');
-              $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+              $this->db->from($this->registros.' as m');
+              $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+              $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
 
 
               $this->db->where($data['where']);
@@ -927,12 +908,6 @@ precio_nodisp
             ', FALSE
             );
 
-          //20151127rzF1429
-          //20151126JRr7206
-          //$this->db->select('c.hexadecimal_color,c.color nombre_color');
-          //p.referencia,p.minimo,,  p.precio
-          //$this->db->select("co.composicion", FALSE);  
-          //$this->db->select("ca.calidad", FALSE);  
           $this->db->select("COUNT(m.referencia) as 'suma'");
 
           $this->db->select('p.grupo');

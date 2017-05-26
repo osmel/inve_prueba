@@ -1,13 +1,4 @@
-2017-03-10 10:09:14: <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
-
-<h4>A PHP Error was encountered</h4>
-
-<p>Severity: Warning</p>
-<p>Message:  file_put_contents(/var/www/html/inventarios/app/cache/frame_3.dat): failed to open stream: No such file or directory</p>
-<p>Filename: qrcode/qrspec.php</p>
-<p>Line Number: 568</p>
-
-</div><div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+2017-05-25 09:09:45: <div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
 
 <h4>A PHP Error was encountered</h4>
 

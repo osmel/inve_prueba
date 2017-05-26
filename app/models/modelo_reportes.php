@@ -355,6 +355,7 @@
                                           9=>$row->color_devolucion, //11
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
+                                          12=>$row->id_estatus,
                                         );                    
                           
                           
@@ -513,6 +514,7 @@ public function detalle_entrada_home($data){
                                           3=>$row->num_partida,
                                           4=>$row->almacen,
                                           5=>$imagen,
+
                                         );                    
                           
                           
@@ -786,6 +788,7 @@ public function detalle_entrada_home($data){
                                           9=>$row->color_devolucion, //11
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
+                                          12=>$row->id_estatus,
                                         );                    
                       }
 
@@ -1211,6 +1214,7 @@ public function detalle_salida_home($data){
                                           9=>$row->color_devolucion, //11
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
+                                          12=>$row->id_estatus,
                                         );             
 
                               
@@ -1461,7 +1465,7 @@ public function detalle_salida_home($data){
 
           $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)"); 
           $this->db->select("COUNT(m.referencia) as 'suma'");
-          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad'); 
+          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad, m.id_estatus'); 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
          
@@ -1570,6 +1574,7 @@ public function detalle_salida_home($data){
                                       9=>"black",  //11
                                       10=>$row->proceso_traspaso, //15
                                       11=>$row->codigo_contable,  //16
+                                      12=>$row->id_estatus,
                                     );                    
                             
 
@@ -1787,7 +1792,7 @@ public function detalle_salida_home($data){
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)");  
-          $this->db->select('p.referencia, m.proceso_traspaso'); 
+          $this->db->select('p.referencia, m.proceso_traspaso,m.id_estatus'); 
           $this->db->select('p.descripcion, p.imagen, p.precio');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
           $this->db->select("co.composicion");   
@@ -1824,8 +1829,9 @@ public function detalle_salida_home($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
-          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid); 
-          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); 
+          $this->db->join($this->historico_registros_salidas.' As m', 'p.referencia = m.referencia'.$fechas.''.$id_almacenid.$id_facturaid,'LEFT'); 
+          //$this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT'); 
+
 
           if ($estatus=="cero") {
             $activo  = ' and ( p.activo =  0 ) ';  
@@ -1883,6 +1889,7 @@ public function detalle_salida_home($data){
                                       9=>"black",  //11
                                       10=>$row->proceso_traspaso, //15
                                       11=>$row->codigo_contable,  //16
+                                      12=>$row->id_estatus,
                                     );                    
 
 
@@ -2530,17 +2537,16 @@ public function buscador_historico_salida($data){
 
           $this->db->select("prov_pedido.nombre cliente_pedido");
           $this->db->select("prov_apartado.nombre cliente_apartado");
-
+          
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); 
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente'); 
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');  
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); 
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura'); 
-          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta'); 
-          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado'); 
-          
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT'); //
+          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta');
+          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT'); //
 
 
           if ($id_almacen!=0) {
@@ -2696,16 +2702,18 @@ public function totales_importes_salida($where){
           $this->db->select("SUM(m.precio*m.cantidad_um) as subtotal"); 
           $this->db->select("(SUM(m.precio*m.cantidad_um*m.iva))/100 as iva"); 
           $this->db->select("SUM(m.precio*m.cantidad_um)+(SUM(m.precio*m.cantidad_um*m.iva))/100 as total"); 
-   
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_salida'); 
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); 
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente'); 
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');           
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); 
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura'); 
-          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta'); 
-          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado'); 
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');  
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT'); //
+          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta');
+          $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT'); //
+
+
           $this->db->where($where);
           $result = $this->db->get();
       

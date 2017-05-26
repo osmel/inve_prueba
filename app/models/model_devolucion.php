@@ -239,7 +239,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.codigo)"); //
 
           $this->db->select('m.codigo');
           $this->db->select('m.num_partida');
@@ -252,18 +252,18 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           $this->db->select('m.id_medida, m.ancho, m.id_estatus, m.id_lote, m.id,consecutivo_cambio,u.medida,m.comentario ');
           $this->db->select('m.cod_devolucion');
 
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
           $this->db->select("prod.codigo_contable");  
 
 
           $this->db->from($this->historico_registros_salidas.' as m');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');
-          $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca' , 'ca.id = m.id_calidad'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
          
           //filtro de busqueda
           //( m.id_user_devolucion = '.$id_session.' )  AND ( m.devolucion != 0  ) 
@@ -312,6 +312,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
                                       13=>$row->peso_real_devolucion,   
                                       14=>$row->id_almacen,  
                                       15=>$row->codigo_contable,   
+                                      16=>$row->id_estatus
                                                                      
 
 
@@ -323,7 +324,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_registros_devolucion() ),  //$recordsTotal
+                        "recordsTotal"    => $registros_filtrados,// intval( self::total_registros_devolucion() ),  //$recordsTotal
                         "recordsFiltered" => $registros_filtrados, //intval( $result->num_rows() ),   //$recordsFiltered
                         "data"            =>  $dato, //self::data_output( $columns, $data )
                         "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos ),"peso"=>floatval( self::totales_campos_salida($where_total)->peso )),  
@@ -352,8 +353,8 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
  public function totales_campos_salida($where){
 
-           $this->db->select("SUM((id_medida =1) * cantidad_um) as metros", FALSE);
-              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos", FALSE);
+           $this->db->select("SUM((id_medida =1) * cantidad_um) as metros");
+              $this->db->select("SUM((id_medida =2) * cantidad_um) as kilogramos");
               $this->db->select("COUNT(m.id_medida) as 'pieza'");
               $this->db->select("SUM(m.peso_real_devolucion) as 'peso'");  //se suma el precio_real_devolucion
               

@@ -1187,20 +1187,19 @@ public function cancelar_pedido_compra( $data ){
 
           $id_session = $this->session->userdata('id');
           
+          //p.uid,p.fecha_mac,, p.activo, a.almacen,
+          //$this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
+          //$this->db->select("(m.precio)+((m.precio*m.iva))/100 as precio_total", FALSE);          
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.referencia,p.codigo_contable');
-          $this->db->select('p.descripcion, p.imagen,p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
-          $this->db->select('co.composicion, ca.calidad, p.activo');
-          
-          $this->db->select("m.ancho, p.ancho ancho_producto", FALSE);
-          $this->db->select("m.precio, p.precio precio_producto", FALSE);
-
-          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as precio_total", FALSE);          
-          $this->db->select("a.almacen, p.minimo");
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
+          $this->db->select('p.id,  p.referencia,p.codigo_contable,m.id_estatus');
+          $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
+          $this->db->select('co.composicion, ca.calidad');
+          $this->db->select("m.ancho, p.ancho ancho_producto");
+          $this->db->select("m.precio, p.precio precio_producto");
+          $this->db->select("p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
+
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
@@ -1210,9 +1209,9 @@ public function cancelar_pedido_compra( $data ){
 
 
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
@@ -1331,6 +1330,7 @@ public function cancelar_pedido_compra( $data ){
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
                                       10=>$row->referencia,
+                                      11=>null, //$row->id_estatus,
                                     );
                       }
 
@@ -1339,7 +1339,7 @@ public function cancelar_pedido_compra( $data ){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_cat_productos($data) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_cat_productos($data) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales_importe"            =>  array(
@@ -1375,10 +1375,11 @@ public function totales_importes($data){
           $this->db->select("sum(m.precio) as precio", FALSE);
           $this->db->select("sum(p.precio) as precio_producto", FALSE);
              
+
           $this->db->from($this->productos.' as p');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$data['id_almacenid'],'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
@@ -1397,51 +1398,7 @@ public function totales_importes($data){
 
 }  
 
- public function total_cat_productos($data){
-              
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->from($this->productos.' as p');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-              $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$data['id_almacenid'],'LEFT');
-              $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
-
-              if ($data['where_total']!=''){
-                $this->db->where($data['where_total']);
-              }
-
-              $this->db->group_by("p.referencia");
-             
-              $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
-                  $found_rows = $cantidad_consulta->row(); 
-                  $registros_filtrados =  ( (int) $found_rows->cantidad);
-              }  
-              
-              $cant = $registros_filtrados;
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
  public function buscador_salida_compra($data){
 
@@ -1498,17 +1455,17 @@ public function totales_importes($data){
           $id_session = $this->session->userdata('id');
           
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
           
           $this->db->select('p.id, p.uid, p.referencia,p.codigo_contable');
           $this->db->select('p.descripcion, p.imagen,p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
           $this->db->select('co.composicion, ca.calidad, p.activo');
           
-          $this->db->select("m.ancho, p.ancho ancho_producto", FALSE);
-          $this->db->select("m.precio, p.precio precio_producto", FALSE);
+          $this->db->select("m.ancho, p.ancho ancho_producto, m.id_estatus");
+          $this->db->select("m.precio, p.precio precio_producto");
 
-          $this->db->select("((m.precio*m.iva))/100 as sum_iva", FALSE);
-          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as precio_total", FALSE);          
+          $this->db->select("((m.precio*m.iva))/100 as sum_iva");
+          $this->db->select("(m.precio)+((m.precio*m.iva))/100 as precio_total");          
           $this->db->select("a.almacen, p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
          
@@ -1612,6 +1569,7 @@ public function totales_importes($data){
                                       9=>$row->id, 
                                       10=>$row->referencia,
                                       11=>$row->pedido_compra,
+                                      12=>null, //$row->id_estatus,
                                       
                                       
                                     );
@@ -1622,7 +1580,7 @@ public function totales_importes($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_cat_productos($data) ), 
+                        "recordsTotal"    => $registros_filtrados,  //intval( self::total_cat_productos($data) ), 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                           "importe"=>(floatval( self::totales_importes_salida($data)->precio_producto)>0) ? floatval( self::totales_importes_salida($data)->precio_producto) : floatval( self::totales_importes_salida($data)->precio_producto )
@@ -1978,22 +1936,17 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
           $id_session = $this->session->userdata('id');
           
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.referencia,p.codigo_contable');
-          $this->db->select('p.descripcion, p.imagen,p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
-          $this->db->select('co.composicion, ca.calidad, p.activo');
-          
-          $this->db->select("pc.ancho", FALSE);
-          $this->db->select("pc.precio", FALSE);
-
-          $this->db->select("a.almacen, p.minimo");
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
+          $this->db->select('p.id, p.referencia,p.codigo_contable');
+          $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
+          $this->db->select('co.composicion, ca.calidad'); //a.almacen, , p.activo, p.fecha_mac, p.uid,
+          $this->db->select("pc.ancho, pc.precio");
+          $this->db->select("p.minimo");
           $this->db->select("COUNT(m.referencia) as 'suma'");
-         
-
-       
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
+                                     
+
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( pc.id_almacen =  '.$id_almacen.' ) ';  
@@ -2100,7 +2053,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_revisa_productos($data) ), 
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                          "totales_importe"            =>  array(
@@ -2130,43 +2083,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
       }  
 
 
-     public function total_revisa_productos($data){
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->from($this->productos.' as p');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-              $this->db->join($this->historico_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
-              $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$data['id_almacenid'],'LEFT');
-              $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$data['id_almacenidid'],'LEFT');
-          
-              if ($data['where_total']!=''){
-                $this->db->where($data['where_total']);
-              }
-
-              
-
-               $this->db->group_by("p.referencia");
-             
-              $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
-                  $found_rows = $cantidad_consulta->row(); 
-                  $registros_filtrados =  ( (int) $found_rows->cantidad);
-              }  
-              
-              $cant = $registros_filtrados;
      
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
-
-
 
 public function totales_importes_revisa($data){
               
@@ -2257,20 +2174,13 @@ public function totales_importes_revisa($data){
           $id_session = $this->session->userdata('id');
           
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.referencia,p.codigo_contable');
-          $this->db->select('p.descripcion, p.imagen,p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
-          $this->db->select('co.composicion, ca.calidad, p.activo');
-          
-          $this->db->select("pc.ancho", FALSE);
-          $this->db->select("pc.precio", FALSE);
-
-          $this->db->select("a.almacen, p.minimo");
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
+          $this->db->select('p.id,  p.referencia,p.codigo_contable');
+          $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
+          $this->db->select('co.composicion, ca.calidad');
+          $this->db->select("pc.ancho,pc.precio");
+          $this->db->select("p.minimo"); //a.almacen,, p.activo,p.fecha_mac,p.uid,
           $this->db->select("COUNT(m.referencia) as 'suma'");
-         
-
-       
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
 
@@ -2283,7 +2193,6 @@ public function totales_importes_revisa($data){
               $id_almacenidid = '';
             }   
 
-
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -2292,7 +2201,6 @@ public function totales_importes_revisa($data){
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
           
-
           $where = '(                      
                             (
                                (p.descripcion LIKE  "%'.$cadena.'%") OR 
@@ -2313,14 +2221,8 @@ public function totales_importes_revisa($data){
 
 
           $this->db->where($where);
-
           $this->db->group_by("p.referencia");
-
           $this->db->order_by($columna, $order); 
-    
-
-
-          //paginacion
           $this->db->limit($largo,$inicio); 
 
 
@@ -2351,8 +2253,6 @@ public function totales_importes_revisa($data){
                             $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
-
-
                             $dato[]= array(
                                       
                                       0=>$row->descripcion,
@@ -2369,17 +2269,12 @@ public function totales_importes_revisa($data){
                                       10=>$row->referencia,
                                       11=>$row->cantidad_pedida,
                                       12=>$row->cantidad_aprobada,
-                                      
-                                      
                                     );
                       }
 
-
-
-
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_revisa_cancela($data) ), 
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                          "totales_importe"            =>  array(
@@ -2409,41 +2304,6 @@ public function totales_importes_revisa($data){
       }  
 
 
-     public function total_revisa_cancela($data){
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->from($this->productos.' as p');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-              $this->db->join($this->historico_cancela_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
-              $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$data['id_almacenid'],'LEFT');
-              $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$data['id_almacenidid'],'LEFT');
-          
-              if ($data['where_total']!=''){
-                $this->db->where($data['where_total']);
-              }
-
-              
-
-               $this->db->group_by("p.referencia");
-             
-              $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
-                  $found_rows = $cantidad_consulta->row(); 
-                  $registros_filtrados =  ( (int) $found_rows->cantidad);
-              }  
-              
-              $cant = $registros_filtrados;
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
 
 
 
@@ -2536,20 +2396,13 @@ public function totales_importes_cancela_compra($data){
           $id_session = $this->session->userdata('id');
           
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-          
-          $this->db->select('p.id, p.uid, p.referencia,p.codigo_contable');
-          $this->db->select('p.descripcion, p.imagen,p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
-          $this->db->select('co.composicion, ca.calidad, p.activo');
-          
-          $this->db->select("pc.ancho", FALSE);
-          $this->db->select("pc.precio", FALSE);
-
-          $this->db->select("a.almacen, p.minimo");
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
+          $this->db->select('p.id, p.referencia,p.codigo_contable');
+          $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
+          $this->db->select('co.composicion, ca.calidad');
+          $this->db->select("pc.ancho,pc.precio");
+          $this->db->select("p.minimo"); //a.almacen,
           $this->db->select("COUNT(m.referencia) as 'suma'");
-         
-
-       
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
 
@@ -2562,7 +2415,6 @@ public function totales_importes_cancela_compra($data){
               $id_almacenidid = '';
             }   
 
-
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -2570,7 +2422,6 @@ public function totales_importes_cancela_compra($data){
           $this->db->join($this->historico_historial_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
-          
 
           $where = '(                      
                             (
@@ -2592,14 +2443,8 @@ public function totales_importes_cancela_compra($data){
 
 
           $this->db->where($where);
-
           $this->db->group_by("p.referencia");
-
           $this->db->order_by($columna, $order); 
-    
-
-
-          //paginacion
           $this->db->limit($largo,$inicio); 
 
 
@@ -2633,7 +2478,6 @@ public function totales_importes_cancela_compra($data){
 
 
                             $dato[]= array(
-                                      
                                       0=>$row->descripcion,
                                       1=>$imagen,  
                                       2=>$row->nombre_color.
@@ -2648,8 +2492,6 @@ public function totales_importes_cancela_compra($data){
                                       10=>$row->referencia,
                                       11=>$row->cantidad_pedida,
                                       12=>$row->cantidad_aprobada,
-                                      
-                                      
                                     );
                       }
 
@@ -2658,7 +2500,7 @@ public function totales_importes_cancela_compra($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_revisa_historial($data) ), 
+                        "recordsTotal"    => $registros_filtrados,  
                         "recordsFiltered" =>   $registros_filtrados, 
                         "data"            =>  $dato,
                          "totales_importe"            =>  array(
@@ -2686,44 +2528,6 @@ public function totales_importes_cancela_compra($data){
               $result->free_result();           
 
       }  
-
-
-     public function total_revisa_historial($data){
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->from($this->productos.' as p');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-              $this->db->join($this->historico_historial_compra.' As pc', 'pc.id_producto = p.id','LEFT');
-              $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$data['id_almacenid'],'LEFT');
-              $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$data['id_almacenidid'],'LEFT');
-          
-              if ($data['where_total']!=''){
-                $this->db->where($data['where_total']);
-              }
-
-              
-
-               $this->db->group_by("p.referencia");
-             
-              $result = $this->db->get();
-
-              if ( $result->num_rows() > 0 ) {
-                  $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
-                  $found_rows = $cantidad_consulta->row(); 
-                  $registros_filtrados =  ( (int) $found_rows->cantidad);
-              }  
-              
-              $cant = $registros_filtrados;
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
-
 
 
 public function totales_importes_historial_compra($data){

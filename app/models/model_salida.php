@@ -462,21 +462,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public function total_registros_cambio($codigo){
-
-              $id_session = $this->session->userdata('id');
-              $this->db->from($this->registros_cambios.' as m');
-              $this->db->where('m.codigo',$codigo);
-
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-
-    }
-
+    
 
        public function buscador_cambio($data){
 
@@ -487,18 +473,17 @@
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          //$this->db->select('m.referencia'); 
+          // , m.id_color,m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura,
+          //$this->db->select('m.peso_real');m.id_medida, m.ancho,m.id,m.id_lote,
 
-          $this->db->select('m.codigo, m.num_partida');
-          $this->db->select('m.referencia');
-          $this->db->select('m.peso_real');
-          $this->db->select('m.id_descripcion,c.color,c.hexadecimal_color, m.id_color, co.composicion, ca.calidad');
-          
-          $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
-          $this->db->select('m.id_medida, m.ancho, m.id_estatus, m.id_lote, m.id,consecutivo_cambio,u.medida,m.comentario ');
-         
+
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
+          $this->db->select(' m.num_partida');
+          $this->db->select('m.codigo,m.id_descripcion,c.color,c.hexadecimal_color,  co.composicion, ca.calidad');
+          $this->db->select('m.cantidad_um');
+          $this->db->select('m.id_estatus, consecutivo_cambio,u.medida,m.comentario ');
           $this->db->select("prod.codigo_contable");  
-
 
           $this->db->from($this->registros_cambios.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
@@ -546,15 +531,14 @@
                                       7=>$row->comentario,
                                       8=>$row->num_partida,
                                       9=>$row->codigo_contable,            
+                                      10=>$row->id_estatus,   
                                       
                                     );
                       }
 
-
-
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_registros_cambio($codigo) ),  //$recordsTotal
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" => $registros_filtrados, //intval( $result->num_rows() ),   //$recordsFiltered
                         "data"            =>  $dato //self::data_output( $columns, $data )
                       ));

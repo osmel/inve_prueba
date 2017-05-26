@@ -2048,15 +2048,35 @@ jQuery('#tabla_salida_ajuste').dataTable( {
 					jQuery('#kg2').html('Total de kgs: 0.00');	
 
 		}	
+		
     },	  	
 	  
 	"columnDefs": [
 					{
 		                "render": function ( data, type, row ) {
+
+  								var color;
+		                		switch (row[15]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
 			                if (row[14]=='') {
 								return row[1];	
 							} else {
-								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[14];										
+								return row[1]+' <br/><b style="color:'+color+';">Nro.</b>'+row[14];										
 							}
 
 		                },
@@ -2091,7 +2111,7 @@ jQuery('#tabla_salida_ajuste').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                "targets": [10,11,12,13]
+	                "targets": [10,11,12,13,14,15]
 	            }		            
 	        ],
 });	
@@ -2170,7 +2190,7 @@ jQuery('#tabla_entrada_ajuste').dataTable( {
 
 
 						    d.producto_filtro = jQuery('#producto_filtro').val();	
-						    console.log(d.producto_filtro);
+						    
 
 
 						    d.color_filtro = jQuery('#color_filtro').val();	
@@ -2301,10 +2321,28 @@ jQuery('#tabla_entrada_ajuste').dataTable( {
 
 				{
 		                "render": function ( data, type, row ) {
+  								var color;
+		                		switch (row[14]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
 			                if (row[13]=='') {
 								return row[1];	
 							} else {
-								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[13];										
+								return row[1]+' <br/><b style="color:'+color+';">Nro.</b>'+row[13];										
 							}
 
 		                },
@@ -2335,7 +2373,7 @@ jQuery('#tabla_entrada_ajuste').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [10,11,12]
+	                 "targets": [10,11,12,13,14]
 	            }		            
 	        ],
 });	
@@ -2853,10 +2891,28 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 		"columnDefs": [
 					{
 		                "render": function ( data, type, row ) {
+								var color;	
+		                		switch (row[13]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
 			                if (row[12]=='') {
 								return row[1];	
 							} else {
-								return row[1]+' <br/><b style="color:red;">Nro.</b>'+row[12];										
+								return row[1]+' <br/><b style="color:'+color+';">Nro.</b>'+row[12];										
 							}
 
 		                },
@@ -2890,7 +2946,11 @@ jQuery('body').on('click','#procesar_contando', function (e) {
 
 		                },
 		                "targets": 6
-		            },	            
+		            },	   
+		            { 
+		                 "visible": false,
+		                "targets": [7,8,9,10,11,12,13]
+		        	}
 
 		        ],
 
@@ -3250,8 +3310,26 @@ jQuery('#tabla_costo_rollo').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+								var color;
+		                		switch (row[22]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 		                	
+
 		                		if (row[19]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[19];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[19];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -3259,14 +3337,12 @@ jQuery('#tabla_costo_rollo').dataTable( {
 		                },
 		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
 		        },   	
-
     			{ 
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
 	                "targets": [0,2,3,4] //,5,6,7,8,9,11
 	            },
-
 				{ 
 	                "render": function ( data, type, row ) {
 						return row[21];	
@@ -3311,14 +3387,10 @@ jQuery('#tabla_costo_rollo').dataTable( {
 	                },
 	                "targets": [11]
 	            },	            
-
-	            
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,14,15,16,17,18,19,20,21]
+	                "targets": [12,13,14,15,16,17,18,19,20,21,22]
 	            }	            
-
-	            
 	],
 
  "rowCallback": function( row, data ) {
@@ -4222,8 +4294,25 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+								var color;
+		                		switch (row[11]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 		                	
 		                		if (row[8]!='') {
-		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[8];	
+		                			return row[0]+'<br/><b style="color:'+color+';">Cód: </b>'+row[8];	
 		                		} else {
 		                			return row[0];
 		                		}
@@ -4238,7 +4327,6 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 	                },
 	                "targets": [1,2,3,4,5,6,7]
 	            },
-    			
   				{
 	                "render": function ( data, type, row ) {
 						texto='<td><button '; 
@@ -4249,6 +4337,11 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 	                },
 	                "targets": 8
 	            },
+				{ 
+		                 "visible": false,
+		                "targets": [9,10,11]
+		        }
+
 
 	        ],
 });	
@@ -4459,8 +4552,27 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+
+  								var color;
+		                		switch (row[12]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
 		                		if (row[8]!='') {
-		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[8];	
+		                			return row[0]+'<br/><b style="color:'+color+';">Cód: </b>'+row[8];	
 		                		} else {
 		                			return row[0];
 		                		}
@@ -4499,6 +4611,10 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 	                },
 	                "targets": 9
 	            },
+				{ 
+		                 "visible": false,
+		                "targets": [10,11,12]
+		        }	            
 
 
 	        ],
@@ -5826,11 +5942,8 @@ jQuery('body').on('click','#exportar_reportes_costo', function (e) {
 
 
 jQuery('#tabla_costo_inventario').dataTable( {
-		
 	  "pagingType": "full_numbers",
  	  "order": [[ 9, "asc" ]],
-
-
 	"processing": true,
 	"serverSide": true,
 	"ajax": {
@@ -5841,18 +5954,14 @@ jQuery('#tabla_costo_inventario').dataTable( {
          		 	   	 d.start=0;	 //comienza en cero siempre q cambia de botones
          		 	   	 d.draw =0;
          		 	   }*/
-
-     				   
-     				     d.id_estatus = jQuery("#id_estatuss_costo").val(); 
-     				     d.id_almacen = jQuery("#id_almacen_costo").val(); 
+    				   d.id_estatus = jQuery("#id_estatuss_costo").val(); 
+     				   d.id_almacen = jQuery("#id_almacen_costo").val(); 
 
      				   //datos del producto
      				   d.id_descripcion = jQuery("#producto").val(); 
      				   if (d.id_descripcion !='') {
      				   	  d.id_descripcion = jQuery('#producto option:selected').text();
      				   }
-
-
 
      				   //
      				   d.id_color = jQuery("#color").val(); 
@@ -5866,10 +5975,8 @@ jQuery('#tabla_costo_inventario').dataTable( {
 						var fecha = (jQuery('.fecha_costo').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
 						d.fecha_final = fecha[1];
-     				   
     			 }
      },   
-
 	"infoCallback": function( settings, start, end, max, total, pre ) {
 	    if (settings.json.totales) {
 		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
@@ -5983,8 +6090,26 @@ jQuery('#tabla_costo_inventario').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+		                		var color;
+		                		switch (row[22]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
 		                		if (row[19]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[19];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[19];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -6048,7 +6173,7 @@ jQuery('#tabla_costo_inventario').dataTable( {
 	            
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,14,15,16,17,18,19,20,21]
+	                "targets": [12,13,14,15,16,17,18,19,20,21,22]
 	            }
 	],
 
@@ -6294,8 +6419,26 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	"columnDefs": [
 				{ 
 		                "render": function ( data, type, row ) {
+		                        var color;
+		                        switch (row[19]){
+		                          case "12": //normal rojo
+		                            color = 'red';
+		                             break; 
+		                          case "13": //devolucion verde
+		                            color = 'green';
+		                             break;
+		                          case "14": //defecto azul
+		                            color = 'blue';
+		                             break;
+		                          case "15": //ajuste naranja
+		                            color = 'orange';
+		                             break;
+		                          default: 
+		                            color = 'red';            
+		                        } 
+
 		                		if (row[17]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[17];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -6372,7 +6515,7 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [13,14,15,16,17,18]
+	                 "targets": [13,14,15,16,17,18,19]
 	            }		            
 	        ],
 });	
@@ -6604,8 +6747,27 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+		                        var color;
+		                        switch (row[19]){
+		                          case "12": //normal rojo
+		                            color = 'red';
+		                             break; 
+		                          case "13": //devolucion verde
+		                            color = 'green';
+		                             break;
+		                          case "14": //defecto azul
+		                            color = 'blue';
+		                             break;
+		                          case "15": //ajuste naranja
+		                            color = 'orange';
+		                             break;
+		                          default: 
+		                            color = 'red';            
+		                        } 
+
+
 		                		if (row[17]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[17];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[17];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -6677,7 +6839,7 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 	            },
 				{ 
 	                 "visible": false,
-	                 "targets": [13,14,15,16,17,18]
+	                 "targets": [13,14,15,16,17,18,19]
 	            }		            
 	        ],
 });	
@@ -7193,8 +7355,26 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 
 				{ 
 		                "render": function ( data, type, row ) {
+		                		var color;
+		                        switch (row[19]){
+		                          case "12": //normal rojo
+		                            color = 'red';
+		                             break; 
+		                          case "13": //devolucion verde
+		                            color = 'green';
+		                             break;
+		                          case "14": //defecto azul
+		                            color = 'blue';
+		                             break;
+		                          case "15": //ajuste naranja
+		                            color = 'orange';
+		                             break;
+		                          default: 
+		                            color = 'red';            
+		                        } 
+
 		                		if (row[15]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[15];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -7264,7 +7444,7 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,14,15,16,17,18],
+	                "targets": [12,13,14,15,16,17,18,19],
 	            }		            
 
 	],	
@@ -8026,8 +8206,26 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
    "columnDefs": [
 				{ 
 		                "render": function ( data, type, row ) {
+								var color;
+		                        switch (row[19]){
+		                          case "12": //normal rojo
+		                            color = 'red';
+		                             break; 
+		                          case "13": //devolucion verde
+		                            color = 'green';
+		                             break;
+		                          case "14": //defecto azul
+		                            color = 'blue';
+		                             break;
+		                          case "15": //ajuste naranja
+		                            color = 'orange';
+		                             break;
+		                          default: 
+		                            color = 'red';            
+		                        } 
+
 		                		if (row[15]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[15];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[15];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -8094,7 +8292,7 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [12,13,14,15,16,17,18], //10,11,
+	                "targets": [12,13,14,15,16,17,18,19], //10,11,
 	            }		
 	],	
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
@@ -8213,8 +8411,27 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 		"columnDefs": [
 			    	{ 
 		                "render": function ( data, type, row ) {
+		                        var color;
+		                        switch (row[10]){
+		                          case "12": //normal rojo
+		                            color = 'red';
+		                             break; 
+		                          case "13": //devolucion verde
+		                            color = 'green';
+		                             break;
+		                          case "14": //defecto azul
+		                            color = 'blue';
+		                             break;
+		                          case "15": //ajuste naranja
+		                            color = 'orange';
+		                             break;
+		                          default: 
+		                            color = 'red';            
+		                        } 
+
+
 		                		if (row[9]!='') {
-		                			return row[1]+'<br/><b style="color:red;">Cód: </b>'+row[9];	
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[9];	
 		                		} else {
 		                			return row[1];
 		                		}
@@ -8254,7 +8471,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 		        	{ 	
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [9,10]
 		            }           
 		           
 		            

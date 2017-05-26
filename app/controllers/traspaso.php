@@ -383,7 +383,7 @@ public function modulo_traspaso(){
       echo $busqueda;
   }
 
-public function procesando_traspaso_general_detalle_manual(){ //**
+public function procesando_traspaso_general_detalle_manual(){ //**aqui
       $data=$_POST;
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle_manual($data);
       echo $busqueda;

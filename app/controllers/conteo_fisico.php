@@ -1031,7 +1031,6 @@ public function validar_proceso_sobrante(){
   } 
 
   public function procesando_servidor_ajustes(){
-    
     $data=$_POST;
     $data['id_cliente']=0;
         if ($this->input->post('id_cliente')) {

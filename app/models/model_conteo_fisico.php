@@ -946,21 +946,19 @@ public function buscador_resumen_conteo($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
-
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.peso_real');
-
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha,  m.id_apartado');
-
-          $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre');
           
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-
+          //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          //m.id_empresa,m.factura,m.id_factura,m.id_operacion,m.id_medida,m.cantidad_royo,m.precio,, m.comentario
+          //m.id_cargador, m.id_usuario, m.fecha_mac fecha,  
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
+          $this->db->select('m.id, m.movimiento,  m.id_fac_orig, m.id_descripcion, m.devolucion, m.num_partida');
+          $this->db->select('m.peso_real, m.cantidad_um,  m.ancho,  m.codigo');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_apartado');
+          $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre');
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
           $this->db->select("prod.codigo_contable");
+
           $this->db->from($this->registros_salidas.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
@@ -1021,6 +1019,7 @@ public function buscador_resumen_conteo($data){
                                       12=>$row->kilogramos,
                                       13=>$row->peso_real,
                                       14=>$row->codigo_contable,          
+                                      15=>$row->id_estatus,   
                                       
                                     );
                       }
@@ -1030,7 +1029,7 @@ public function buscador_resumen_conteo($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_registros_salida() ),  //$recordsTotal
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_registros_salida() ),  //$recordsTotal
                         "recordsFiltered" => $registros_filtrados, //intval( $result->num_rows() ),   //$recordsFiltered
                         "data"            =>  $dato, //self::data_output( $columns, $data )
                         "totales"            =>  array("pieza"=>intval( self::totales_campos_salida($where_total)->pieza ), "metro"=>floatval( self::totales_campos_salida($where_total)->metros ), "kilogramo"=>floatval( self::totales_campos_salida($where_total)->kilogramos )),  
@@ -1080,23 +1079,6 @@ public function buscador_resumen_conteo($data){
 
        }  
        
-     public function total_registros_salida(){
-
-              $id_session = $this->session->userdata('id');
-              $this->db->from($this->registros_salidas.' as m');
-              $this->db->where('m.id_usuario',$id_session);
-              $this->db->where('m.id_operacion',2);
-              $this->db->where('m.estatus_salida',0);
-
-
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-
-       }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1762,20 +1744,17 @@ public function anadir_producto_temporal( $data ){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+           //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          //m.id_empresa, m.factura, m.id_factura,  m.id_operacion,
+          //, m.id_cargador, m.id_usuario, m.fecha_mac fecha, m.id_medida,m.cantidad_royo,, m.comentario
 
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_factura,m.id_fac_orig, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
-
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); // , FALSE
+          $this->db->select('m.id, m.id_fac_orig, m.id_descripcion,m.devolucion, m.num_partida');
+          $this->db->select('m.cantidad_um, m.precio, m.codigo, m.movimiento, m.ancho');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo');
           $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_apartado');
-         
-          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
-          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-
-
-          
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
           //AND (calm.id_empresa = m.id_empresa)
           if ($data['id_empresa'] !=0){
               $idid_empresa = ' AND (calm.id_empresa = m.id_empresa)';  
@@ -1791,16 +1770,9 @@ public function anadir_producto_temporal( $data ){
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');         
 
-
-          
-
           $id_almacenid = ' AND (m.id_almacen =  '.$data["id_almacen"].' )' ;  
-          
-          
-
           if  ( ($data["modulo"]==5) )  {
               $filtro = ' AND (
                                 
@@ -1935,6 +1907,7 @@ public function anadir_producto_temporal( $data ){
                                       11=>$row->metros,
                                       12=>$row->kilogramos,
                                       13=>$row->codigo_contable,
+                                      14=>$row->id_estatus,
                                     );
                       }
 
@@ -1942,7 +1915,7 @@ public function anadir_producto_temporal( $data ){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_entrada_home($where_total) ), 
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato,
                         "totales"            =>  array("pieza"=>intval( self::total_campos_salida_home($where_total)->pieza ), "metro"=>floatval( self::total_campos_salida_home($where_total)->metros ), "kilogramo"=>floatval( self::total_campos_salida_home($where_total)->kilogramos )),  
@@ -1967,25 +1940,7 @@ public function anadir_producto_temporal( $data ){
 
       }  
 
-  public function total_entrada_home($where){
-              $id_session = $this->session->userdata('id');
-          
-              $this->db->from($this->registros_entradas.' as m');
-              $this->db->join($this->conteo_almacen.' As calm' , 'calm.referencia = m.referencia');
-              $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-              $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-              $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-              $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-
-              $this->db->where($where);
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-       }     
-
+  
 
 
   public function total_campos_salida_home($where) {
@@ -2017,13 +1972,12 @@ public function anadir_producto_temporal( $data ){
 
 
 public function buscador_ajustes($data){
-
           $cadena = addslashes($data['search']['value']);
           $inicio = $data['start'];
           $largo = $data['length'];
           
 
-          $fecha_hoy = date('Y-m-d H:i:s');  
+          $fecha_hoy = date('Y-m-d H:i:s');
           $id_almacen= $data['id_almacen'];
           $id_session = $this->session->userdata('id');
 
@@ -2066,19 +2020,15 @@ public function buscador_ajustes($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
-
-          
-          $this->db->select("p.id,p.consecutivo, p.grupo,p.referencia,id_factura");    //p.codigo_contable,
+          //$this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario, p.id_composicion,p.id_color,p.id_calidad,p.consecutivo, p.grupo,");
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)");  //, FALSE
+          $this->db->select("p.id,p.referencia,id_factura");    //p.codigo_contable,
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
-          $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
-          $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");
+          $this->db->select('p.cantidad_royo');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion", FALSE);  
-          $this->db->select("ca.calidad", FALSE);  
+          $this->db->select("co.composicion, ca.calidad");  
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
-
           $this->db->select("p.mov_sobrante,p.mov_faltante,p.faltante,p.sobrante");  
           $this->db->select("prod.codigo_contable");
           
@@ -2120,11 +2070,8 @@ public function buscador_ajustes($data){
 
 
           $this->db->where($where);
-
           $this->db->order_by($columna, $order); 
-
           $this->db->group_by("p.referencia,p.descripcion,p.id_composicion,p.id_color,p.id_calidad");
-
           $this->db->limit($largo,$inicio); 
 
 
@@ -2177,7 +2124,7 @@ public function buscador_ajustes($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_ajustes($where) ),  
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "generales"            =>  array(
@@ -2249,21 +2196,6 @@ public function buscador_ajustes($data){
                  return 0;     
        }
 
-        public function total_ajustes($where){
-              $this->db->from($this->conteo_almacen.' as p');
-              $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-
-              $this->db->where($where);
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;     
-       }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////proceso de conteo//////////////////////////////////
@@ -2572,28 +2504,27 @@ public function buscador_costos($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)");  //, FALSE
 
-          
-          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+            //p.id_almacen,p.id_composicion,p.id_color,p.id_calidad,p.consecutivo,p.grupo,p.codigo_contable,
+          $this->db->select("p.id, p.referencia");    
           $this->db->select('p.imagen,p.id_estatus');
           $this->db->select('p.descripcion');
-          $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
-          $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");
+          $this->db->select('p.cantidad_royo');
+          $this->db->select(" p.fecha_creacion, p.id_usuario");
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion", FALSE);  
-          $this->db->select("ca.calidad", FALSE);  
+          $this->db->select("co.composicion");  
+          $this->db->select("ca.calidad");  
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
-         
-          
           $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
           $this->db->select("prod.codigo_contable");  
+
           $this->db->from($this->conteo_almacen.' as p');
-          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
+          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen'); //,'LEFT'
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia'); //,'LEFT'
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
               $filtro = ' AND (
@@ -2650,7 +2581,6 @@ public function buscador_costos($data){
                         } else {
                             $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
                         }
-
                            $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
@@ -2666,10 +2596,7 @@ public function buscador_costos($data){
                                       10=>$row->id,
                                       11=>$row->num_conteo,
                                       12=>$row->codigo_contable,
-                                      
-                                      
-
-
+                                      13=>null, //$row->id_estatus,
                                     );                    
 
                             $num_conteo = $row->num_conteo;
@@ -2677,7 +2604,7 @@ public function buscador_costos($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_conteo($where) ),  
+                        "recordsTotal"    => $registros_filtrados, //intval( self::total_conteo($where) ),  
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "generales"            =>  array(
@@ -2715,21 +2642,7 @@ UPDATE  `inven_conteo_almacen` SET  `num_conteo` =0,
 
 */
 
-        public function total_conteo($where){
-              $this->db->from($this->conteo_almacen.' as p');
-              $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-
-              $this->db->where($where);
-              $cant = $this->db->count_all_results();          
      
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;     
-       }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////    
