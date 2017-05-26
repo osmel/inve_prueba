@@ -137,53 +137,48 @@ class Pdf_reportes extends CI_Controller {
                 break;
 
             case "entrada":
-                $data['movimientos'] = $this->informes_model->buscador_entrada_devolucion($data); //
+                $data['movimientos'] = $this->informes_model->buscador_entrada_devolucion($data); //ok
                 $data['totales'] = $this->informes_model->totales_entrada_devolucion($data);        
                 $html = $this->load->view('pdfs/informes_directo/entrada', $data, true);
                  
                 break;
 
             case "devolucion":
-                $data['movimientos'] = $this->informes_model->buscador_entrada_devolucion($data); //
+                $data['movimientos'] = $this->informes_model->buscador_entrada_devolucion($data); //ok
                 $data['totales'] = $this->informes_model->totales_entrada_devolucion($data);        
                 $html = $this->load->view('pdfs/informes_directo/devolucion', $data, true);
-                 
                 break;
 
-                /////
 
             case "salida":
                   $dato['id'] = 10; //solo para salida
                   $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
-
-                $data['movimientos'] = $this->informes_model->salida_home($data);       //
-                $data['totales'] = $this->informes_model->totales_salidas($data);        
-
+                $data['movimientos'] = $this->informes_model->salida_home($data);       // ok
+                $data['totales'] = $this->informes_model->totales_salidas($data);       //ok 
                 $html = $this->load->view('pdfs/informes_directo/salida', $data, true);  
-                 
                 break;
 
             case "existencia":
-                $data['movimientos'] = $this->informes_model->entrada_home($data);   //
-                $data['totales'] = $this->informes_model->totales_entradas($data);        
+                $data['movimientos'] = $this->informes_model->entrada_home($data);   //ok
+                $data['totales'] = $this->informes_model->totales_entradas($data);    //ok    
 
                 $html = $this->load->view('pdfs/informes_directo/existencia', $data, true);
                 break;
             case "apartado":
-                $data['movimientos'] = $this->informes_model->entrada_home($data);   //
-                $data['totales'] = $this->informes_model->totales_entradas($data);        
+                $data['movimientos'] = $this->informes_model->entrada_home($data);   //ok
+                $data['totales'] = $this->informes_model->totales_entradas($data);   //ok     
 
                 $html = $this->load->view('pdfs/informes_directo/apartado', $data, true);
                 break;
 
 
             case 'baja':
-                $data['movimientos']= $this->informes_model->buscador_cero_baja($data);  //
+                $data['movimientos']= $this->informes_model->buscador_cero_baja($data);  // ok
                 $html = $this->load->view('pdfs/informes_directo/baja', $data, true);
                break;
 
             case 'cero':
-                $data['movimientos']= $this->informes_model->buscador_cero_baja($data);  //
+                $data['movimientos']= $this->informes_model->buscador_cero_baja($data);  // ok
                 $html = $this->load->view('pdfs/informes_directo/cero', $data, true);
                break;
 

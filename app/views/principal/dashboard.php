@@ -257,6 +257,11 @@
 		            </div>     
 							
 
+		            <div class="row">
+						<button id="limpiar_filtro_rep" type="button" class="btn btn-success">
+							Limpiar filtros
+						</button>
+					</div>
 
 					<div id="example2" class="row">
 		                  <div class="col-xs-12 col-sm-6 col-md-4">
@@ -264,7 +269,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control" name="producto" id="producto" dependencia="color" nombre="un color">
+			                          <select class="col-sm-12 col-md-12 form-control" name="producto_rep" id="producto_rep" dependencia="color_rep" nombre="un color">
 			                            <option value="">Seleccione un producto</option>
 			                            <?php if($productos){ ?>
 			                              <?php foreach($productos as $producto){ ?>
@@ -282,7 +287,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Color</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="color" id="color"  dependencia="composicion" nombre="una composición" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="color_rep" id="color_rep"  dependencia="composicion_rep" nombre="una composición" style="padding-right:0px">
 			                            <option value="0">Seleccione un color</option>
 			                          </select>
 		                        </div>  
@@ -295,7 +300,7 @@
 								<label for="descripcion" class="col-sm-12 col-md-12">Composición</label>
 								<div class="col-sm-12 col-md-12">
 
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="composicion" id="composicion" dependencia="calidad" nombre="una calidad" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="composicion_rep" id="composicion_rep" dependencia="calidad_rep" nombre="una calidad" style="padding-right:0px">
 			                            <option value="0">Seleccione una composición</option>
 			                          </select>
 		                        </div>  
@@ -309,7 +314,7 @@
 		                     <div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Calidad</label>
 								<div class="col-sm-12 col-md-12">
-			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="calidad" id="calidad" dependencia="" nombre="" style="padding-right:0px">
+			                          <select class="col-sm-12 col-md-12 form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="calidad_rep" id="calidad_rep" dependencia="" nombre="" style="padding-right:0px">
 			                            <option value="0">Seleccione una calidad</option>
 			                          </select>
 		                        </div>  

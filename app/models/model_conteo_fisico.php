@@ -224,28 +224,28 @@ public function buscador_historial_conteo($data){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
-
-          
-          $this->db->select("p.id,p.consecutivo, p.codigo_contable,p.grupo,p.referencia");    
+         //p.consecutivo,,p.grupo, p.id_composicion,p.id_color,p.id_calidad,
+          //$this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");p.codigo_contable,
+ 
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.id)", FALSE); 
+         $this->db->select("p.id, p.referencia");    
           $this->db->select('p.imagen');
           $this->db->select('p.descripcion');
-          $this->db->select('p.id_composicion,p.id_color,p.id_calidad, p.cantidad_royo');
-          $this->db->select("p.id_almacen, p.fecha_creacion, p.id_usuario");
+          $this->db->select('p.cantidad_royo');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
-          $this->db->select("co.composicion", FALSE);  
-          $this->db->select("ca.calidad", FALSE);  
+          $this->db->select("co.composicion, ca.calidad");  
           $this->db->select("p.conteo1,p.conteo2,p.conteo3,p.num_conteo");  
           $this->db->select("prod.codigo_contable");
-          
+
+
           $id_almacenid = ' AND (p.id_almacen =  '.$id_almacen.' )' ;  
           
           $this->db->from($this->historico_conteo_almacen.' as p');
-          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
-          $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia','LEFT');
+          $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen'); //,'LEFT'
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = p.referencia');//,'LEFT'
             
 
           if  ( ($data["modulo"]==3) || ($data["modulo"]==4) )  {
@@ -325,7 +325,7 @@ public function buscador_historial_conteo($data){
 
                       return json_encode ( array(
                         "draw"            => intval( $data['draw'] ),
-                        "recordsTotal"    => intval( self::total_historico_conteo($where) ),  
+                        "recordsTotal"    => $registros_filtrados, 
                         "recordsFiltered" => $registros_filtrados, 
                         "data"            =>  $dato, 
                         "generales"            =>  array(
@@ -354,22 +354,6 @@ public function buscador_historial_conteo($data){
 
       }  
 
-
-        public function total_historico_conteo($where){
-              $this->db->from($this->historico_conteo_almacen.' as p');
-              $this->db->join($this->almacenes.' As a', 'a.id = p.id_almacen','LEFT');
-              $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-              $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
-              $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id','LEFT');
-
-              $this->db->where($where);
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;     
-       }
 
 
     //historico

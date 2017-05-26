@@ -470,6 +470,7 @@ $route['cargar_dependencia_pedido']   = 'pedidos/cargar_dependencia_pedido';
 
 
 
+
 /////////////////////////////////////////
 $route['id_proveedor']    			= 'salidas/id_proveedor';
 $route['refe_producto']    			= 'salidas/refe_producto';
@@ -577,6 +578,7 @@ $route['procesando_historico_salida']    = 'reportes/procesando_historico_salida
 $route['existencias_baja']						= 'reportes/existencias_baja';
 $route['procesando_existencias_baja']			= 'reportes/procesando_existencias_baja';
 
+$route['cargar_dependencia_reporte']   = 'reportes/cargar_dependencia_reporte';
 
 
 /////////////////////////////////////////////Listado de todas las reportes

@@ -59,6 +59,193 @@
     }
      
 
+          public function listado_productos_completa($data){
+
+                //$this->db->distinct();
+                $this->db->select('p.id');
+                $this->db->select('p.descripcion nombre');
+
+                $this->db->select('"'.$data['val_prod_id'].'" as activo', false);
+
+                $this->db->from($this->productos.' as p');
+                //$this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+                $this->db->join($this->registros_entradas.' As c', 'p.descripcion = c.id_descripcion');                     
+              $filtro="";        
+
+                if  ($data['val_color']!=0){
+                   $filtro.= (($filtro!="") ? " and " : "") . "(c.id_color = ".$data["val_color"].") ";
+                }
+
+
+                if ($data['val_comp'] !=0) {
+                  $filtro.= (($filtro!="") ? " and " : "") . "(c.id_composicion = '".$data["val_comp"]."') ";
+                } 
+
+                if  ($data['val_calidad']!=0){
+                   $filtro.= (($filtro!="") ? " and " : "") . "(c.id_calidad = ".$data["val_calidad"].") ";
+                }
+
+                if ($filtro !=""){
+                  $this->db->where( $filtro );               
+                }
+                $this->db->group_by( 'nombre' );                //nombre
+                $result = $this->db->get();
+
+                  if ( $result->num_rows() > 0 )
+                     return $result->result();
+                  else
+                     return False;
+                  $result->free_result();
+        }     
+
+
+  public function lista_color_completa($data){
+
+            $this->db->distinct();
+            $this->db->select("c.color nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select("c.hexadecimal_color", FALSE);  
+            $this->db->select($data['val_color'].' as activo', false);
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+
+
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+           /*   
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(c.id_color = ".$data["val_color"].") ";
+            }
+          */
+            
+            if ($data['val_comp'] !=0) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = '".$data["val_comp"]."') ";
+            } 
+            
+
+            if  ($data['val_calidad']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_calidad = ".$data["val_calidad"].") ";
+            }
+            
+
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+            }
+
+            $this->db->order_by('c.color', 'asc'); 
+            
+
+            
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }         
+
+
+  public function lista_composiciones_completa($data){
+
+            $this->db->distinct();
+            $this->db->select("c.composicion nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select($data['val_comp'].' as activo', false);
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id','LEFT');
+
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+            }
+
+            /*
+            if ($data['val_comp'] !=0) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = '".$data["val_comp"]."') ";
+            } 
+             */ 
+
+            if  ($data['val_calidad']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_calidad = ".$data["val_calidad"].") ";
+            }
+            
+
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+            }
+
+
+
+            
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }         
+
+
+ public function lista_calidad_completa($data){
+
+            $this->db->distinct();
+            $this->db->select("c.calidad nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select($data['val_comp'].' as activo', false);
+            $this->db->from($this->registros_entradas.' as p');
+            $this->db->join($this->calidades.' As c', 'p.id_calidad = c.id','LEFT');
+
+            $filtro="";        
+
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_descripcion = '".$data["val_prod"]."') ";
+            } 
+
+            if  ($data['val_color']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+            }
+
+            
+            if ($data['val_comp'] !=0) {
+              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = '".$data["val_comp"]."') ";
+            } 
+            
+            /*
+            if  ($data['val_calidad']!=0){
+               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_calidad = ".$data["val_calidad"].") ";
+            }
+            */
+            
+
+
+            if ($filtro !=""){
+              $this->db->where( $filtro );               
+            }
+
+
+
+            
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }     
 
         
 //////////////////////Auxiliar 
@@ -190,10 +377,10 @@
          if ($factura_reporte!="") {
             $donde .= ' AND ( m.factura  =  "'.$factura_reporte.'" ) ';
         } 
-          $id_descripcion= addslashes($data['id_descripcion']);
-          $id_color= $data['id_color'];
-          $id_composicion= $data['id_composicion'];
-          $id_calidad= $data['id_calidad'];
+          $id_descripcion = addslashes($data['id_descripcion']);
+          $id_color = $data['id_color'];
+          $id_composicion = $data['id_composicion'];
+          $id_calidad = $data['id_calidad'];
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)");  
@@ -302,7 +489,8 @@
 
 
           
-          if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+          //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+          if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
               $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
               $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
           }                                    
@@ -734,7 +922,8 @@ public function detalle_entrada_home($data){
                    $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
                 }
 
-                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
                     $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
                     $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
                 }                                    
@@ -1161,7 +1350,8 @@ public function detalle_salida_home($data){
              $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
           }
 
-          if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+          //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+          if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
               $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
               $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
           }                                    
@@ -1520,7 +1710,8 @@ public function detalle_salida_home($data){
                $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
                $where_cond.= (($where_cond!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
             }
-            if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+            //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
                 $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
                 $where_cond.= (($where_cond!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
             }

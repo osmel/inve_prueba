@@ -17,6 +17,35 @@ class Reportes extends CI_Controller {
 
 
 
+
+
+ function cargar_dependencia_reporte() {
+
+ 	
+    
+    $data['campo']        		= $this->input->post('campo');
+
+    $data['val_prod']        	= $this->input->post('val_prod');
+    $data['val_prod_id']        = $this->input->post('val_prod_id');//
+    $data['val_color']        	= (float)$this->input->post('val_color');
+    $data['val_comp']        	= $this->input->post('val_comp');
+    $data['val_calidad']        = $this->input->post('val_calidad');
+    
+
+    $data['dependencia']        = $this->input->post('dependencia');
+
+
+			$elementos['producto_rep']     = $this->modelo_reportes->listado_productos_completa($data);
+			$elementos['color_rep']  	   = $this->modelo_reportes->lista_color_completa($data);
+			$elementos['composicion_rep']  = $this->modelo_reportes->lista_composiciones_completa($data);
+			$elementos['calidad_rep']  = $this->modelo_reportes->lista_calidad_completa($data);
+			
+        		
+
+    echo json_encode($elementos); 
+
+
+  }
 	
 
 //***********************Todos los catalogos**********************************//
