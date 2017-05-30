@@ -67,28 +67,114 @@
 
                 $this->db->select('"'.$data['val_prod_id'].'" as activo', false);
 
-                $this->db->from($this->productos.' as p');
-                //$this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
-                $this->db->join($this->registros_entradas.' As c', 'p.descripcion = c.id_descripcion');                     
-              $filtro="";        
+                $filtro="";        
 
                 if  ($data['val_color']!=0){
                    $filtro.= (($filtro!="") ? " and " : "") . "(c.id_color = ".$data["val_color"].") ";
                 }
-
-
                 if ($data['val_comp'] !=0) {
                   $filtro.= (($filtro!="") ? " and " : "") . "(c.id_composicion = '".$data["val_comp"]."') ";
                 } 
-
                 if  ($data['val_calidad']!=0){
                    $filtro.= (($filtro!="") ? " and " : "") . "(c.id_calidad = ".$data["val_calidad"].") ";
                 }
 
-                if ($filtro !=""){
-                  $this->db->where( $filtro );               
+                
+                
+
+                switch ($data['extra_search']) {    
+                     case 'existencia':
+                      case 'apartado':
+                          $this->db->from($this->productos.' as p');
+                          $this->db->join($this->registros_entradas.' As c', 'p.referencia = c.referencia'); //p.descripcion = c.id_descripcion and 
+                          if ($filtro !=""){
+                            $this->db->where( $filtro );               
+                          }                          
+                          $this->db->group_by( 'nombre' );                
+                             /*
+                             $busqueda = $this->modelo_reportes->buscador_entrada_home($data); //13 443
+                             $this->db->from($this->registros.' as m');
+                             $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
+                             */
+                         break;
+                      case 'salida':
+                            $this->db->from($this->productos.' as p');
+                            $this->db->join($this->historico_registros_salidas.' As c', 'p.referencia = c.referencia'); //p.descripcion = c.id_descripcion and
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }                          
+                            $this->db->group_by( 'nombre' );                
+
+                                /*
+                                  $busqueda = $this->modelo_reportes->buscador_salida_home($data); //13 782
+                                  $this->db->from($this->historico_registros_salidas.' as m');
+                                  $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
+                                */  
+
+                         break;
+                      case 'devolucion':
+                      case 'entrada':
+                            $this->db->from($this->productos.' as p');
+                            $this->db->join($this->historico_registros_entradas.' As c', 'p.referencia = c.referencia'); //p.descripcion = c.id_descripcion and 
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }                   
+                            $this->db->group_by( 'nombre' );                       
+
+                                      /*
+                                      $busqueda = $this->modelo_reportes->buscador_entrada_devolucion($data); //13 443
+                                      $this->db->from($this->historico_registros_entradas.' as m');
+                                      $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');           
+                                      */
+                         break;
+                      case 'baja':
+                      case 'cero':
+                            //$this->db->distrows();
+                            $this->db->select("COUNT(c.referencia) as 'suma'");
+                            $this->db->select("p.minimo, p.precio");
+                            $this->db->from($this->productos.' as p');
+                            $this->db->join($this->registros_entradas.' As c', 'p.referencia = c.referencia and c.id_estatus=12'); //p.descripcion = c.id_descripcion and
+
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }
+
+                            //$this->db->group_by( 'p.referencia,nombre, p.minimo,p.precio' );                
+                            $this->db->group_by("p.referencia, p.minimo,p.precio"); //nombre,
+
+                             if ($data['extra_search']=="cero") {
+                                  $this->db->having('suma <= 0');
+                                  $where_total = 'suma <= 0';
+                              }   
+                              if ($data['extra_search']=="baja") {
+                                  $this->db->having('((suma>0) AND (suma < p.minimo))');
+                                  $where_total = '((suma>0) AND (suma < p.minimo))';
+                              }  
+
+
+                                /*
+                                  $busqueda = $this->modelo_reportes->buscador_cero_baja($data); //13 1049
+                                  $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); 
+                                  */
+
+
+                         break;
+                      default:
+                          $this->db->from($this->productos.' as p');
+                          $this->db->join($this->registros_entradas.' As c', 'p.descripcion = c.id_descripcion and p.referencia = c.referencia');      
+                          if ($filtro !=""){
+                            $this->db->where( $filtro );               
+                          }                          
+                          $this->db->group_by( 'nombre' );                
+
+                        break;
                 }
-                $this->db->group_by( 'nombre' );                //nombre
+
+                
+
+
+
+                
                 $result = $this->db->get();
 
                   if ( $result->num_rows() > 0 )

@@ -13,6 +13,8 @@ class Nucleo extends CI_Controller {
 		
 	}
 
+	
+
 
 	
 	public function listado_reportes(){

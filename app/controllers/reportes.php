@@ -33,6 +33,7 @@ class Reportes extends CI_Controller {
     
 
     $data['dependencia']        = $this->input->post('dependencia');
+    $data['extra_search']        = $this->input->post('extra_search');
 
 
 			$elementos['producto_rep']     = $this->modelo_reportes->listado_productos_completa($data);

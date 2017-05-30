@@ -2407,10 +2407,13 @@ jQuery('#existencia_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
+
 	jQuery('#label_proveedor').text("Proveedor");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
 	jQuery('#editar_proveedor_reporte').attr('idproveedor','1');
@@ -2418,9 +2421,22 @@ jQuery('#existencia_reporte').click(function (e) {
 	jQuery('.leyen_home').css('display','block');
 	jQuery('.leyenda_devolucion').css('display','none');
 
+
+
 	comienzo=true;  //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('existencia');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
+
+
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2452,10 +2468,13 @@ jQuery('#salida_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
+
 	jQuery('#label_proveedor').text("Cliente");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
 	jQuery('#editar_proveedor_reporte').attr('idproveedor','3');
@@ -2467,6 +2486,14 @@ jQuery('#salida_reporte').click(function (e) {
 	comienzo=true; //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('salida');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2493,10 +2520,12 @@ jQuery('#apartado_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
 	jQuery('.leyen_home').css('display','none');
 	jQuery('.leyenda').css('display','block');
 	jQuery('.leyenda_devolucion').css('display','none');
@@ -2507,6 +2536,15 @@ jQuery('#apartado_reporte').click(function (e) {
 	comienzo=true;  //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('apartado');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2532,10 +2570,12 @@ jQuery('#cero_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','none');
 	jQuery('#fecha_id').css('display','none');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
 	jQuery('.leyen_home').css('display','none');
 	jQuery('.leyenda').css('display','none');
 	jQuery('.leyenda_devolucion').css('display','none');
@@ -2546,6 +2586,15 @@ jQuery('#cero_reporte').click(function (e) {
 	comienzo=true;  //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('cero');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2569,10 +2618,12 @@ jQuery('#baja_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block'); //**
 	jQuery('#fecha_id').css('display','none');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
 	jQuery('.leyen_home').css('display','none');
 	jQuery('.leyenda').css('display','none');	
 	jQuery('.leyenda_devolucion').css('display','none');
@@ -2585,6 +2636,14 @@ jQuery('#baja_reporte').click(function (e) {
 	comienzo=true; //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('baja');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2648,10 +2707,12 @@ jQuery('#entrada_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
 	jQuery('#label_proveedor').text("Proveedor");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
 	jQuery('#editar_proveedor_reporte').attr('idproveedor','1');
@@ -2662,6 +2723,14 @@ jQuery('#entrada_reporte').click(function (e) {
 	comienzo=true;  //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('entrada');
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+
+
 	oTable._fnAjaxUpdate();
 });
 
@@ -2689,10 +2758,12 @@ jQuery('#devolucion_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
 	jQuery('#color option:eq(0)').prop('selected', 'selected');
 	jQuery('#producto option:eq(0)').prop('selected', 'selected');
+	*/
 	jQuery('#label_proveedor').text("Proveedor");
 	jQuery('#editar_proveedor_reporte').typeahead("val",'');
 	jQuery('#editar_proveedor_reporte').attr('idproveedor','1');
@@ -2703,6 +2774,14 @@ jQuery('#devolucion_reporte').click(function (e) {
 	comienzo=true;  //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
 	jQuery('#botones').val('devolucion');
+
+	jQuery('#producto_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#color_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
+    jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
+
+    jQuery("#producto_rep").trigger('change');
+	
 	oTable._fnAjaxUpdate();
 });
 
@@ -3130,8 +3209,6 @@ jQuery('#tabla_reporte').dataTable( {
      });
 
   function cargarDependencia_reportes(campo,val_prod,val_color, val_comp, val_calidad,dependencia,nombre) {
-
-		 
         jQuery.ajax({
                 url : '/cargar_dependencia_reporte',
                 data:{
@@ -3141,17 +3218,12 @@ jQuery('#tabla_reporte').dataTable( {
                     val_color: val_color,
                     val_comp:val_comp,
                     val_calidad:val_calidad,
-                    dependencia:dependencia
+                    dependencia:dependencia,
+                    extra_search: jQuery("#botones").val(),
                 },
-
-
                 type : 'POST',
                 dataType : 'json',
                 success : function(data) {
-
-                		//console.log(data);
-
-                      	
                             var $elArray = new Array();
                             
                             $elArray['producto_rep']  = 'un producto';
