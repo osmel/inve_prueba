@@ -2594,11 +2594,14 @@ function validacion_edicion_operacion(){
       $this->form_validation->set_rules( 'telefono', 'Télefono', 'trim|min_length[8]|max_length[13]|xss_clean');
       $this->form_validation->set_rules( 'direccion', 'Domicilio', 'trim|min_length[3]|max_lenght[180]|xss_clean');
 
+      $this->form_validation->set_rules( 'coleccion_id_actividad', 'Actividad comercial', 'required|xss_clean');
+      
+
       if ($this->form_validation->run() === TRUE){
 
           $data['codigo']                   = $this->input->post('codigo');
           $data['nombre']                   = $this->input->post('nombre');
-          $data['dias_ctas_pagar']                = $this->input->post('dias_ctas_pagar');
+          $data['dias_ctas_pagar']          = $this->input->post('dias_ctas_pagar');
           $data['telefono']                 = $this->input->post('telefono');
           $data['direccion']                = $this->input->post('direccion');
           $data['coleccion_id_actividad']   = json_encode($this->input->post('coleccion_id_actividad'));
@@ -2682,6 +2685,7 @@ function validacion_edicion_proveedor(){
         
         $this->form_validation->set_rules( 'telefono', 'Télefono', 'trim|min_length[8]|max_length[13]|xss_clean');
         $this->form_validation->set_rules( 'direccion', 'Domicilio', 'trim|min_length[3]|max_lenght[180]|xss_clean');
+        $this->form_validation->set_rules( 'coleccion_id_actividad', 'Actividad comercial', 'required|xss_clean');
 
       if ($this->form_validation->run() === TRUE){
 
@@ -2695,7 +2699,12 @@ function validacion_edicion_proveedor(){
 
 
           $data              =  $this->security->xss_clean($data);  
-          $existe            =  $this->catalogo->check_existente_proveedor( $data );
+          if ($data['codigo_ant'] != $data['codigo']) {
+            $existe            =  $this->catalogo->check_existente_proveedor( $data );  
+          } else {
+            $existe= false;
+          }
+          
           if ( $existe !== TRUE ){  
               $guardar                 =   $this->catalogo->editar_proveedor( $data );
               if ( $guardar !== FALSE ){

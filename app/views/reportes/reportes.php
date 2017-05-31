@@ -255,12 +255,6 @@
 
 		            </div>     
 							
-		            <div class="row">
-						<button id="limpiar_filtro_rep" type="button" class="btn btn-success">
-							Limpiar filtros
-						</button>
-					</div>
-
 
 					<div id="example2" class="row">
 		                  <div class="col-xs-12 col-sm-6 col-md-4">
@@ -333,6 +327,35 @@
 
 				<div class="row">	
 					<div class="col-md-12">	
+							<fieldset id="disa_reportes" disabled>
+
+		  						<div class="col-sm-3 col-md-3">
+									<button id="limpiar_filtro_rep" type="button" class="btn btn-success">
+										Limpiar filtros
+									</button>
+								</div>							
+								<div class="col-sm-3 col-md-3"></div>
+
+							
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a id="impresion_rapida" type="button" class="btn btn-success btn-block">Imprimir</a>
+								</div>
+
+
+								<div class="col-sm-3 col-md-3 marginbuttom">
+									<a id="exportar_reportes" type="button" class="btn btn-success btn-block">Exportar</a>
+								</div>
+
+								<div class="col-sm-3 col-md-3 marginbuttom" 
+									<?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>
+								>
+									<a id="impresion_reporte" type="button" class="btn btn-success btn-block">PDF</a>
+								</div>
+
+
+							</fieldset>	
+
+					
 					
 						<div class="table-responsive">
 
@@ -353,24 +376,7 @@
 						   <hr style="padding: 0px; margin: 8px;"/>					
 						   	<div class="notif-bot-pedidos"></div>
 							
-							<fieldset id="disa_reportes" disabled>
-								<div class="col-sm-3 col-md-3 marginbuttom">
-									<a id="impresion_rapida" type="button" class="btn btn-success btn-block">Imprimir</a>
-								</div>
 
-
-								<div class="col-sm-3 col-md-3 marginbuttom">
-									<a id="exportar_reportes" type="button" class="btn btn-success btn-block">Exportar</a>
-								</div>
-
-								<div class="col-sm-3 col-md-3 marginbuttom" 
-									<?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>
-								>
-									<a id="impresion_reporte" type="button" class="btn btn-success btn-block">PDF</a>
-								</div>
-
-
-							</fieldset>			
 							<br>
 							<section>
 								<table id="tabla_reporte" class="display table table-striped table-bordered table-responsive " cellspacing="0" width="100%">

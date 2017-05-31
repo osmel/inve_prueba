@@ -225,11 +225,7 @@
 
 <!--  -->	<h4>Filtros: </h4>	 
 
-			<div class="row">
-				<button id="limpiar_filtro" type="button" class="btn btn-success">
-					Limpiar filtros
-				</button>
-			</div>
+
 
 
 				<div class="row">
@@ -293,7 +289,15 @@
 		                     </div>
 		                  </div>
 
-		        </div>     
+		        </div>    
+
+		    <div class="row">
+		    	<div class="col-md-12">
+					<button id="limpiar_filtro" type="button" class="btn btn-success">
+						Limpiar filtros
+					</button>
+				</div> 
+			</div> 
 
 
 <!--  -->	

@@ -10,13 +10,8 @@ class Nucleo extends CI_Controller {
 	}
 
 	public function index(){
-		
 	}
 
-	
-
-
-	
 	public function listado_reportes(){
 		$data['plazas']	=        $this->modelo->coger_catalogo_plazas();
 		$this->load->view( 'informes/reportes',$data );

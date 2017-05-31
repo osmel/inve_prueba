@@ -3951,30 +3951,11 @@
     
     //checar si el proveedor ya existe
     public function check_existente_proveedor($data){
-            $this->db->select("codigo", FALSE);         
+            $this->db->select("codigo");         
             $this->db->from($this->proveedores);
+                $where = '( codigo =  "'.addslashes($data['codigo']).'" )';   
 
-            $where = '(
-                        (
-                          ( codigo =  "'.addslashes($data['codigo']).'" ) 
-                          
-                         )
-
-              )';   
-  
             $this->db->where($where);
-
-            if (isset($data['codigo_ant'])) {
-
-
-                $where = '(
-                            (
-                              ( codigo <> "'.$data['codigo_ant'].'" ) 
-                              
-                             )
-                  )';   
-                $this->db->where($where);
-            }
             
             $login = $this->db->get();
             if ($login->num_rows() > 0)
@@ -4055,10 +4036,8 @@
 
           $this->db->where('codigo', $data['codigo_ant'] );
           $this->db->update($this->proveedores );
-            if ($this->db->affected_rows() > 0) {
-                return TRUE;
-            }  else
-                 return FALSE;
+          return TRUE;
+            
                 $result->free_result();
         }   
 

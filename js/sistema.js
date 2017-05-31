@@ -2787,16 +2787,7 @@ jQuery('#devolucion_reporte').click(function (e) {
 
 
 
-/*
-var rep_existencia = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
-var rep_apartado = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha', 'No. de Partida','Almacén'];
-var rep_salida = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Cliente', 'Lote', 'Egreso', 'No. de Partida','Almacén'];
-var rep_entrada = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
-var rep_devolucion = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento','Proveedor', 'Lote', 'Ingreso', 'No. de Partida','Almacén'];
-var rep_cero = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
-var rep_baja = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
-var rep_top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
-*/
+
 
 var rep_existencia = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Lote'];
   var rep_apartado = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No. Movimiento','Tipo Apartado']; //Lote
@@ -2819,10 +2810,10 @@ jQuery('#tabla_reporte').dataTable( {
 			comienzo=false;
 		}
       },
-
+      /*
       "oLanguage": {  //spin de la tabla
 				"sProcessing": "Un momento por favor...."
-	   },
+	   },*/
 
 	
 	 "processing": true,
@@ -3224,6 +3215,13 @@ jQuery('#tabla_reporte').dataTable( {
                 type : 'POST',
                 dataType : 'json',
                 success : function(data) {
+
+						    jQuery('#producto_rep').css('pointer-events', 'none');
+						    jQuery('#color_rep').css('pointer-events', 'none');
+						    jQuery('#composicion_rep').css('pointer-events', 'none');
+						    jQuery('#calidad_rep').css('pointer-events', 'none');
+
+
                             var $elArray = new Array();
                             
                             $elArray['producto_rep']  = 'un producto';
@@ -3252,6 +3250,17 @@ jQuery('#tabla_reporte').dataTable( {
                                     
                                 });
                         });
+
+
+
+
+						    jQuery('#producto_rep').css('pointer-events', 'initial');
+						    jQuery('#color_rep').css('pointer-events', 'initial');
+						    jQuery('#composicion_rep').css('pointer-events', 'initial');
+						    jQuery('#calidad_rep').css('pointer-events', 'initial');
+                            
+
+							
 
                     return false;
                     
