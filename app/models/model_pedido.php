@@ -1508,6 +1508,7 @@
               $id_almacenid = '';
           }          
 
+          //$id_almacenid = '';
           //filtro de busqueda
 
           $where = '(
