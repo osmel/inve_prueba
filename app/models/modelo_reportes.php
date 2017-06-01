@@ -1960,7 +1960,7 @@ public function detalle_salida_home($data){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
                                       5=>$row->calidad,   //7
-                                      6=>$row->precio,   //8
+                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
                                       7=>$row->metros,   //9
                                       8=>$row->kilogramos, //10
                                       9=>"black",  //11
@@ -2275,7 +2275,7 @@ public function detalle_salida_home($data){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
                                       5=>$row->calidad,   //7
-                                      6=>$row->precio,   //8
+                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
                                       7=>$row->metros,   //9
                                       8=>$row->kilogramos, //10
                                       9=>"black",  //11

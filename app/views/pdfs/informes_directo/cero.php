@@ -19,7 +19,7 @@
 						<thead>
 
 							<tr >
-								<td colspan="6" style="border-top: 1px solid #222222; ">
+								<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) ? 6 : 5); ?>" style="border-top: 1px solid #222222; ">
 									<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A',  strtotime ( gmt_to_local( 'UM1', time(), TRUE)  ) );  ?></span>
 									<p><b >Existencias Cero</b></p>
 								</td>
@@ -31,7 +31,7 @@
 							<tr><th> </th></tr>
 							<tr>
 								<th width="13%">Referencia</th>
-								<th width="15%">Descripción</th>
+								<th width="<?php echo (($this->session->userdata('id_perfil')==1) ? 15 : 23); ?>%">Descripción</th>
 								
 								<th width="8%">Existencias</th>
 								
@@ -42,7 +42,9 @@
 
 								<th width="20%">Composición</th>
 								<th width="10%">Calidad</th>
-								<th width="8%">Precio</th>
+								<?php if ($this->session->userdata('id_perfil')==1) { ?>
+									<th width="8%">Precio</th>
+								<?php } ?>		
 								<th width="6%">Almacén</th>
 
 				
@@ -66,7 +68,9 @@
 									
 									<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion;  ?></td>
 									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->calidad; ?></td>
-									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+									<?php if ($this->session->userdata('id_perfil')==1) { ?>
+										<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+									<?php } ?>		
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
 
 								</tr>

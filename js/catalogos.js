@@ -5908,15 +5908,17 @@ jQuery('body').on('click','#exportar_reportes_costo', function (e) {
 	   id_color = jQuery("#color").val(); 
 	   id_composicion = jQuery("#composicion").val(); 
 	   id_calidad = jQuery("#calidad").val(); 
+
+	   val_prod_id = jQuery('#producto_rep option:selected').val();
 		
-		factura_reporte = jQuery('#factura_costo').val();					
+	   factura_reporte = jQuery('#factura_costo').val();					
 
-		proveedor = jQuery("#editar_proveedor_costo").val(); 	   
+	   proveedor = jQuery("#editar_proveedor_costo").val(); 	   
 
-		var fecha = (jQuery('.fecha_costo').val()).split(' / ');
+	   var fecha = (jQuery('.fecha_costo').val()).split(' / ');
 
-		fecha_inicial = fecha[0];
-		fecha_final = fecha[1];
+	   fecha_inicial = fecha[0];
+	   fecha_final = fecha[1];
 
 
     abrir('POST', 'exportar_reportes', {
@@ -5929,6 +5931,7 @@ jQuery('body').on('click','#exportar_reportes_costo', function (e) {
 			id_color:id_color, 
 			id_composicion:id_composicion, 
 			id_calidad:id_calidad,
+			val_prod_id: val_prod_id,
 
 			factura_reporte: factura_reporte,
 

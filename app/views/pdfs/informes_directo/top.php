@@ -16,7 +16,7 @@
 			<table style="width: 100%; border: 2px solid #222222;">
 				<thead>
 					<tr>
-						<td colspan="6" style="border-top: 1px solid #222222; ">
+						<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) ? 6 : 5); ?>" style="border-top: 1px solid #222222; ">
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A',  strtotime ( gmt_to_local( 'UM1', time(), TRUE)  ) );  ?></span>
 							<p><b >Top 10</b></p>
 						</td>
@@ -30,7 +30,7 @@
 					<tr><th> </th></tr>
 					<tr>
 
-						<th width="13%">Referencia</th>
+						<th width="<?php echo (($this->session->userdata('id_perfil')==1) ? 13 : 20); ?>%">Referencia</th>
 						<th width="25%">Descripción</th>
 						
 						<th width="15%">Rollos Vendidos</th>
@@ -42,7 +42,9 @@
 
 						<th width="18%">Composición</th>
 						<th width="9%">Calidad</th>
-						<th width="7%">Precio</th>
+						<?php if ($this->session->userdata('id_perfil')==1) { ?>
+							<th width="7%">Precio</th>
+						<?php } ?>	
 						<th width="6%">Almacén</th>	
 
 
@@ -58,7 +60,7 @@
 				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
-							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->referencia; ?></td>								
+							<td width="<?php echo (($this->session->userdata('id_perfil')==1) ? 13 : 20); ?>%" style="border-top: 1px solid #222222;"><?php echo $movimiento->referencia; ?></td>								
 							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							
 							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->suma; ?></td>
@@ -72,7 +74,9 @@
 							
 							<td width="18%" style="border-top: 1px solid #222222;"><?php echo $movimiento->composicion;  ?></td>
 							<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->calidad; ?></td>
-							<td width="7%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+							<?php if ($this->session->userdata('id_perfil')==1) { ?>
+								<td width="7%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+							<?php } ?>	
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>
 
     

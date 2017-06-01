@@ -26,9 +26,6 @@ class Exportar_reportes extends CI_Controller {
             $this->export->to_excel($data['movimientos'], 'reporte_totales_ALM'.$data['id_almacen'].'_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
         }    
 
-
-
-
     }
 
 
@@ -60,7 +57,7 @@ class Exportar_reportes extends CI_Controller {
                 }    
                 break;
 
-            case "entrada":
+            case "entrada": //
                 $data['movimientos'] = $this->exportar_model->exportar_entrada_devolucion($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_entrada_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
@@ -68,7 +65,7 @@ class Exportar_reportes extends CI_Controller {
                 break;
 
 
-            case "devolucion":
+            case "devolucion": //
                 $data['movimientos'] = $this->exportar_model->exportar_entrada_devolucion($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_devolucion_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
@@ -79,7 +76,7 @@ class Exportar_reportes extends CI_Controller {
                         
 
 
-            case "salida":
+            case "salida": //
 
                 $dato['id'] = 10; //ok porq es solo para salida
                 $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
@@ -91,13 +88,13 @@ class Exportar_reportes extends CI_Controller {
                  
                 break;
 
-            case "existencia":
+            case "existencia": //
                 $data['movimientos'] = $this->exportar_model->entrada_home($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_existencia_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
                 }    
                 break;
-            case "apartado":
+            case "apartado": //
                 $data['movimientos'] = $this->exportar_model->entrada_home($data);
 
                 if ($data['movimientos']) {
@@ -107,21 +104,21 @@ class Exportar_reportes extends CI_Controller {
                 break;
 
 
-            case 'baja':
+            case 'baja': //*precio
                 $data['movimientos']= $this->exportar_model->buscador_cero_baja($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_baja_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
                 }    
                break;
 
-            case 'cero':
+            case 'cero': //*precio
                 $data['movimientos']= $this->exportar_model->buscador_cero_baja($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_cero_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
                 }    
                break;
 
-            case 'top':
+            case 'top': //*precio
                $data['movimientos'] = $this->exportar_model->buscador_top($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_top_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);

@@ -113,7 +113,7 @@ class Reportes extends CI_Controller {
 				$busqueda = $this->modelo_reportes->buscador_entrada_devolucion($data); //13 443
 			   break;
 			case 'baja':
-			case 'cero':
+			case 'cero': //(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
 				$busqueda = $this->modelo_reportes->buscador_cero_baja($data); //13 1049
 			   break;
 
