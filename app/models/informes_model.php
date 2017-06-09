@@ -112,14 +112,6 @@ class Informes_model extends CI_Model
                      break;
                  }                    
 
-
- 
-          
-
-
-
-       
-
           $fechas = ' ';
           if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
                            $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));

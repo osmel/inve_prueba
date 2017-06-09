@@ -3780,7 +3780,6 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 
-
 		var oTable =jQuery('#tabla_reporte').DataTable();
 		order = oTable.order();
 
@@ -3805,7 +3804,6 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 			columna : order[0][0],
 			orden : order[0][1],
     }, '_blank' );
-		        
 	
 });
 

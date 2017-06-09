@@ -26,7 +26,7 @@
 								<td colspan="3" style="border-top: 1px solid #222222; ">
 									<?php echo '<img src="'.base_url().'img/unnamed.png" width="93px" height="48px"/>'; ?>
 								</td>
-							</tr>					
+							</tr>				
 
 							<tr><th> </th></tr>
 							<tr>
@@ -35,10 +35,8 @@
 								
 								<th width="8%">Existencias</th>
 								
-								
 								<th width="12%">Imagen</th>
 								<th width="8%">Color</th>
-								
 
 								<th width="20%">Composición</th>
 								<th width="10%">Calidad</th>
@@ -46,8 +44,6 @@
 									<th width="8%">Precio</th>
 								<?php } ?>		
 								<th width="6%">Almacén</th>
-
-				
 
 							</tr>
 						</thead>
