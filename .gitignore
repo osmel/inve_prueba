@@ -1,0 +1,6 @@
+uploads/*
+qr_code/*
+app/config/database.php
+app/config/config.php
+app/logs/*
+
