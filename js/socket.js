@@ -4,7 +4,7 @@ $(function(){
     
   // Instanciar al "cliente Socket.IO" y conectar con el servidor
 	//socket : io.connect('http://162.243.163.167:8080'),
-  socket : io.connect('http://localhost:8080'),
+  socket : io.connect(location.host+':8080'),
 	//socket : io.connect('http://localhost:8080'),
   // Configurar los controladores de eventos iniciales para el cliente Socket.IO
   // estos son los que inicializan los controladores para cada evento que ocurra,
