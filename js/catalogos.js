@@ -3701,8 +3701,13 @@ jQuery('body').on('submit','#form_cancelar_pedido_compra', function (e) {
 
 
 jQuery('#tabla_revisa_pedido_compra').dataTable( {
+	"pageLength": 500,  //que soporte 500 registro
+	"lengthChange": false,  //y que deshabilite el cambio de cantidad de registro
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
+	scroller:       true,
+    scrollY:        250,
+    scrollCollapse: false,	
 	"ajax": {
             	"url" : "/procesando_revisar_pedido_compra",
          		"type": "POST",
@@ -4432,7 +4437,8 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 jQuery('#tabla_salida_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
-
+	"pageLength": 500,  //que soporte 500 registro
+	"lengthChange": false,  //y que deshabilite el cambio de cantidad de registro
 	scroller:       true,
     scrollY:        250,
     scrollCollapse: false,

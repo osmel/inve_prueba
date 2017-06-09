@@ -4484,6 +4484,13 @@ jQuery('#id_almacen_pedido').change(function(e) {
 
 jQuery('#tabla_apartado').dataTable({
 	"pagingType": "full_numbers",
+/*
+	"pageLength": 500,  //que soporte 500 registro
+	"lengthChange": false,  //y que deshabilite el cambio de cantidad de registro
+	scroller:       true,
+    scrollY:        250,
+    scrollCollapse: false,
+*/
 	"processing": true,
 	"serverSide": true,
 	"ajax": {
@@ -4765,6 +4772,13 @@ jQuery('body').on('submit','#form_pedido', function (e) {
 
 jQuery('#tabla_detalle').dataTable( {
 	"pagingType": "full_numbers",
+	"pageLength": 500,  //que soporte 500 registro
+	"lengthChange": false,  //y que deshabilite el cambio de cantidad de registro
+	scroller:       true,
+    scrollY:        250,
+    scrollCollapse: false,
+
+	
 	"processing": true,
 	"serverSide": true,
 	"ajax": {
@@ -6247,7 +6261,14 @@ num_mov = jQuery("#num_mov").val();  //3; //
 
 
 jQuery('#pedido_detalle').dataTable( {
+	"pageLength": 500,  //que soporte 500 registro
+	"lengthChange": false,  //y que deshabilite el cambio de cantidad de registro
+	scroller:       true,
+    scrollY:        250,
+    scrollCollapse: false,
+
 	"pagingType": "full_numbers",
+
 	"processing": true,
 	"serverSide": true,
 	"ajax": {
