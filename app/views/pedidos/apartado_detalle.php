@@ -216,7 +216,8 @@
 								<?php } else { ?>			
 
 
-									<?php if ( ( $perfil != 4 ) ) { ?>
+									<?php //if ( ( $perfil != 4 ) ) { ?>
+									<?php if ( ( $perfil == 1 ) || ( $perfil == 2 ) ) { ?>
 										<div class="col-sm-3 col-md-3 marginbuttom">
 											<button type="button"  class="btn btn-success btn-block ttip" title="Procesar la salida." id="proc_salida_apartado">
 												<span>Procesar Salida</span>
