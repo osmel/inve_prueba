@@ -539,8 +539,6 @@ class Main extends CI_Controller {
                 $coleccion_id_operaciones = array();
            }   
 
-
-
           switch ($id_perfil) {    
             case 1:
                       if ($uid=='') {

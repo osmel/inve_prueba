@@ -2756,7 +2756,7 @@ public function buscador_historico_devolucion($data){
           $where_total= $where;            
 
           $this->db->where($where);          
-          $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+          $this->db->group_by('m.movimiento,m.id_almacen,m.factura'); //m.id_empresa,(de lo contrario saldran 2 movimientos)
           $this->db->order_by($columna, $order); 
           $this->db->limit($largo,$inicio); 
 

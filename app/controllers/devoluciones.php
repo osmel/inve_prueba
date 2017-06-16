@@ -266,7 +266,14 @@ class Devoluciones extends CI_Controller {
   } 
 
 
+/*
+AZxjQ512001250520179537_3
+ABlSa89600123052017102659_5
 
+FliE79300125032017152549_1
+zzDg58800125032017175215_1
+
+*/
   public function procesar_devoluciones($id_movimiento=-1){
 
      if($this->session->userdata('session') === TRUE ){

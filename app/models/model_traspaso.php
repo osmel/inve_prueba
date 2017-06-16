@@ -74,26 +74,47 @@
                         $columna = 'm.id_tipo_factura';
                      break;
 
-                   case '1':
-                        //$columna = 'pr.nombre'; //automatico y manual
+                   case '2':
+                        $columna = 'pr.nombre'; //automatico y manual
                      break;
 
-                   case '2':
+                   case '3':
                         $columna = 'm.id_almacen';  //,m.id_cliente_apartado,
                      break;
-                   case '3':
+                   case '4':
                         $columna = 'm.fecha_apartado';
                      break;                     
-                   
-                   /*
-
-                   case '4':
-                        $columna = 'm.tipo_salida,m.id_apartado';
-                     break;
                    case '5':
-                          $columna = 'm.mov_salida';
+                        $columna = 'm.mov_salida';
+                     break;   
+                   case '6':
+                        $columna = 'm.consecutivo_venta, m.id_cliente_apartado';
+                     break;   
+                   case '7':
+                        $columna = 'u.nombre, u.apellidos';
+                     break;                      
+                   case '8':
+                        $columna = 'pr.nombre';
+                     break;                
+
+                   case '9':
+                        $columna = 'metros';
                      break;
-                   */
+                   case '10':
+                        $columna = 'kilogramos';
+                     break;
+                   case '11':
+                        $columna = 'pieza';
+                     break;
+
+                   case '12':
+                        $columna = 'subtotal';
+                     break;
+                   case '13':
+                        $columna = 'iva';
+                     break;
+
+                           
 
                    default:
                        $columna = 'u.nombre, u.apellidos';
@@ -203,8 +224,20 @@
           $where_total = '('.$filtro.$id_almacenid.$id_facturaid.$fechas.')'; 
           $this->db->order_by($columna, $order); 
 
+          /*
+          SELECT m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta 
+            , id_almacen,  fecha_apartado, incluir,
+
+            
+          FROM inven_historico_registros_traspasos m WHERE m.consecutivo_traspaso =18
+          
+
+          m.id_factura,m.id_fac_orig,m.id_cliente_apartado,m.consecutivo_venta
+
+          */
 
           $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          //$this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado,m.id_factura,m.id_fac_orig");
           //paginacion
           $this->db->limit($largo,$inicio); 
 

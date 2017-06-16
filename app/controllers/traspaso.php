@@ -21,7 +21,7 @@ class Traspaso extends CI_Controller {
 
 public function borrardatos() {
   
-  print_r($this->modelo_borrar_datos->eliminar_todos());
+  //print_r($this->modelo_borrar_datos->eliminar_todos());
 } 
 
 

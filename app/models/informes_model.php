@@ -222,43 +222,39 @@ class Informes_model extends CI_Model
           $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
 
 
+                 if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                }    
 
 
-          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-          }    
+               if  (($data['id_factura_costo']!="0") AND ($data['id_factura_costo']!="") AND ($data['id_factura_costo']!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                }    
 
-          elseif
-           ( 
-               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-          }  
+                 
 
-          elseif 
-           ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-          }  
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                } 
 
-          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-          }  
+
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                }
+
+
+                //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                    $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                }
+
+
+         
 
 
           $where_total.= $donde.$fechas; //$donde.
@@ -424,44 +420,37 @@ class Informes_model extends CI_Model
 
           $where_total = '( ( m.estatus_salida = "0" )  '.$estatus_idid.$id_almacenid.'  )';
 
+                if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
+                }    
 
 
+               if  (($data['id_factura_costo']!="0") AND ($data['id_factura_costo']!="") AND ($data['id_factura_costo']!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                }    
 
-          if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
-            and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) AND  ( m.id_calidad  =  '.$id_calidad.' )';
-          }    
+                 
 
-          elseif
-           ( 
-               (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-            and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_composicion  =  '.$id_composicion.' ) ';
-          }  
+                if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                    $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
+                } 
 
-          elseif 
-           ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-            and (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) 
-            ) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-              $where_total .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" ) AND  ( m.id_color  =  '.$id_color.' )';
-          }  
 
-          elseif  (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null)) {
-              $where .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-              $where_total  .= ' AND ( m.id_descripcion  =  "'.$id_descripcion.'" )';
-          }  
+                if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+                   $where.= (($where!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                   $where_total.= (($where_total!="") ?  " and " : "") . "( m.id_color  =  ".$id_color." )";
+                }
+
+
+                //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+                    $where.= (($where!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_descripcion  =  '".$id_descripcion."' )";
+                }
+
 
 
           $where_total.= $donde.$fechas; //$donde.

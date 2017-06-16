@@ -248,20 +248,15 @@ class Entradas extends CI_Controller {
 	public function validar_proceso(){ 
 		//print_r("expression");
 					
-					/*
+						/*
 					$this->load->library('ciqrcode');
 			        //hacemos configuraciones
 
 					//$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 
-			        $data['movimientos'][0]="TRYq42100125032017164036_8";
-			        $data['movimientos'][1]="bOaZ0890012603201711339_1";
-			        $data['movimientos'][2]="EodR5430012603201711339_1";
-			        $data['movimientos'][3]="qljS74000125032017174558_251";
-
-			        $data['movimientos'][0]="AHvIX10800125032017164036_4";
-			        $data['movimientos'][1]="APsyT0970012503201715304_2";
-			        $data['movimientos'][2]="Ahudb6700012603201723017_2";
+			        $data['movimientos'][0]="AACEg81100125042017172212_1";
+			        $data['movimientos'][1]="ADGfx51700125032017174558_1";
+			        $data['movimientos'][2]="AtmkV49500125032017185722_1";
 
 
 			        foreach ($data['movimientos'] as $mikey ) {
@@ -276,7 +271,7 @@ class Entradas extends CI_Controller {
 				        
 				      
 			        }
-			    die;  */  
+			    die;    */
 
 		//die;
 

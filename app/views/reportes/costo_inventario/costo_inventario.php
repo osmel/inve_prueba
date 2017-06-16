@@ -81,6 +81,30 @@
 								</div>
 							</div>	
 
+							<!--Tipos de factura -->
+							<div class="col-xs-12 col-sm-6 col-md-2">
+							    
+								<label for="id_factura_costo"  class="col-sm-3 col-md-12">Tipo de factura</label>
+								<div class="col-sm-9 col-md-12">
+								    			
+									<select name="id_factura_costo" vista="costo_rollo" id="id_factura_costo" class="form-control">
+
+										<?php if ( ( $el_perfil == 1 ) || ((in_array(29, $coleccion_id_operaciones)) 
+										 		&& (in_array(30, $coleccion_id_operaciones)) )														 ) { ?>
+											<option value="0">Todos</option>
+										<?php } ?>	
+
+										<?php foreach ( $facturas as $factura ){ ?>
+										<?php if ( ( $el_perfil == 1 ) || ( (in_array(29, $coleccion_id_operaciones) && ($factura->id==1) ) 	|| (in_array(30, $coleccion_id_operaciones) && ($factura->id==2) ) )) { ?>
+										   <option value="<?php echo $factura->id; ?>" ><?php echo $factura->tipo_factura; ?></option>
+											<?php } ?>
+											   
+										<?php } ?>
+										<!--rol de usuario -->
+									</select>
+								</div>
+							</div>								
+
 							<div id="fecha_id">
 
 								<div id="estatus_id" class="col-xs-12 col-sm-6 col-md-2">

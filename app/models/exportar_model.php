@@ -368,6 +368,12 @@ class Exportar_model extends CI_Model
              $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
              $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
           }     
+
+           if  (($data['id_factura_costo']!="0") AND ($data['id_factura_costo']!="") AND ($data['id_factura_costo']!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+               $where_total.= (($where_total!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+            } 
+          
           if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
               $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
               $where_total.= (($where_total!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";

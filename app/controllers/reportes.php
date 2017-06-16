@@ -360,6 +360,7 @@ public function procesando_detalle_reporte(){
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
 
           switch ($id_perfil) {    
             case 1:          

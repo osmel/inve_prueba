@@ -660,7 +660,15 @@ public function totales_importes_historica($where){
                if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
                    $where.= (($where!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
                    $where_total.= (($where_total!="") ? " and " : "") . "( m.id_calidad  =  ".$id_calidad." )";
-                }     
+                }    
+
+
+               if  (($data['id_factura_costo']!="0") AND ($data['id_factura_costo']!="") AND ($data['id_factura_costo']!= null)) {
+                   $where.= (($where!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                   $where_total.= (($where_total!="") ? " and " : "") . "( m.id_factura  =  ".$data['id_factura_costo']." )";
+                }    
+
+                 
 
                 if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
                     $where.= (($where!="") ? " and " : "") . "( m.id_composicion  =  ".$id_composicion." ) ";
@@ -707,16 +715,9 @@ public function totales_importes_historica($where){
 
                    $retorno= "reportes";   
                   foreach ($result->result() as $row) {
-                           
-
-                          
                               $fecha= $row->fecha_entrada;
                               $columna7=$row->id_lote.'-'.$row->consecutivo; 
                               $columna6= $row->nombre;
-                          
-
-                           
-
                            $dato[]= array(
                                       0=>$row->codigo,
                                       1=>$row->id_descripcion,
@@ -784,7 +785,6 @@ public function totales_importes_historica($where){
               }
 
               $result->free_result();           
-
       }  
 
     

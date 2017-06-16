@@ -5571,11 +5571,12 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 var existencia_costo_inventario = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'Precio', 'SubTotal', 'iva', 'Tipo Factura', 'No. Movimiento','Proveedor', 'Ingreso'];
 
-jQuery('#id_estatuss_costo').change(function(e) {
+jQuery('#id_estatuss_costo, #id_factura_costo').change(function(e) {
 		
 		var oTable =jQuery('#tabla_costo_inventario').dataTable();
 		oTable._fnAjaxUpdate();
 });
+
 
 
 jQuery('#id_almacen_costo').change(function(e) {
@@ -5793,6 +5794,8 @@ jQuery('body').on('click','#impresion_rapido_costo', function (e) {
 	  	  busqueda      = jQuery('input[type=search]').val();
 	   extra_search = 'reportes_costo'; //jQuery("#botones").val(); 
 	   id_estatus = jQuery("#id_estatuss_costo").val(); 
+	   id_factura_costo = jQuery("#id_factura_costo").val(); 
+	   
 	   id_almacen = jQuery("#id_almacen_costo").val(); 
 
 	   id_descripcion = jQuery("#producto").val(); 
@@ -5821,6 +5824,7 @@ jQuery('body').on('click','#impresion_rapido_costo', function (e) {
     			busqueda:busqueda,
 			extra_search:extra_search,
 			id_estatus:id_estatus,
+			id_factura_costo:id_factura_costo,
 			id_almacen: id_almacen,
 
 			id_descripcion:id_descripcion, 
@@ -5853,6 +5857,7 @@ jQuery('body').on('click','#impresion_reporte_costo', function (e) {
 	  	  busqueda      = jQuery('input[type=search]').val();
 	   extra_search = 'reportes_costo'; //jQuery("#botones").val(); 
 	   id_estatus = jQuery("#id_estatuss_costo").val(); 
+	   id_factura_costo = jQuery("#id_factura_costo").val(); 
 	   id_almacen = jQuery("#id_almacen_costo").val(); 
 
 	   id_descripcion = jQuery("#producto").val(); 
@@ -5878,6 +5883,7 @@ jQuery('body').on('click','#impresion_reporte_costo', function (e) {
     			busqueda:busqueda,
 			extra_search:extra_search,
 			id_estatus:id_estatus,
+			id_factura_costo:id_factura_costo,
 			id_almacen: id_almacen,
 
 			id_descripcion:id_descripcion, 
@@ -5904,6 +5910,7 @@ jQuery('body').on('click','#exportar_reportes_costo', function (e) {
 	  busqueda      = jQuery('input[type=search]').val();
 	   extra_search = "reportes_costo"; 
 	   id_estatus = jQuery("#id_estatuss_costo").val(); 
+	   id_factura_costo = jQuery("#id_factura_costo").val(); 
 	   id_almacen = jQuery("#id_almacen_costo").val(); 
 
 	   id_descripcion = jQuery("#producto").val(); 
@@ -5931,6 +5938,7 @@ jQuery('body').on('click','#exportar_reportes_costo', function (e) {
     			busqueda:busqueda,
 			extra_search:extra_search,
 			id_estatus:id_estatus,
+			id_factura_costo:id_factura_costo,
 			id_almacen: id_almacen,
 
 			id_descripcion:id_descripcion, 
@@ -5964,6 +5972,7 @@ jQuery('#tabla_costo_inventario').dataTable( {
          		 	   	 d.draw =0;
          		 	   }*/
     				   d.id_estatus = jQuery("#id_estatuss_costo").val(); 
+    				   d.id_factura_costo = jQuery("#id_factura_costo").val(); 
      				   d.id_almacen = jQuery("#id_almacen_costo").val(); 
 
      				   //datos del producto
