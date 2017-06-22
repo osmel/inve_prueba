@@ -104,6 +104,15 @@
 											<?php } ?>	
 
 											<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total Piezas: </b><?php echo $totales->pieza; ?></span>
+
+											<br/>
+											<?php  if ($totales->metros>0) { ?>	
+												<span><b>Costo de mts: </b> <?php echo number_format($totales->subtotal/$totales->metros, 2, '.', ','); ?></span>
+											<?php } ?>		
+											<?php  if ($totales->kilogramos>0) { ?>	
+												<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Costo de kgs: </b> <?php echo number_format($totales->subtotal/$totales->kilogramos, 2, '.', ',') ; ?></span>
+											<?php } ?>	
+
 										
 									</td>
 

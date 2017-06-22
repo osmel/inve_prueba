@@ -6001,10 +6001,19 @@ jQuery('#tabla_costo_inventario').dataTable( {
 			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
 			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
 
+			//costos
+			jQuery('#total_costom').html( 'Costo de mts:'+number_format((parseFloat(settings.json.totales_importe.subtotal)/parseFloat(settings.json.totales.metro)), 2, '.', ','));
+			jQuery('#total_costokg').html( 'Costo de kgs:'+number_format( (parseFloat(settings.json.totales_importe.subtotal)/parseFloat(settings.json.totales.kilogramo)), 2, '.', ','));
+
+
 		} else {
 		    jQuery('#total_pieza').html( 'Total de piezas: 0');
 			jQuery('#total_kg').html( 'Total de kgs: 0.00');
 			jQuery('#total_metro').html('Total de mts: 0.00');
+
+			//costos	
+			jQuery('#total_costom').html('Costo de mts: 0.00');
+			jQuery('#total_costokg').html('Costo de kgs: 0.00');
 
 		}	
 
@@ -6091,6 +6100,12 @@ jQuery('#tabla_costo_inventario').dataTable( {
 					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
 					jQuery('#total').html('Total:'+ number_format(total_subtotal+total_iva, 2, '.', ','));	
 
+					//costos
+					jQuery('#costokg').html( 'Costo de kgs:'+number_format( (parseFloat(total_subtotal)/parseFloat(total_kilogramo)), 2, '.', ','));
+					jQuery('#costom').html( 'Costo de mts:'+number_format( (parseFloat(total_subtotal)/parseFloat(total_metro)), 2, '.', ','));
+
+
+
 		} else 	{
 			        jQuery('#pieza').html('Total de piezas: 0');
 			        jQuery('#metro').html('Total de mts: 0.00');
@@ -6099,7 +6114,11 @@ jQuery('#tabla_costo_inventario').dataTable( {
 					//importes
 					jQuery('#subtotal').html('SubTotal: 0.00');	
 					jQuery('#iva').html('IVA: 0.00');	
-					jQuery('#total').html('Total: 0.00');										
+					jQuery('#total').html('Total: 0.00');		
+
+					//costos
+					jQuery('#costokg').html('Total de kgs: 0.00');										
+					jQuery('#costom').html('Total de mts: 0.00');	
 
 
 		}	

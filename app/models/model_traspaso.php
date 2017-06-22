@@ -164,10 +164,10 @@
           
           $this->db->from($this->historico_registros_traspasos.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); //,'LEFT'
-          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'); //,'LEFT'
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT'); //,'LEFT'
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); //,'LEFT'
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT'); //
+          $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT'); //
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT'); //
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT'); //
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT'); //
 
 
@@ -226,19 +226,20 @@
 
           /*
           SELECT m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta 
-            , id_almacen,  fecha_apartado, incluir,
-
-            
+            , id_almacen,  fecha_apartado, incluir,cantidad_um,iva,precio
           FROM inven_historico_registros_traspasos m WHERE m.consecutivo_traspaso =18
-          
-
           m.id_factura,m.id_fac_orig,m.id_cliente_apartado,m.consecutivo_venta
+
+          //$this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+          //$this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado,m.id_factura,m.id_fac_orig");
+          //paginacion          
 
           */
 
-          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_fac_orig,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
-          //$this->db->group_by("m.consecutivo_traspaso,m.id_usuario_apartado,m.id_factura,m.id_fac_orig");
-          //paginacion
+          //m.id_fac_orig,
+          $this->db->group_by("m.consecutivo_traspaso,m.id_factura,m.id_usuario_apartado, m.id_cliente_apartado,m.consecutivo_venta");
+
+         
           $this->db->limit($largo,$inicio); 
 
 

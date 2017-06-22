@@ -362,7 +362,41 @@
 
 				</div>		
 
+<br/>
+		
+				<div class="row bloque_totales">						
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Costos por Página</b>
+					</div>	
 
+					<div class="col-sm-3 col-md-2">	
+						<span id="costom"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="costokg"></span>			
+					</div>				
+				</div>			
+
+				<div class="row bloque_totales">		
+					<div class="col-sm-0 col-md-4">	
+					  
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+					  <b>Costos Totales</b>			
+					</div>									
+
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_costom"></span>			
+					</div>	
+					<div class="col-sm-3 col-md-2">	
+						<span id="total_costokg"></span>			
+					</div>				
+
+				</div>		
+				
 
 				
 				
