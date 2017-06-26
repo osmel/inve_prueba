@@ -2600,7 +2600,7 @@ function validacion_edicion_operacion(){
       if ($this->form_validation->run() === TRUE){
 
           $data['codigo']                   = $this->input->post('codigo');
-          $data['nombre']                   = $this->input->post('nombre');
+          $data['nombre']                   = str_replace("  ", " ", $this->input->post('nombre'));
           $data['dias_ctas_pagar']          = $this->input->post('dias_ctas_pagar');
           $data['telefono']                 = $this->input->post('telefono');
           $data['direccion']                = $this->input->post('direccion');
@@ -2627,6 +2627,8 @@ function validacion_edicion_operacion(){
     }
   }
 
+ 
+
   // editar
   function editar_proveedor( $codigo = '' ){
 
@@ -2642,6 +2644,8 @@ function validacion_edicion_operacion(){
       $data['codigo']  = $codigo;
         $data['actividades']  = $this->catalogo->listado_actividades();
         $data['proveedor']  = $this->catalogo->coger_proveedor($data);
+
+
 
       switch ($id_perfil) {    
         case 1:
@@ -2676,6 +2680,7 @@ function validacion_edicion_operacion(){
 
 
 function validacion_edicion_proveedor(){
+
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
     } else {
@@ -2691,12 +2696,14 @@ function validacion_edicion_proveedor(){
 
           $data['codigo_ant']    = $this->input->post('codigo_ant');  
           $data['codigo']                   = $this->input->post('codigo');
-          $data['nombre']                   = $this->input->post('nombre');
+          $data['nombre']                   = str_replace("  ", " ", $this->input->post('nombre'));
           $data['dias_ctas_pagar']                = $this->input->post('dias_ctas_pagar');
           $data['telefono']                 = $this->input->post('telefono');
           $data['direccion']                = $this->input->post('direccion');
           $data['coleccion_id_actividad']   = json_encode($this->input->post('coleccion_id_actividad'));
 
+
+          //str_replace("  ", " ", $cadena2);
 
           $data              =  $this->security->xss_clean($data);  
           if ($data['codigo_ant'] != $data['codigo']) {
