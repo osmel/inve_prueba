@@ -1877,7 +1877,7 @@ public function detalle_salida_home($data){
           $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
           $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
-          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid); 
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 '.$id_almacenid.$id_facturaid.$id_empresaid,'LEFT'); 
 
           if ($estatus=="cero") {
             $activo  = ' and ( p.activo =  0 ) ';  
