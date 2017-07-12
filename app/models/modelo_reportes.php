@@ -1,6 +1,6 @@
 <?php if(! defined('BASEPATH')) exit('No tienes permiso para acceder a este archivo');
 
-  class modelo_reportes extends CI_Model{
+  class modelo_reportes extends CI_Model{ 
     
     private $key_hash;
     private $timezone;
@@ -110,11 +110,41 @@
                             $this->db->group_by( 'nombre' );                       
                          break;
                       case 'baja':
-                      case 'cero':
                             $this->db->select("COUNT(c.referencia) as 'suma'");
                             $this->db->select("p.minimo, p.precio");
                             $this->db->from($this->productos.' as p');
                             $this->db->join($this->registros_entradas.' As c', 'p.referencia = c.referencia and c.id_estatus=12  and c.id_descripcion =  p.descripcion'); 
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }
+                            $this->db->group_by("p.referencia, p.minimo,p.precio"); 
+                           
+                              if ($data['extra_search']=="baja") {
+                                  $this->db->having('((suma>0) AND (suma < p.minimo))');
+                                  $where_total = '((suma>0) AND (suma < p.minimo))';
+                              }  
+                         break;
+                         case 'cero':
+                            $this->db->select("COUNT(c.referencia) as 'suma'");
+                            $this->db->select("p.minimo, p.precio");
+                            $this->db->from($this->productos.' as p');
+                            $this->db->join($this->registros_entradas.' As c', 'p.referencia = c.referencia and c.id_estatus=12 and c.id_descripcion =  p.descripcion and p.activo =  0','LEFT');  // 
+
+            
+                           $filtro="";                              
+
+
+                            if  ($data['val_color']!=0){
+                               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_color = ".$data["val_color"].") ";
+                            }
+                            if ($data['val_comp'] !=0) {
+                              $filtro.= (($filtro!="") ? " and " : "") . "(p.id_composicion = '".$data["val_comp"]."') ";
+                            } 
+                            if  ($data['val_calidad']!=0){
+                               $filtro.= (($filtro!="") ? " and " : "") . "(p.id_calidad = ".$data["val_calidad"].") ";
+                            }
+
+
                             if ($filtro !=""){
                               $this->db->where( $filtro );               
                             }
@@ -124,11 +154,9 @@
                                   $this->db->having('suma <= 0');
                                   $where_total = 'suma <= 0';
                               }   
-                              if ($data['extra_search']=="baja") {
-                                  $this->db->having('((suma>0) AND (suma < p.minimo))');
-                                  $where_total = '((suma>0) AND (suma < p.minimo))';
-                              }  
+                             
                          break;
+
                       default:
                           $this->db->from($this->productos.' as p');
                           $this->db->join($this->registros_entradas.' As c', 'p.referencia = c.referencia and c.id_descripcion =  p.descripcion'); 
@@ -153,9 +181,14 @@
         }     
 
 
+
+
+
   public function lista_color_completa($data){
 
             $this->db->distinct();
+
+        
             $this->db->select("c.color nombre", FALSE);  
             $this->db->select("c.id", FALSE);  
             $this->db->select("c.hexadecimal_color", FALSE);  
@@ -205,7 +238,7 @@
                             $this->db->group_by( 'nombre' );                       
                          break;
                       case 'baja':
-                      case 'cero':
+                      
                             $this->db->select("COUNT(prod.referencia) as 'suma'");
                             $this->db->select("prod.minimo");
 
@@ -217,16 +250,48 @@
                               $this->db->where( $filtro );               
                             }
                             $this->db->group_by("prod.referencia"); 
-
-                             if ($data['extra_search']=="cero") {
-                                  $this->db->having('suma <= 0');
-                                  $where_total = 'suma <= 0';
-                              }   
+ 
                               if ($data['extra_search']=="baja") {
                                   $this->db->having('((suma>0) AND (suma < prod.minimo))');
                                   $where_total = '((suma>0) AND (suma < prod.minimo))';
                               }  
                          break;
+
+                         case 'cero':
+                            $this->db->select("COUNT(prod.referencia) as 'suma'");
+                            $this->db->select("prod.minimo");
+
+                            $this->db->from($this->productos.' as prod');
+                            $this->db->join($this->registros_entradas.' As p', 'p.referencia = prod.referencia and p.id_estatus=12 and p.id_descripcion =  prod.descripcion','LEFT');
+                            $this->db->join($this->colores.' As c', 'c.id = prod.id_color'); 
+                            
+
+                          $filtro="";        
+
+                          if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                            $filtro.= (($filtro!="") ? " and " : "") . "(prod.descripcion = '".addslashes($data["val_prod"])."') ";
+                          } 
+                          if ($data['val_comp'] !=0) {
+                            $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_composicion = '".$data["val_comp"]."') ";
+                          } 
+                          if  ($data['val_calidad']!=0){
+                             $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_calidad = ".$data["val_calidad"].") ";
+                          }
+
+
+
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }
+                            $this->db->group_by("prod.referencia"); 
+
+                             if ($data['extra_search']=="cero") {
+                                  $this->db->having('suma <= 1'); //0
+                                  $where_total = 'suma <= 0'; //0
+                              }   
+                             
+                         break;
+
                       default:
                           $this->db->from($this->registros_entradas.' as p');
                           $this->db->join($this->colores.' As c', 'c.id = p.id_color '); 
@@ -302,7 +367,6 @@
                             $this->db->group_by( 'nombre' );                       
                          break;
                       case 'baja':
-                      case 'cero':
                             $this->db->select("COUNT(prod.referencia) as 'suma'");
                             $this->db->select("prod.minimo");
 
@@ -315,15 +379,41 @@
                             }
                             $this->db->group_by("prod.referencia"); 
 
-                             if ($data['extra_search']=="cero") {
-                                  $this->db->having('suma <= 0');
-                                  $where_total = 'suma <= 0';
-                              }   
                               if ($data['extra_search']=="baja") {
                                   $this->db->having('((suma>0) AND (suma < prod.minimo))');
                                   $where_total = '((suma>0) AND (suma < prod.minimo))';
                               }  
                          break;
+                        case 'cero':
+                            $this->db->select("COUNT(prod.referencia) as 'suma'");
+                            $this->db->select("prod.minimo");
+
+
+                            $this->db->from($this->productos.' as prod');
+                            $this->db->join($this->registros_entradas.' As p', 'p.referencia = prod.referencia and p.id_estatus=12 and p.id_descripcion =  prod.descripcion','LEFT');
+                            $this->db->join($this->composiciones.' As c', 'c.id = prod.id_composicion'); 
+
+                            $filtro="";        
+                            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                              $filtro.= (($filtro!="") ? " and " : "") . "(prod.descripcion = '".addslashes($data["val_prod"])."') ";
+                            } 
+                            if  ($data['val_color']!=0){
+                               $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_color = ".$data["val_color"].") ";
+                            }
+                            if  ($data['val_calidad']!=0){
+                               $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_calidad = ".$data["val_calidad"].") ";
+                            }                            
+
+
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }
+                            $this->db->group_by("prod.referencia"); 
+                             if ($data['extra_search']=="cero") {
+                                  $this->db->having('suma <= 1');
+                                  $where_total = 'suma <= 0';
+                              }   
+                         break;                         
                       default:
                           $this->db->from($this->registros_entradas.' as p');
                           $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id'); 
@@ -404,7 +494,6 @@
                             $this->db->group_by( 'nombre' );                       
                          break;
                       case 'baja':
-                      case 'cero':
                             $this->db->select("COUNT(prod.referencia) as 'suma'");
                             $this->db->select("prod.minimo");
 
@@ -417,15 +506,44 @@
                             }
                             $this->db->group_by("prod.referencia"); 
 
-                             if ($data['extra_search']=="cero") {
-                                  $this->db->having('suma <= 0');
-                                  $where_total = 'suma <= 0';
-                              }   
+
                               if ($data['extra_search']=="baja") {
                                   $this->db->having('((suma>0) AND (suma < prod.minimo))');
                                   $where_total = '((suma>0) AND (suma < prod.minimo))';
                               }  
                          break;
+                      case 'cero':
+                            $this->db->select("COUNT(prod.referencia) as 'suma'");
+                            $this->db->select("prod.minimo");
+
+                            $this->db->from($this->productos.' as prod');
+                            $this->db->join($this->registros_entradas.' As p', 'p.referencia = prod.referencia and p.id_estatus=12','LEFT');
+                            $this->db->join($this->calidades.' As c', 'c.id = prod.id_calidad');
+
+                          $filtro="";        
+
+                          if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                            $filtro.= (($filtro!="") ? " and " : "") . "(prod.descripcion = '".addslashes($data["val_prod"])."') ";
+                          } 
+                          if  ($data['val_color']!=0){
+                             $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_color = ".$data["val_color"].") ";
+                          }
+                          if ($data['val_comp'] !=0) {
+                            $filtro.= (($filtro!="") ? " and " : "") . "(prod.id_composicion = '".$data["val_comp"]."') ";
+                          } 
+
+
+                            if ($filtro !=""){
+                              $this->db->where( $filtro );               
+                            }
+                            $this->db->group_by("prod.referencia"); 
+
+                             if ($data['extra_search']=="cero") {
+                                  $this->db->having('suma <= 1');
+                                  $where_total = 'suma <= 0';
+                              }   
+                         break;
+
                       default:
                           $this->db->from($this->registros_entradas.' as p');
                           $this->db->join($this->calidades.' As c', 'p.id_calidad = c.id','LEFT');
@@ -1920,6 +2038,7 @@ public function detalle_salida_home($data){
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
           $this->db->group_by("p.referencia, p.minimo,  p.precio"); 
+          //$this->db->group_by("p.referencia, p.minimo,  p.precio"); 
 
          if ($estatus=="cero") {
               $this->db->having('suma <= 0');
