@@ -17,7 +17,7 @@
 						<thead>
 
 							<tr>
-								<td colspan="8" style="border-top: 1px solid #222222; ">
+								<td colspan="7" style="border-top: 1px solid #222222; ">
 										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
 										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
@@ -58,13 +58,13 @@
 
 
 							<tr>
-								<th colspan="10">
+								<th colspan="9">
 									<p><b>Productos</b></p>
 								</th>
 							</tr>
 							<tr>
-								<th width="20%">Código</th>
-								<th width="18%">Descripción</th>
+								<th width="25%">Código</th>
+								<th width="23%">Descripción</th>
 								<th width="8%">Color</th>
 								<th width="4%">UM</th>
 								<th width="10%">Cant.</th>
@@ -72,7 +72,7 @@
 								<th width="6%">Peso entrada</th>
 								<th width="6%">Peso Real</th>
 								<th width="9%">Lote</th>
-								<th width="10%">Vendedor</th>
+								<!--<th width="10%">Vendedor</th>-->
 
 								
 							</tr>
@@ -81,8 +81,8 @@
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr>
-									<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-									<td width="18%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
+									<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
+									<td width="23%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
 									<td width="4%" style="border-top: 1px solid #222222;"><?php echo $movimiento->medida; ?></td>
 									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?></td>
@@ -90,18 +90,18 @@
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_entrada; ?></td>
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_real; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
-									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nom_vendedor; ?></td>
+									<!--<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nom_vendedor; ?></td>-->
 								</tr>
 							<?php endforeach; ?>
 						<?php else : ?>
 								<tr class="noproducto">
-									<td colspan="9">No se han agregado producto</td>
+									<td colspan="10">No se han agregado producto</td>
 								</tr>
 						<?php endif; ?>	
 
 
 								<tr>
-									<td colspan="10" style="border-top: 1px solid #222222; ">
+									<td colspan="9" style="border-top: 1px solid #222222; ">
 											
 											<!--
 											<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span> 

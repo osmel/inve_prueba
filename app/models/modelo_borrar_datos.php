@@ -41,6 +41,8 @@
       $this->historico_conteo_almacen      = $this->db->dbprefix('historico_conteo_almacen');
       $this->catalogo_almacenes         = $this->db->dbprefix('catalogo_almacenes');
 
+      $this->productos               = $this->db->dbprefix('catalogo_productos');
+
       
     }
 
@@ -62,7 +64,10 @@
 
 
           $this->db->set( 'activo', 1 );  
-          $this->db->update($this->catalogo_almacenes );          
+          $this->db->update($this->catalogo_almacenes );     
+
+        $this->db->set( 'consecutivo', 0 );  
+        $this->db->update($this->productos);     
 
         $this->db->empty_table( $this->conteo_almacen);
         $this->db->empty_table( $this->historico_conteo_almacen);
