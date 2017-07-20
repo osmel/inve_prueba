@@ -4762,6 +4762,7 @@
           $this->db->set( 'id_usuario',  $id_session );
 
           //$this->db->set( 'precio_anterior', 'precio', FALSE  );
+          $this->db->set( 'minimo', $data['minimo'] );  
           $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'comentario', $data['comentario'] );  

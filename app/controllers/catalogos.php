@@ -3534,6 +3534,7 @@ function validacion_cambio_producto(){
                 $data['referencia']    =  $this->input->post('referencia'); 
                 $data['comentario']    = $this->input->post('comentario'); 
                 $data['precio']    = $this->input->post('precio'); 
+                $data['minimo']    = $this->input->post('minimo'); 
                 
 
 

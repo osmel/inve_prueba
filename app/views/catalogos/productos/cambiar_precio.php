@@ -161,7 +161,7 @@
 							  </div>
 												  
 							
-			
+					</fieldset>	
 			
 							<div class="form-group">
 								<label for="minimo" class="col-sm-12 col-md-12">Minimo</label>
@@ -174,7 +174,7 @@
 									<input value="<?php echo  set_value('minimo',$nomb_nom); ?>" type="text" class="form-control ttip" title="Este campo no admite decimales."  restriccion="entero" id="minimo" name="minimo" placeholder="Minimo">
 								</div>
 							</div>	
-					</fieldset>			
+							
 					<!-- Imagen-->	
 					<div class="form-group">
 						<div class="col-sm-12 col-md-12">
