@@ -1252,7 +1252,6 @@ public function detalle_entrada_home($data){
           $this->db->order_by($columna, $order); 
           $this->db->limit($largo,$inicio); 
 
-
           $result = $this->db->get();
 
               if ( $result->num_rows() > 0 ) {

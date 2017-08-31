@@ -892,6 +892,20 @@ public function totales_importes($where){
 
         }      
 
+        public function existencia_factura($data){
+              $this->db->where('factura',$data['fact_revision']);
+              $this->db->from($this->historico_registros_entradas);
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }      
+
+
+
   
 
         //listado de movimiento de una entrada, de un movimiento especifico

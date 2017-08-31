@@ -93,6 +93,15 @@ class Entradas extends CI_Controller {
 
 		if (($d_conf['configuracion']->activo==1)) {  
 			$this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');	
+
+			$data['fact_revision']   = $this->input->post('factura');
+
+			$existe_factura = $this->model_entrada->existencia_factura($data);
+
+			if (!($existe_factura)) {
+					print "El número de factura ya existe";
+			}
+
 		}	
 
       $this->form_validation->set_rules( 'editar_proveedor', 'Proveedor', 'required|xss_clean'); //callback_valid_option|
@@ -119,7 +128,7 @@ class Entradas extends CI_Controller {
 
 
 
-      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) ) {
+      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) and ($existe_factura) ) {
           
 			if (($d_conf['configuracion']->activo==1)) {  
 				$data['factura']   = $this->input->post('factura');
