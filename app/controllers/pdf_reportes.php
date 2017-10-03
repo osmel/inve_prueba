@@ -178,7 +178,7 @@ class Pdf_reportes extends CI_Controller {
                break;
 
             case 'cero':
-                $data['movimientos']= $this->informes_model->buscador_cero_baja($data);  // ok
+                $data['movimientos']= $this->informes_model->buscador_cero($data);  // ok
                 $html = $this->load->view('pdfs/informes_directo/cero', $data, true);
                break;
 

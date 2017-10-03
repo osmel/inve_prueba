@@ -2227,6 +2227,7 @@ class Informes_model extends CI_Model
           $id_estatus= $data['id_estatus'];
           $id_empresa= addslashes($data['proveedor']);
           $id_almacen= $data['id_almacen'];
+          $id_medida = $data['id_medida'];
 
           $factura_reporte = addslashes($data['factura_reporte']);
 
@@ -2255,7 +2256,8 @@ class Informes_model extends CI_Model
            $fechas .= ' ';
           }
 
-          $this->db->select("COUNT(m.referencia) as 'suma'");
+          //$this->db->select("COUNT(m.referencia) as 'suma'");
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
           
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
@@ -2292,13 +2294,21 @@ class Informes_model extends CI_Model
 
             ) ' ; 
 
+          //ojo AQUI EL CERO
+            if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+            }    
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
 
-          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
-          //paginacion
+          
+          
 
                 //ordenacion
           $this->db->order_by('suma', 'desc');
@@ -2363,6 +2373,8 @@ class Informes_model extends CI_Model
           $id_composicion= $data['id_composicion'];
           $id_calidad= $data['id_calidad'];
 
+          $id_medida = $data['id_medida'];
+
 
           switch ($data['columna']) {
                    case '0':
@@ -2409,11 +2421,12 @@ class Informes_model extends CI_Model
 
 
           $this->db->select('p.referencia, p.comentario');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.precio');
+          $this->db->select('p.descripcion, p.minimo,p.minimo_kg, p.imagen, p.precio');
           $this->db->select('c.hexadecimal_color,c.color nombre_color');
           $this->db->select("co.composicion", FALSE);  
           $this->db->select("ca.calidad", FALSE);  
-          $this->db->select("COUNT(m.referencia) as 'suma'");
+            //$this->db->select("COUNT(m.referencia) as 'suma'");
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
@@ -2464,7 +2477,12 @@ class Informes_model extends CI_Model
          $where_cond ='';
 
              
-          //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+           //ojo AQUI EL CERO
+          if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+             $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+             $where_cond.= (($where_cond!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+          }  
+
           if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
               $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
               $where_cond.= (($where_cond!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
@@ -2488,9 +2506,11 @@ class Informes_model extends CI_Model
 
             $this->db->order_by($columna, $data['orden']); 
 
-          //$this->db->group_by("p.referencia,p.descripcion, p.minimo, p.imagen, p.precio, c.hexadecimal_color,c.color,co.composicion,ca.calidad");
-          //paginacion
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
 
 
          if ($estatus=="cero") {
@@ -2498,11 +2518,17 @@ class Informes_model extends CI_Model
               $where_total = 'suma <= 0';
           }   
 
+         
+
           if ($estatus=="baja") {
-              $this->db->having('((suma>0) AND (suma < p.minimo))');
-              $where_total = '((suma>0) AND (suma < p.minimo))';
-          }             
-          
+                  if ($id_medida==1) { //metro
+                        $this->db->having('((suma>0) AND (suma < p.minimo))');
+                        $where_total = '((suma>0) AND (suma < p.minimo))';
+                  } else { //kilogramos
+                        $this->db->having('((suma>0) AND (suma < p.minimo_kg))');
+                        $where_total = '((suma>0) AND (suma < p.minimo_kg))';
+                  }
+          }   
  
 
 
@@ -2522,5 +2548,215 @@ class Informes_model extends CI_Model
               
 
       }        
+
+
+
+
+
+/////////////////////////////
+
+    public function buscador_cero($data){
+
+          $id_empresa= addslashes($data['proveedor']);
+           $id_empresaid = '';
+             if ($id_empresa!="") {
+                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                    if (!($id_empre)) {
+                      $id_empre =0;
+                    }                  
+
+                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
+
+            } else 
+            {
+               $id_empresaid .= ' ';
+            }          
+            $id_empresaid .= '';      
+
+
+          $cadena = addslashes($data['busqueda']);
+          $inicio = 0; //$data['start'];
+          $largo = 10000; //$data['length'];
+
+          $estatus= $data['extra_search'];
+          $id_estatus= $data['id_estatus'];
+          $id_empresa= addslashes($data['proveedor']);
+
+          $factura_reporte = addslashes($data['factura_reporte']);
+          $id_almacen= $data['id_almacen'];
+          
+                   //productos
+          //$id_descripcion= $data['id_descripcion'];
+          $id_descripcion= addslashes($data['id_descripcion']);
+          $id_color= $data['id_color'];
+          $id_composicion= $data['id_composicion'];
+          $id_calidad= $data['id_calidad'];
+
+          $id_medida = $data['id_medida'];
+
+
+          switch ($data['columna']) {
+                   case '0':
+                        $columna = 'p.referencia';
+                     break;
+                   case '1':
+                        $columna = 'p.descripcion';
+                     break;
+                   case '2':
+                        $columna = 'suma'; // y suma = COUNT(m.referencia) p.minimo
+                     break;
+                   case '3':
+                        $columna = 'p.imagen'; //
+                     break;
+                   case '4':
+                        $columna = 'c.color';
+                     break;
+                   case '5':
+                        $columna = 'p.comentario';
+                     break;
+                   case '6':
+                              $columna= 'co.composicion';
+                     break;
+                   case '7':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '8':
+                        $columna = 'p.precio';
+                     break;
+                   case '14':
+                        $columna = 'm.id_almacen';
+                     break;                       
+
+                   
+                   default:
+                       /*$columna = 'p.referencia';*/
+                       $columna = 'suma'; //'p.id';
+                       $order = 'DESC';                       
+                     break;
+                 }            
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+
+          $this->db->select('p.referencia, p.comentario');
+          $this->db->select('p.descripcion, p.minimo,p.minimo_kg, p.imagen, p.precio');
+          $this->db->select('c.hexadecimal_color,c.color nombre_color');
+          $this->db->select("co.composicion", FALSE);  
+          $this->db->select("ca.calidad", FALSE);  
+            //$this->db->select("COUNT(m.referencia) as 'suma'");
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
+
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
+
+         
+          if ($id_almacen!=0) {
+            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+            $id_almacenid = '';
+          }   
+
+           if ($data['id_factura']!=0) {
+              $id_facturaid = ' AND ( m.id_factura =  '.$data['id_factura'].' ) ';  
+          } else {
+              $id_facturaid = '';
+          }           
+
+          $this->db->select("a.almacen");
+          $this->db->select("p.codigo_contable");  
+
+
+          $this->db->from($this->productos.' as p');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); //,'LEFT'
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); //,'LEFT'
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); //,'LEFT'
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12 and m.id_medida='.$id_medida.$id_almacenid.$id_facturaid.$id_empresaid,'LEFT'); //
+          $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT'); //,'LEFT'
+
+          if ($estatus=="cero") {
+            $activo  = ' and ( p.activo =  0 ) ';  
+          } else {
+            $activo ='';
+          }
+          
+          $where = '(
+                      
+                      (
+                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (CONCAT("Optimo:",p.minimo) LIKE  "%'.$cadena.'%")  OR
+                        (c.color LIKE  "%'.$cadena.'%") OR (p.comentario LIKE  "%'.$cadena.'%")  OR
+                        (co.composicion LIKE  "%'.$cadena.'%")  OR
+                        ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
+                        ( p.precio LIKE  "%'.$cadena.'%" ) 
+                       )'.$activo.'
+
+            ) ' ; 
+
+
+         $where_cond ='';
+
+             
+           //ojo AQUI EL CERO
+          /*
+          if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+             $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+             $where_cond.= (($where_cond!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+          } 
+          */ 
+
+          if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+              $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+              $where_cond.= (($where_cond!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+          }      
+          if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+             $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+             $where_cond.= (($where_cond!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+          }
+          if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+              $where.= (($where!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+              $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+          } 
+          if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+             $where.= (($where!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+             $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+          }        
+    
+          
+
+          $this->db->where($where);
+
+            $this->db->order_by($columna, $data['orden']); 
+
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
+
+         
+          $this->db->having('suma  IS  NULL');
+ 
+
+
+          //paginacion
+          $this->db->limit($largo,$inicio); 
+
+
+
+          $result = $this->db->get();
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result(); 
+              
+
+      }     
+
+
+
 
 }

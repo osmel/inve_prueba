@@ -150,6 +150,23 @@
 					<div  class="row">
 				
 
+			
+
+<!--Tipos de medida -->
+					<div class="col-xs-12 col-sm-6 col-md-2 bloq_id_medida" style="display:none;">
+							<div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Mts/kgs</label>
+								<div class="col-sm-12 col-md-12">
+									<select name="id_medida_reporte" id="id_medida_reporte" class="form-control">
+											<?php foreach ( $medidas as $medida ){ ?>
+													<option value="<?php echo $medida->id; ?>"><?php echo $medida->medida; ?></option>
+											<?php } ?>
+									</select>
+								</div>
+							</div>
+					</div>
+
+
 <!--Tipos de factura -->
 				 <div class="col-xs-12 col-sm-6 col-md-2" <?php echo 'style="display:'.( ($el_perfil==4 ) ? 'none':'block').'"'; ?>>
 					    

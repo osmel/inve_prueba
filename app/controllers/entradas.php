@@ -184,7 +184,7 @@ class Entradas extends CI_Controller {
       }
     }
   }
-
+  
 
 	//Esta es la Regilla de los productos
 	public function procesando_productos_temporales(){

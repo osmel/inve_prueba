@@ -150,21 +150,37 @@
 			
   					  </fieldset>
 					  
-					
 	
-	
+
 					<div class="form-group">
-						<label for="minimo" class="col-sm-12 col-md-12">Minimo</label>
+						<label for="minimo" class="col-sm-12 col-md-12">Mínimo mts</label>
 						<div class="col-sm-12 col-md-12">
 							<?php 
 								$nomb_nom='';
 								if (isset($producto->minimo)) 
 								 {	$nomb_nom = $producto->minimo;}
 							?>
-							<input value="<?php echo  set_value('minimo',$nomb_nom); ?>" type="text" class="form-control ttip" title="Números enteros."  restriccion="entero" id="minimo" name="minimo" placeholder="Minimo">
+							<input value="<?php echo  set_value('minimo',$nomb_nom); ?>" type="text" class="form-control ttip" title="Números enteros."  restriccion="entero" id="minimo" name="minimo" placeholder="Mínimo mts">
 						</div>
 					</div>	
-					
+
+
+					<div class="form-group">
+						<label for="minimo_kg" class="col-sm-12 col-md-12">Mínimo kgs</label>
+						<div class="col-sm-12 col-md-12">
+							<?php 
+								$nomb_nom='';
+								if (isset($producto->minimo_kg)) 
+								 {	$nomb_nom = $producto->minimo_kg;}
+							?>
+							<input value="<?php echo  set_value('minimo_kg',$nomb_nom); ?>" type="text" class="form-control ttip" title="Números enteros."  restriccion="entero" id="minimo_kg" name="minimo_kg" placeholder="Mínimo kgs">
+						</div>
+					</div>	
+
+
+
+
+
 					<fieldset disabled>
 					<!-- Imagen-->	
 					<div class="form-group">

@@ -1922,6 +1922,8 @@ public function detalle_salida_home($data){
           $id_color= $data['id_color'];
           $id_composicion= $data['id_composicion'];
           $id_calidad= $data['id_calidad'];
+          $id_medida = $data['id_medida'];
+          
           $id_almacen= $data['id_almacen'];
           $id_factura= $data['id_factura'];
           $columa_order = $data['order'][0]['column'];
@@ -1972,8 +1974,13 @@ public function detalle_salida_home($data){
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)"); 
-          $this->db->select("COUNT(m.referencia) as 'suma'");
-          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad, m.id_estatus'); 
+
+          //$this->db->select("0 as suma",FALSE);
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
+          //$this->db->select("COUNT(m.referencia) as 'suma'");
+          
+
+          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,p.minimo_kg,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad, m.id_estatus'); 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
          
@@ -1988,6 +1995,8 @@ public function detalle_salida_home($data){
           } else {
             $id_facturaid = '';
           }   
+
+          
           $this->db->select("p.codigo_contable");  
 
           $this->db->from($this->productos.' as p');
@@ -2002,10 +2011,13 @@ public function detalle_salida_home($data){
             $activo ='';
           }
 
+          
+
           $where = '(
                       
                       (
                         ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (CONCAT("Optimo:",p.minimo) LIKE  "%'.$cadena.'%")  OR
+
                         (c.color LIKE  "%'.$cadena.'%") OR (p.comentario LIKE  "%'.$cadena.'%")  OR
                         (co.composicion LIKE  "%'.$cadena.'%")  OR
                         ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
@@ -2013,7 +2025,14 @@ public function detalle_salida_home($data){
                        )'.$activo.'
 
             ) ' ; 
+            //CONCAT("Optimo:",p.minimo_kg) LIKE  "%'.$cadena.'%")  OR
              $where_cond="";        
+
+             //ojo AQUI EL CERO
+            if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+               $where_cond.= (($where_cond!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+            }     
 
 
             if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
@@ -2036,16 +2055,32 @@ public function detalle_salida_home($data){
 
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); 
-          //$this->db->group_by("p.referencia, p.minimo,  p.precio"); 
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
+          
+          
 
          if ($estatus=="cero") {
-              $this->db->having('suma <= 0');
-              $where_total = 'suma <= 0';
+               $this->db->having('suma  IS  NULL');
+               $where_total = 'suma  IS  NULL';
+          
           }   
+
           if ($estatus=="baja") {
-              $this->db->having('((suma>0) AND (suma < p.minimo))');
-              $where_total = '((suma>0) AND (suma < p.minimo))';
+                  if ($id_medida==1) { //metro
+                        $this->db->having('((suma>0) AND (suma < p.minimo))');
+                        $where_total = '((suma>0) AND (suma < p.minimo))';
+                  } else { //kilogramos
+                        $this->db->having('((suma>0) AND (suma < p.minimo_kg))');
+                        $where_total = '((suma>0) AND (suma < p.minimo_kg))';
+                  }
+  
+
+
+
           }             
           $this->db->limit($largo,$inicio); 
           $result = $this->db->get();
@@ -2073,7 +2108,7 @@ public function detalle_salida_home($data){
                               $dato[]= array(
                                       0=>$row->referencia, 
                                       1=>$row->descripcion,
-                                      2=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma, //
+                                      2=>'Optimo:'. ($id_medida==1 ? $row->minimo : $row->minimo_kg).'<br/>  Reales:'. $row->suma, //
                                       3=> $row->nombre_color.                                      
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
@@ -2113,6 +2148,228 @@ public function detalle_salida_home($data){
               
 
       }  
+
+
+  public function buscador_cero($data){
+        $id_empresa= addslashes($data['proveedor']);
+           $id_empresaid = '';
+             if ($id_empresa!="") {
+                  $id_empre =  self::check_existente_proveedor_entrada($id_empresa);
+
+                    if (!($id_empre)) {
+                      $id_empre =0;
+                    }                  
+
+                      $id_empresaid .= ' and ( m.id_empresa  =  '.$id_empre.' )  ';
+
+            } else 
+            {
+               $id_empresaid .= ' ';
+            }          
+          $id_empresaid .= '';
+          $cadena = addslashes($data['search']['value']);
+          $inicio = $data['start'];
+          $largo = $data['length'];
+          $estatus= $data['extra_search'];
+          $id_descripcion= addslashes($data['id_descripcion']);
+          $id_color= $data['id_color'];
+          $id_composicion= $data['id_composicion'];
+          $id_calidad= $data['id_calidad'];
+          $id_medida = $data['id_medida'];
+          
+          $id_almacen= $data['id_almacen'];
+          $id_factura= $data['id_factura'];
+          $columa_order = $data['order'][0]['column'];
+          $order = $data['order'][0]['dir'];
+
+           if ($data['draw'] ==0) {  //que se ordene por el ultimo
+                 $columa_order ='-1';
+                 $order = 'DESC';
+           } 
+
+          switch ($columa_order) {
+                   case '1':
+                        $columna = 'p.descripcion';
+                     break;
+                   case '2':
+                        $columna = 'suma'; 
+                     break;
+                   
+                   case '3':
+                        $columna = 'c.color';
+                     break;
+                   
+                   case '4':
+                              $columna= 'co.composicion';
+                     break;
+                   case '5':
+                              $columna= 'ca.calidad';
+                     break;
+                   case '6':
+                        $columna = 'p.precio';
+                     break;
+                   
+                   default:
+                       $columna = 'suma'; 
+                       $order = 'DESC';                       
+                     break;
+                 }           
+
+
+          $id_session = $this->db->escape($this->session->userdata('id'));
+
+          $this->db->select("SQL_CALC_FOUND_ROWS(p.referencia)"); 
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
+          $this->db->select('p.referencia, m.proceso_traspaso, p.descripcion, p.minimo,p.minimo_kg,   p.precio,c.hexadecimal_color,c.color nombre_color , co.composicion, ca.calidad, m.id_estatus'); 
+          $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
+          $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
+         
+          if ($id_almacen!=0) {
+            $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
+          } else {
+            $id_almacenid = ' ';
+          }   
+
+          if ($id_factura!=0) {
+            $id_facturaid = ' and ( m.id_factura =  '.$id_factura.' ) ';  
+          } else {
+            $id_facturaid = '';
+          }   
+
+          
+          $this->db->select("p.codigo_contable");  
+
+          $this->db->from($this->productos.' as p');
+          $this->db->join($this->colores.' As c', 'p.id_color = c.id'); 
+          $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id'); 
+          $this->db->join($this->calidades.' As ca', 'p.id_calidad = ca.id'); 
+          $this->db->join($this->registros.' As m', 'm.referencia= p.referencia and m.id_estatus=12  and m.id_medida='.$id_medida.$id_almacenid.$id_facturaid.$id_empresaid,'LEFT'); 
+
+          
+          $activo  = ' and ( p.activo =  0 ) ';  
+
+          $where = '(
+                      
+                      (
+                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR (CONCAT("Optimo:",p.minimo) LIKE  "%'.$cadena.'%")  OR
+
+                        (c.color LIKE  "%'.$cadena.'%") OR (p.comentario LIKE  "%'.$cadena.'%")  OR
+                        (co.composicion LIKE  "%'.$cadena.'%")  OR
+                        ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
+                        ( p.precio LIKE  "%'.$cadena.'%" ) 
+                       )'.$activo.'
+
+            ) ' ; 
+            
+             $where_cond="";        
+
+             //ojo AQUI EL CERO
+            
+            /*    
+            if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+               $where_cond.= (($where_cond!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+            }     
+            */
+
+            if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+               $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+            }     
+            if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                $where.= (($where!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+                $where_cond.= (($where_cond!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+            } 
+            if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+               $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+               $where_cond.= (($where_cond!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+            }
+            //if (($id_descripcion!="0") AND ($id_descripcion!="") AND ($id_descripcion!= null))  {                
+            if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+                $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+                $where_cond.= (($where_cond!="") ? " and " : "") . "( p.descripcion  =  '".$id_descripcion."' )";
+            }
+
+          $this->db->where($where);
+          $this->db->order_by($columna, $order); 
+          
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
+          
+          $this->db->having('suma  IS  NULL');
+    
+
+          
+          $this->db->limit($largo,$inicio); 
+          $result = $this->db->get();
+
+              if ( $result->num_rows() > 0 ) {
+
+                    $cantidad_consulta = $this->db->query("SELECT FOUND_ROWS() as cantidad");
+                    $found_rows = $cantidad_consulta->row(); 
+                    $registros_filtrados =  ( (int) $found_rows->cantidad);
+
+
+                  foreach ($result->result() as $row) {
+                            if  (isset($row->imagen)) {
+                              $nombre_fichero ='uploads/productos/thumbnail/300X300/'.substr($row->imagen,0,strrpos($row->imagen,".")).'_thumb'.substr($row->imagen,strrpos($row->imagen,"."));
+                              if (file_exists($nombre_fichero)) {
+                                  $imagen ='<img src="'.base_url().$nombre_fichero.'" border="0" width="75" height="75">';
+
+                              } else {
+                                  $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                              }
+                            } else {
+                                $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            }
+
+                              $dato[]= array(
+                                      0=>$row->referencia, 
+                                      1=>$row->descripcion,
+                                      2=>'Optimo:'. ($id_medida==1 ? $row->minimo : $row->minimo_kg).'<br/>  Reales:'. $row->suma, //
+                                      3=> $row->nombre_color.                                      
+                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
+                                      4=>$row->composicion,  //6
+                                      5=>$row->calidad,   //7
+                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
+                                      7=>$row->metros,   //9
+                                      8=>$row->kilogramos, //10
+                                      9=>"black",  //11
+                                      10=>$row->proceso_traspaso, //15
+                                      11=>$row->codigo_contable,  //16
+                                      12=>$row->id_estatus,
+                                    );                    
+                            
+
+                          
+                      }
+                      return json_encode ( array(
+                        "draw"            => intval( $data['draw'] ),
+                        "recordsTotal"    => $registros_filtrados, 
+                        "recordsFiltered" => $registros_filtrados, 
+                        "data"            =>  $dato, 
+                      ));
+                    
+              }   
+              else {
+                  $output = array(
+                  "draw" =>  intval( $data['draw'] ),
+                  "recordsTotal" => 0,
+                  "recordsFiltered" =>0,
+                  "aaData" => array()
+                  );
+                  $array[]="";
+                  return json_encode($output);
+              }
+
+              $result->free_result();   
+              
+
+      }  
+
 
 
 
@@ -2253,6 +2510,7 @@ public function detalle_salida_home($data){
           $id_factura= $data['id_factura'];
           $columa_order = $data['order'][0]['column'];
           $order = $data['order'][0]['dir'];
+          $id_medida = $data['id_medida'];
            
            if ($data['draw'] ==0) {  
                  $columa_order ='-1';
@@ -2319,7 +2577,10 @@ public function detalle_salida_home($data){
           } else {
            $fechas .= ' ';
           }
-          $this->db->select("COUNT(m.referencia) as 'suma'");
+          
+          //$this->db->select("COUNT(m.referencia) as 'suma'");
+          $this->db->select("sum(m.cantidad_um*(m.id_medida=".$id_medida.") ) as suma",FALSE);
+
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); 
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); 
           if ($id_almacen!=0) {
@@ -2360,9 +2621,23 @@ public function detalle_salida_home($data){
             ) ' ; 
 
 
+           //ojo AQUI EL CERO
+            if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( m.id_medida  =  ".$id_medida." )";
+               
+            }     
+
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
-          $this->db->group_by("p.referencia, p.minimo,  p.precio"); //p.imagen,
+          
+          
+          if ($id_medida==1) { //metro
+            $this->db->group_by("p.referencia, p.minimo,  p.precio");   
+          } else { //kilogramos
+            $this->db->group_by("p.referencia, p.minimo_kg,  p.precio"); 
+          }
+
+
           $this->db->limit($largo,$inicio); 
 
 

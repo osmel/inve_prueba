@@ -1373,7 +1373,7 @@ var comenzar = false;
 
 		"columnDefs": [
 
-			    	{ 
+			    	{  //nombre de tela
 		                "render": function ( data, type, row ) {
 		                		if (row[12]!='') {
 		                			return row[0]+'<br/><b style="color:red;">Cód: </b>'+row[12];	
@@ -1385,45 +1385,59 @@ var comenzar = false;
 		                "targets": [0]   //el 3 es la imagen q ya viene formada desde el modelo
 		            },
 
-			    	{ 
+			    	{ //referencia, minimo, 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [1,2,3,4]   //el 3 es la imagen q ya viene formada desde el modelo
+		                "targets": [1,2]   //el 3 es la imagen q ya viene formada desde el modelo
 		            },
 
-		            {
+			    	{ //,minimo_kg
+		                "render": function ( data, type, row ) {
+		                		return row[13];
+		                },
+		                "targets": [3]   //el 3 es la imagen q ya viene formada desde el modelo
+		            },
+
+			    	{ //imagen, color 
+		                "render": function ( data, type, row ) {
+		                		return data;
+		                },
+		                "targets": [4,5]   //el 3 es la imagen q ya viene formada desde el modelo
+		            },		            
+
+		            { //ultimo consecutivo
 		                "render": function ( data, type, row ) {
 
 							return row[7];	
 		                },
-		                "targets": 5
+		                "targets": 6
 		            },
 
-		            {
+		            {  //composicion
 		                "render": function ( data, type, row ) {
 
 							return row[8];	
 		                },
-		                "targets": 6
+		                "targets": 7
 		            },
 
-		            {
+		            { //calidad
 		                "render": function ( data, type, row ) {
 
 							return row[9];	
 		                },
-		                "targets": 7
+		                "targets": 8
 		            },
 
-		            {
+		            {  //precio
 		                "render": function ( data, type, row ) {
 
 							return row[10];	
 		                },
-		                "targets": 8
+		                "targets": 9
 		            },		
-		            {
+		            {  //desactivar 
 		                "render": function ( data, type, row ) {
 
 							var checado = ((row[11] == 1) ? "checked" : ""); 
@@ -1434,10 +1448,10 @@ var comenzar = false;
 
 							return texto;	
 		                },
-		                "targets": 9
+		                "targets": 10
 		            },		                        		            
 
-		            {
+		            {  //editar
 		                "render": function ( data, type, row ) {
 
 		               if (row[6]==0) { 	
@@ -1460,11 +1474,11 @@ var comenzar = false;
 			
 							return texto;	
 		                },
-		                "targets": 10
+		                "targets": 11
 		            },
 
 		            
-		            {
+		            {   //eliminar
 		                "render": function ( data, type, row ) {
 
 		                	if (row[6]==0) {
@@ -1491,11 +1505,11 @@ var comenzar = false;
 
 							return texto;	
 		                },
-		                "targets": 11
+		                "targets": 12
 		            },
 
 
-		            {
+		            {  //cambio precio/codigo
 		                "render": function ( data, type, row ) {
 						texto='	<td>';
 							texto+=' <a href="cambiar_producto/'+jQuery.base64.encode(row[5])+'" type="button" ';
@@ -1505,11 +1519,11 @@ var comenzar = false;
 						texto+='</td>';	 
 							return texto;	
 		                },
-		                "targets": 12
+		                "targets": 13
 		            },
 
 
-		            {
+		            {  //detalle
 		                "render": function ( data, type, row ) {
 						texto='	<td>';
 							texto+=' <a href="detalle_producto/'+jQuery.base64.encode(row[5])+'" type="button" ';
@@ -1519,7 +1533,7 @@ var comenzar = false;
 						texto+='</td>';	 
 							return texto;	
 		                },
-		                "targets": 13
+		                "targets": 14
 		            },
 
 
@@ -1534,7 +1548,7 @@ var comenzar = false;
 		        ],
 
 	 			"rowCallback": function( row, data ) {
-					    if  (data[11] == 1) 					    {
+					    if  (data[12] == 1) 					    {
 					      jQuery('td', row).addClass( "danger" );
 					    }
 					  },	
@@ -2407,6 +2421,9 @@ jQuery('#existencia_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','none');
+
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2432,6 +2449,7 @@ jQuery('#existencia_reporte').click(function (e) {
     jQuery('#composicion_rep option:eq(0)').prop('selected', 'selected');
     jQuery('#calidad_rep option:eq(0)').prop('selected', 'selected');
 
+   
     jQuery("#producto_rep").trigger('change');
 
 
@@ -2468,6 +2486,9 @@ jQuery('#salida_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','none');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2520,6 +2541,9 @@ jQuery('#apartado_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','none');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2570,6 +2594,9 @@ jQuery('#cero_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','none');
 	jQuery('#fecha_id').css('display','none');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','block');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2618,6 +2645,9 @@ jQuery('#baja_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block'); //**
 	jQuery('#fecha_id').css('display','none');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','block');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2672,6 +2702,9 @@ jQuery('#top_reporte').click(function (e) {
 	jQuery('.leyen_home').css('display','none');
 	jQuery('.leyenda').css('display','none');
 	jQuery('.leyenda_devolucion').css('display','none');
+	 //
+    jQuery('.bloq_id_medida').css('display','block');
+    
 
 	comienzo=true; //para indicar que start comience en 0;
 	var oTable =jQuery('#tabla_reporte').dataTable();
@@ -2707,6 +2740,9 @@ jQuery('#entrada_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','none');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2758,6 +2794,9 @@ jQuery('#devolucion_reporte').click(function (e) {
 	jQuery('#proveedor_id').css('display','block');
 	jQuery('#fecha_id').css('display','block');
 	jQuery('#example2').css('display','block');
+	 //
+    jQuery('.bloq_id_medida').css('display','none');
+    
 	/*
 	jQuery('#calidad option:eq(0)').prop('selected', 'selected');
 	jQuery('#composicion option:eq(0)').prop('selected', 'selected');
@@ -2832,12 +2871,15 @@ jQuery('#tabla_reporte').dataTable( {
 						d.id_almacen = jQuery("#id_almacen_reporte").val(); 
 						d.id_factura = jQuery("#id_factura_reporte").val(); 
 
+
 						//datos del producto
 						d.id_descripcion = jQuery("#producto_rep").val(); 
 						if (d.id_descripcion !='') {
 							  d.id_descripcion = jQuery('#producto_rep option:selected').text();
 						}
 						d.val_prod_id = jQuery('#producto_rep option:selected').val();
+
+						d.id_medida = jQuery("#id_medida_reporte option:selected").val();
 
 						d.id_color = jQuery("#color_rep").val(); 
 						d.id_composicion = jQuery("#composicion_rep").val(); 
@@ -3069,6 +3111,7 @@ jQuery('#tabla_reporte').dataTable( {
 						if (id_descripcion !='') {
 							  id_descripcion = jQuery('#producto_rep option:selected').text();
 						}
+						id_medida = jQuery("#id_medida_reporte option:selected").val();
 						id_color = jQuery("#color_rep").val(); 
 						id_composicion = jQuery("#composicion_rep").val(); 
 						id_calidad = jQuery("#calidad_rep").val(); 
@@ -3093,6 +3136,7 @@ jQuery('#tabla_reporte').dataTable( {
 								  id_factura : id_factura,
 								//datos del producto
 							  id_descripcion : id_descripcion,
+							  	   id_medida : id_medida,
 								    id_color : id_color,
 							   id_composicion:id_composicion,
 								   id_calidad:id_calidad,
@@ -3335,6 +3379,13 @@ jQuery('#id_factura_reporte').change(function(e) {
 		var oTable =jQuery('#tabla_reporte').dataTable();
 		oTable._fnAjaxUpdate();
 });
+
+jQuery('#id_medida_reporte').change(function(e) {
+		comienzo=true; //para indicar que start comience en 0;
+		var oTable =jQuery('#tabla_reporte').dataTable();
+		oTable._fnAjaxUpdate();
+});
+
 
 
 jQuery("#factura_reporte").on('keyup', function(e) {
@@ -3688,6 +3739,8 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 
+		id_medida = jQuery("#id_medida_reporte option:selected").val();
+
 
     abrir('POST', 'exportar_reportes', {
     			busqueda:busqueda,
@@ -3707,6 +3760,7 @@ jQuery('body').on('click','#exportar_reportes', function (e) {
 			proveedor:proveedor, 
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
+			id_medida:id_medida
     }, '_blank' );
 		        
 	
@@ -3780,6 +3834,8 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
 
+		id_medida = jQuery("#id_medida_reporte option:selected").val();
+
 		var oTable =jQuery('#tabla_reporte').DataTable();
 		order = oTable.order();
 
@@ -3803,6 +3859,7 @@ jQuery('body').on('click','#impresion_rapida', function (e) {
 			fecha_final: fecha_final,
 			columna : order[0][0],
 			orden : order[0][1],
+			id_medida:id_medida
     }, '_blank' );
 	
 });

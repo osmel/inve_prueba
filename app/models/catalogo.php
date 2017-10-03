@@ -1068,25 +1068,28 @@
                         $columna = 'p.minimo';
                      break;
                    case '3':
+                        $columna = 'p.minimo_kg';
+                     break;                     
+                   case '4':
                         $columna = 'p.imagen';
                      break;
-                   case '4':
+                   case '5':
                         $columna = 'c.color';
                      break;
 
-                   case '5':
+                   case '6':
                         $columna = 'p.consecutivo';
                      break;
 
-                   case '6':
+                   case '7':
                         $columna = 'co.composicion';
                      break;
 
-                   case '7':
+                   case '8':
                         $columna = 'ca.calidad';
                      break;
 
-                   case '8':
+                   case '9':
                         $columna = 'p.precio';
                      break;
                    
@@ -1105,7 +1108,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
           
           $this->db->select('p.id, p.uid, p.referencia,  p.comentario,p.consecutivo');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho,p.codigo_contable');
+          $this->db->select('p.descripcion, p.minimo,p.minimo_kg, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho,p.codigo_contable');
           $this->db->select('p.id_usuario, p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
 
           $this->db->select('co.composicion, ca.calidad, p.activo');
@@ -1123,7 +1126,8 @@
                       (
                         ( p.descripcion LIKE  "%'.$cadena.'%" ) OR (p.referencia LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
                         (p.codigo_contable LIKE  "%'.$cadena.'%")  OR
-                        ( p.minimo LIKE  "%'.$cadena.'%" ) 
+                        ( p.minimo LIKE  "%'.$cadena.'%" ) OR
+                        ( p.minimo_kg LIKE  "%'.$cadena.'%" ) 
                         
                        )
 
@@ -1225,7 +1229,8 @@
                                        9=>$row->calidad, 
                                        10=>$row->precio, 
                                        11=>$row->activo, 
-                                       12=>$row->codigo_contable
+                                       12=>$row->codigo_contable,
+                                       13=>$row->minimo_kg
                                     );
                       }
 
@@ -4161,7 +4166,7 @@
 
         public function listado_productos($limit=-1, $offset=-1){
           $this->db->select('p.id, p.uid, p.referencia,  p.comentario');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho');
+          $this->db->select('p.descripcion, p.minimo,p.minimo_kg, p.imagen, p.id_composicion, p.id_color,p.id_calidad,p.precio,p.ancho');
           $this->db->select('p.id_usuario, p.fecha_mac, c.hexadecimal_color,c.color nombre_color');
 
           $this->db->from($this->productos.' as p');
@@ -4596,7 +4601,7 @@
      public function coger_producto( $data ){
 
           $this->db->select('p.id, p.uid, p.referencia,p.comentario, p.consecutivo, id_imagen_check');
-          $this->db->select('p.descripcion, p.minimo, p.imagen, p.id_composicion, p.codigo_contable, p.id_color,p.id_calidad,p.precio,p.ancho');
+          $this->db->select('p.descripcion, p.minimo,p.minimo_kg, p.imagen, p.id_composicion, p.codigo_contable, p.id_color,p.id_calidad,p.precio,p.ancho');
           $this->db->select('p.id_usuario, p.fecha_mac');
 
           $this->db->from($this->productos.' as p');
@@ -4630,6 +4635,7 @@
                $this->db->set( 'referencia', $data['referencia'.$i] );   
                $this->db->set( 'descripcion', $data['descripcion'] );  
                $this->db->set( 'minimo', $data['minimo'] );  
+               $this->db->set( 'minimo_kg', $data['minimo_kg'] );  
 
                $this->db->set( 'precio', $data['precio'] );  
                $this->db->set( 'ancho', $data['ancho'] );  
@@ -4698,6 +4704,7 @@
           }  
           $this->db->set( 'descripcion', $data['descripcion'] );  
           $this->db->set( 'minimo', $data['minimo'] );  
+          $this->db->set( 'minimo_kg', $data['minimo_kg'] );  
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'ancho', $data['ancho'] );  
           
@@ -4741,6 +4748,7 @@
 
           $this->db->set( 'id_usuario',  $id_session );
           $this->db->set( 'minimo', $data['minimo'] );  
+          $this->db->set( 'minimo_kg', $data['minimo_kg'] );  
 
           $this->db->where('id', $data['id'] );
           $this->db->update($this->productos );
@@ -4763,6 +4771,7 @@
 
           //$this->db->set( 'precio_anterior', 'precio', FALSE  );
           $this->db->set( 'minimo', $data['minimo'] );  
+          $this->db->set( 'minimo_kg', $data['minimo_kg'] );  
           $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
           $this->db->set( 'precio', $data['precio'] );  
           $this->db->set( 'comentario', $data['comentario'] );  
@@ -4775,30 +4784,7 @@
 
           $this->db->where('id', $data['id'] );
           $this->db->update($this->productos );
-
-
-
-
-          //actualizando precio de todos los productos
-         /*
-          $this->db->set( 'precio_anterior', 'precio', FALSE  );
-          $this->db->set( 'precio', $data['precio'] );  
-
-          $this->db->where('referencia', $data['referencia'] );
-          $this->db->where('id_apartado', 0 );    //LOS QUE ESTAN APARTADOS
-          $this->db->where('estatus_salida', '0' ); //LOS QUE ESTAN EN SALIDAS
-          
-          $this->db->update($this->registros_entradas );
-          */
-
-
-          //actualizando "cambio de precios para todos los q pertenecen a la referencia"
-          /*
-          $this->db->set( 'precio_cambio', $data['precio'] );  
-          $this->db->where('referencia', $data['referencia'] );
-          $this->db->set( 'codigo_contable', $data['codigo_contable'] );  
-          $this->db->update($this->registros_entradas );
-          */
+       
           
           return true;
           $result->free_result();

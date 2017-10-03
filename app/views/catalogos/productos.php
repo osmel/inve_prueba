@@ -92,25 +92,26 @@
 					<table style="font-size: 12px;" id="tabla_cat_productos" class="display table table-striped table-bordered table-responsive" cellspacing="0" width="100%">
 						<thead>
 							<tr>
-								<th class="text-center cursora" width="15%">Nombre de Tela</th>
-								<th class="text-center cursora" width="15%">Referencia</th>
-								<th class="text-center cursora" width="6%">Mínimo</th>
+								<th class="text-center" width="12%">Nombre de Tela</th>
+								<th class="text-center" width="12%">Referencia</th>
+								<th class="text-center" width="6%">Mínimo_mts</th>
+								<th class="text-center" width="6%">Mínimo_kg</th>
 								
-								<th class="text-center cursora" width="15%">Imagen</th>
-								<th class="text-center cursora" width="10%">Color</th>
-								<th class="text-center cursora" width="4%">Últ. Cons.</th>
+								<th class="text-center" width="15%">Imagen</th>
+								<th class="text-center" width="10%">Color</th>
+								<th class="text-center" width="4%">Últ. Cons.</th>
 
-								<th class="text-center cursora" width="4%">Composición</th>
-								<th class="text-center cursora" width="4%">Calidad</th>
-								<th class="text-center cursora" width="4%">Precio</th>
-								<th class="text-center cursora" width="4%">Desactivar</th>
+								<th class="text-center" width="4%">Composición</th>
+								<th class="text-center" width="4%">Calidad</th>
+								<th class="text-center" width="4%">Precio</th>
+								<th class="text-center" width="4%">Desactivar</th>
 								
-								<th class="text-center" width="4%"><strong>Editar</strong></th>
+								<th class="text-center" width="4%">Editar</th>
 								
-								<th class="text-center" width="5%"><strong>Eliminar</strong></th>
+								<th class="text-center" width="5%">Eliminar</th>
 								
-								<th class="text-center" width="5%"><strong>Cambio Precio/Código</strong></th>
-								<th class="text-center" width="5%"><strong>Detalle</strong></th>
+								<th class="text-center" width="5%">Cambio Precio/Código</th>
+								<th class="text-center" width="5%">Detalle</th>
 
 
 							</tr>

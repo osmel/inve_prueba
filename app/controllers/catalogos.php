@@ -2889,7 +2889,8 @@ function validacion_edicion_proveedor(){
 
       $this->form_validation->set_rules( 'descripcion', 'Descripción', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
       $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
-      $this->form_validation->set_rules( 'minimo', 'Minimo',  'required|callback_valid_cero|xss_clean');   
+      $this->form_validation->set_rules( 'minimo', 'Mínimo Mts',  'required|callback_valid_cero|xss_clean');   
+      $this->form_validation->set_rules( 'minimo_kg', 'Mínimo kgs',  'required|callback_valid_cero|xss_clean');   
       $this->form_validation->set_rules( 'precio', 'Precio', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules( 'ancho', 'Ancho', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules( 'colores_seleccionados[]', 'Colores', 'trim|required|xss_clean');
@@ -3018,6 +3019,7 @@ function validacion_edicion_proveedor(){
 
 
                 $data['minimo']    = $this->input->post('minimo'); 
+                $data['minimo_kg']    = $this->input->post('minimo_kg'); 
                 $data['precio']    = $this->input->post('precio'); 
                 $data['ancho']    = $this->input->post('ancho'); 
                 $data['comentario']    = $this->input->post('comentario'); 
@@ -3124,7 +3126,8 @@ function validacion_edicion_producto(){
       $this->form_validation->set_rules( 'ancho', 'Ancho', 'required|callback_importe_valido|xss_clean');   
       $this->form_validation->set_rules( 'precio', 'Precio', 'required|callback_importe_valido|xss_clean');   
       /*color, composicion,calida*/
-      $this->form_validation->set_rules( 'minimo', 'Minimo',  'required|callback_valid_cero|xss_clean');      
+      $this->form_validation->set_rules( 'minimo', 'Mínimo mts',  'required|callback_valid_cero|xss_clean');      
+      $this->form_validation->set_rules( 'minimo_kg', 'Mínimo kgs',  'required|callback_valid_cero|xss_clean');      
       $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
 
 
@@ -3215,6 +3218,7 @@ function validacion_edicion_producto(){
 
 
                     $data['minimo']    = $this->input->post('minimo'); 
+                    $data['minimo_kg']    = $this->input->post('minimo_kg'); 
                     $data['precio']    = $this->input->post('precio'); 
                     $data['ancho']    = $this->input->post('ancho'); 
                     
@@ -3323,13 +3327,15 @@ function validacion_edicion_minimo(){
       $this->form_validation->set_rules( 'precio', 'Precio', 'required|callback_importe_valido|xss_clean');   
 
       /*color, composicion,calida*/
-      $this->form_validation->set_rules( 'minimo', 'Minimo',  'required|callback_valid_cero|xss_clean');      
+      $this->form_validation->set_rules( 'minimo', 'Mínimo mts',  'required|callback_valid_cero|xss_clean');      
+      $this->form_validation->set_rules( 'minimo_kg', 'Mínimo kgs',  'required|callback_valid_cero|xss_clean');      
       $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
 
       if ($this->form_validation->run() === TRUE){          
           
             $data['id']    =  $this->input->post('id'); 
             $data['minimo']    = $this->input->post('minimo'); 
+            $data['minimo_kg']    = $this->input->post('minimo_kg'); 
 
             $data               = $this->security->xss_clean($data);  
             $guardar            = $this->catalogo->editar_minimo( $data );
@@ -3535,6 +3541,7 @@ function validacion_cambio_producto(){
                 $data['comentario']    = $this->input->post('comentario'); 
                 $data['precio']    = $this->input->post('precio'); 
                 $data['minimo']    = $this->input->post('minimo'); 
+                $data['minimo_kg']    = $this->input->post('minimo_kg'); 
                 
 
 

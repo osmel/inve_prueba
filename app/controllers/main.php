@@ -603,6 +603,8 @@ class Main extends CI_Controller {
           $data['productos'] = $this->catalogo->listado_productos_unico();
           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+
+          $data['medidas']  = $this->catalogo->listado_medidas();
           
 		  $dato['id'] = 7;
 		  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
