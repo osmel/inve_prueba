@@ -112,7 +112,7 @@ class Exportar_reportes extends CI_Controller {
                break;
 
             case 'cero': //*precio
-                $data['movimientos']= $this->exportar_model->buscador_cero_baja($data);
+                $data['movimientos']= $this->exportar_model->buscador_cero($data);
                 if ($data['movimientos']) {
                     $this->export->to_excel($data['movimientos'], 'reporte_cero_'.date("Y-m-d_H-i-s").'-'.$nombre_completo);
                 }    

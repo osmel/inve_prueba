@@ -2055,8 +2055,6 @@ class Informes_model extends CI_Model
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          
-
           $this->db->select('m.id, m.mov_salida,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida,  m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
@@ -2071,7 +2069,6 @@ class Informes_model extends CI_Model
           }
 
           $this->db->select('m.cantidad_um, u.medida');
-
           $this->db->select('
                         CASE m.id_apartado
                           WHEN "1" THEN "ab1d1d"
@@ -2085,21 +2082,14 @@ class Informes_model extends CI_Model
                            ELSE "No Apartado"
                         END AS apartado
             ',False);
-
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
-          
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
-          
           $this->db->select("a.almacen");         
           $this->db->select("prod.codigo_contable");  
-
           $this->db->select("tp.tipo_pedido");          
-          
           $this->db->select("tf.tipo_factura");          
-
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
-
 
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -2263,6 +2253,8 @@ class Informes_model extends CI_Model
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros", FALSE);
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos", FALSE);
 
+
+
           $this->db->select("a.almacen,p.codigo_contable");
 
           if ($id_almacen!=0) {
@@ -2283,16 +2275,14 @@ class Informes_model extends CI_Model
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen'); //,'LEFT'
 
           $where = '(
-                      
                       (
-                        ( p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR 
+                        (p.referencia LIKE  "%'.$cadena.'%" ) OR (p.descripcion LIKE  "%'.$cadena.'%") OR 
                         (c.color LIKE  "%'.$cadena.'%") OR (p.comentario LIKE  "%'.$cadena.'%")  OR
                         (co.composicion LIKE  "%'.$cadena.'%")  OR
                         ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                         ( p.precio LIKE  "%'.$cadena.'%" ) 
                        )
-
-            ) ' ; 
+            )'; 
 
           //ojo AQUI EL CERO
             if  (($id_medida!="0") AND ($id_medida!="") AND ($id_medida!= null)) {
@@ -2328,6 +2318,7 @@ class Informes_model extends CI_Model
             $result->free_result();
 
       }        
+
 
 
 
