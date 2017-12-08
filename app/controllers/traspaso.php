@@ -23,7 +23,7 @@ public function borrardatos() {
   
   print_r($this->modelo_borrar_datos->eliminar_todos());
   echo '<br/>';
-  print_r($this->modelo_borrar_datos->eliminar_remoto());
+//  print_r($this->modelo_borrar_datos->eliminar_remoto());
 } 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

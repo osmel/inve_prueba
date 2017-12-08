@@ -2,6 +2,8 @@ uploads/*
 qr_code/*
 app/config/database.php
 app/config/config.php
+inve_prueba/
+old/
 app/logs/*
 nodejs/*.log
 .htaccess
