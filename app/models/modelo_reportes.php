@@ -708,7 +708,7 @@
           $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.num_partida'); 
           $this->db->select('m.codigo, m.ancho, m.devolucion'); 
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,   m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre');
+          $this->db->select('c.hexadecimal_color, c.color');
 
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia'); 
@@ -733,13 +733,18 @@
                                     ELSE 'black' END )
                              AS color_devolucion");  
           $this->db->select("prod.codigo_contable, m.nombre_usuario,m.id_compra");  
+
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
           
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           if ($estatus=="apartado") {
               $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado'); 
               $this->db->join($this->proveedores.' As pr', 'us.id_cliente = pr.id'); 
@@ -929,7 +934,7 @@ public function detalle_entrada_home($data){
           $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.num_partida'); 
           $this->db->select('m.codigo, m.ancho, m.devolucion'); 
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,   m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre');
+          $this->db->select('c.hexadecimal_color, c.color');
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia'); 
               $this->db->select('m.id_apartado'); 
@@ -956,13 +961,19 @@ public function detalle_entrada_home($data){
 
           $this->db->select("a.almacen");  
           $this->db->select("prod.imagen");  
+
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
           
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+
+           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           if ($estatus=="apartado") {
               $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado'); 
               $this->db->join($this->proveedores.' As pr', 'us.id_cliente = pr.id'); 
@@ -1586,7 +1597,7 @@ public function detalle_salida_home($data){
           $this->db->select('m.id, m.movimiento,m.movimiento_unico,m.factura, m.id_fac_orig, m.id_descripcion,  m.num_partida,m.id_estatus');
           $this->db->select('m.ancho, m.codigo'); 
           $this->db->select('m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre, m.devolucion');
+          $this->db->select('c.hexadecimal_color, c.color,  m.devolucion');
           $this->db->select('m.cantidad_um, u.medida');
           $this->db->select('
                         CASE m.id_apartado
@@ -1609,13 +1620,18 @@ public function detalle_salida_home($data){
                              AS color_devolucion");    
           $this->db->select("prod.codigo_contable,m.nombre_usuario, m.id_compra");  
 
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
 
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');           
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+
+           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';//' OR (m.consecutivo LIKE  "%'.$cadena.'%") ';
 
@@ -1799,7 +1815,7 @@ public function detalle_salida_home($data){
           $this->db->select('m.id, m.movimiento,m.movimiento_unico,m.factura, m.id_fac_orig, m.id_descripcion,  m.num_partida,m.id_estatus');
           $this->db->select('m.ancho, m.codigo'); 
           $this->db->select('m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
-          $this->db->select('c.hexadecimal_color, c.color, p.nombre, m.devolucion');
+          $this->db->select('c.hexadecimal_color, c.color, m.devolucion');
           $this->db->select('m.cantidad_um, u.medida');
           $this->db->select('
                         CASE m.id_apartado
@@ -1824,13 +1840,17 @@ public function detalle_salida_home($data){
 
           $this->db->select("prod.imagen, a.almacen");  
 
+           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
 
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');           
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); 
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
 
           $where = '( m.codigo =  "'.$data["identificador"].'" ) ' ;
 
