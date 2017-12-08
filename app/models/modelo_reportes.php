@@ -2906,7 +2906,7 @@ public function detalle_salida_home($data){
           $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)"); 
           $this->db->select('m.movimiento, m.movimiento_unico'); 
           $this->db->select('a.almacen,m.id_factura, m.id_estatus');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago');
+          $this->db->select('m.factura,tp.tipo_pago');
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false); 
           $this->db->select("MAX(m.devolucion) devolucion"); 
           $this->db->select('sum(m.precio*m.cantidad_um) as sum_precio');           
@@ -2914,9 +2914,16 @@ public function detalle_salida_home($data){
           $this->db->select("sum(m.precio*m.cantidad_um)+(sum(m.precio*m.cantidad_um*m.iva)/100) as sum_total"); 
           $this->db->select("m.nombre_usuario,m.id_compra"); 
 
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); 
+
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
+          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
 
           if ($id_almacen!=0) {

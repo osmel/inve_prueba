@@ -367,7 +367,8 @@ public function totales_importes($where){
             $this->db->select('id_new_color AS id_color',false);     
             
             
-           $this->db->select('precio_nuevo AS precio',false);     //
+           //$this->db->select('precio_nuevo AS precio',false);     //
+            $this->db->select('precio AS precio',false);      //
            $this->db->select('precio AS precio_viejo',false);      //
 
            $this->db->select('1 AS cantidad_royo',false);    
