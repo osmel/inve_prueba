@@ -4012,7 +4012,7 @@
             $this->db->select("nombre", FALSE);  
             $this->db->from($this->catalogo_tiendas);
 
-          $where = '(  (activo<>1) AND 
+          $where = '(  (activo<>1) AND (id='.$this->session->userdata("id_tienda_cliente").') AND 
                         ( id LIKE  "%'.$data['key'].'%" ) OR (nombre LIKE  "%'.$data['key'].'%") 
 
             )';   
