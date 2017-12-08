@@ -101,6 +101,8 @@ public function buscador_revisar_historial_compra($data){
             }   
 
 
+          $this->db->select('med.medida');  
+
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -109,7 +111,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
           $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
-          
+          $this->db->join($this->unidades_medidas.' As med', 'med.id= pc.id_medida','LEFT');
 
           $where = '(                      
                             (
@@ -131,6 +133,8 @@ public function buscador_revisar_historial_compra($data){
           $this->db->group_by("p.referencia");
 
           //$this->db->order_by($columna, $order); 
+
+
     
             $result = $this->db->get();
 
@@ -186,6 +190,7 @@ public function buscador_revisar_historial_compra($data){
             }   
 
 
+          $this->db->select('med.medida');  
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -194,6 +199,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
           $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
+          $this->db->join($this->unidades_medidas.' As med', 'med.id= pc.id_medida','LEFT');
 
           $where = '(                      
                             (
@@ -261,6 +267,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
           $this->db->select('prov.nombre proveedor');
+          $this->db->select('med.medida');
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( pc.id_almacen =  '.$id_almacen.' ) ';  
@@ -280,6 +287,7 @@ public function buscador_revisar_historial_compra($data){
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
           $this->db->join($this->proveedores.' As prov', 'prov.id= pc.id_proveedor');
+          $this->db->join($this->unidades_medidas.' As med', 'med.id= pc.id_medida','LEFT');
           
 
           $where = '(                      

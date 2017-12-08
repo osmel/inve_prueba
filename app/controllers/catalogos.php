@@ -21,6 +21,7 @@ class Catalogos extends CI_Controller {
     } 
  }  
 
+
   function cargar_dependencia_catalogo(){
     
     $data['campo']        = $this->input->post('campo');
@@ -233,6 +234,11 @@ class Catalogos extends CI_Controller {
 
        switch ($data['nombre']) {
 
+        case 'editar_tienda':
+           $busqueda = $this->catalogo->buscador_tiendas($data);
+        break;
+
+
         case 'editar_actividad_comercial':
             $busqueda = $this->catalogo->buscador_actividades($data);
           break;
@@ -295,10 +301,6 @@ class Catalogos extends CI_Controller {
             $busqueda = $this->catalogo->buscador_prod_consulta($data);
           break;
 
-
-          
-          
-
         case 'editar_proveedor_home':
             $busqueda = $this->catalogo->buscador_proveedores($data);
           break;
@@ -318,6 +320,10 @@ class Catalogos extends CI_Controller {
           //
         case 'editar_producto':
             $busqueda = $this->catalogo->buscador_productos($data);
+          break;
+
+        case 'editar_vendedor':
+            $busqueda = $this->catalogo->buscador_vendedor($data);
           break;
 
 
@@ -2885,7 +2891,8 @@ function validacion_edicion_proveedor(){
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
     } else {
-
+      //echo random_string('alpha',4);
+      //echo random_string('numeric',3);
 
       $this->form_validation->set_rules( 'descripcion', 'Descripción', 'trim|required|min_length[3]|max_lenght[180]|xss_clean');
       $this->form_validation->set_rules( 'comentario', 'Comentario', 'trim|min_length[3]|max_lenght[180]|xss_clean');             
@@ -2901,8 +2908,10 @@ function validacion_edicion_proveedor(){
           $data['colores']                = ($this->input->post('colores_seleccionados')); 
    
           //AAAAMMDD-ABCD123            //son varias referencias para varios colores
+          $num_tienda = $this->session->userdata('config_tienda_activo');
+
           for ($i=0; $i <= count($data['colores'])-1 ; $i++) { 
-            $data['referencia'.$i]    =  date('Y').date('m').date('d').random_string('alpha',4).random_string('numeric',3);                
+            $data['referencia'.$i]    =  date('Y').date('m').date('d').random_string('alpha',4).random_string('numeric',3).$num_tienda;                
           }
 
           
@@ -2927,12 +2936,10 @@ function validacion_edicion_proveedor(){
 
           if ( $existe !== TRUE ){
 
-
-
               $grupo            =  $this->catalogo->grupo_producto( $data );
               if ( $grupo == false ){
                 $data['nuevo'] = 'si';
-                $data['grupo']    =  date('Y').date('m').date('d').random_string('alpha',3).random_string('numeric',4);                
+                $data['grupo']    =  date('Y').date('m').date('d').random_string('alpha',3).random_string('numeric',4).$num_tienda;                
               } else {
                 $data['nuevo'] = 'no';
                 $data['grupo']    = $grupo;

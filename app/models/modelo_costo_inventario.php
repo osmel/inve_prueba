@@ -166,7 +166,7 @@ public function totales_importes_historica($where){
                         $columna = 'm.ancho';
                      break;
                    case '5':
-                        $columna = 'm.movimiento';
+                        $columna = 'm.movimiento_unico';
                      break;
                    case '6':
                           
@@ -255,8 +255,8 @@ public function totales_importes_historica($where){
           //$this->db->select("a.almacen");
 
 
-          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento)");  //, FALSE
-          $this->db->select('m.movimiento, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)");  //, FALSE
+          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida');
           $this->db->select('m.id_factura,m.id_fac_orig');
           $this->db->select('m.ancho, m.precio, m.codigo');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
@@ -272,7 +272,7 @@ public function totales_importes_historica($where){
            $this->db->select("(m.precio*m.cantidad_um) as subtotal"); //, FALSE
            $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva"); //, FALSE
            $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
-          $this->db->select("tff.tipo_factura t_factura");  
+          $this->db->select("tff.tipo_factura t_factura,m.nombre_usuario, m.id_compra");  
 
           $this->db->from($this->historico_registros_entradas.' as m');
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -322,7 +322,7 @@ public function totales_importes_historica($where){
                       (  ( m.num_partida LIKE  "%'.$cadena.'%" ) OR 
                         ( m.codigo LIKE  "%'.$cadena.'%" ) OR (m.id_descripcion LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
                         ( CONCAT(m.cantidad_um," ",u.medida) LIKE  "%'.$cadena.'%" ) OR (CONCAT(m.ancho," cm") LIKE  "%'.$cadena.'%")  OR
-                        (m.factura LIKE  "%'.$cadena.'%") OR ( m.movimiento LIKE  "%'.$cadena.'%" ) OR ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR '.$cond.' 
+                        (m.factura LIKE  "%'.$cadena.'%") OR ( m.movimiento_unico LIKE  "%'.$cadena.'%" ) OR ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR '.$cond.' 
                        )
 
             ) ' ;                     
@@ -400,8 +400,8 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
                                       11=> date( 'd-m-Y', strtotime($fecha)),
@@ -511,7 +511,7 @@ public function totales_importes_historica($where){
                         $columna = 'm.ancho';
                      break;
                    case '5':
-                        $columna = 'm.movimiento';
+                        $columna = 'm.movimiento_unico';
                      break;
                    case '6':
                           
@@ -600,8 +600,8 @@ public function totales_importes_historica($where){
           //m.id,m.id_empresa,m.id_operacion, ,m.id_fac_orig, m.id_cargador, m.id_usuario, m.id_color, m.id_composicion, m.id_calidad, m.referencia,
           //m.id_medida,m.cantidad_royo,, m.comentario, fecha_apartado,
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento)");  //, FALSE
-          $this->db->select('m.movimiento, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)");  //, FALSE
+          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida');
           $this->db->select('m.id_factura,  m.ancho, m.precio,  m.codigo');
           $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
           $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva"); //, FALSE
@@ -616,7 +616,7 @@ public function totales_importes_historica($where){
                                     WHEN  (m.id_apartado <> 0)  THEN 'morado' 
                                     ELSE 'black' END )
                              AS color_devolucion");    //, FALSE
-          $this->db->select("prod.codigo_contable, m.devolucion");  
+          $this->db->select("prod.codigo_contable, m.devolucion,m.nombre_usuario,m.id_compra");  
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
@@ -648,7 +648,7 @@ public function totales_importes_historica($where){
                       ( ( m.num_partida LIKE  "%'.$cadena.'%" ) OR   
                         ( m.codigo LIKE  "%'.$cadena.'%" ) OR (m.id_descripcion LIKE  "%'.$cadena.'%") OR (c.color LIKE  "%'.$cadena.'%")  OR
                         ( CONCAT(m.cantidad_um," ",u.medida) LIKE  "%'.$cadena.'%" ) OR (CONCAT(m.ancho," cm") LIKE  "%'.$cadena.'%")  OR
-                        (m.factura LIKE  "%'.$cadena.'%") OR ( m.movimiento LIKE  "%'.$cadena.'%" ) OR ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR '.$cond.' 
+                        (m.factura LIKE  "%'.$cadena.'%") OR ( m.movimiento_unico LIKE  "%'.$cadena.'%" ) OR ((DATE_FORMAT((m.fecha_entrada),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR '.$cond.' 
                        )
 
             ) ' ;                     
@@ -729,8 +729,8 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.$row->movimiento.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
                                       11=> date( 'd-m-Y', strtotime($fecha)),
@@ -745,6 +745,7 @@ public function totales_importes_historica($where){
                                       20=>$row->id_factura,
                                       21=>number_format($row->precio, 2, '.', ','),
                                       22=>$row->id_estatus,
+
                                     );                    
                       }
 

@@ -37,7 +37,8 @@ class Pdfs_model extends CI_Model
 
                     //usuarios
                   $this->usuarios    = $this->db->dbprefix('usuarios');
-
+                  
+                  $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');
 
     }
 
@@ -57,7 +58,7 @@ class Pdfs_model extends CI_Model
           
           $this->db->from($this->historico_registros_entradas.' as m');
 
-          $this->db->where('m.movimiento',$data['id_movimiento']);
+          $this->db->where('m.movimiento_unico',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
           
           if ($data['id_estatus']!=0) {
@@ -123,7 +124,7 @@ class Pdfs_model extends CI_Model
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.num_partida');
+          $this->db->select('m.id, m.movimiento,m.movimiento_unico,m.id_empresa, m.factura, m.id_descripcion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,  m.cantidad_royo, m.ancho, m.precio,m.iva, m.codigo, m.comentario,prod.codigo_contable');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
@@ -156,7 +157,7 @@ class Pdfs_model extends CI_Model
 
 
           //$this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.movimiento',$data['id_movimiento']);
+          $this->db->where('m.movimiento_unico',$data['id_movimiento']);
           $this->db->where('m.devolucion',$data['dev']);
 
 
@@ -195,7 +196,7 @@ class Pdfs_model extends CI_Model
           $nombre_completo = $this->session->userdata('nombre_completo');
 
                     
-          $this->db->select('m.id, m.id_apartado, m.mov_salida, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
+          $this->db->select('m.id, m.id_apartado, m.mov_salida,m.mov_salida_unico, m.movimiento,m.movimiento_unico,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
@@ -218,7 +219,8 @@ class Pdfs_model extends CI_Model
           $this->db->select("prod.codigo_contable");  
           $this->db->select("m.peso_real, m1.peso_real peso_entrada");          
 
-          $this->db->select("prov_pedido.nombre cliente_pedido");
+          //$this->db->select("prov_pedido.nombre cliente_pedido");
+          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov_pedido.nombre END ) AS cliente_pedido");
           $this->db->select("prov_apartado.nombre cliente_apartado");
 
 
@@ -234,13 +236,14 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');          
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT');
           
 
 
           //$this->db->where('m.id_usuario',$id_session);
           $this->db->where('m.id_operacion',2);
-          $this->db->where('m.mov_salida',$data['id_movimiento']);
+          $this->db->where('m.mov_salida_unico',$data['id_movimiento']);
           $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
           $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
 
@@ -382,7 +385,7 @@ class Pdfs_model extends CI_Model
           $where = '(
                     ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                       (
-                        (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.id_cliente_apartado = "'.$num_mov.'" )
+                        (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.movimiento_unico_apartado = "'.$num_mov.'" )
                       ) '.$id_almacenid.'
             )';   
 
@@ -572,7 +575,7 @@ class Pdfs_model extends CI_Model
           $where = '(
                     ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
                       (
-                        ( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida = '.$mov_salida.' )
+                        ( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida_unico = '.$mov_salida.' )
                       )'.$id_almacenid.'
             )';   
 

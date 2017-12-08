@@ -54,179 +54,7 @@
 
 
 
-
-/////////////////////////////////////////////////////Verificar si el codigo existe en el historico////////////////////////////////////////////////
-
-        public function existencia_temporales(){
-            
-              $id_session = $this->session->userdata('id');
-              $cant=0;
-
-              $this->db->from($this->historico_registros_salidas);
-
-              $this->db->where('id_user_devolucion',$id_session);
-              $this->db->where('devolucion',1);
-
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return true;
-              else
-                 return false;              
-
-        }      
-
-
-    public function check_existente_codigo($descripcion){
-            $this->db->select("codigo", FALSE);         
-            $this->db->from($this->historico_registros_salidas);
-            
-
-            $where = '(
-                        (
-                          ( codigo =  "'.addslashes($descripcion).'" ) 
-                          
-                         )
-
-              )';   
-  
-            $this->db->where($where);            
-
-
-            $this->db->where('id_user_devolucion','');  
-
-/*
-
-$where = '(
-                        (
-                          ( m.id_apartado = 0 ) AND  ( m.estatus_salida = "0" ) AND  ( m.devolucion != 2 ) 
-                          AND  ( m.cod_devolucion = "" ) 
-                        ) 
-                         AND
-                        (
-                          ( m.codigo LIKE  "%'.$data['key'].'%" ) 
-                         )
-
-              )';  
-*/
-
-
-
-
-            
-            $login = $this->db->get();
-            if ($login->num_rows() > 0) {
-                $fila = $login->row(); 
-                return $fila->codigo;
-            }    
-            else
-                return false;
-            $login->free_result();
-    } 
-
-
-
-
-      //****************Poner en el historico un producto como devolucion************************************************************
-  /*      
-
-SELECT * 
-FROM  `inven_historico_registros_salidas` 
-WHERE codigo =  "QkVR48700103062016124459_2"
-
-*/
-
-        public function actualizar_producto_devolucion( $data ){
-
-              $id_session = $this->session->userdata('id');
- 
-              $this->db->set( 'id_user_devolucion', $id_session);
-              $this->db->set( 'devolucion', 1);
-              
-              if  (isset($data['cod_devolucion'])) {  
-                $this->db->set( 'cod_devolucion', $data['cod_devolucion']);
-              }  
-              $this->db->set( 'conse_devolucion', $data['consecutivo']);
-              $this->db->set( 'comentario', $data['comentario']);
-              $this->db->set( 'peso_real_devolucion', $data['peso_real_devolucion']);
-
-
-
-              $this->db->set( 'consecutivo_cambio', substr_count($data['codigo'], 'A')+1,false);
-
-              
-              $this->db->where('codigo',$data['codigo']);
-
-              $this->db->update($this->historico_registros_salidas);
-
-
-            if ($this->db->affected_rows() > 0){
-                    return TRUE;
-                } else {
-                    return FALSE;
-                }
-                $result->free_result();
-        }  
-
-
-   //****************Poner en el historico un producto como devolucion************************************************************
-        public function quitar_producto_devolucion( $data ){
-
-              $id_session = $this->session->userdata('id');
-
-              $this->db->set( 'id_user_devolucion', '');
-              $this->db->set( 'devolucion', 0);
-              $this->db->set( 'cod_devolucion', '');
-              $this->db->set( 'conse_devolucion', '');
-
-              $this->db->set( 'peso_real_devolucion', 0);  //poner a cero el  peso_real_devolucion
-
-              $this->db->set( 'consecutivo_cambio', '0',false);
-
-              
-
-              $this->db->set( 'comentario', '');
-
-             
-              $this->db->where('codigo',$data['id']);
-
-              $this->db->update($this->historico_registros_salidas);
-
-
-            if ($this->db->affected_rows() > 0){
-                    return TRUE;
-                } else {
-                    return FALSE;
-                }
-                $result->free_result();
-        }  
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public function total_registros_devolucion(){
-
-              $id_session = $this->session->userdata('id');
-              $this->db->from($this->historico_registros_salidas.' as m');
-
-              $where = '(
-                          (
-                            ( m.id_user_devolucion = "'.$id_session.'" )  AND ( m.devolucion != 0  ) 
-                          ) 
-                )';   
-              $this->db->where($where);
-
-              $cant = $this->db->count_all_results();          
-     
-              if ( $cant > 0 )
-                 return $cant;
-              else
-                 return 0;         
-
-    }
-
-
+    //regilla donde estan todos los productos de devolucion
     public function buscador_devolucion($data){
 
           $cadena = addslashes($data['search']['value']);
@@ -373,20 +201,127 @@ WHERE codigo =  "QkVR48700103062016124459_2"
        }  
 
 
-     public function consecutivo_operacion( $id ){
-              
-            $this->db->select("o.consecutivo");         
-            $this->db->from($this->operaciones.' As o');
-            $this->db->where('o.id',$id);
-            $result = $this->db->get( );
-                if ($result->num_rows() > 0)
-                    return $result->row()->consecutivo+1;
-                else 
-                    return FALSE;
-                $result->free_result();
-     }  
+    //verificando que el producto existe para agregarlo al status de devolucion   
+   public function check_existente_codigo($descripcion){
+            $this->db->select("codigo", FALSE);         
+            $this->db->from($this->historico_registros_salidas);
+            
 
-   //procesando operaciones de devolucion
+            $where = '(
+                        (
+                          ( codigo =  "'.addslashes($descripcion).'" ) 
+                          
+                         )
+
+              )';   
+  
+            $this->db->where($where);            
+
+
+            $this->db->where('id_user_devolucion','');  
+
+            
+            $login = $this->db->get();
+            if ($login->num_rows() > 0) {
+                $fila = $login->row(); 
+                return $fila->codigo;
+            }    
+            else
+                return false;
+            $login->free_result();
+    } 
+
+
+      //Agregando Producto del estatus de devolucion
+       public function actualizar_producto_devolucion( $data ){
+
+              $id_session = $this->session->userdata('id');
+ 
+              $this->db->set( 'id_user_devolucion', $id_session);
+              $this->db->set( 'devolucion', 1);
+              
+              if  (isset($data['cod_devolucion'])) {  
+                $this->db->set( 'cod_devolucion', $data['cod_devolucion']);
+              }  
+              $this->db->set( 'conse_devolucion', $data['consecutivo']);
+              $this->db->set( 'comentario', $data['comentario']);
+              $this->db->set( 'peso_real_devolucion', $data['peso_real_devolucion']);
+
+
+
+              $this->db->set( 'consecutivo_cambio', substr_count($data['codigo'], 'A')+1,false);
+
+              
+              $this->db->where('codigo',$data['codigo']);
+
+              $this->db->update($this->historico_registros_salidas);
+
+
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }  
+
+
+     //Quitando Producto del estatus de devolucion
+
+        public function quitar_producto_devolucion( $data ){
+
+              $id_session = $this->session->userdata('id');
+
+              $this->db->set( 'id_user_devolucion', '');
+              $this->db->set( 'devolucion', 0);
+              $this->db->set( 'cod_devolucion', '');
+              $this->db->set( 'conse_devolucion', '');
+
+              $this->db->set( 'peso_real_devolucion', 0);  //poner a cero el  peso_real_devolucion
+
+              $this->db->set( 'consecutivo_cambio', '0',false);
+
+              
+
+              $this->db->set( 'comentario', '');
+
+             
+              $this->db->where('codigo',$data['id']);
+
+              $this->db->update($this->historico_registros_salidas);
+
+
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }  
+
+
+//validando si existe devolucion para el procesamiento
+        public function existencia_temporales(){
+            
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+              $this->db->from($this->historico_registros_salidas);
+
+              $this->db->where('id_user_devolucion',$id_session);
+              $this->db->where('devolucion',1);
+
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return true;
+              else
+                 return false;              
+
+        }      
+
+
+//procesando operaciones de devolucion
         public function procesando_operacion( ){
 
           $id_session = $this->session->userdata('id');
@@ -411,7 +346,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
           $this->db->select('13 id_estatus',false);
 
 
-          $this->db->select('conse_devolucion movimiento',false);
+          $this->db->select('conse_devolucion movimiento_unico',false);  //movimiento
           $this->db->select('cod_devolucion factura',false);
           $this->db->select('devolucion');
 
@@ -427,6 +362,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $this->db->select('id_almacen');
           $this->db->select('precio, iva, id_factura,id_fac_orig');
+          $this->db->select('on_off,id_tienda_origen');
 
           $this->db->from($this->historico_registros_salidas);
 
@@ -455,7 +391,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
             $this->db->insert($this->historico_registros_entradas, $value); 
             $value->peso_real = 0;
             $this->db->insert($this->registros_entradas, $value); 
-            $num_movimiento = $value->movimiento;  //OJO
+            $num_movimiento = $value->movimiento_unico;  //OJO
           }
 
 
@@ -478,15 +414,15 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $result->free_result();          
 
-        }
+        } 
 
 
-         //listado de la regilla
+        //listado para crear nuevamente los qr y mostrar productos
         public function listado_movimientos_registros($data){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento, m.movimiento_unico, m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -520,7 +456,7 @@ WHERE codigo =  "QkVR48700103062016124459_2"
 
           $where = '(
                       (
-                        ( m.devolucion = 1 ) AND ( m.movimiento = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 )
+                        ( m.devolucion = 1 ) AND ( m.movimiento_unico = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 )
                       ) 
 
             )';   
@@ -541,6 +477,34 @@ WHERE codigo =  "QkVR48700103062016124459_2"
             $result->free_result();
         }        
 
+
+
+    
+
+
+
+//operaciones
+
+
+
+
+     public function consecutivo_operacion( $id ){
+              
+            $this->db->select("o.consecutivo");         
+            $this->db->from($this->operaciones.' As o');
+            $this->db->where('o.id',$id);
+            $result = $this->db->get( );
+                if ($result->num_rows() > 0)
+                    return $result->row()->consecutivo+1;
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
+   
+
+
+        
 
 
   } 

@@ -56,13 +56,19 @@
 					</div>
 					</fieldset>	
 				</div>
+
 				<div class="col-xs-12 col-sm-6 col-md-4">
+				<label for="movimiento" class="ttip" title="Campo informativo, no editable.">No. Movimiento</label>
 					<fieldset disabled>
 						<div class="form-group">
-							<label for="movimiento" class="ttip" title="Campo informativo, no editable.">No. Movimiento</label>
-							<div>
+							
+							<div style="margin-top: 0px;" class="col-xs-12 col-sm-4 col-md-6">
 								<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 							</div>
+							<div style="margin-top: 0px;" class="col-xs-12 col-sm-4 col-md-6">
+								<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+							</div>
+
 						</div>
 					</fieldset>			
 				</div>

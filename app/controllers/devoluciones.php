@@ -14,63 +14,9 @@ class Devoluciones extends CI_Controller {
     $this->load->library('Jquery_pagination');//-->la estrella del equipo 
   }
 
-//////////////////comienzo de tratamiento de dependencia///////////////////////////
-
-  //Filtro La lista que es dependiente a un elemento padre
-  function cargar_dependencia(){
-    
-    $data['campo']        = $this->input->post('campo');
-
-    $data['val_prod']        = $this->input->post('val_prod');
-    $data['val_color']        = $this->input->post('val_color');
-    $data['val_comp']        = $this->input->post('val_comp');
-    $data['val_calida']        = $this->input->post('val_calida');
-
-    $data['dependencia']        = $this->input->post('dependencia');
-
-    switch ($data['dependencia']) {
-        case "producto": //nunca será una dependencia
-            $elementos  = $this->catalogo->listado_productos();
-            break;
-        case "color":
-            $elementos  = $this->catalogo->lista_colores($data);
-            break;
-
-        case "composicion":
-            $elementos  = $this->catalogo->lista_composiciones($data);
-            break;
-        case "calidad":
-            $elementos  = $this->catalogo->lista_calidad($data);
-            break;
-
-        default:
-    }
 
 
-
-      $variables = array();
-    if ($elementos != false)  {     
-         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
-              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id)); 
-       }
-    }  
-
-     echo json_encode($variables);
-  }
-
-
-//////////////////fin de tratamiento de dependencia///////////////////////////
-
-
-//tabla donde estaran todos los productos en devolucion
- public function procesando_servidor_devolucion(){
-    $data=$_POST;
-    $busqueda = $this->modelo_devolucion->buscador_devolucion($data);
-    echo $busqueda;
-  }
-
-
-//*********************** Pagina de editar **********************************//
+// 
  public function devolucion(){
 
      if($this->session->userdata('session') === TRUE ){
@@ -118,7 +64,17 @@ class Devoluciones extends CI_Controller {
   }
 
 
-   //esto es para agregar los productos a temporal
+
+//regilla donde estaran todos los productos en devolucion
+ public function procesando_servidor_devolucion(){
+    $data=$_POST;
+    $busqueda = $this->modelo_devolucion->buscador_devolucion($data);
+    echo $busqueda;
+ }
+
+
+
+  //Agregando Producto del estatus de devolucion
   function validar_devolucion_producto(){
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
@@ -199,7 +155,7 @@ class Devoluciones extends CI_Controller {
 
 
 
-////////////////////////////////////Quitar Producto Devolucion//////////////////////////////////////////////////////
+/////Quitar Producto del estatus de devolucion
 
 
   public function quitar_devolucion($id = '', $nombrecompleto=''){
@@ -255,6 +211,7 @@ class Devoluciones extends CI_Controller {
 
 ///////////////////////////////////////////////////////////////////////////////////////////  
 
+  //validando si existe los productos a devolver
   public function validar_conf_devolucion(){
       $existe = $this->modelo_devolucion->existencia_temporales();
 
@@ -265,15 +222,7 @@ class Devoluciones extends CI_Controller {
       }
   } 
 
-
-/*
-AZxjQ512001250520179537_3
-ABlSa89600123052017102659_5
-
-FliE79300125032017152549_1
-zzDg58800125032017175215_1
-
-*/
+ //procesando la devolucion
   public function procesar_devoluciones($id_movimiento=-1){
 
      if($this->session->userdata('session') === TRUE ){
@@ -333,6 +282,51 @@ zzDg58800125032017175215_1
         } else{ 
           redirect('');
         }  
+  }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////NoSE pero al parecer no se usa
+  //Filtro La lista que es dependiente a un elemento padre
+  function cargar_dependencia(){
+    
+    $data['campo']        = $this->input->post('campo');
+
+    $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_color']        = $this->input->post('val_color');
+    $data['val_comp']        = $this->input->post('val_comp');
+    $data['val_calida']        = $this->input->post('val_calida');
+
+    $data['dependencia']        = $this->input->post('dependencia');
+
+    switch ($data['dependencia']) {
+        case "producto": //nunca será una dependencia
+            $elementos  = $this->catalogo->listado_productos();
+            break;
+        case "color":
+            $elementos  = $this->catalogo->lista_colores($data);
+            break;
+
+        case "composicion":
+            $elementos  = $this->catalogo->lista_composiciones($data);
+            break;
+        case "calidad":
+            $elementos  = $this->catalogo->lista_calidad($data);
+            break;
+
+        default:
+    }
+
+
+
+      $variables = array();
+    if ($elementos != false)  {     
+         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id)); 
+       }
+    }  
+
+     echo json_encode($variables);
   }
 
 ////////////////////////////////////////////////////////////////////////////////////////

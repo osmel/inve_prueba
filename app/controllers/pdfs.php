@@ -148,6 +148,7 @@ public function impresion_etiquetas1($codigo) {
 
        $dato['id'] = 10; //solo para salida
        $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+       //print_r($data['movimientos']); die;
 
         $html = $this->load->view('pdfs/salidas/notas_rapida', $data, true);
         

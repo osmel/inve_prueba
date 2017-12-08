@@ -21,7 +21,7 @@
 										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
 										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
-										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida; ?></span><br>
+										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida_unico; ?></span><br>
 										<span><b>Mov Pedido: </b><?php echo $movimientos[0]->mov_pedido; ?></span><br>
 										<?php if (($configuracion->activo==1)) {  ?>
 											<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>

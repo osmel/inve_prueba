@@ -17,9 +17,8 @@ class Entradas extends CI_Controller {
 //***********************Todos los recepciones**********************************//
 	
 
-	//mostrar las entradas
+	//1- mostrar las entradas
 	public function listado_entradas(){
-
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
@@ -27,17 +26,17 @@ class Entradas extends CI_Controller {
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
 		            $coleccion_id_operaciones = array();
 		       }   
-		       	$data['medidas']  = $this->catalogo->listado_medidas();
-		       	$data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
-		       	$data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
+		       	$data['medidas']        = $this->catalogo->listado_medidas();
+		       	$data['estatuss']   	= $this->catalogo->listado_estatus(-1,-1,'1');
+		       	$data['lotes']      	= $this->catalogo->listado_lotes(-1,-1,'1');
 
-		       	$data['consecutivo']  = $this->catalogo->listado_consecutivo(1);
-		       	$data['movimientos']  = $this->model_entrada->listado_movimientos_temporal();
+		       	$data['consecutivo']  	= $this->catalogo->listado_consecutivo(1);
+		       	$data['movimientos']  	= $this->model_entrada->listado_movimientos_temporal();
 		       	$data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
-		       	$data['productos']   = $this->catalogo->listado_productos_unico_activo();
-    	        $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-    	        $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
-    	        $data['pagos']   = $this->catalogo->listado_tipos_pagos();
+		       	$data['productos']   	= $this->catalogo->listado_productos_unico_activo();
+    	        $data['almacenes']   	= $this->modelo->coger_catalogo_almacenes(2);
+    	        $data['facturas']   	= $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+    	        $data['pagos']   		= $this->catalogo->listado_tipos_pagos();
 
  				$dato['id'] = 7;
 		      	$data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
@@ -70,7 +69,7 @@ class Entradas extends CI_Controller {
 
 
 
-  //esto es para agregar los productos a temporal
+  //2- esto es para agregar los productos a temporal
   function validar_agregar_producto(){
     if ($this->session->userdata('session') !== TRUE) {
       redirect('');
@@ -137,6 +136,7 @@ class Entradas extends CI_Controller {
           $data['id_empresa']   = $data['id_proveedor'];
           $data['fecha']   = $this->input->post('fecha');
           $data['movimiento']   = $this->input->post('movimiento');
+          $data['movimiento_unico']   = $this->input->post('movimiento_unico');
           
           $data['id_almacen']   = $this->input->post('id_almacen');
           $data['id_factura']   = $this->input->post('id_factura');
@@ -145,7 +145,9 @@ class Entradas extends CI_Controller {
 	         $data['iva'] = $this->catalogo->remision_iva(2)->valor;
           } else {
           	$data['iva'] = 0;
-          }
+          } 
+
+
 
           $data['id_tipo_pago']   = $this->input->post('id_tipo_pago');
           
@@ -174,6 +176,7 @@ class Entradas extends CI_Controller {
           $data['id_lote']   		= $this->input->post('id_lote');
           $data         =   $this->security->xss_clean($data);  
           $guardar            = $this->model_entrada->anadir_producto_temporal( $data );
+          //print_r($guardar); die;
           if ( $guardar !== FALSE ){
             echo true;
           } else {
@@ -186,7 +189,7 @@ class Entradas extends CI_Controller {
   }
   
 
-	//Esta es la Regilla de los productos
+	//3- Esta es la Regilla de los productos
 	public function procesando_productos_temporales(){
 		$data=$_POST;
 		$busqueda = $this->model_entrada->buscador_productos_temporales($data);
@@ -194,7 +197,7 @@ class Entradas extends CI_Controller {
 	}	
 
 /////////////////////
-	//Eliminar los productos desde la regilla
+	//4- Eliminar los productos desde la regilla
 	public function eliminar_prod_temporal($id = '', $nombrecompleto=''){
 	    if ( $this->session->userdata('session') !== TRUE ) {
 	      redirect('');
@@ -232,7 +235,7 @@ class Entradas extends CI_Controller {
 	   }   
 	}
 
-	//quien valida la eliminación
+	//5- quien valida la eliminación
 	function validar_eliminar_prod_temporal(){
 		if (!empty($_POST['id'])){ 
 			$data['id'] = $_POST['id'];
@@ -252,38 +255,10 @@ class Entradas extends CI_Controller {
 	}	
 
 /////////////////////
-	//validando si se puede procesar la entrada
+	//validando si se puede procesar la entrada, en caso de que se puede se procesa
 
 	public function validar_proceso(){ 
-		//print_r("expression");
-					
-						/*
-					$this->load->library('ciqrcode');
-			        //hacemos configuraciones
-
-					//$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
-
-			        $data['movimientos'][0]="AACEg81100125042017172212_1";
-			        $data['movimientos'][1]="ADGfx51700125032017174558_1";
-			        $data['movimientos'][2]="AtmkV49500125032017185722_1";
-
-
-			        foreach ($data['movimientos'] as $mikey ) {
-
-			        	//print_r($mikey);
-			          
-				        $params['data'] = $mikey;
-				        $params['level'] = 'H';
-				        $params['size'] = 30;
-				        $params['savename'] = FCPATH.'qr_code/'.$mikey.'.png';
-				        $this->ciqrcode->generate($params);    
-				        
-				      
-			        }
-			    die;    */
-
-		//die;
-
+		
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 		      $data['id_factura']   = $this->input->post('id_factura');
@@ -296,7 +271,7 @@ class Entradas extends CI_Controller {
 		            $coleccion_id_operaciones = array();
 		       }  
 
-		       //si existe elemento en la tabla temporal
+		      //si existe elemento en la tabla temporal
 		      $existe = $this->model_entrada->existencia_temporales();
 		     
 		      if (($existe)) {
@@ -309,6 +284,7 @@ class Entradas extends CI_Controller {
 			        $this->load->library('ciqrcode');
 			        //hacemos configuraciones
 
+			        $data['tipo_entrada'] = 'E';
 					$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 
 			        //print_r($data['movimientos']); die;
@@ -343,13 +319,17 @@ class Entradas extends CI_Controller {
 	}
 
 
-
+	//para imprimir la factura despues de procesada
 	public function procesar_entrar($num_mov,$id_factura,$id_estatus){ 
 
 		 if($this->session->userdata('session') === TRUE ){
 
 			$data['dev'] = 0;
-			$data['num_mov'] = base64_decode($num_mov);
+
+ 			  $porciones = explode("-", base64_decode($num_mov));
+		      $data['tipo_entrada'] = $porciones[0];
+		      $data['num_mov'] = $porciones[1];
+		      
 			$data['id_factura'] = base64_decode($id_factura);
 			//$data['id_estatus'] = base64_decode($id_estatus);
 			 $data['id_estatus']   = 0; 
@@ -361,19 +341,22 @@ class Entradas extends CI_Controller {
 
 		       $data['etiq_mov'] ="de Entrada";
 
+		       
+
+
+
 		      $id_perfil=$this->session->userdata('id_perfil');
 			      switch ($id_perfil) {    
 			        case 1:          
-						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
-			                   $this->load->view( 'pdfs/pdfs_view',$data );
+						    $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+			                $this->load->view( 'pdfs/pdfs_view',$data );
 			          break;
 			        case 2:
 			        case 3:
 			        case 4:
 			              if  (in_array(1, $coleccion_id_operaciones))  {                 
-						       
-						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
-			                   $this->load->view( 'pdfs/pdfs_view',$data );
+						    $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+			                $this->load->view( 'pdfs/pdfs_view',$data );
 			             }   
 			          break;
 
@@ -388,14 +371,20 @@ class Entradas extends CI_Controller {
 
 
 
-
+    //para imprimir la factura desde los reportes
 	public function procesar_entradas($id_movimiento=-1,$dev=0,$retorno,$id_factura,$id_estatus){
 
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $id_movimiento= base64_decode($id_movimiento);
+		      $porciones = explode("-", base64_decode($id_movimiento));
+
+		      $tipo_entrada= $porciones[0];
+		      $id_movimiento= $porciones[1];
+		      
+		      $data['tipo_entrada'] = $tipo_entrada;
+
 		      $data['dev']= base64_decode($dev);
 		      $data['id_factura']= base64_decode($id_factura);
 		      
@@ -410,17 +399,21 @@ class Entradas extends CI_Controller {
 		       }  
 
 		      $existe = $this->model_entrada->existencia_temporales();
+
 		     
 		      if (($existe) or ($id_movimiento!=-1) ) {
 
+
 		      		//ESTE ES PARA EL CASO QUE SE ESTA HACIENDO UNA "ENTRADA"
 		      		if (($id_movimiento)==-1)	{
+
 		      			$data['num_mov'] = $this->model_entrada->procesando_operacion(1);
 
 				        $this->load->library('ciqrcode');
 				        //hacemos configuraciones
 
 						$data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+						
 
 				        
 				        foreach ($data['movimientos'] as $key => $value) {
@@ -434,14 +427,19 @@ class Entradas extends CI_Controller {
 				        }
 				        
 		      		} else { //ESTE ES PARA EL CASO EN QUE SE VA A LOS DETALLES DE UNA ENTRADA EN "REPORTES-->listado_notas"
+
 		      			$data['num_mov'] = $id_movimiento;
+
 						$data['retorno'] ="listado_notas";
+
+
 
 
 		      		}
 
-
 				  $data['retorno'] = base64_decode($retorno);
+
+
 
 
          if  ($data['dev'] == 0) {
@@ -452,6 +450,7 @@ class Entradas extends CI_Controller {
                 $data['etiq_mov'] ="de Devolución";
           }
 
+
 				  
 
 			      switch ($id_perfil) {    
@@ -459,6 +458,7 @@ class Entradas extends CI_Controller {
 
 						       //
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+						       //print_r($data);die;
 						       //print_r($data);
 						       //print_r($data['movimientos']);
 						       //die;
@@ -495,30 +495,8 @@ class Entradas extends CI_Controller {
 
 
 
-	//estos procedimientos creo que ya no sirven de nada
 
-	function inf_ajax_temporal(){
-		$data['color'] = $_POST['color'];
-		$data['cant_royo'] = $_POST['cant_royo'];
-		$data['referencia'] =$_POST['referencia'];
-		$data['id_lote'] =$_POST['id_lote'];
 
-		$data['total']  = $this->model_entrada->cant_producto_temporal($data);
-		$data['movimientos']  = $this->model_entrada->listado_ajax($data);
-		echo json_encode($data);
-	}	
-
-	public function validar_proceso1(){
-
-			$existe = $this->model_entrada->existencia_temporales();
-			if (!$existe) {
-				echo 'No existen producto seleccionado.';	
-			} else {
-				echo true;	
-			}
-			
-
-	}	
 
 
 /////////////////validaciones/////////////////////////////////////////	

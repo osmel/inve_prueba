@@ -9,7 +9,7 @@
 							<p style="font-size: 15px; line-height: 20px; padding: 0px; margin-bottom: 0px;">
 
 									
-									<span><b>Núm. Traspaso: </b> <?php echo $movimientos[0]->consecutivo_traspaso; ?></span><br>
+									<span><b>Núm. Traspaso: </b> <?php echo $movimientos[0]->consecutivo_traspaso_unico; ?></span><br>
 
 									<span><b>Traspaso: </b> <?php echo $movimientos[0]->t_factura; ?></span><br>
 									<span><b>Responsable: </b> <?php echo $movimientos[0]->vendedor; ?></span><br>

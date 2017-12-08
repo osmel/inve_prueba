@@ -142,7 +142,7 @@
 							?> 
 
 
-							<td width="5%" ><?php echo $movimiento->movimiento; ?></td>		
+							<td width="5%" ><?php echo $movimiento->movimiento_unico; ?></td>		
 							<td width="10%" ><?php echo $movimiento->factura; ?></td>
 
 							<td width="7%" ><?php echo $movimiento->almacen; ?></td>

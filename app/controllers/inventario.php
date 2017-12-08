@@ -246,6 +246,9 @@ class Inventario extends CI_Controller {
 
           $data['fecha_entrada']   = $this->input->post('fecha');
           $data['movimiento']   = $this->input->post('movimiento');
+          $data['movimiento_unico']   = $this->input->post('movimiento_unico');
+
+          
           
           $data['codigo']   = $data['codigo'];
           $data['id_empresa']   = $data['id_proveedor'];
@@ -280,6 +283,7 @@ class Inventario extends CI_Controller {
             echo '<span class="error"><b>E01</b> - El producto no pudo ser agregado</span>';
           }
       } else {      
+        
         echo validation_errors('<span class="error">','</span>');
       }
     }

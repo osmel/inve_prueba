@@ -13,6 +13,8 @@ class Reportes extends CI_Controller {
 
 		$this->load->library(array('email')); 
 		$this->load->library('Jquery_pagination');//-->la estrella del equipo	
+
+		$this->load->model('modelo_remoto', 'modelo_remoto');  
 	}
 
 

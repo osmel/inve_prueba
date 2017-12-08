@@ -46,13 +46,20 @@
 		</div>
 		</fieldset>	
 	</div>
+	
 	<div class="col-xs-12 col-sm-6 col-md-2">
+		<label for="movimiento" >No. Movimiento</label>	
+
 		<fieldset disabled>
 			<div class="form-group">
-				<label for="movimiento">No. Movimiento</label>
-				<div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
 					<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+					<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>	" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Movimiento">
+				</div>
+
 			</div>
 		</fieldset>			
 	</div>
@@ -195,19 +202,39 @@
 
 
 
-					<div class="col-xs-12 col-sm-6 col-md-4" >
+					  
+
+
+					<div class="col-xs-12 col-sm-6 col-md-3" >
 						<?php if ($val_proveedor) { ?>
-						<fieldset class="disabledme" disabled>							
+							<fieldset class="disabledme" disabled>							
+								<?php 
+									if ($val_proveedor->on_off==1) {
+										$marca='checked'; 
+										$name= 'editar_tienda';
+									} else {
+										$marca='';	
+										$name= 'editar_proveedor';
+									}
+								?>
+
+							
 						<?php } else { ?>
-						<fieldset class="disabledme">						
+							<fieldset class="disabledme">						
+							<?php 
+								$marca='';	
+								$name= 'editar_proveedor';
+							?>	
 						<?php } ?>
 							<div class="form-group">
-								<label for="descripcion">Cliente</label>
+								<!--<label for="descripcion">Cliente</label> -->
+								<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="on-off" <?php echo $marca; ?> >
+
 								<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
 									<?php if ($val_proveedor) { ?>
-									<input identificador="" value="<?php echo $val_proveedor->nombre; ?>" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									<input identificador="" value="<?php echo $val_proveedor->nombre; ?>" type="text" name="<?php echo $name; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 									<?php } else { ?>
-									<input  identificador="" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									<input  identificador="" type="text" name="<?php echo $name; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 									<?php } ?>
 								</div>
 							</div>
@@ -495,3 +522,8 @@
 </div>	
 
 <?php $this->load->view( 'footer' ); ?>
+
+
+<!--<label for="descripcion">Cliente</label> 
+<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="toggle-two">
+								-->

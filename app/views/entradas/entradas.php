@@ -66,9 +66,14 @@ if ($val_proveedor) {
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
-					<div class="col-sm-12 col-md-12">
+					<div class="col-sm-6 col-md-6">
 						<input type="text" title="Movimiento" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 					</div>
+					<div class="col-sm-6 col-md-6">
+						<input type="text" title="Movimiento" value="<?php echo $consecutivo->consecutivo+1; ?>" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Movimiento">
+					</div>
+
+
 				</div>
 			</fieldset>			
 		</div>

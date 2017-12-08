@@ -12,6 +12,389 @@ class Salidas extends CI_Controller {
 		$this->load->library('Jquery_pagination');//-->la estrella del equipo	
 	}
 
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+					//1ra regilla. detalles   <| pedidos
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+//1ra regilla. confirmar la salida en 1ra regilla  (en los detalles)
+public function confirmar_proc_apartado_sino(){
+
+ 	if($this->session->userdata('session') === TRUE ) {
+			      $id_perfil=$this->session->userdata('id_perfil');
+
+			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+			            $coleccion_id_operaciones = array();
+			       }  
+
+			       $data['id_cargador'] = $this->input->post('id_cargador');
+			       $data['id_almacen'] = $this->input->post('id_almacen');
+			       $data['num_mov'] = $this->input->post('num_mov');
+			       $data['dependencia'] = $this->input->post('dependencia');
+			       $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');				
+
+			      $existe = $this->modelo_salida->existencia_apartado_salida($data);
+
+			      $errores='';	
+
+
+ 				 if ($this->input->post('id_cargador')) {
+							$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
+							if (!($data['id_cargador'])){
+								$errores= "El cargador no existe";
+							}
+				 } else {
+				  	$data['id_cargador']=null;
+				  	$errores= "Campo <b>cargador</b> obligatorio. ";
+
+				  }
+
+				  
+					 if  (!($existe)) {
+					 	$errores= "Debe agregar al menos un producto";
+					 } else {  //si estan agregados los productos entonces checar si tienen el peso real
+					 		
+					 		//actualizar peso real
+					 		$data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );
+					 		$this->modelo_salida->actualizar_peso_real_salida_pedido($data);
+
+					 		//verificar si hay pesos reales en cero	
+					 		$existe = $this->modelo_salida->existencia_apartado_peso_real($data);
+					 		if  (!($existe)) {
+					 			$errores= "Existen productos sin especificar Peso real";
+					 		}	
+
+					 }			
+					
+
+
+	 if (($existe) and ( ($errores=='') AND ($data['id_cargador']) ) ) {
+	 						  $dato['id_cargador'] = $data['id_cargador'];	
+					      	  $dato['exito'] = true;
+					      	  echo json_encode($dato);
+			 		}	else {
+		 					  $dato['exito']  = false;
+							  $dato['errores'] =$errores;
+							  $dato['error'] = validation_errors('<span class="error">','</span>');
+							  echo json_encode($dato);
+			 		}   
+		
+
+		} else { //fin de session
+		 	redirect('');
+		} 	
+}
+
+//1ra regilla(modal).Una vez confirmado los peso_real y cargador procesa la salida, mediante esta modal
+public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
+
+
+	
+		  if ( $this->session->userdata('session') !== TRUE ) {
+		      redirect('');
+		    } else {
+		      $id_perfil=$this->session->userdata('id_perfil');
+
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }   
+
+		       $data['num_mov'] 				= base64_decode($num_mov);	
+		       $data['id_cargador'] 			= base64_decode($id_cargador);	
+		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
+		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
+		       $data['id_almacen'] 		= base64_decode($id_almacen);	
+			   
+              if ($this->session->userdata('config_salida')==0) {
+			      switch ($id_perfil) {    
+			        case 1:
+			        		
+			                $this->load->view( 'salidas/salida_apartado_modal',$data );
+			          break;
+			        case 2:
+			        case 3:
+			        case 4:
+			             if  (in_array(2, $coleccion_id_operaciones))  {    
+			                $this->load->view( 'salidas/salida_apartado_modal',$data );
+			              }  else  {
+			                redirect('');
+			              } 
+			          break;
+			        default:  
+			          redirect('');
+			          break;
+			      }
+			 } else {
+			 	redirect('');	
+			 }  
+
+		   }   			
+
+}
+
+
+//1ra regilla confirmando apartado
+public function validar_apartado_pedido(){
+	
+		$data['id_cargador'] = $this->input->post('id_cargador');
+			$data['num_mov'] = $this->input->post('num_mov');
+	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+	$data['id_almacen'] = $this->input->post('id_almacen');
+
+	
+
+	if ($data['id_tipo_factura']!=0) {
+		$this->modelo_salida->traspaso_apartado($data);
+	}
+
+	//aqui me quede
+	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
+
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+
+}		
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+					//1ra regilla. detalles   <| pedidos
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+//2da regilla. confirmar la salida en 2da regilla  (en los detalles)
+public function confirmar_proc_pedido_sino(){  //5252
+
+	//die;
+ 	if($this->session->userdata('session') === TRUE ) {
+
+
+			      $id_perfil=$this->session->userdata('id_perfil');
+
+			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+			            $coleccion_id_operaciones = array();
+			       }  
+
+			       $data['id_cargador'] = $this->input->post('id_cargador');
+			       $data['id_almacen'] = $this->input->post('id_almacen');
+			       $data['num_mov'] = $this->input->post('num_mov');
+			       $data['dependencia'] = $this->input->post('dependencia');
+				   $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
+				   $data['on_off'] =  (int)$this->input->post('on_off');			       
+
+			      $existe = $this->modelo_salida->existencia_pedido_salida($data);
+
+			      $errores='';	
+
+
+ 				 if ($this->input->post('id_cargador')) {
+							$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
+							if (!($data['id_cargador'])){
+								$errores= "El cargador no existe";
+							}
+				} else {
+				  	$data['id_cargador']=null;
+				  	$errores= "Campo <b>cargador</b> obligatorio. ";
+
+				}
+
+				  
+					 if  (!($existe)) {
+					 	$errores= "Debe agregar al menos un producto";
+					 } else {  //si estan agregados los productos entonces checar si tienen el peso real
+					 		
+					 		//actualizar peso real
+					 		$data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );
+					 		$this->modelo_salida->actualizar_peso_real_salida_pedido($data);
+
+					 		//verificar si hay pesos reales en cero	
+					 		$existe = $this->modelo_salida->existencia_salida_peso_real($data);
+					 		if  (!($existe)) {
+					 			$errores= "Existen productos sin especificar Peso real";
+					 		}	
+
+					 }			
+					
+
+
+	 if (($existe) and ( ($errores=='') AND ($data['id_cargador']) ) ) {
+	 						  $dato['id_cargador'] = $data['id_cargador'];	
+					      	  $dato['exito'] = true;
+					      	  echo json_encode($dato);
+			 		}	else {
+		 					  $dato['exito']  = false;
+							  $dato['errores'] =$errores;
+							  $dato['error'] = validation_errors('<span class="error">','</span>');
+							  echo json_encode($dato);
+			 		}   
+		
+
+		} else { //fin de session
+		 	redirect('');
+		} 	
+}
+
+
+
+//2da regilla(modal).una vez confirmado los peso_real y cargador procesa la salida, mediante esta modal
+public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
+
+
+	
+		  if ( $this->session->userdata('session') !== TRUE ) {
+		      redirect('');
+		    } else {
+		      $id_perfil=$this->session->userdata('id_perfil');
+
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }   
+
+		       $data['num_mov'] 				= base64_decode($num_mov);	
+		       $data['id_cargador'] 			= base64_decode($id_cargador);	
+		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
+		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
+		       $data['id_almacen'] 				= base64_decode($id_almacen);	
+			   
+              if ($this->session->userdata('config_salida')==0) {
+			      switch ($id_perfil) {    
+			        case 1:
+			        		
+			                $this->load->view( 'salidas/salida_factura_modal',$data );
+			          break;
+			        case 2:
+			        case 3:
+			        case 4:
+			             if  (in_array(2, $coleccion_id_operaciones))  {    
+			                 $this->load->view( 'salidas/salida_factura_modal',$data );
+			              }  else  {
+			                redirect('');
+			              } 
+			          break;
+			        default:  
+			          redirect('');
+			          break;
+			      }
+			 } else {
+			 	redirect('');	
+			 }  
+
+		   }   			
+
+}
+
+
+//cuando dice "si" con la modal de confirmar el pedido
+public function validar_salida_pedido(){ 
+
+
+	//print_r($db['remoto']['database']);die;
+	
+		$data['id_cargador'] = $this->input->post('id_cargador');
+			$data['num_mov'] = $this->input->post('num_mov');
+	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+	$data['id_almacen'] = $this->input->post('id_almacen');
+
+	
+
+	if ($data['id_tipo_factura']!=0) {
+		$this->modelo_salida->traspaso_pedido($data);
+	}
+
+
+	$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );
+
+
+	//print_r($parametros);die;
+
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+
+}	
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+	//1ra y 2da regilla(reporte) Imprimir el pdf
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
+			//print_r(base64_decode($id_tipo_factura));die;
+
+		 if($this->session->userdata('session') === TRUE ){
+		      $id_perfil=$this->session->userdata('id_perfil');
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }  
+
+				   $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
+		      		$data["id_tipo_factura"] = base64_decode($id_tipo_factura);
+	
+	      			$data['encabezado']['num_movimiento']  = base64_decode($id_movimiento);
+	      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
+	      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
+					$data['retorno'] ="pedidos";	 //DETALLES DE REPORTE
+		      		$data['etiq_mov'] ="de Salida";
+		      		$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
+
+		      		//print_r($data['movimientos']);die;
+
+					      switch ($id_perfil) {    
+					        case 1:          
+								       
+					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+					          break;
+					        case 2:
+					        case 3:
+					        case 4:
+					              
+					              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
+					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+					              } else {
+					          		 redirect('');    	
+					              }  
+
+					          break;
+
+
+					        default:  
+					          redirect('');
+					          break;
+					      }
+			      
+		    }
+		    else{ 
+		      redirect('');
+		    }  
+	}
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+					//
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////	
+
 	public function id_proveedor(){
 		$data['id_cliente'] ='';
 		 if ($this->input->post('id_cliente')) {
@@ -64,6 +447,7 @@ class Salidas extends CI_Controller {
 		
 		$dato['cliente_id'] = self::proveedor_id($data['id_cliente']);
 		$dato['ref_prod'] =  $this->catalogo->refe_producto($data);		
+		//$dato['prod']
 		echo json_encode($dato);
 
 	}
@@ -592,220 +976,10 @@ public function validar_confirmar_salida_sino(){
 	}
 
 
-/////////////////////////////////////////	/////////////////////////////////////////	/////////////////////////////////////////	/////////////////////////////////////////	
-/////////////////caso de salida por pedidos/////////////////////////////////////////	
-/////////////////////////////////////////	/////////////////////////////////////////	/////////////////////////////////////////	/////////////////////////////////////////	
-
-
-public function confirmar_proc_apartado_sino(){
-
- 	if($this->session->userdata('session') === TRUE ) {
-			      $id_perfil=$this->session->userdata('id_perfil');
-
-			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-			            $coleccion_id_operaciones = array();
-			       }  
-
-			       $data['id_cargador'] = $this->input->post('id_cargador');
-			       $data['id_almacen'] = $this->input->post('id_almacen');
-			       $data['num_mov'] = $this->input->post('num_mov');
-			       $data['dependencia'] = $this->input->post('dependencia');
-			       $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');				
-
-			      $existe = $this->modelo_salida->existencia_apartado_salida($data);
-
-			      $errores='';	
-
-
- 				 if ($this->input->post('id_cargador')) {
-							$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
-							if (!($data['id_cargador'])){
-								$errores= "El cargador no existe";
-							}
-				 } else {
-				  	$data['id_cargador']=null;
-				  	$errores= "Campo <b>cargador</b> obligatorio. ";
-
-				  }
-
-				  
-					 if  (!($existe)) {
-					 	$errores= "Debe agregar al menos un producto";
-					 } else {  //si estan agregados los productos entonces checar si tienen el peso real
-					 		
-					 		//actualizar peso real
-					 		$data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );
-					 		$this->modelo_salida->actualizar_peso_real_salida_pedido($data);
-
-					 		//verificar si hay pesos reales en cero	
-					 		$existe = $this->modelo_salida->existencia_apartado_peso_real($data);
-					 		if  (!($existe)) {
-					 			$errores= "Existen productos sin especificar Peso real";
-					 		}	
-
-					 }			
-					
-
-
-	 if (($existe) and ( ($errores=='') AND ($data['id_cargador']) ) ) {
-	 						  $dato['id_cargador'] = $data['id_cargador'];	
-					      	  $dato['exito'] = true;
-					      	  echo json_encode($dato);
-			 		}	else {
-		 					  $dato['exito']  = false;
-							  $dato['errores'] =$errores;
-							  $dato['error'] = validation_errors('<span class="error">','</span>');
-							  echo json_encode($dato);
-			 		}   
-		
-
-		} else { //fin de session
-		 	redirect('');
-		} 	
-}
-
-
-public function confirmar_proc_pedido_sino(){
-
- 	if($this->session->userdata('session') === TRUE ) {
-			      $id_perfil=$this->session->userdata('id_perfil');
-
-			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-			            $coleccion_id_operaciones = array();
-			       }  
-
-			       $data['id_cargador'] = $this->input->post('id_cargador');
-			       $data['id_almacen'] = $this->input->post('id_almacen');
-			       $data['num_mov'] = $this->input->post('num_mov');
-			       $data['dependencia'] = $this->input->post('dependencia');
-				   $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
-
-			      $existe = $this->modelo_salida->existencia_pedido_salida($data);
-
-			      $errores='';	
-
-
- 				 if ($this->input->post('id_cargador')) {
-							$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
-							if (!($data['id_cargador'])){
-								$errores= "El cargador no existe";
-							}
-				 } else {
-				  	$data['id_cargador']=null;
-				  	$errores= "Campo <b>cargador</b> obligatorio. ";
-
-				  }
-
-				  
-					 if  (!($existe)) {
-					 	$errores= "Debe agregar al menos un producto";
-					 } else {  //si estan agregados los productos entonces checar si tienen el peso real
-					 		
-					 		//actualizar peso real
-					 		$data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );
-					 		$this->modelo_salida->actualizar_peso_real_salida_pedido($data);
-
-					 		//verificar si hay pesos reales en cero	
-					 		$existe = $this->modelo_salida->existencia_salida_peso_real($data);
-					 		if  (!($existe)) {
-					 			$errores= "Existen productos sin especificar Peso real";
-					 		}	
-
-					 }			
-					
-
-
-	 if (($existe) and ( ($errores=='') AND ($data['id_cargador']) ) ) {
-	 						  $dato['id_cargador'] = $data['id_cargador'];	
-					      	  $dato['exito'] = true;
-					      	  echo json_encode($dato);
-			 		}	else {
-		 					  $dato['exito']  = false;
-							  $dato['errores'] =$errores;
-							  $dato['error'] = validation_errors('<span class="error">','</span>');
-							  echo json_encode($dato);
-			 		}   
-		
-
-		} else { //fin de session
-		 	redirect('');
-		} 	
-}
-
-
-public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
-
-
-	
-		  if ( $this->session->userdata('session') !== TRUE ) {
-		      redirect('');
-		    } else {
-		      $id_perfil=$this->session->userdata('id_perfil');
-
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
-
-		       $data['num_mov'] 				= base64_decode($num_mov);	
-		       $data['id_cargador'] 			= base64_decode($id_cargador);	
-		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
-		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
-		       $data['id_almacen'] 		= base64_decode($id_almacen);	
-			   
-              if ($this->session->userdata('config_salida')==0) {
-			      switch ($id_perfil) {    
-			        case 1:
-			        		
-			                $this->load->view( 'salidas/salida_factura_modal',$data );
-			          break;
-			        case 2:
-			        case 3:
-			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones))  {    
-			                 $this->load->view( 'salidas/salida_factura_modal',$data );
-			              }  else  {
-			                redirect('');
-			              } 
-			          break;
-			        default:  
-			          redirect('');
-			          break;
-			      }
-			 } else {
-			 	redirect('');	
-			 }  
-
-		   }   			
-
-}
 
 
 
-public function validar_salida_pedido(){
-	
-		$data['id_cargador'] = $this->input->post('id_cargador');
-			$data['num_mov'] = $this->input->post('num_mov');
-	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-	$data['id_almacen'] = $this->input->post('id_almacen');
 
-	
-
-	if ($data['id_tipo_factura']!=0) {
-		$this->modelo_salida->traspaso_pedido($data);
-	}
-
-
-	$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );
-
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
-
-}	
 
 
 
@@ -819,127 +993,11 @@ public function validar_salida_pedido(){
 
 
 
-	public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
-
-
-		 if($this->session->userdata('session') === TRUE ){
-		      $id_perfil=$this->session->userdata('id_perfil');
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }  
-
-				   $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
-		      		$data["id_tipo_factura"] = base64_decode($id_tipo_factura);
-	
-	      			$data['encabezado']['num_movimiento']  = base64_decode($id_movimiento);
-	      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
-	      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
-					$data['retorno'] ="pedidos";	 //DETALLES DE REPORTE
-		      		$data['etiq_mov'] ="de Salida";
-
-					      switch ($id_perfil) {    
-					        case 1:          
-								       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
-					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-					          break;
-					        case 2:
-					        case 3:
-					        case 4:
-					              
-					              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
-								       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
-					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-					              } else {
-					          		 redirect('');    	
-					              }  
-
-					          break;
-
-
-					        default:  
-					          redirect('');
-					          break;
-					      }
-			      
-		    }
-		    else{ 
-		      redirect('');
-		    }  
-	}
-
-
-
-
-public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
-
-
-	
-		  if ( $this->session->userdata('session') !== TRUE ) {
-		      redirect('');
-		    } else {
-		      $id_perfil=$this->session->userdata('id_perfil');
-
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
-
-		       $data['num_mov'] 				= base64_decode($num_mov);	
-		       $data['id_cargador'] 			= base64_decode($id_cargador);	
-		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
-		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
-		       $data['id_almacen'] 		= base64_decode($id_almacen);	
-			   
-              if ($this->session->userdata('config_salida')==0) {
-			      switch ($id_perfil) {    
-			        case 1:
-			        		
-			                $this->load->view( 'salidas/salida_apartado_modal',$data );
-			          break;
-			        case 2:
-			        case 3:
-			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones))  {    
-			                $this->load->view( 'salidas/salida_apartado_modal',$data );
-			              }  else  {
-			                redirect('');
-			              } 
-			          break;
-			        default:  
-			          redirect('');
-			          break;
-			      }
-			 } else {
-			 	redirect('');	
-			 }  
-
-		   }   			
-
-}
-
-
-
-public function validar_apartado_pedido(){
-	
-		$data['id_cargador'] = $this->input->post('id_cargador');
-			$data['num_mov'] = $this->input->post('num_mov');
-	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-	$data['id_almacen'] = $this->input->post('id_almacen');
-
 	
 
-	if ($data['id_tipo_factura']!=0) {
-		$this->modelo_salida->traspaso_apartado($data);
-	}
 
-	//aqui me quede
-	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 
-}		
 
 
 /////////////////validaciones/////////////////////////////////////////	

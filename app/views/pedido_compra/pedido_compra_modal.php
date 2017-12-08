@@ -7,7 +7,7 @@
  $hidden = array('aprobado'=>$aprobado,'movimiento'=>$movimiento); 
 
  ?>
-<?php echo form_open('confirmar_pedido_compra', array('class' => 'form-horizontal','id'=>'form_sino','name'=>$retorno, 'method' => 'POST', 'role' => 'form', 'autocomplete' => 'off' ) ,   $hidden ); ?>
+<?php echo form_open('proc_pedido_aprobado', array('class' => 'form-horizontal','id'=>'form_sino','name'=>$retorno, 'method' => 'POST', 'role' => 'form', 'autocomplete' => 'off' ) ,   $hidden ); ?>
 	<div class="modal-header">
 		<a class="close" data-dismiss="modal">&times;</a>
 		<h3 class="text-left">Confirmar cambios</h3>
@@ -16,9 +16,9 @@
 	
 		<?php if ($modulo==1) { ?>		
 			<?php if ($aprobado=="true") { ?>
-					<p>¿Desea aprobar esta orden, y enviarla al almacenista?</p>
+					<p>¿Desea aprobar esta orden?</p>
 			<?php } else { ?>
-					<p>¿Desea enviar esta orden al almacenista para su modificación o aprobación?</p>
+					<p>¿Desea aprobar esta orden?</p>
 			<?php } ?>		
 		<?php } else { ?>			
 

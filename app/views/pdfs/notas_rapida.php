@@ -20,7 +20,7 @@
 								<td colspan="7" style="border-top: 1px solid #222222; ">
 										<span><b>Proveedor: </b> <?php echo strtoupper($movimientos[0]->nombre); ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
-										<span><b>Movimiento: </b><?php echo $movimientos[0]->movimiento; ?></span><br>
+										<span><b>Movimiento: </b><?php echo $movimientos[0]->movimiento_unico; ?></span><br>
 										
 
 										<?php if (($configuracion->activo==1)) {  ?>

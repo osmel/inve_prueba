@@ -114,6 +114,7 @@
             $this->db->select($this->usuarios.'.sala');         
             $this->db->select($this->usuarios.'.especial');      
             $this->db->select($this->usuarios.'.id_almacen');         
+            $this->db->select($this->usuarios.'.id_tienda'); 
 
                 
 			$this->db->from($this->usuarios);

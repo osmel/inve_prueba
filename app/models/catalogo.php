@@ -51,9 +51,15 @@
 		  $this->catalogo_tipos_pagos  = $this->db->dbprefix('catalogo_tipos_pagos');
 
       $this->catalogo_documentos_pagos  = $this->db->dbprefix('catalogo_documentos_pagos');
-      
-    
+
+      $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');
+
+   
     }
+
+
+ 
+
 
 
         public function check_codigo_contable($data){
@@ -110,7 +116,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   public function lista_destino(){
+    public function lista_destino(){
             //distinct
             $this->db->distinct();
             $this->db->select("c.id", FALSE);  
@@ -123,7 +129,7 @@
             else
                return False;
             $result->free_result();
-        }    
+    }    
 
 
     public function marcando_activo( $data ){
@@ -134,8 +140,12 @@
               return true;
         }  
 
+ 
 
         public function total_cat_proveedores($where_total){
+            
+
+
               $id_session = $this->session->userdata('id');
 
               $this->db->from($this->proveedores.' as p');
@@ -2721,6 +2731,31 @@
 
 
 
+      public function buscador_vendedor($data){
+            $this->db->select( 'id' );
+            $this->db->select("nombre, apellidos");  
+            $this->db->from($this->usuarios);
+            
+            $this->db->like("id" ,$data['key'],FALSE);
+            $this->db->or_like("nombre" ,$data['key'],FALSE);
+            $this->db->or_like("apellidos" ,$data['key'],FALSE);
+
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array(
+                                       "value"=>$row->id." | ".$row->nombre.' '.$row->apellidos,
+                                       "key"=>$row->id,
+                                       "descripcion"=>$row->nombre.' '.$row->apellidos
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
 
 
 
@@ -3001,6 +3036,20 @@
                     return FALSE;
                 $result->free_result();
      }  
+
+     public function get_tienda_activo(){
+              
+            $this->db->select("c.id, c.nombre");         
+            $this->db->from($this->catalogo_tiendas.' As c');
+            $this->db->where('c.activo',1);
+            $result = $this->db->get( );
+                if ($result->num_rows() > 0)
+                    return $result->row();
+                else 
+                    return FALSE;
+                $result->free_result();
+     }  
+
 
       //crear
         public function anadir_configuracion( $data ){
@@ -3708,7 +3757,7 @@
             $this->db->select('m.id_descripcion,c.color,m.id_color, co.composicion, ca.calidad');
             $this->db->select('m.id_composicion,m.id_calidad'); //m.id_color,
             
-            $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
+            $this->db->select('m.movimiento,m.movimiento_unico, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
             $this->db->select('m.id_medida, m.ancho,m.precio, m.id_estatus, m.id_lote, m.id ');
             $this->db->select('m.peso_real, m.peso_real_devolucion');
             $this->db->select("prod.codigo_contable");  
@@ -3756,6 +3805,7 @@
                                        "id_composicion"=>$row->id_composicion,
                                        "id_calidad"=>$row->id_calidad,
                                        "id_movimiento"=>$row->movimiento,
+                                       "movimiento_unico"=>$row->movimiento_unico,
                                        "fecha_entrada"=>$row->fecha_entrada,
                                        "proveedor"=>$row->proveedor,
                                        "factura"=>$row->factura,
@@ -3792,7 +3842,7 @@
             $this->db->select('m.id_descripcion,c.color,m.id_color, co.composicion, ca.calidad');
             $this->db->select('m.id_composicion,m.id_calidad'); //m.id_color,
             
-            $this->db->select('m.movimiento, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
+            $this->db->select('m.movimiento,m.movimiento_unico, m.fecha_entrada, p.nombre proveedor, m.factura, m.cantidad_um');
             $this->db->select('m.id_medida, m.ancho,m.precio,m.iva, m.id_estatus, m.id_lote, m.id ');
             $this->db->select('m.peso_real');
             $this->db->select("prod.codigo_contable");  
@@ -3833,6 +3883,8 @@
                                        "id_composicion"=>$row->id_composicion,
                                        "id_calidad"=>$row->id_calidad,
                                        "id_movimiento"=>$row->movimiento,
+                                       "movimiento_unico"=>$row->movimiento_unico,
+                                       
                                        "fecha_entrada"=>$row->fecha_entrada,
                                        "proveedor"=>$row->proveedor,
                                        "factura"=>$row->factura,
@@ -3916,7 +3968,7 @@
 
 
       public function buscador_proveedores($data){
-            $this->db->select( 'codigo' );
+            $this->db->select( 'id codigo' );
             $this->db->select("nombre", FALSE);  
             $this->db->from($this->proveedores);
             
@@ -3952,6 +4004,63 @@
                  return False;
               $result->free_result();
       }    
+
+
+
+      public function buscador_tiendas($data){
+            $this->db->select( 'id' );
+            $this->db->select("nombre", FALSE);  
+            $this->db->from($this->catalogo_tiendas);
+
+          $where = '(  (activo<>1) AND 
+                        ( id LIKE  "%'.$data['key'].'%" ) OR (nombre LIKE  "%'.$data['key'].'%") 
+
+            )';   
+  
+          $this->db->where($where);
+
+          /*
+            $this->db->where('(LOCATE("'.$data['idproveedor'].'", coleccion_id_actividad) >0)' );
+          */
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array(
+                                       "value"=>$row->id." | ".$row->nombre,
+                                       "key"=>$row->id,
+                                       "descripcion"=>$row->nombre
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
+
+public function checar_existente_tienda($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->catalogo_tiendas);
+             
+
+            $where = '(
+                          ( nombre =  "'.addslashes($data['descripcion']).'" ) 
+              )';   
+  
+            $this->db->where($where);
+
+            
+            $login = $this->db->get();
+            if ($login->num_rows() > 0) {
+                $fila = $login->row(); 
+                return $fila->id;
+            }    
+            else
+                return false;
+            $login->free_result();
+    } 
 
     
     //checar si el proveedor ya existe
@@ -4616,6 +4725,7 @@
      }  
 
       //crear
+
         public function anadir_producto( $data ){
 
           $id_session = $this->session->userdata('id');
@@ -4628,9 +4738,11 @@
                   $this->db->set( 'id_imagen_check',  '1' );                
                }
 
-               $this->db->set( 'id_usuario',  $id_session );
 
+
+               $this->db->set( 'id_usuario',  $id_session );
                $this->db->set( 'grupo',  $data['grupo'] );
+
 
                $this->db->set( 'referencia', $data['referencia'.$i] );   
                $this->db->set( 'descripcion', $data['descripcion'] );  

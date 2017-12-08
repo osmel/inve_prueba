@@ -101,8 +101,11 @@ echo form_open('validar_devolucion_producto', $attr);
 		<fieldset disabled>
 			<div class="form-group">
 				<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Mov. Asociado</label>
-				<div class="col-sm-12 col-md-12">
+				<div class="col-sm-12 col-md-6">
 					<input type="text" value="" class="form-control" id="movimiento" name="movimiento" placeholder="No. Mov.">
+				</div>
+				<div class="col-sm-12 col-md-6">
+						<input type="text" value="" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Mov">
 				</div>
 			</div>
 		</fieldset>			

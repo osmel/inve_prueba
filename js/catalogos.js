@@ -22,6 +22,327 @@ jQuery(document).ready(function($) {
 var target = document.getElementById('foo');
 
 
+jQuery('body').on('change','#id_compra', function (e) {
+		//alert('aa');
+	  //jQuery('#tabla_transferencia_recibida').dataTable().fnDraw();
+	  console.log(jQuery('#id_compra option:selected').attr('prov_nomb') );
+	  jQuery('input[name=editar_proveedor]').typeahead("val", jQuery('#id_compra option:selected').attr('prov_nomb') );
+});
+
+
+
+
+jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
+
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
+
+		jQuery.ajax({
+		        url : 'validar_proceso_transferencia',
+		        data : { 
+		        	   dato: "valor",
+		        	factura: jQuery("#factura").val(),
+		        	mov_salida_unico: jQuery("#id_transferencia").val(),
+		        	id_almacen: jQuery("#id_almacen").val(),
+		        	id_tipo_pago: jQuery("#id_tipo_pago").val(),
+		        	id_factura: jQuery("#id_factura").val(),
+		        	movimiento_unico : jQuery("#movimiento_unico").val(),
+		        	movimiento: jQuery("#movimiento").val(),
+		        	id_tienda_origen: jQuery('option:selected', '#id_transferencia').attr('id_tienda_origen'),
+
+		        	
+		        	
+
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+					if(data.exito != true){
+						spinner.stop();
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','block');
+						jQuery('#messages').addClass('alert-danger');
+						jQuery('#messages').html(data.error);
+						jQuery('html,body').animate({
+							'scrollTop': jQuery('#messages').offset().top
+						}, 1000);
+					}else{
+						
+						spinner.stop();
+						//borrar el mensaje q quedo	
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','none');
+
+
+
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
+						
+												$catalogo = e.target.name;
+												window.location.href = 'procesar_entrar/'+jQuery.base64.encode("T-"+data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val())+'/'+jQuery.base64.encode(jQuery("#id_estatus").val());
+									        	
+									        }
+								});			
+								
+						
+					}		        			        	  
+				}
+		});	
+
+});
+
+
+jQuery('body').on('change','#id_transferencia', function (e) {
+		//console.log( jQuery('option:selected', this).attr('id_tienda_origen') );
+
+		//$('option:selected', this).attr('mytag');
+	  jQuery('#tabla_transferencia_recibida').dataTable().fnDraw();
+});
+
+
+var productos_transferencia = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total'];      	
+
+jQuery('#tabla_transferencia_recibida').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_transferencia_recibida",
+         		"type": "POST",
+         		 "data": function ( d ) {
+	     				  d.mov_salida_unico = jQuery("#id_transferencia").val(); 
+
+	    		}
+     },   
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+		  	jQuery('#total_peso').html( 'Total de kgs:'+number_format(settings.json.totales.peso, 2, '.', ','));
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+		    jQuery('#total_peso').html( 'Total de kgs: 0.00');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+
+
+	    if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+		}	
+
+
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+
+	    return pre
+  	} ,    
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		
+
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api  
+					.column( 10 )   //metro 
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 11)  //kg
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+
+				
+				total_subtotal = api
+					.column( 8)  //subtotal
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				total_iva = api
+					.column( 12) //sum de ivas
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+				
+				total_total = api
+					.column( 13 )  //sum de totales
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				total_pieza = (end-start);	
+			        
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total_total, 2, '.', ','));
+
+		} else 	{
+
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#peso').html('Total de peso real: 0.00');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');	
+
+		}	
+    },	
+
+   "columnDefs": [
+
+   				{  //codigo viejo
+		                "render": function ( data, type, row ) { 
+		                			return row[1];
+		                },
+		                "targets": [1]   
+		        },  
+   				{ //descripcion
+		                "render": function ( data, type, row ) { 
+		                			return row[2];
+		                },
+		                "targets": [2]   
+		        },  
+    			
+    			{ //color, medida, ancho
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [3,4,5]
+	            },
+    			
+
+    			{ //lote y consecutivo
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [6]
+	            },
+
+	            { //estatus
+	                "render": function ( data, type, row ) {
+						return row[14];	
+	                },
+	                "targets": [7]
+	            },
+
+    			{  //precio
+	                "render": function ( data, type, row ) {
+						
+						return number_format(parseFloat(row[7]), 2, '.', ',');	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ //subtotal
+	                "render": function ( data, type, row ) {
+						
+						return number_format(parseFloat(row[8]), 2, '.', ',');	
+	                },
+	                "targets": [9]
+	            },
+
+    			{   //iva = (subtotal*iva)/100
+	                "render": function ( data, type, row ) {
+						return number_format(parseFloat((row[8]*row[9])/100), 2, '.', ',');	
+	                },
+	                "targets": [10]
+	            },
+    			{ //total =  (subtotal+ (subtotal*iva) ) /100
+	                "render": function ( data, type, row ) {
+						return number_format((parseFloat(row[8])+parseFloat((row[8]*row[9])/100)), 2, '.', ',');	
+	                },
+	                "targets": [11]
+	            },	       
+
+    			{ 
+	                 "visible": false,
+	                "targets": [0,12,13,14] 
+	            }
+
+	],	
+
+
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =productos_transferencia;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
+
+
 
 /////////////////////////////////////////REGILLA PRINCIPAL/////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,9 +528,9 @@ cuentas
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+=row[16]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 
@@ -388,9 +709,9 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"'
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"'
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+=row[16]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 
@@ -584,9 +905,9 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+=row[16]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 
@@ -3873,8 +4194,28 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 	                },
 	                "targets": 9
-	            },	            
+	            },	       
+
+	            { //enlace
+	                "render": function ( data, type, row ) {
+						return row[14];	
+
+	                },
+	                "targets": 10
+	            },     
+	            { //enlace
+	                "render": function ( data, type, row ) {
+						return row[13];	
+
+	                },
+	                "targets": 11
+	            },     
+
     			
+    			{ 
+		                 "visible": false,
+		                "targets": [12]
+		        }
 
 	          /*
 	            {
@@ -4082,7 +4423,16 @@ jQuery('#tabla_pedido_compra').dataTable( {
 	                },
 
 	                "targets": 9
-	            }	            
+	            },	  
+	            /*
+	            {
+	                "render": function ( data, type, row ) {
+						return row[10];		
+
+	                },
+
+	                "targets": 10
+	            }          */
 
 
 	        ],
@@ -4186,6 +4536,13 @@ jQuery("#producto_catalogo_compra, #color_catalogo_compra, #composicion_catalogo
 	}
 
 
+jQuery('#id_medida_compra').change(function(e) {
+	var oTable =jQuery('#tabla_entrada_pedido_compra').dataTable();
+	oTable._fnAjaxUpdate();		
+});
+
+
+
 jQuery('#tabla_entrada_pedido_compra').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
 	"serverSide": true,
@@ -4215,6 +4572,7 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
      				   d.id_color = jQuery("#color_catalogo_compra").val(); 
      				   d.id_composicion = jQuery("#composicion_catalogo_compra").val(); 
      				   d.id_calidad = jQuery("#calidad_catalogo_compra").val(); 
+     				   d.id_medida = jQuery("#id_medida_compra").val(); 
     				   
     			 	}	
      }, 
@@ -4363,6 +4721,7 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 	comentario = jQuery("#comentario").val();
 	id_almacen = jQuery("#id_almacen_compra").val();
 	id_proveedor = jQuery("#id_proveedor_compra").val();
+	id_medida = jQuery("#id_medida_compra").val();
 	
 
 	//editar_proveedor
@@ -4379,6 +4738,7 @@ jQuery('table').on('click','.agregar_compra', function (e) {
 		        	comentario: comentario,
 		        	id_almacen: id_almacen,
 		        	id_proveedor:id_proveedor,
+		        	id_medida: id_medida
 		        },
 		        type : 'POST',
 		       // dataType : 'json',
@@ -4466,6 +4826,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
      				   d.id_color = jQuery("#color_catalogo_compra").val(); 
      				   d.id_composicion = jQuery("#composicion_catalogo_compra").val(); 
      				   d.id_calidad = jQuery("#calidad_catalogo_compra").val(); 
+     				   d.id_medida = jQuery("#id_medida_compra").val(); 
     				   
     			 	}	
      }, 
@@ -5190,9 +5551,9 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_notas";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(row[11])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[12]+row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(row[11])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+=row[12]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 
@@ -5213,10 +5574,6 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		            
 		        ],
 	});	
-
-
-
-
 
 
 
@@ -5363,9 +5720,9 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[11]+row[0])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+=row[11]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
@@ -5375,7 +5732,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [9]
+		                "targets": [9,10,11]
 		            }
 		            
 		          
@@ -5406,7 +5763,15 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						d.fecha_final = fecha[1];	
 					    d.id_almacen = jQuery("#id_almacen_historicos").val(); 
 					    d.id_factura = jQuery("#id_factura_historicos").val(); 						
-					    d.id_estatus = jQuery("#id_estatuss_historicos").val(); 						
+					    d.id_estatus = jQuery("#id_estatuss_historicos").val(); 	
+					    d.on_off  = ((jQuery('#Tienda_Cliente').prop('checked')) ? 1 : 0 );		
+
+					    d.cliente_pedido=jQuery('.buscar_proveedor_hist_salida').typeahead("val");		
+					    d.identificador = parseInt(jQuery('.buscar_proveedor_hist_salida.tt-input').attr("identificador")) >0 ? parseInt(jQuery('.buscar_proveedor_hist_salida.tt-input').attr("identificador")) :0   ;	
+					    d.identificador_vendedor = (jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor") ) !=undefined ? (jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor")) : "0"   ;	
+					    //alert(  (jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor"))  )
+						//console.log((jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor")));
+						//console.log(d.identificador_vendedor);
 					    
 
 	         		 }
@@ -5549,7 +5914,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+='Detalles';
+							texto+= ((row[15]==1) ? 'T-':'')+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
@@ -5559,7 +5924,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [12,13]
+		                "targets": [12,13,14,15]
 		            }
 		            
 		          
@@ -5567,6 +5932,176 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		            
 		        ],
 	});		
+
+
+    jQuery('#Tienda_Cliente').change(function() {
+		  if ($(this).prop('checked')) {
+	         	jQuery('.buscar_proveedor_hist_salida').prop('name','editar_tienda');
+
+	      } else {
+	      		jQuery('.buscar_proveedor_hist_salida').prop('name','editar_proveedor');
+	      }
+	      jQuery('.buscar_proveedor_hist_salida').typeahead("val",'');  //borrar la casilla
+	      
+		 jQuery('.buscar_proveedor_hist_salida.tt-input').attr("identificador",'0');		
+
+	      var oTable =jQuery('#tabla_historico_salida').dataTable();
+		  oTable._fnAjaxUpdate();
+
+	});
+
+
+
+
+	var consulta_proveedor_hist_salida = new Bloodhound({
+	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
+	   queryTokenizer: Bloodhound.tokenizers.whitespace,
+
+	  remote: {
+	        url: 'catalogos/buscador?key=%QUERY',
+	        replace: function () {
+	            var q = 'catalogos/buscador?key='+encodeURIComponent(jQuery('.buscar_proveedor_hist_salida').typeahead("val"));
+					q += '&nombre='+encodeURIComponent(jQuery('.buscar_proveedor_hist_salida.tt-input').attr("name"));
+				    q += '&idproveedor='+encodeURIComponent(jQuery('.buscar_proveedor_hist_salida.tt-input').attr("idproveedor"));
+	            
+	            return  q;
+	        }
+	    },   
+
+	});
+
+	
+
+
+	consulta_proveedor_hist_salida.initialize();
+//https://github.com/twitter/typeahead.js/blob/master/doc/jquery_typeahead.md#datasets
+	jQuery('.buscar_proveedor_hist_salida').typeahead(
+		{
+			  hint: true,
+		  highlight: true,
+		  minLength: 1
+		},
+		{
+		   name: 'buscar_proveedor_hist_salida',
+		   displayKey: 'descripcion', //
+		   source: consulta_proveedor_hist_salida.ttAdapter(),
+		   templates: {
+		   			//header: '<h4>'+jQuery('.buscar_proveedor_hist_salida').attr("name")+'</h4>',
+				    suggestion: function (data) {  
+						return '<p><strong>' + data.descripcion + '</strong></p>'+
+						 '<div style="background-color:'+ '#'+data.hexadecimal_color + ';display:block;width:15px;height:15px;margin:0 auto;"></div>';
+			  		 }
+		}
+	});
+
+	let selecciono = null;
+	jQuery('.buscar_proveedor_hist_salida').on('typeahead:selected', function (e, datum,otro) {
+	    selecciono = jQuery('.buscar_proveedor_hist_salida.tt-input').typeahead("val");
+	    jQuery('.buscar_proveedor_hist_salida.tt-input').attr("identificador",datum.key);		
+	});	
+
+	jQuery('.buscar_proveedor_hist_salida').on('typeahead:closed', function (e) {
+		
+		if (!selecciono || selecciono != jQuery('.buscar_proveedor_hist_salida.tt-input').typeahead("val")) {
+       	 selecciono = null;
+       	 jQuery('.buscar_proveedor_hist_salida.tt-input').typeahead("val",'');
+    	} 
+
+    	if (jQuery('.buscar_proveedor_hist_salida.tt-input').typeahead("val")=='' ) {  //caso q quiten valor
+    		jQuery('.buscar_proveedor_hist_salida.tt-input').attr("identificador",'0');		
+    	}
+
+    	var oTable =jQuery('#tabla_historico_salida').dataTable();
+		oTable._fnAjaxUpdate(); 
+
+	});	
+
+
+
+////////////////////////////////////////////////////////////////
+	var consulta_vendedor_hist_salida = new Bloodhound({
+	   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('nombre'),
+	   queryTokenizer: Bloodhound.tokenizers.whitespace,
+
+	  remote: {
+	        url: 'catalogos/buscador?key=%QUERY',
+	        replace: function () {
+	            var q = 'catalogos/buscador?key='+encodeURIComponent(jQuery('.buscar_vendedor_hist_salida').typeahead("val"));
+					q += '&nombre='+encodeURIComponent(jQuery('.buscar_vendedor_hist_salida.tt-input').attr("name"));
+				    //q += '&idproveedor='+encodeURIComponent(jQuery('.buscar_vendedor_hist_salida.tt-input').attr("idproveedor"));
+	            
+	            return  q;
+	        }
+	    },   
+
+	});
+
+	
+
+
+	consulta_vendedor_hist_salida.initialize();
+	jQuery('.buscar_vendedor_hist_salida').typeahead(
+		{
+			  hint: true,
+		  highlight: true,
+		  minLength: 1
+		},
+		{
+		   name: 'buscar_vendedor_hist_salida',
+		   displayKey: 'descripcion', //
+		   source: consulta_vendedor_hist_salida.ttAdapter(),
+		   templates: {
+				    suggestion: function (data) {  
+						return '<p><strong>' + data.descripcion + '</strong></p>'+
+						 '<div style="background-color:'+ '#'+data.hexadecimal_color + ';display:block;width:15px;height:15px;margin:0 auto;"></div>';
+			  		 }
+		}
+	});
+
+	
+	let selecciono1 = null;
+	jQuery('.buscar_vendedor_hist_salida').on('typeahead:selected', function (e, datum,otro) {
+	    selecciono1 = jQuery('.buscar_vendedor_hist_salida.tt-input').typeahead("val");
+	    jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor",datum.key);		
+	});	
+
+	jQuery('.buscar_vendedor_hist_salida').on('typeahead:closed', function (e) {
+		
+		if (!selecciono1 || selecciono1 != jQuery('.buscar_vendedor_hist_salida.tt-input').typeahead("val")) {
+       	 selecciono1 = null;
+       	 jQuery('.buscar_vendedor_hist_salida.tt-input').typeahead("val",'');
+    	} 
+
+    	if (jQuery('.buscar_vendedor_hist_salida.tt-input').typeahead("val")=='' ) {  //caso q quiten valor
+    		jQuery('.buscar_vendedor_hist_salida.tt-input').attr("identificador_vendedor",'0');		
+    	}
+
+    	var oTable =jQuery('#tabla_historico_salida').dataTable();
+		oTable._fnAjaxUpdate(); 
+
+	});	
+
+	/*	
+	jQuery('.buscar_vendedor_hist_salida').on('typeahead:selected', function (e, datum,otro) {
+		var oTable =jQuery('#tabla_historico_salida').dataTable();
+		oTable._fnAjaxUpdate();
+
+
+	});	
+
+	jQuery('.buscar_vendedor_hist_salida').on('typeahead:closed', function (e) {
+		
+		var oTable =jQuery('#tabla_historico_salida').dataTable();
+		oTable._fnAjaxUpdate();
+
+	});	
+	*/
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var existencia_costo_inventario = ['Código', 'Producto', 'Color',   'Cantidad',  'Ancho', 'Precio', 'SubTotal', 'iva', 'Tipo Factura', 'No. Movimiento','Proveedor', 'Ingreso'];
@@ -5826,7 +6361,6 @@ jQuery('body').on('click','#impresion_rapido_costo', function (e) {
 			id_estatus:id_estatus,
 			id_factura_costo:id_factura_costo,
 			id_almacen: id_almacen,
-
 			id_descripcion:id_descripcion, 
 			id_color:id_color, 
 			id_composicion:id_composicion, 
@@ -8529,6 +9063,7 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 				//jQuery('#total_precio').html('Importe Total: 0.00');
 			}	
 
+			
 		    return pre
 	  	} ,    
 

@@ -117,7 +117,7 @@
 
 
 					<!--Proveedor -->
-					<div class="col-xs-12 col-sm-6 col-md-8">
+					<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
 					    
 							<label for="id_proveedor_compra" class="col-sm-3 col-md-3 control-label">Proveedor</label>
 							<div class="col-sm-9 col-md-10">
@@ -147,6 +147,36 @@
 							</div>
 					</div>	
 
+					<!--Medida -->
+					<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+					    
+							<label for="id_medida_compra" class="col-sm-3 col-md-3 control-label">Mts/kgs</label>
+							<div class="col-sm-9 col-md-12">
+							    <?php if (!$val_compra) { ?>
+											 <fieldset class="disabledme">				
+										<?php } else { ?>	
+											 <fieldset class="disabledme" disabled>
+										<?php } ?>	
+													<select name="id_medida_compra" id="id_medida_compra" class="form-control">
+															<?php foreach ( $medidas as $medida ){ ?>
+																	<?php 
+																	   
+																	   $seleccionado='';	
+																		if ($val_compra) { //comprobar una vez que ya esten inhabilitados factura
+																			 if ($medida->id==$val_compra->id_medida) {
+																					$seleccionado='selected';
+																				} else {
+																					$seleccionado='';
+																				}
+																		}
+																	?>
+																		<option value="<?php echo $medida->id; ?>" <?php echo $seleccionado; ?> ><?php echo $medida->medida; ?></option>
+															<?php } ?>
+													</select>
+										    </fieldset>
+
+							</div>
+					</div>	
 
 
 

@@ -52,6 +52,20 @@
     //cuando se elimina un diseño en particular
     //Hasta la victoria siempre querido comandante
 
+public function eliminar_remoto(){
+  $bd_transferencia = $this->load->database('remoto2', TRUE);
+
+  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("remoto_registros_transferencia")); 
+  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_productos")); 
+  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_composicion")); 
+  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_calidad")); 
+  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_colores")); 
+  $this->db = $this->load->database('default', TRUE);
+          return "remoto fue eliminado";
+
+
+}  
+
     public function eliminar_todos(){
        
       
@@ -91,6 +105,17 @@
          $this->db->empty_table(  $this->historico_pedido_compra );
          $this->db->empty_table(  $this->historico_cancela_pedido_compra);
          $this->db->empty_table( $this->historico_historial_compra   );
+
+         $this->db->empty_table( 'inven_historico_registros_transferencia' );
+         $this->db->empty_table( 'remoto_registros_transferencia');
+         
+         /*$this->db->empty_table( 'inven_remoto_colores');
+         $this->db->empty_table( 'inven_remoto_composicion');
+         $this->db->empty_table( 'inven_remoto_productos');
+         */
+
+
+         
 
 
         return "todo fue eliminado";

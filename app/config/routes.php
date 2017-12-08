@@ -331,24 +331,46 @@ $route['procesando_productos_temporales']    		= 'entradas/procesando_productos_
 
 $route['eliminar_prod_temporal/(:any)/(:any)']       = 'entradas/eliminar_prod_temporal/$1/$2';
 $route['validar_eliminar_prod_temporal']    = 'entradas/validar_eliminar_prod_temporal';
-$route['inf_ajax_temporal']    = 'entradas/inf_ajax_temporal';
+
 
 //procesamiento de entrada
 $route['procesar_entradas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3/$4/$5';
 
-$route['procesar_entrar/(:any)/(:any)/(:any)']    = 'entradas/procesar_entrar/$1/$2/$3';
+$route['procesar_entrar/(:any)/(:any)/(:any)']   				 = 'entradas/procesar_entrar/$1/$2/$3';
 
 $route['validar_proceso']    = 'entradas/validar_proceso';
 
 
-$route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
+$route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']   		  = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
 $route['generar_etiquetas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas_rapida/$1/$2/$3/$4';
-    $route['generar_notas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3/$4';
+    $route['generar_notas/(:any)/(:any)/(:any)/(:any)']   		  = 'pdfs/generar_notas/$1/$2/$3/$4';
     $route['generar_notas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas_rapida/$1/$2/$3/$4';
 
 $route['pdfs']    = 'pdfs/index';
 
 
+
+/////////////////////////////////////////////Listado de todas las entradas de compra
+$route['entrada_compra']						 		= 'entrada_compra/listado_entradas';
+$route['validar_agregar_producto_compra']       		= 'entrada_compra/validar_agregar_producto_compra';
+$route['listado_temporal']          	 		= 'entrada_compra/listado_temporal';
+
+
+$route['recepciones']					 		= 'entrada_compra/listado_recepciones';
+$route['nuevo_recepcion']                		= 'entrada_compra/nuevo_recepcion';
+$route['editar_recepcion/(:any)']      	 		= 'entrada_compra/editar_recepcion/$1';
+$route['validacion_edicion_recepcion']   		= 'entrada_compra/validacion_edicion_recepcion';
+
+$route['procesando_productos_temporales_compra']    	= 'entrada_compra/procesando_productos_temporales_compra';
+
+$route['eliminar_prod_temporal_compra/(:any)/(:any)']  = 'entrada_compra/eliminar_prod_temporal_compra/$1/$2';
+$route['validar_eliminar_prod_temporal_compra']    	= 'entrada_compra/validar_eliminar_prod_temporal_compra';
+
+$route['procesar_entrada_compra/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'entrada_compra/procesar_entrada_compra/$1/$2/$3/$4/$5';
+
+$route['procesar_entrar_compra/(:any)/(:any)/(:any)']   				 = 'entrada_compra/procesar_entrar_compra/$1/$2/$3';
+
+$route['validar_proceso_compra']    					= 'entrada_compra/validar_proceso_compra';
 
 ///////////////////salidas///////////////////////
 $route['procesando_servidor']    		= 'salidas/procesando_servidor';
@@ -812,14 +834,6 @@ $route['cargar_dependencia_catalogo']   = 'catalogos/cargar_dependencia_catalogo
 $route['marcando_activo']    			= 'catalogos/marcando_activo';
 
 
-
-
-
-/*  
-
-*/
-
-
 /////////////////////////////Exportar////////////////////////
 
 $route['exportar_reportes']    = 'exportar_reportes/exportar';
@@ -846,6 +860,59 @@ $route['imprimir_totales']   = 'pdf_reportes/imprimir_totales';
 $route['exportar_totales']    = 'exportar_reportes/exportar_totales';
 
 
+
+
+
+/////////////////////////////////////////////Listado de todas las entradas
+
+$route['transferencia_recibida']						= 'transferencias/transferencia_recibida';
+
+
+$route['procesando_transferencia_recibida']						= 'transferencias/procesando_transferencia_recibida';
+
+$route['validar_proceso_transferencia']						= 'transferencias/validar_proceso_transferencia';
+
+
+
+
+//recepcion, devolucion_venta, transferencia_salida, ajuste_positivo
+
+//operaciones de entradas
+/*
+$route['validar_agregar_producto']          = 'entradas/validar_agregar_producto';
+$route['listado_temporal']          = 'entradas/listado_temporal';
+
+
+$route['recepciones']					     = 'entradas/listado_recepciones';
+$route['nuevo_recepcion']                  = 'entradas/nuevo_recepcion';
+$route['editar_recepcion/(:any)']      = 'entradas/editar_recepcion/$1';
+$route['validacion_edicion_recepcion']     = 'entradas/validacion_edicion_recepcion';
+
+
+$route['procesando_productos_temporales']    		= 'entradas/procesando_productos_temporales';
+
+
+
+
+$route['eliminar_prod_temporal/(:any)/(:any)']       = 'entradas/eliminar_prod_temporal/$1/$2';
+$route['validar_eliminar_prod_temporal']    = 'entradas/validar_eliminar_prod_temporal';
+
+
+//procesamiento de entrada
+$route['procesar_entradas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'entradas/procesar_entradas/$1/$2/$3/$4/$5';
+
+$route['procesar_entrar/(:any)/(:any)/(:any)']    = 'entradas/procesar_entrar/$1/$2/$3';
+
+$route['validar_proceso']    = 'entradas/validar_proceso';
+
+
+$route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
+$route['generar_etiquetas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_etiquetas_rapida/$1/$2/$3/$4';
+    $route['generar_notas/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas/$1/$2/$3/$4';
+    $route['generar_notas_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_notas_rapida/$1/$2/$3/$4';
+
+$route['pdfs']    = 'pdfs/index';
+*/
 
 
 /* End of file routes.php */

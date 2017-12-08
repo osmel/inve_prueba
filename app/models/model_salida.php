@@ -2,13 +2,15 @@
 
   class model_salida extends CI_Model {
     
-    private $key_hash;
+    private $key_hash; 
     private $timezone;
 
     function __construct(){
 
       parent::__construct();
+      
       $this->load->database("default");
+      //$this->db2 = $this->load->database("remoto",TRUE);
       $this->key_hash    = $_SERVER['HASH_ENCRYPT'];
       $this->timezone    = 'UM1';
 
@@ -54,19 +56,979 @@
       $this->tipos_ventas                         = $this->db->dbprefix('catalogo_tipos_ventas');
 
 
+      
+
+       //$this->load->database("remoto"); 
+
+      /*
+
+      $this->db_remoto = array(  //remoto
+            //'dsn'       => '',
+              'hostname' => 'localhost',
+              'username' => 'root',
+              'password' => 'root',
+              'database' => 'bd_remota',
+              'dbdriver' => 'mysql',
+              'dbprefix' => 'inven_',
+              'pconnect' => TRUE,
+              'db_debug' => TRUE,
+              'cache_on' => FALSE,
+              'cachedir' => '',
+              'char_set' => 'utf8',
+              'dbcollat' => 'utf8_general_ci',
+              'swap_pre' => '',
+              'autoinit' => true,
+              'stricton' => FALSE,
+          );
+          */
+
+
     }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+          //1ra regilla. detalles   <| pedidos
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+
+        //1ra regilla. verificar si existe tal apartado de salida para el detalle.Cdo mandan a confirmar 
+        public function existencia_apartado_salida($data){
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+              
+                  if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                        ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                        (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return true;
+              else
+                 return false;              
+        }  
+
+
+
+      
 
 
 
 
-     ///////////////////////////////////////////////////////////////////
+
+   //1ra regilla. detalles. verificar sus pesos!=0
+   public function existencia_apartado_peso_real($data){
+
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+
+           if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
+                       (m.peso_real=0) AND (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+             
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }    
+
+
+       //1ra regilla. traspasar si es necesario
+        public function traspaso_apartado( $data ){
+                
+                //$id_almacen= $data['id_almacen'];
+                
+                if ($data['id_tipo_factura']==1){
+                    $porciento_aplicar =16;  
+                } else {
+                     $porciento_aplicar = 0;  
+                }
+                
+                $this->db->set( 'id_factura_original', 'id_factura', false);
+                $this->db->set( 'id_factura', 'id_tipo_factura', false);
+               
+                
+                if ($data['id_tipo_factura']==1){
+                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
+                }
+
+                $this->db->set( 'id_apartado', '3');
+                
+
+
+                $this->db->set( 'incluir', 1);
+                
+                /*
+                if ($id_almacen!=0) {
+                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
+                } else {
+                    $id_almacenid = '';
+                } */
+
+                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
+
+                if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }      
+
+                //$id_almacenid.
+                $where = '(
+                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+
+                          (
+                            ( id_apartado <>0    ) AND ( consecutivo_venta = "'.$data['num_mov'].'" )
+                          )'.$cond_traspaso.$id_almacenid.' 
+
+                      )';   
+
+                $this->db->where($where);
+                $this->db->update($this->registros );
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;
+
+        }
+
+
+
+   //1ra regilla. Procesando todas las operaciones de salida
+   public function procesando_operacion_apartado_salida( $data ){
+
+          $id_session = $this->session->userdata('id');
+
+          //este hay que checarlo porque no es para el cliente activo"almacenista", sino para quien hizo el "pedido"
+          //$id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
+          $consecutivo = self::consecutivo_operacion(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+
+          $fecha_hoy = date('Y-m-d H:i:s');  //date_format($fecha_hoy , 'Y-m-d H:i:s');
+        
+          $this->db->select('"2" AS id_operacion',false);
+          $this->db->select('"0" AS estatus_salida',false);
+          $this->db->select('"'.$id_session.'" AS id_usuario',false); 
+          $this->db->select('"'.$id_session.'" AS id_usuario_salida',false); 
+          $this->db->select('"'.$id_session.'" AS id_usuario_traspaso',false); 
+          
+          $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
+          $this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);
+          $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
+          $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
+          $this->db->select('u.id_cliente AS id_cliente',false); 
+          $this->db->select('"3" AS id_apartado',false); 
+          
+          $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
+          $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
+          $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, cantidad_royo, ancho');
+          $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
+          $this->db->select('fecha_entrada,consecutivo_venta');
+
+          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
+          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
+          $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
+           
+          $this->db->from($this->registros_entradas.' As m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+
+    
+          if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where=  '(
+                       (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) AND
+                      (id_apartado<>0) and  (consecutivo_venta='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
+                       
+                    )';
+
+          $this->db->where($where);     
+          $result = $this->db->get();
+          $objeto = $result->result();
+          
+         
+          //copiar a tabla "historico_registros_salidas" y historico_registros_traspasos si hay alguno 
+          $dato = array();
+          $consecutivo_traspaso = self::consecutivo_operacion(26,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          $consecutivo_traspaso_unico = self::consecutivo_operacion_unico(26); 
+          $traspaso=0;
+          foreach ($objeto as $key => $value) {
+            $this->db->insert($this->historico_registros_salidas, $value); 
+
+            if ($value->incluir==1) {
+              $traspaso=1;
+              $value_traspaso = $value;
+              $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
+              $value_traspaso->consecutivo_traspaso_unico = $consecutivo_traspaso_unico;
+              $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
+            }
+
+            //$this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
+            /*
+            $dato['num_movimiento'] = $value->mov_salida;
+            $dato['cargador'] = $value->cargador;
+            $dato['cliente'] = $value->cliente;
+            */
+
+          }
+          
+          //actualizar el consecutivo en "operaciones" == "traspasos"
+          if ($traspaso==1) {
+              
+              if ($data['id_tipo_pedido']==2) {
+                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+              }  else if ($data['id_tipo_factura']==1) {
+                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              } else {
+                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              }
+
+              $this->db->set( 'id_usuario', $id_session );
+              $this->db->where('id',26);
+              $this->db->update($this->operaciones);          
+          }
+              
+          //actualizar (consecutivo) en tabla "operacion"   == "salida"
+          if ($data['id_tipo_pedido']==2) {
+               $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+          }  else if ($data['id_tipo_factura']==1) {
+              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          } else {
+              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+          }
+
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',2);
+          $this->db->update($this->operaciones);
+
+          //eliminar los registros en "registros_salidas"
+
+            if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where_borrar=  '(
+                      (id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (id_tipo_factura='.$data['id_tipo_factura'].' ) AND
+                      (id_apartado<>0) and  (consecutivo_venta='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
+                       
+                    )';
+
+          $this->db->where($where_borrar);            
+          $this->db->delete($this->registros_entradas);
+
+
+
+          ///datos a retornar
+
+          $this->db->select('m.mov_salida,ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
+          $this->db->from($this->historico_registros_salidas.' As m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');          
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          
+
+          if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where=  '(
+                      (m.mov_salida='.$consecutivo.' ) AND (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) '.$id_almacenid.'
+                       
+                    )';
+
+                    
+
+           $this->db->where($where);           
+
+
+            $result = $this->db->get();
+        
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+
+          //return $dato;
+
+          //$result->free_result();          
+
+        }
+
+      
+
+        //1ra y 2da regilla. detalles. actualizacion de los pesos
+       public function actualizar_peso_real_salida_pedido( $data ){
+           
+            $id_session = ($this->session->userdata('id'));
+
+
+            foreach ($data['pesos'] as $key => $value) {
+
+                if(!is_numeric($value['peso_real'])) {  //caso cuando el peso viene vacio
+                  $value['peso_real'] = 0;
+                  
+                } 
+                $this->db->set( 'peso_real', $value['peso_real'], FALSE  );
+                $this->db->where('codigo',$value['codigo']);                
+                $this->db->update($this->registros_entradas);
+              }
+            
+            return TRUE;       
+        }              
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+          //2da regilla. detalles   <| pedidos
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+ //2da regilla. verificar si existe tal apartado de salida para el detalle.Cdo mandan a confirmar 
+        public function existencia_pedido_salida($data){
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+              
+                  if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                        (m.id_apartado<>0) and  (m.movimiento_unico_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return true;
+              else
+                 return false;              
+        }  
+
+
+    //2da regilla. detalles. verificar sus pesos!=0
+    public function existencia_salida_peso_real($data){
+
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+
+           if ($data["id_almacen"]!=0) {
+                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                          } else {
+                              $id_almacenid = '';
+                  }                         
+
+                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
+
+                  //( us.id_cliente = '.$data['id_cliente'].' ) 
+                  //'id_operacion'=2
+                  $where=  '(
+                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                       (m.peso_real=0) AND (m.id_apartado<>0) and  (m.movimiento_unico_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
+                         
+                      )';
+
+              $this->db->where($where);     
+              $this->db->from($this->registros_entradas.' As m');
+              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
+
+             
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }            
 
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        //2da regilla. Traspasando los productos si fuese necesario
+        public function traspaso_pedido( $data ){
+                
+                //$id_almacen= $data['id_almacen'];
+                
+                if ($data['id_tipo_factura']==1){
+                    $porciento_aplicar =16;  
+                } else {
+                     $porciento_aplicar = 0;  
+                }
+                
+                $this->db->set( 'id_factura_original', 'id_factura', false);
+                $this->db->set( 'id_factura', 'id_tipo_factura', false);
+               
+                
+                if ($data['id_tipo_factura']==1){
+                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
+                }
+
+                $this->db->set( 'id_apartado', '6');
+                
+
+
+                $this->db->set( 'incluir', 1);
+                
+
+                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
+
+                if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }      
+
+                //$id_almacenid.
+                $where = '(
+                           ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                          (
+                            ( id_apartado <>0    ) AND ( movimiento_unico_apartado = "'.$data['num_mov'].'" )
+                          )'.$cond_traspaso.$id_almacenid.' 
+
+                      )';   
+
+                $this->db->where($where);
+                $this->db->update($this->registros );
+                if ($this->db->affected_rows() > 0) {
+                  return TRUE;
+                }  else
+                   return FALSE;
+        }
+
+
+
+
+
+
+
+//2da regilla. ya procesando la confirmacion de la operacion
+ public function procesando_operacion_pedido_salida( $data ){
+        
+
+          $id_session = $this->session->userdata('id');
+
+          //este hay que checarlo porque no es para el cliente activo" almacenista", sino para quien hizo el "pedido"
+          $id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
+          $consecutivo = self::consecutivo_operacion(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          $consecutivo_unico = self::consecutivo_operacion_unico(2); 
+
+          $fecha_hoy = date('Y-m-d H:i:s');  //date_format($fecha_hoy , 'Y-m-d H:i:s');
+
+        
+          $this->db->select('"2" AS id_operacion',false);
+          $this->db->select('"0" AS estatus_salida',false);
+          $this->db->select('"'.$id_session.'" AS id_usuario',false); 
+          $this->db->select('"'.$id_session.'" AS id_usuario_salida',false); 
+          $this->db->select('"'.$id_session.'" AS id_usuario_traspaso',false); 
+          
+          $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
+          $this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);
+          $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
+          $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
+          $this->db->select('"'.$consecutivo_unico.'" AS mov_salida_unico',false); 
+
+          $this->db->select('u.id_cliente AS id_cliente',false); 
+          $this->db->select('"6" AS id_apartado',false); 
+          
+          
+          $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
+          $this->db->select('m.id id_entrada, movimiento,movimiento_unico, movimiento_unico_apartado, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
+          $this->db->select('id_composicion, id_calidad, referencia, id_medida, factura, cantidad_um, cantidad_royo, ancho');
+          $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
+          $this->db->select('fecha_entrada,consecutivo_venta');
+
+          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
+          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
+          $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
+
+          $this->db->select('on_off');
+
+          $this->db->select('"'.$this->session->userdata('config_tienda_activo').'" AS id_tienda_origen',FALSE);
+
+  
+
+
+          $this->db->from($this->registros_entradas.' As m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+
+          if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where=  '(
+                       (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) AND
+                      (id_apartado<>0) and  (movimiento_unico_apartado='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
+                    )';
+
+          $this->db->where($where);     
+          $result = $this->db->get();
+          $objeto = $result->result();
+
+          //return $objeto;
+
+
+
+
+         //objeto para la transferencia remota
+
+         $this->db->select('"'.$fecha_hoy.'" AS fecha_transferencia',false);
+         $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
+         $this->db->select('"'.$consecutivo_unico.'" AS mov_salida_unico',false); 
+         $this->db->select('m.id_empresa, m.id_descripcion, m.id_color,m.id_calidad,m.id_composicion,m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,m.precio, m.codigo, m.id_estatus, m.id_lote,m.consecutivo, m.id_usuario_apartado,m.on_off,m.consecutivo_venta,prod.imagen');
+         $this->db->select('"'.$id_session.'" AS id_usuario_salida',false);  
+         $this->db->select('"'.$this->session->userdata('config_tienda_activo').'" AS id_tienda_origen',FALSE);
+
+         $this->db->select('u.nombre AS nombre_usuario',false); 
+         
+         $this->db->select('c.color, c.hexadecimal_color, p.composicion, d.calidad');
+
+          $this->db->from($this->registros_entradas.' As m');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia');
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color');
+          $this->db->join($this->composiciones.' As p' , 'p.id = m.id_composicion');
+          $this->db->join($this->calidades.' As d' , 'd.id = m.id_calidad');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+
+
+          if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+            }                         
+
+      
+            $where=  '(
+                       (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) AND
+                      (id_apartado<>0) and  (movimiento_unico_apartado='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
+                    )';
+
+
+          $this->db->where($where);     
+          $resulta = $this->db->get();
+          $objeto_transferencia = $resulta->result();
+
+         
+          //copiar a tabla "historico_registros_salidas" y historico_registros_traspasos si hay alguno 
+          $dato = array();
+          $consecutivo_traspaso = self::consecutivo_operacion(26,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          $consecutivo_traspaso_unico = self::consecutivo_operacion_unico(26); 
+          $traspaso=0;
+          $tienda_envio=0; //almacen a donde se va a enviar
+          $tienda_on_off=0;
+          foreach ($objeto as $key => $value) {
+            $this->db->insert($this->historico_registros_salidas, $value); 
+            //$bd_transferencia->insert($historico_registros_transferencia, $value );
+
+            if ($value->incluir==1) {
+              $traspaso=1;
+              $value_traspaso = $value;
+              $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
+              $value_traspaso->consecutivo_traspaso_unico = $consecutivo_traspaso_unico;
+
+              $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
+            }
+
+             $tienda_envio=$value->consecutivo_venta;
+             $tienda_on_off=(int)$value->on_off;
+          }
+
+          //////////caso de transferencia a tienda
+          if  ($tienda_on_off==1) { //si es una transferencia a tienda 
+
+                       // remoto
+                       $bd_transferencia = $this->load->database('remoto'.$tienda_envio, TRUE);
+                      
+                        //objeto_transferencia
+
+                        foreach ($objeto_transferencia as $key => $value) {
+                          $bd_transferencia->insert($bd_transferencia->dbprefix('remoto_registros_transferencia'), $value );
+                        }
+
+                        
+
+                           //agregar al catalogo los colores los que faltan
+                          $cons= 'INSERT INTO '.$bd_transferencia->dbprefix("catalogo_colores").' (color, hexadecimal_color)  
+                          SELECT t.color, t.hexadecimal_color
+                          FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                          LEFT JOIN '.$bd_transferencia->dbprefix("catalogo_colores").' c ON t.color = c.color
+                          AND t.hexadecimal_color = c.hexadecimal_color
+                          where c.id is null
+                          group by t.color, t.hexadecimal_color';
+                          $bd_transferencia->query($cons);
+
+                          //agregar al catalogo de composiciones los que faltan
+                          $cons= 'INSERT INTO '.$bd_transferencia->dbprefix("catalogo_composicion").' (composicion)  
+                          SELECT t.composicion
+                          FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                          LEFT JOIN '.$bd_transferencia->dbprefix("catalogo_composicion").' c ON t.composicion = c.composicion
+                          where c.id is null
+                          group by t.composicion';
+                          $bd_transferencia->query($cons);
+
+                          //agregar al catalogo de calidades los que faltan
+                          $cons= 'INSERT INTO '.$bd_transferencia->dbprefix("catalogo_calidad").' (calidad)  
+                          SELECT t.calidad
+                          FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                          LEFT JOIN '.$bd_transferencia->dbprefix("catalogo_calidad").' c ON t.calidad = c.calidad
+                          where c.id is null
+                          group by t.calidad';
+                          $bd_transferencia->query($cons);
+
+
+                          // actualizacion de id de color
+                          $cons= 'UPDATE '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t 
+                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_colores").' c
+                            ON t.color = c.color AND t.hexadecimal_color = c.hexadecimal_color
+                            SET t.id_new_color = c.id';
+                          $bd_transferencia->query($cons);
+
+                          // actualizacion de id de calidad 
+                          $cons= 'UPDATE '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t 
+                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_calidad").' c
+                            ON t.calidad = c.calidad
+                            SET t.id_new_calidad = c.id ';
+                          $bd_transferencia->query($cons);
+
+                        // actualizacion de id de  composicion
+                          $cons= 'UPDATE '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t 
+                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_composicion").' c
+                            ON t.composicion = c.composicion
+                            SET t.id_new_composicion = c.id ';
+                          $bd_transferencia->query($cons);
+
+
+                          
+
+                          //crear la referencia  que faltan (id_descripcion, id_color,id_composicion, id_calidad)
+                           //falta definir id_usuario, activo, imagen, img_20170927OMwe615
+                          $cons= 'INSERT INTO '.$bd_transferencia->dbprefix("catalogo_productos").' (descripcion, id_composicion, id_color, id_calidad, precio, ancho,  id_usuario,comentario,imagen,activo,referencia)  
+                         SELECT t.id_descripcion, t.id_new_composicion, t.id_new_color, t.id_new_calidad,t.precio,t.ancho,"usuario","transferencia",
+                         RTRIM(SUBSTRING( t.imagen, LOCATE(".", t.imagen ) , 4 )) imagen,
+
+                     0,
+                                         CONCAT(DATE_FORMAT(CURDATE(),"%Y"),DATE_FORMAT(CURDATE(),"%m"),DATE_FORMAT(CURDATE(),"%d"),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),
+                            FLOOR(RAND()*10),FLOOR(RAND()*10),FLOOR(RAND()*10)) referencia
+                          FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                          LEFT JOIN '.$bd_transferencia->dbprefix("catalogo_productos").' p
+                          ON t.id_new_color = p.id_color AND t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                          AND t.id_descripcion = p.descripcion
+                          where p.id is null              
+                          group by t.id_descripcion, t.id_new_color, t.id_new_composicion, t.id_new_calidad';
+                          $bd_transferencia->query($cons);
+
+                          
+                           //actualizar las referencia en "'.$bd_transferencia->dbprefix("remoto_registros_transferencia").'"
+
+                          $cons= 'UPDATE '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t 
+                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_productos").' p
+                            ON t.id_new_color = p.id_color AND t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                            AND t.id_descripcion = p.descripcion
+                            SET t.new_referencia = p.referencia';
+                          $bd_transferencia->query($cons);
+
+                           $cons= '
+                                  UPDATE '.$bd_transferencia->dbprefix("catalogo_productos").' p 
+                                  SET p.imagen = CONCAT("img_",p.referencia,p.imagen) where p.grupo="" AND p.imagen<>"" ';
+                          $bd_transferencia->query($cons);
+
+                          
+                           /*aqui es donde hay q copiar las imagenes*/ 
+
+                          //actualizar los grupos q ya existen con las nuevas referencias que fueron creadas
+                          $cons= '
+                                  UPDATE '.$bd_transferencia->dbprefix("catalogo_productos").' p 
+                                    INNER JOIN  (
+                                      SELECT  p.grupo, t.id_new_composicion, t.id_new_calidad, t.id_descripcion 
+                                            FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_productos").' p
+                                            ON t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                                            AND t.id_descripcion = p.descripcion
+                                            where p.grupo<>"" 
+                                             group by t.id_descripcion, t.id_new_composicion, t.id_new_calidad
+                                             ) t
+                                ON t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                                            AND t.id_descripcion = p.descripcion
+                                SET p.grupo = t.grupo';
+                          $bd_transferencia->query($cons);
+                          //update `inven_catalogo_productos` set grupo="", imagen=""
+
+
+
+                                       //crear el grupo  que faltan (id_descripcion, id_composicion, id_calidad) e incluir la imagen
+
+                          $cons= '
+                                  UPDATE '.$bd_transferencia->dbprefix("catalogo_productos").' p 
+                                    INNER JOIN  (
+                                      SELECT  p.referencia, t.id_new_composicion, t.id_new_calidad, t.id_descripcion,
+                                                           CONCAT(DATE_FORMAT(CURDATE(),"%Y"),DATE_FORMAT(CURDATE(),"%m"),DATE_FORMAT(CURDATE(),"%d"),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),SUBSTRING("ABCDEFGHIJKLMNOPQRSTUVWXYZ", RAND() *26 +1, 1 ),
+                                              FLOOR(RAND()*10),FLOOR(RAND()*10),FLOOR(RAND()*10),FLOOR(RAND()*10)) grupo
+                                            FROM '.$bd_transferencia->dbprefix("remoto_registros_transferencia").' t
+                                            INNER JOIN '.$bd_transferencia->dbprefix("catalogo_productos").' p
+                                            ON t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                                            AND t.id_descripcion = p.descripcion
+                                            where p.grupo="" 
+                                             group by t.id_descripcion, t.id_new_composicion, t.id_new_calidad
+                                             ) t
+
+                                ON t.id_new_composicion = p.id_composicion AND t.id_new_calidad = p.id_calidad
+                                            AND t.id_descripcion = p.descripcion AND p.grupo = ""
+                                SET p.grupo = t.grupo';
+                          $bd_transferencia->query($cons);
+
+                      
+                      $this->db = $this->load->database('default', TRUE);
+          }            
+
+
+          
+          //actualizar el consecutivo en "operaciones" == "traspasos"
+          if ($traspaso==1) {
+              
+              if ($data['id_tipo_pedido']==2) {
+                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+              }  else if ($data['id_tipo_factura']==1) {
+                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+              } else {
+                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+              }
+              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  
+
+              $this->db->set( 'id_usuario', $id_session );
+              $this->db->where('id',26);
+              $this->db->update($this->operaciones);          
+          }
+              
+          //actualizar (consecutivo) en tabla "operacion"   == "salida"
+          if ($data['id_tipo_pedido']==2) {
+               $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
+          }  else if ($data['id_tipo_factura']==1) {
+              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
+          } else {
+              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
+          }
+          $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  
+
+          $this->db->set( 'id_usuario', $id_session );
+          $this->db->where('id',2);
+          $this->db->update($this->operaciones);
+
+          //eliminar los registros en "registros_salidas"
+
+            if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where_borrar=  '(
+                      (id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (id_tipo_factura='.$data['id_tipo_factura'].' ) AND
+                      (id_apartado<>0) and  (movimiento_unico_apartado='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
+                    )';
+
+
+
+          $this->db->where($where_borrar);            
+          $this->db->delete($this->registros_entradas);  //eliminar los que son transferidos
+
+          ///datos a retornar
+
+
+
+          $this->db->select('m.mov_salida,m.mov_salida_unico ,ca.nombre cargador');
+          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
+          $this->db->from($this->historico_registros_salidas.' As m');
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          
+          if ($data["id_almacen"]!=0) {
+                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
+                        } else {
+                            $id_almacenid = '';
+                }                         
+
+                $where=  '(
+                      (m.mov_salida_unico='.$consecutivo_unico.' ) AND (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) '.$id_almacenid.'
+                       
+                    )';
+
+                    
+
+           $this->db->where($where);           
+
+
+            $result = $this->db->get();
+        
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+
+          //return $dato;
+
+          //$result->free_result();          
+
+        }        
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+          //1ra y 2da regilla. Listado que servira para reportes de ambas regillas
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////listado de la regilla///////////////////////////
+        public function listado_movimientos_registros($data){
+
+          $id_session = $this->session->userdata('id');
+          $nombre_completo = $this->session->userdata('nombre_completo');
+                    
+          $this->db->select('m.id, m.mov_salida, m.mov_salida_unico, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
+          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
+
+          $this->db->select('c.hexadecimal_color, u.medida,p.nombre, ca.nombre cargador');
+          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+          
+          //$this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN id_usuario_apartado ELSE '".$id_session."' END ) AS id_usuario_apartado", FALSE);
+          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre,' ', us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
+          
+          $this->db->select("( CASE WHEN m.id_apartado = 3 THEN m.consecutivo_venta ELSE m.id_cliente_apartado END ) AS mov_pedido", FALSE);
+          
+
+          
+
+          $this->db->select('a.almacen');
+          $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
+          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
+          $this->db->select('m.peso_real');
+          $this->db->select("m1.peso_real peso_entrada");          
+
+            $this->db->select("prod.codigo_contable");  
+
+          $this->db->from($this->historico_registros_salidas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); // AND a.activo=1
+          $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
+          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
+          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
+          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+
+
+          $this->db->where('m.id_tipo_pedido',$data["id_tipo_pedido"]);
+          $this->db->where('m.id_tipo_factura',$data["id_tipo_factura"]);
+          $this->db->where('m.id_operacion',2);
+          $this->db->where('m.mov_salida_unico',$data['encabezado']['num_movimiento']);
+
+          if (!(isset($data['id_estatus']))) {
+             $this->db->where('m.id_estatus !=',15);
+          } else if ($data['id_estatus']==15) {
+             //$id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+             $this->db->where('m.id_estatus',$data['id_estatus']);
+          } else {
+             //$id_estatusid = '';
+            $this->db->where('m.id_estatus !=',15);
+          }               
+
+
+          $this->db->order_by('m.id_lote', 'asc'); 
+          $this->db->order_by('m.codigo', 'asc'); 
+          $this->db->order_by('m.consecutivo', 'asc'); 
+
+           $result = $this->db->get();
+        
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }      
+        
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+          //
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
 
 
     //solo para quitar traspaso a los que no se incluyeron a la salida
@@ -894,7 +1856,7 @@
           $this->db->select('id_almacen');
           $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig id_tipo_pedido,id_tipo_factura, id_factura_original,incluir');
 
-          //$this->db->select('0 incluir',false);
+          $this->db->select('id_tienda_origen');
          
 
           $this->db->from($this->registros);
@@ -945,6 +1907,8 @@
           $this->db->select('m.precio, m.iva, m.id_pedido, m.id_factura,m.id_fac_orig, m.id_tipo_pedido,m.id_tipo_factura, m.id_factura_original,m.incluir');
 
 
+          //$this->db->select('"'.$this->session->userdata('config_tienda_activo').'" AS id_tienda_origen',FALSE);
+
           $this->db->from($this->registros_salidas.' As m');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_cliente','LEFT');
           //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
@@ -978,6 +1942,7 @@ sasad
           //copiar a tabla "historico_registros_salidas"
           $dato = array();
           $consecutivo_traspaso = self::consecutivo_operacion(26,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
+          $consecutivo_traspaso_unico = self::consecutivo_operacion_unico(26); 
           $traspaso=0;
           foreach ($objeto as $key => $value) {
             $this->db->insert($this->historico_registros_salidas, $value); 
@@ -986,6 +1951,7 @@ sasad
               $traspaso=1;
               $value_traspaso = $value;
               $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
+              $value_traspaso->consecutivo_traspaso_unico = $consecutivo_traspaso_unico;
               $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
             }
 
@@ -1144,78 +2110,7 @@ sasad
         }            
 
 
-  /////////////////////////////////listado de la regilla///////////////////////////
-        public function listado_movimientos_registros($data){
-
-          $id_session = $this->session->userdata('id');
-          $nombre_completo = $this->session->userdata('nombre_completo');
-                    
-          $this->db->select('m.id, m.mov_salida, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, m.num_partida');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
-
-          $this->db->select('c.hexadecimal_color, u.medida,p.nombre, ca.nombre cargador');
-          $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
-          
-          //$this->db->select("( CASE WHEN id_usuario_apartado <> '' THEN id_usuario_apartado ELSE '".$id_session."' END ) AS id_usuario_apartado", FALSE);
-          $this->db->select("( CASE WHEN m.id_usuario_apartado <> '' THEN CONCAT(us.nombre,' ', us.apellidos) ELSE '".$nombre_completo."' END ) AS nom_vendedor", FALSE);
-          
-          $this->db->select("( CASE WHEN m.id_apartado = 3 THEN m.consecutivo_venta ELSE m.id_cliente_apartado END ) AS mov_pedido", FALSE);
-          
-
-          
-
-          $this->db->select('a.almacen');
-          $this->db->select("tp.tipo_pedido,m.id_tipo_pedido");          
-          $this->db->select("tf.tipo_factura,m.id_tipo_factura");          
-          $this->db->select('m.peso_real');
-          $this->db->select("m1.peso_real peso_entrada");          
-
-            $this->db->select("prod.codigo_contable");  
-
-          $this->db->from($this->historico_registros_salidas.' as m');
-          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); // AND a.activo=1
-          $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
-          $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
-          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
-          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
-          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
-
-
-
-          $this->db->where('m.id_tipo_pedido',$data["id_tipo_pedido"]);
-          $this->db->where('m.id_tipo_factura',$data["id_tipo_factura"]);
-          $this->db->where('m.id_operacion',2);
-          $this->db->where('m.mov_salida',$data['encabezado']['num_movimiento']);
-
-          if (!(isset($data['id_estatus']))) {
-             $this->db->where('m.id_estatus !=',15);
-          } else if ($data['id_estatus']==15) {
-             //$id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
-             $this->db->where('m.id_estatus',$data['id_estatus']);
-          } else {
-             //$id_estatusid = '';
-            $this->db->where('m.id_estatus !=',15);
-          }               
-
-
-          $this->db->order_by('m.id_lote', 'asc'); 
-          $this->db->order_by('m.codigo', 'asc'); 
-          $this->db->order_by('m.consecutivo', 'asc'); 
-
-           $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->result();
-            else
-               return False;
-            $result->free_result();
-        }        
+    
 
 
 
@@ -1247,338 +2142,24 @@ public function valores_movimientos_temporal(){
 
  /////////////////////////////////////////////////////////////nuevo/////////////////
 
-//salida del pedido nuevo
-        public function existencia_pedido_salida($data){
-              $id_session = $this->session->userdata('id');
-              $cant=0;
 
-              
-                  if ($data["id_almacen"]!=0) {
-                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                          } else {
-                              $id_almacenid = '';
-                  }                         
-
-                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
-
-                  //( us.id_cliente = '.$data['id_cliente'].' ) 
-                  //'id_operacion'=2
-                  $where=  '(
-                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-                        (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
-                         
-                      )';
-
-              $this->db->where($where);     
-              $this->db->from($this->registros_entradas.' As m');
-              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
-
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return true;
-              else
-                 return false;              
-        }  
-
-        public function actualizar_peso_real_salida_pedido( $data ){
-           
-            $id_session = ($this->session->userdata('id'));
-
-
-            foreach ($data['pesos'] as $key => $value) {
-
-                if(!is_numeric($value['peso_real'])) {  //caso cuando el peso viene vacio
-                  $value['peso_real'] = 0;
-                  
-                } 
-                $this->db->set( 'peso_real', $value['peso_real'], FALSE  );
-                $this->db->where('codigo',$value['codigo']);                
-                $this->db->update($this->registros_entradas);
-              }
-            
-            return TRUE;       
-        }
-
-       public function existencia_salida_peso_real($data){
-
-              $id_session = $this->session->userdata('id');
-              $cant=0;
-
-
-           if ($data["id_almacen"]!=0) {
-                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                          } else {
-                              $id_almacenid = '';
-                  }                         
-
-                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
-
-                  //( us.id_cliente = '.$data['id_cliente'].' ) 
-                  //'id_operacion'=2
-                  $where=  '(
-                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-                       (m.peso_real=0) AND (m.id_apartado<>0) and  (m.id_cliente_apartado='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
-                         
-                      )';
-
-              $this->db->where($where);     
-              $this->db->from($this->registros_entradas.' As m');
-              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
-
-             
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return false;
-              else
-                 return true;              
-
-        }            
-
-               //cambiar estatus de unidad
-        public function traspaso_pedido( $data ){
-                
-                //$id_almacen= $data['id_almacen'];
-                
-                if ($data['id_tipo_factura']==1){
-                    $porciento_aplicar =16;  
-                } else {
-                     $porciento_aplicar = 0;  
-                }
-                
-                $this->db->set( 'id_factura_original', 'id_factura', false);
-                $this->db->set( 'id_factura', 'id_tipo_factura', false);
-               
-                
-                if ($data['id_tipo_factura']==1){
-                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
-                }
-
-                $this->db->set( 'id_apartado', '6');
-                
-
-
-                $this->db->set( 'incluir', 1);
-                
-                /*
-                if ($id_almacen!=0) {
-                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
-                } else {
-                    $id_almacenid = '';
-                } */
-
-                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
-
-                if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }      
-
-                //$id_almacenid.
-                $where = '(
-                           ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-                          (
-                            ( id_apartado <>0    ) AND ( id_cliente_apartado = "'.$data['num_mov'].'" )
-                          )'.$cond_traspaso.$id_almacenid.' 
-
-                      )';   
-
-                $this->db->where($where);
-                $this->db->update($this->registros );
-                if ($this->db->affected_rows() > 0) {
-                  return TRUE;
-                }  else
-                   return FALSE;
-
-        }
-
-
-/*
-factura,fecha_mac,
-fecha_entrada, fecha_salida, movimiento, id_empresa,  id_descripcion, id_color, id_composicion, id_calidad, referencia, id_medida, cantidad_um, cantidad_royo, ancho, precio, 
-precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecutivo, id_cargador, id_usuario, id_usuario_salida,
-
-  id_operacion, estatus_salida, id_apartado, id_usuario_apartado, id_cliente_apartado, fecha_apartado, id_prorroga, fecha_vencimiento, consecutivo_cambio, devolucion, num_partida, peso_real, id_almacen, consecutivo_venta, proceso_traspaso, id_tipo_pago, id_factura, id_tipo_pedido, id_tipo_factura, id_factura_original, iva, id_usuario_traspaso, id_pedido, incluir, comentario_traspaso, num_control
-
-  //$this->db->select('"'.htmlspecialchars($data['id_cliente']).'" AS id_cliente',false);
-           //$this->db->select('"'.$data['id_movimiento'].'" AS mov_salida',false); 
-           //$this->db->select('"'.$data['id_tipo_factura'].'" AS id_tipo_factura',false); 
-           //$this->db->select('"'.$data['id_tipo_pedido'].'" AS id_tipo_pedido',false); 
-
-*/
-
-   public function procesando_operacion_pedido_salida( $data ){
-
-          $id_session = $this->session->userdata('id');
-
-          //este hay que checarlo porque no es para el cliente activo"almacenista", sino para quien hizo el "pedido"
-          $id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
-          $consecutivo = self::consecutivo_operacion(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
-
-          $fecha_hoy = date('Y-m-d H:i:s');  //date_format($fecha_hoy , 'Y-m-d H:i:s');
         
-          $this->db->select('"2" AS id_operacion',false);
-          $this->db->select('"0" AS estatus_salida',false);
-          $this->db->select('"'.$id_session.'" AS id_usuario',false); 
-          $this->db->select('"'.$id_session.'" AS id_usuario_salida',false); 
-          $this->db->select('"'.$id_session.'" AS id_usuario_traspaso',false); 
+   
           
-          $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
-          $this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);
-          $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
-          $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
-          $this->db->select('u.id_cliente AS id_cliente',false); 
-          $this->db->select('"6" AS id_apartado',false); 
-          
-          
-          $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
-          $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
-          $this->db->select('id_composicion, id_calidad, referencia, id_medida, factura, cantidad_um, cantidad_royo, ancho');
-          $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
-          $this->db->select('fecha_entrada,consecutivo_venta');
+    public function consecutivo_operacion_unico($id ){
+            $this->db->select("o.consecutivo");         
+            $this->db->from($this->operaciones.' As o');
+            $this->db->where('o.id',$id);
+            $result = $this->db->get( );
+                if ($result->num_rows() > 0) {
+                      return $result->row()->consecutivo+1;
+                }                    
+                else 
+                    return FALSE;
+                $result->free_result();
+    }  
 
-          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
-          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
-          $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
-           
-          $this->db->from($this->registros_entradas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-
-    
-          if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where=  '(
-                       (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) AND
-                      (id_apartado<>0) and  (id_cliente_apartado='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
-                       
-                    )';
-
-          $this->db->where($where);     
-          $result = $this->db->get();
-          $objeto = $result->result();
-          
-         
-          //copiar a tabla "historico_registros_salidas" y historico_registros_traspasos si hay alguno 
-          $dato = array();
-          $consecutivo_traspaso = self::consecutivo_operacion(26,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
-          $traspaso=0;
-          foreach ($objeto as $key => $value) {
-            $this->db->insert($this->historico_registros_salidas, $value); 
-
-            if ($value->incluir==1) {
-              $traspaso=1;
-              $value_traspaso = $value;
-              $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
-              $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
-            }
-
-            //$this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
-            /*
-            $dato['num_movimiento'] = $value->mov_salida;
-            $dato['cargador'] = $value->cargador;
-            $dato['cliente'] = $value->cliente;
-            */
-
-          }
-          
-          //actualizar el consecutivo en "operaciones" == "traspasos"
-          if ($traspaso==1) {
-              
-              if ($data['id_tipo_pedido']==2) {
-                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
-              }  else if ($data['id_tipo_factura']==1) {
-                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
-              } else {
-                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
-              }
-
-              $this->db->set( 'id_usuario', $id_session );
-              $this->db->where('id',26);
-              $this->db->update($this->operaciones);          
-          }
-              
-          //actualizar (consecutivo) en tabla "operacion"   == "salida"
-          if ($data['id_tipo_pedido']==2) {
-               $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
-          }  else if ($data['id_tipo_factura']==1) {
-              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
-          } else {
-              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
-          }
-
-          $this->db->set( 'id_usuario', $id_session );
-          $this->db->where('id',2);
-          $this->db->update($this->operaciones);
-
-          //eliminar los registros en "registros_salidas"
-
-            if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where_borrar=  '(
-                      (id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (id_tipo_factura='.$data['id_tipo_factura'].' ) AND
-                      (id_apartado<>0) and  (id_cliente_apartado='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
-                       
-                    )';
-
-          $this->db->where($where_borrar);            
-          $this->db->delete($this->registros_entradas);
-
-
-
-          ///datos a retornar
-
-          
-
-
-          $this->db->select('m.mov_salida,ca.nombre cargador');
-          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
-          $this->db->from($this->historico_registros_salidas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          
-          if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where=  '(
-                      (m.mov_salida='.$consecutivo.' ) AND (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) '.$id_almacenid.'
-                       
-                    )';
-
-                    
-
-           $this->db->where($where);           
-
-
-            $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-
-          //return $dato;
-
-          //$result->free_result();          
-
-        }
+  
 
 
         /////////////////////////////////////////////////////////////fin de nuevo/////////////////
@@ -1586,308 +2167,12 @@ precio_anterior, precio_cambio, codigo, comentario, id_estatus, id_lote, consecu
 
 
 
-
-//salida del pedido nuevo
-        public function existencia_apartado_salida($data){
-              $id_session = $this->session->userdata('id');
-              $cant=0;
-
-              
-                  if ($data["id_almacen"]!=0) {
-                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                          } else {
-                              $id_almacenid = '';
-                  }                         
-
-                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
-
-                  //( us.id_cliente = '.$data['id_cliente'].' ) 
-                  //'id_operacion'=2
-                  $where=  '(
-                        ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-                        (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
-                         
-                      )';
-
-              $this->db->where($where);     
-              $this->db->from($this->registros_entradas.' As m');
-              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
-
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return true;
-              else
-                 return false;              
-        }  
-
-
-   public function existencia_apartado_peso_real($data){
-
-              $id_session = $this->session->userdata('id');
-              $cant=0;
-
-
-           if ($data["id_almacen"]!=0) {
-                              $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                          } else {
-                              $id_almacenid = '';
-                  }                         
-
-                  $dependencia= ' AND pr.nombre ="'.$data['dependencia'].'"';
-
-                  //( us.id_cliente = '.$data['id_cliente'].' ) 
-                  //'id_operacion'=2
-                  $where=  '(
-                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-
-                       (m.peso_real=0) AND (m.id_apartado<>0) and  (m.consecutivo_venta='.$data['num_mov'].' ) AND ( m.proceso_traspaso = 0 ) AND ( m.estatus_salida = "0" )'.$id_almacenid.$dependencia.'
-                         
-                      )';
-
-              $this->db->where($where);     
-              $this->db->from($this->registros_entradas.' As m');
-              $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-              $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id'.$dependencia);
-
-             
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return false;
-              else
-                 return true;              
-
-        }            
-
-
-    //cambiar estatus de unidad
-        public function traspaso_apartado( $data ){
-                
-                //$id_almacen= $data['id_almacen'];
-                
-                if ($data['id_tipo_factura']==1){
-                    $porciento_aplicar =16;  
-                } else {
-                     $porciento_aplicar = 0;  
-                }
-                
-                $this->db->set( 'id_factura_original', 'id_factura', false);
-                $this->db->set( 'id_factura', 'id_tipo_factura', false);
-               
-                
-                if ($data['id_tipo_factura']==1){
-                    $this->db->set( 'iva', '((id_factura = 1)*'.$porciento_aplicar.')', false);
-                }
-
-                $this->db->set( 'id_apartado', '3');
-                
-
-
-                $this->db->set( 'incluir', 1);
-                
-                /*
-                if ($id_almacen!=0) {
-                    $id_almacenid = ' AND ( id_almacen =  '.$id_almacen.' ) ';  
-                } else {
-                    $id_almacenid = '';
-                } */
-
-                $cond_traspaso = ' AND ( ( id_factura <>  id_tipo_factura ) AND ( incluir =  0 ) )';  
-
-                if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }      
-
-                //$id_almacenid.
-                $where = '(
-                          ( id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
-
-                          (
-                            ( id_apartado <>0    ) AND ( consecutivo_venta = "'.$data['num_mov'].'" )
-                          )'.$cond_traspaso.$id_almacenid.' 
-
-                      )';   
-
-                $this->db->where($where);
-                $this->db->update($this->registros );
-                if ($this->db->affected_rows() > 0) {
-                  return TRUE;
-                }  else
-                   return FALSE;
-
-        }
-
-
-
-   public function procesando_operacion_apartado_salida( $data ){
-
-          $id_session = $this->session->userdata('id');
-
-          //este hay que checarlo porque no es para el cliente activo"almacenista", sino para quien hizo el "pedido"
-          //$id_cliente_asociado = $this->session->userdata('id_cliente_asociado');
-          $consecutivo = self::consecutivo_operacion(2,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
-
-          $fecha_hoy = date('Y-m-d H:i:s');  //date_format($fecha_hoy , 'Y-m-d H:i:s');
-        
-          $this->db->select('"2" AS id_operacion',false);
-          $this->db->select('"0" AS estatus_salida',false);
-          $this->db->select('"'.$id_session.'" AS id_usuario',false); 
-          $this->db->select('"'.$id_session.'" AS id_usuario_salida',false); 
-          $this->db->select('"'.$id_session.'" AS id_usuario_traspaso',false); 
-          
-          $this->db->select('"'.addslashes($data['id_almacen']).'" AS id_almacen',false); 
-          $this->db->select('"'.htmlspecialchars($data['id_cargador']).'" AS id_cargador',false);
-          $this->db->select('"'.$fecha_hoy.'" AS fecha_salida',false);
-          $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
-          $this->db->select('u.id_cliente AS id_cliente',false); 
-          $this->db->select('"3" AS id_apartado',false); 
-          
-          $this->db->select('peso_real,proceso_traspaso,id_tipo_pago, id_tipo_pedido, id_tipo_factura,comentario_traspaso, num_control');
-          $this->db->select('m.id id_entrada, movimiento, id_empresa, id_descripcion, id_color, devolucion, m.num_partida');
-          $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, cantidad_royo, ancho');
-          $this->db->select('codigo, comentario, id_estatus, id_lote, consecutivo');
-          $this->db->select('fecha_entrada,consecutivo_venta');
-
-          $this->db->select('id_usuario_apartado, id_cliente_apartado,  fecha_apartado');
-          $this->db->select('precio, iva, id_pedido, id_factura,id_fac_orig, id_factura_original,incluir');
-          $this->db->select('precio_anterior, precio_cambio, id_prorroga, fecha_vencimiento, consecutivo_cambio');
-           
-          $this->db->from($this->registros_entradas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');
-
-    
-          if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where=  '(
-                       (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) AND
-                      (id_apartado<>0) and  (consecutivo_venta='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
-                       
-                    )';
-
-          $this->db->where($where);     
-          $result = $this->db->get();
-          $objeto = $result->result();
-          
          
-          //copiar a tabla "historico_registros_salidas" y historico_registros_traspasos si hay alguno 
-          $dato = array();
-          $consecutivo_traspaso = self::consecutivo_operacion(26,$data['id_tipo_pedido'],$data['id_tipo_factura']); 
-          $traspaso=0;
-          foreach ($objeto as $key => $value) {
-            $this->db->insert($this->historico_registros_salidas, $value); 
-
-            if ($value->incluir==1) {
-              $traspaso=1;
-              $value_traspaso = $value;
-              $value_traspaso->consecutivo_traspaso = $consecutivo_traspaso;
-              $this->db->insert($this->historico_registros_traspasos, $value_traspaso); 
-            }
-
-            //$this->historico_registros_traspasos        = $this->db->dbprefix('historico_registros_traspasos');
-            /*
-            $dato['num_movimiento'] = $value->mov_salida;
-            $dato['cargador'] = $value->cargador;
-            $dato['cliente'] = $value->cliente;
-            */
-
-          }
-          
-          //actualizar el consecutivo en "operaciones" == "traspasos"
-          if ($traspaso==1) {
-              
-              if ($data['id_tipo_pedido']==2) {
-                   $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
-              }  else if ($data['id_tipo_factura']==1) {
-                  $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
-              } else {
-                  $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
-              }
-
-              $this->db->set( 'id_usuario', $id_session );
-              $this->db->where('id',26);
-              $this->db->update($this->operaciones);          
-          }
-              
-          //actualizar (consecutivo) en tabla "operacion"   == "salida"
-          if ($data['id_tipo_pedido']==2) {
-               $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
-          }  else if ($data['id_tipo_factura']==1) {
-              $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
-          } else {
-              $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
-          }
-
-          $this->db->set( 'id_usuario', $id_session );
-          $this->db->where('id',2);
-          $this->db->update($this->operaciones);
-
-          //eliminar los registros en "registros_salidas"
-
-            if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where_borrar=  '(
-                      (id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (id_tipo_factura='.$data['id_tipo_factura'].' ) AND
-                      (id_apartado<>0) and  (consecutivo_venta='.$data['num_mov'].' ) AND ( proceso_traspaso = 0 ) AND ( estatus_salida = "0" )'.$id_almacenid.'
-                       
-                    )';
-
-          $this->db->where($where_borrar);            
-          $this->db->delete($this->registros_entradas);
 
 
-
-          ///datos a retornar
-
-          $this->db->select('m.mov_salida,ca.nombre cargador');
-          $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE); //, p.nombre cliente
-          $this->db->from($this->historico_registros_salidas.' As m');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador','LEFT');
-          //$this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado');          
-          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
-          
-
-          if ($data["id_almacen"]!=0) {
-                            $id_almacenid = ' AND ( m.id_almacen =  '.$data["id_almacen"].' ) ';  
-                        } else {
-                            $id_almacenid = '';
-                }                         
-
-                $where=  '(
-                      (m.mov_salida='.$consecutivo.' ) AND (m.id_tipo_pedido='.$data['id_tipo_pedido'].' ) AND (m.id_tipo_factura='.$data['id_tipo_factura'].' ) '.$id_almacenid.'
-                       
-                    )';
-
-                    
-
-           $this->db->where($where);           
+   
 
 
-            $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-
-          //return $dato;
-
-          //$result->free_result();          
-
-        }
 
 
 

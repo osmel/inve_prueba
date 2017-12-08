@@ -18,15 +18,6 @@
 			<div class="panel-body">	
 
 
-
-
-
-
-
-
-
-
-
 <!-- Aqui comienza filtro	-->
 				<div class="row">
 					<div id="disponibilidad"  class="col-xs-12 col-sm-3 col-md-2 marginbuttom">
@@ -115,7 +106,35 @@
 									</div>	
 			                </div>
 
-		            </div>     
+
+		            
+
+		            		<div class="col-xs-12 col-sm-6 col-md-3">
+									
+									
+			                       	<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="Tienda_Cliente"  >
+									
+
+									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
+										<input  identificador="" type="text" name="editar_proveedor" campo="1" idproveedor="3"
+										 identificador = "0"
+										 class="buscar_proveedor_hist_salida form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									</div>
+			                </div>
+
+
+
+		            </div>    
+
+		            <div class="col-xs-12 col-sm-6 col-md-4">
+			                       <label id="label_vendedor" for="descripcion" class="col-sm-12 col-md-12">Vendedor</label>
+									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
+										<input  identificador="" type="text" name="editar_vendedor" 
+										 identificador_vendedor = "0"
+										 class="buscar_vendedor_hist_salida form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									</div>
+			        </div> 
+
 
 		            <hr style="padding: 0px; margin: 15px;"/>					
 				</div>

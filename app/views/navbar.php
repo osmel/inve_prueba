@@ -1,8 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
 <?php 
-	  $perfil= $this->session->userdata('id_perfil'); 
-	  $id_session = $this->session->userdata('id');
-	  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	    $perfil= $this->session->userdata('id_perfil'); 
+	    $id_session = $this->session->userdata('id');
+	    $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	  	
+		$config_tienda_activo = $this->catalogo->get_tienda_activo(); 
+		$this->session->set_userdata('config_tienda_activo', $config_tienda_activo->id);
+
 
 
   		$dato['id'] = 13; //impresion lenta
@@ -91,6 +95,8 @@
 
 ?>	
 
+<input type="hidden" id="config_tienda_activo" name="config_tienda_activo" value="<?php echo $config_tienda_activo->id; ?>">
+
 
 <input type="hidden" id="config_impresion" name="config_impresion" value="<?php echo $config_impresion->activo; ?>" >
 
@@ -134,7 +140,24 @@
 
 					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
 						<li id="bar_entradas">
-							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entradas" class="ttip color-blanco">Entradas</a> 
+							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entradas" class="ttip color-blanco">Ent</a> 
+						</li> 
+
+					<?php } ?>	
+
+					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
+						<li id="bar_entradas">
+							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entrada_compra" class="ttip color-blanco">E_comp</a> 
+						</li> 
+
+					<?php } ?>	
+
+
+
+
+					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
+						<li id="bar_entradas">
+							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_recibida" class="ttip color-blanco">Transf</a> 
 						</li>
 					<?php } ?>	
 

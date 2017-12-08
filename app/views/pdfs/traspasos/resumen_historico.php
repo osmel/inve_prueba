@@ -42,7 +42,7 @@
 							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_factura; ?></td>			
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>			
 							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha_apartado; ?></td>			
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->consecutivo_traspaso; ?></td>					
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->consecutivo_traspaso_unico; ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->metros, 2, '.', ','); ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->kilogramos, 2, '.', ','); ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->pieza; ?></td>			

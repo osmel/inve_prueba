@@ -17,12 +17,15 @@
 			<div class="banner">
 				<div>
 					<div class="container header-content">
+
 						<div class="col-md-6 col-lg-6 col-sm-6 col-xs-3">
 							<a href="<?php echo base_url(); ?>">
 								<div class="header-logo col-md-1"></div>
 							</a>
 						</div>
 						
+						
+
 						<div class="col-md-6 col-lg-6 col-sm-6 col-xs-9">
 							<div class="header-titulo text-right">Sistema de Control de Inventario</div>
 							<div class="text-right" style="color:#104A5A !important"> Bienvenid@: <a href="<?php echo base_url(); ?>actualizar_perfil" style="#104A5A"><?php echo $this->session->userdata( 'nombre_completo' ); ?></a>

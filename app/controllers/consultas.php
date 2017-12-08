@@ -114,7 +114,7 @@ class Consultas extends CI_Controller {
 		    }
 		    else{ 
 		      redirect('');
-		    }  
+		    }    
 	}
 
 

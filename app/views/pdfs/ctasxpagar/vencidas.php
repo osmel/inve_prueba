@@ -48,7 +48,7 @@
 				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 					<?php foreach( $movimientos as $movimiento ): ?>
 						<tr>
-							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>					
+							<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento_unico; ?></td>					
 							<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->factura; ?></td>		
 
 							<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_pago; ?></td>

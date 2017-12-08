@@ -19,6 +19,7 @@
 									<span><b>Almacén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
 									<span><b>Proveedor: </b> <?php echo $movimientos[0]->proveedor; ?></span><br>
 		                            <span><b>Comentario: </b> <?php echo $movimientos[0]->movimiento; ?></span><br>
+		                            <span><b>Comentario: </b> <?php echo $movimientos[0]->medida; ?></span><br>
 							</p>
 						</td>
 						<td style="text-align: right;">

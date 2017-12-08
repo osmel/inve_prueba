@@ -51,42 +51,18 @@
 		}
 
 
-        //****************este es para obtener proveedor y factura temporal************************************************************
-        public function valores_movimientos_temporal(){
 
-          $id_session = $this->session->userdata('id');
-          
-          $this->db->distinct();          
-          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.id_fac_orig, m.id_fac_orig, m.id_tipo_pago,m.iva');
-          $this->db->select('p.nombre');
-          
-          $this->db->from($this->registros_temporales.' as m');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-
-          $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('id_operacion',1);
-           $result = $this->db->get();
-        
-            if ( $result->num_rows() > 0 )
-               return $result->row();
-            else
-               return False;
-            $result->free_result();
-        }    
-
-      
-        //listado de la regilla
+        //1- Este es el "listado de la regilla" que esta debajo de entrada, de todo lo temporal
         public function listado_movimientos_temporal(){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion');
+          $this->db->select('m.id, m.movimiento,m.movimiento_unico,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um, m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
 
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');
-
           
           $this->db->from($this->registros_temporales.' as m');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
@@ -108,111 +84,52 @@
             $result->free_result();
         }        
 
- public function confirmando_prod_libre_inventario($data){
-            
-            $this->db->from($this->registros.' as m');
-           
-            $where = '(
-                        (
-                          ( m.id_apartado = 0 ) AND  ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 )
-                        ) AND (m.id_almacen = '.$data['id_almacen'].' )  AND ( m.codigo =  "'.addslashes($data['cod']).'" ) 
-              )';   
 
-  
-            $this->db->where($where);
-            $login = $this->db->get();
-
-            if ($login->num_rows() > 0) {
-               return true;
-            }    
-            else
-                return false;
-            $login->free_result();
-      }
-
-
-      //****************Añadir un producto a temporal************************************************************
-        public function actualizar_producto_inventario( $data ){
-
-              $id_session = $this->session->userdata('id');
-              $fecha_hoy = date('Y-m-d H:i:s');  
-
-              //registros de entradas
-              $this->db->select('id id_entrada, fecha_entrada, fecha_salida, movimiento, id_empresa, factura, id_descripcion, id_color,num_partida');
-              $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, peso_real, cantidad_royo, ancho');
-              $this->db->select('codigo,  id_estatus, id_lote, consecutivo, id_cargador, id_usuario, id_usuario_salida');
-              $this->db->select('fecha_mac, id_operacion, estatus_salida, id_apartado, id_usuario_apartado, id_cliente_apartado');
-              $this->db->select('fecha_apartado, id_prorroga, fecha_vencimiento, consecutivo_cambio,devolucion');
-
-              $this->db->select('"'.$data["comentario"].'" as comentario', false);
-
-              $this->db->select('id_almacen');
-              $this->db->select('precio, iva, id_factura,id_fac_orig');
-              $this->db->select('id_pedido,  id_tipo_pedido,id_tipo_factura, id_factura_original,incluir,proceso_traspaso, consecutivo_venta');
-            
-            $this->db->select('id_usuario_traspaso, id_tipo_pago, precio_anterior, precio_cambio, comentario_traspaso, num_control');
-
-
-              $this->db->from($this->registros);
-
-              $this->db->where('codigo',$data['codigo']);
-              $result = $this->db->get();
-
-              $objeto = $result->result();
-              //copiar a tabla "registros_cambios"
-              foreach ($objeto as $key => $value) {
-                $this->db->insert($this->registros_cambios, $value); 
-              }              
-
-              $this->db->set( 'consecutivo_cambio', 'consecutivo_cambio+1', FALSE  );
-              $this->db->set( 'id_usuario',  $id_session );
-              $this->db->set( 'cantidad_um', $data['cantidad_um']  );  
-              $this->db->set( 'id_medida', $data['id_medida']  );  
-              $this->db->set( 'ancho', $data['ancho']   );   
-              $this->db->set( 'precio', $data['precio']  );  
-              $this->db->set( 'comentario', $data['comentario']);  //
-
-
-
-
-              $this->db->where('codigo',$data['codigo']);
-
-              $this->db->update($this->registros);
-
-
-            if ($this->db->affected_rows() > 0){
-                    return TRUE;
-                } else {
-                    return FALSE;
-                }
-                $result->free_result();
-        }  
-
-
-        public function consecutivo_productos($referencia){
-
-          $this->db->select('p.id, p.referencia, p.consecutivo');
-          $this->db->from($this->productos .' as p');
+//2-****************este es para obtener proveedor y factura temporal que se pone de primero
+        public function valores_movimientos_temporal(){
+          $id_session = $this->session->userdata('id');
           
-          $this->db->where('referencia',$referencia);  
+          $this->db->distinct();          
+          $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.id_fac_orig, m.id_fac_orig, m.id_tipo_pago,m.iva');
+          $this->db->select('p.nombre');
           
+          $this->db->from($this->registros_temporales.' as m');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
 
-          $result = $this->db->get();
-
+          $this->db->where('m.id_usuario',$id_session);
+          $this->db->where('id_operacion',1);
+          $this->db->where('m.id_compra',0);
+           $result = $this->db->get();
+        
             if ( $result->num_rows() > 0 )
                return $result->row();
             else
                return False;
             $result->free_result();
-        } 
+        }    
 
+    //3-cuando voy agregar producto a temporal debo checar "si alguien utilizo la factura"
+        //para evitar duplicidad de factura  
+    public function existencia_factura($data){
+              $this->db->where('factura',$data['fact_revision']);
+              $this->db->from($this->historico_registros_entradas);
+              $cant = $this->db->count_all_results();          
 
-      //****************Añadir un producto a temporal************************************************************
+              if ( $cant > 0 )
+                 return false;
+              else
+                 return true;              
+
+        }   
+      
+
+   //****************Añadir un producto a temporal 
         public function anadir_producto_temporal( $data ){
 
           
 
           $id_session = $this->session->userdata('id');
+          $num_tienda = $this->session->userdata('config_tienda_activo');
           $fecha_hoy2 = date('Y-m-d H:i:s');  
           
           $fecha_hoy= date ( 'Y-m-d H:i:s' , strtotime ( '+1 g' , strtotime ($fecha_hoy2) ) );
@@ -220,6 +137,9 @@
           $cant=0;
 
           $cant = self::consecutivo_productos($data['referencia'])->consecutivo;
+          //return $data['referencia'];
+
+
 
           if ($cant ==false) {
              $cant =0;
@@ -239,7 +159,9 @@
               $this->db->set( 'id_usuario',  $id_session );
               $this->db->set( 'id_empresa',  $data['id_empresa'] );    
               $this->db->set( 'fecha_entrada', $fecha_hoy  );  
-              $this->db->set( 'movimiento', $data['movimiento']);  
+              $this->db->set( 'movimiento', $data['movimiento']); //depende de "id_tipo_pago y id_factura"
+              $this->db->set( 'movimiento_unico', $data['movimiento_unico']);   //unico y nuevo
+              
 
               if  (isset($data['factura'])) {
                 $this->db->set( 'factura', $data['factura']   );  
@@ -272,7 +194,7 @@
 
               $this->db->set( 'comentario', $data['comentario']);  
 
-              $this->db->set( 'codigo', $data['codigo'].'_'.$i   );
+              $this->db->set( 'codigo', $data['codigo'].$num_tienda.'_'.$i   );
               $this->db->set( 'id_estatus', $data['id_estatus']);
 
               $this->db->set( 'id_lote', $data['id_lote']);     
@@ -303,10 +225,9 @@
 
 
 
-////////////////////////"http://inventarios.dev.com/pedidos"///////////////////////////////////////////////////////////////
-    
-    // 1ra regilla de "/pedidos"
 
+
+  // esto es para mostrar los productos temporales "regilla"
     public function buscador_productos_temporales($data){
 
           $cadena = addslashes($data['search']['value']);
@@ -373,9 +294,6 @@
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
-                  //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-                    // m.movimiento,id_empresa,m.factura, m.id_operacion,m.id_medida,m.cantidad_royo,, m.comentario, m.id_cargador, m.id_usuario,
-                  //, m.fecha_mac fecha
           $this->db->select('m.id, m.id_descripcion,  m.num_partida');
           $this->db->select(' m.cantidad_um,  m.ancho, m.precio, m.codigo');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo');
@@ -400,7 +318,7 @@
           //( m.id_usuario = '.$id_session.' ) or ( m.id_operacion = 1 ) 
           $where = '(
                       (
-                        ( m.id_usuario = '.$id_session.' )
+                        ( m.id_usuario = '.$id_session.' )  AND ( m.id_compra = 0 )
                       ) 
                       AND
                       (    
@@ -415,7 +333,7 @@
  
 
 
-          $where_total = '( m.id_usuario = '.$id_session.' )  '; //or ( m.id_operacion = 1 ) 
+          $where_total = '( m.id_usuario = '.$id_session.' )   AND ( m.id_compra = 0 ) '; //or ( m.id_operacion = 1 ) 
 
           $this->db->where($where);
 
@@ -550,6 +468,179 @@ public function totales_importes($where){
 
 
 
+  
+        //****************eliminar producto temporal  
+        public function eliminar_prod_temporal( $data ){
+            $this->db->delete( $this->registros_temporales, array( 'id' => $data['id'] ) );
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }
+        //Este es para devolver valores para el listado por ajax
+         public function valores_reordenar($data){
+
+            $this->db->select('m.id,m.id_lote,m.codigo,m.referencia,m.consecutivo');
+            $this->db->from($this->registros_temporales.' as m');
+
+            $this->db->where('m.id',$data['id']);
+            $this->db->where('m.id_operacion',1);
+
+             $result = $this->db->get();
+          
+              if ( $result->num_rows() > 0 )
+                 return $result->row();
+              else
+                 return False;
+              $result->free_result();
+        } 
+
+        //reordenar el producto despues de eliminado 
+        public function reordenar_prod_temporal( $data ){
+            $id_session = $this->session->userdata('id');
+
+            //$this->db->set( 'codigo', 'CONCAT( mid(codigo, 1, LENGTH(codigo)-1) ,consecutivo-1)', FALSE  );
+            $this->db->set( 'codigo', 'CONCAT( mid(codigo,1,LOCATE("_",codigo) ) ,consecutivo-1)', FALSE  );
+
+            $this->db->set( 'consecutivo', 'consecutivo-1', FALSE  );
+            
+            $this->db->where('consecutivo >', $data->consecutivo );
+            $this->db->where('id_usuario',$id_session);
+            $this->db->where('id_lote',$data->id_lote );
+            $this->db->where('referencia',$data->referencia);
+            $this->db->where('id_operacion',1);
+
+
+            $this->db->update($this->registros_temporales);
+     
+            if ( $this->db->affected_rows() > 0 ) return TRUE;
+            else return FALSE;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ public function confirmando_prod_libre_inventario($data){
+            
+            $this->db->from($this->registros.' as m');
+           
+            $where = '(
+                        (
+                          ( m.id_apartado = 0 ) AND  ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 )
+                        ) AND (m.id_almacen = '.$data['id_almacen'].' )  AND ( m.codigo =  "'.addslashes($data['cod']).'" ) 
+              )';   
+
+  
+            $this->db->where($where);
+            $login = $this->db->get();
+
+            if ($login->num_rows() > 0) {
+               return true;
+            }    
+            else
+                return false;
+            $login->free_result();
+      }
+
+
+      //****************Añadir un producto a temporal************************************************************
+        public function actualizar_producto_inventario( $data ){
+
+              $id_session = $this->session->userdata('id');
+              $fecha_hoy = date('Y-m-d H:i:s');  
+
+              //registros de entradas
+              $this->db->select('id id_entrada, fecha_entrada, fecha_salida, movimiento,movimiento_unico, id_empresa, factura, id_descripcion, id_color,num_partida');
+              $this->db->select('id_composicion, id_calidad, referencia, id_medida, cantidad_um, peso_real, cantidad_royo, ancho');
+              $this->db->select('codigo,  id_estatus, id_lote, consecutivo, id_cargador, id_usuario, id_usuario_salida');
+              $this->db->select('fecha_mac, id_operacion, estatus_salida, id_apartado, id_usuario_apartado, id_cliente_apartado');
+              $this->db->select('fecha_apartado, id_prorroga, fecha_vencimiento, consecutivo_cambio,devolucion');
+
+              $this->db->select('"'.$data["comentario"].'" as comentario', false);
+
+              $this->db->select('id_almacen');
+              $this->db->select('precio, iva, id_factura,id_fac_orig');
+              $this->db->select('id_pedido,  id_tipo_pedido,id_tipo_factura, id_factura_original,incluir,proceso_traspaso, consecutivo_venta');
+            
+            $this->db->select('id_usuario_traspaso, id_tipo_pago, precio_anterior, precio_cambio, comentario_traspaso, num_control');
+
+
+              $this->db->from($this->registros);
+
+              $this->db->where('codigo',$data['codigo']);
+              $result = $this->db->get();
+
+              $objeto = $result->result();
+              //copiar a tabla "registros_cambios"
+              foreach ($objeto as $key => $value) {
+                $this->db->insert($this->registros_cambios, $value); 
+              }              
+
+              $this->db->set( 'consecutivo_cambio', 'consecutivo_cambio+1', FALSE  );
+              $this->db->set( 'id_usuario',  $id_session );
+              $this->db->set( 'cantidad_um', $data['cantidad_um']  );  
+              $this->db->set( 'id_medida', $data['id_medida']  );  
+              $this->db->set( 'ancho', $data['ancho']   );   
+              $this->db->set( 'precio', $data['precio']  );  
+              $this->db->set( 'comentario', $data['comentario']);  //
+
+
+
+
+              $this->db->where('codigo',$data['codigo']);
+
+              $this->db->update($this->registros);
+
+
+            if ($this->db->affected_rows() > 0){
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+                $result->free_result();
+        }  
+        
+
+
+        public function consecutivo_productos($referencia){
+
+          $this->db->select('p.id, p.referencia, p.consecutivo');
+          $this->db->from($this->productos.' as p');
+          
+          $this->db->where('referencia',$referencia);  
+          
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+        } 
+
+
+   
+
+
+
+
+////////////////////////"http://inventarios.dev.com/pedidos"///////////////////////////////////////////////////////////////
+    
+    
+
+
+
+
+
 
 
      //reordenar http://mysql.conclase.net/curso/?sqlfun=SUBSTRING
@@ -603,59 +694,6 @@ public function totales_importes($where){
                  return False;
               $result->free_result();
         }     
-
-
-        //****************eliminar producto temporal************************************************************
-
-
-        public function eliminar_prod_temporal( $data ){
-            $this->db->delete( $this->registros_temporales, array( 'id' => $data['id'] ) );
-            if ( $this->db->affected_rows() > 0 ) return TRUE;
-            else return FALSE;
-        }
-
-
-        //Este es para devolver valores para el listado por ajax
-         public function valores_reordenar($data){
-
-            $this->db->select('m.id,m.id_lote,m.codigo,m.referencia,m.consecutivo');
-            $this->db->from($this->registros_temporales.' as m');
-
-            $this->db->where('m.id',$data['id']);
-            $this->db->where('m.id_operacion',1);
-
-             $result = $this->db->get();
-          
-              if ( $result->num_rows() > 0 )
-                 return $result->row();
-              else
-                 return False;
-              $result->free_result();
-        } 
-
-
-        //reordenar el producto despues de eliminado http://mysql.conclase.net/curso/?sqlfun=SUBSTRING
-        public function reordenar_prod_temporal( $data ){
-            $id_session = $this->session->userdata('id');
-
-            //$this->db->set( 'codigo', 'CONCAT( mid(codigo, 1, LENGTH(codigo)-1) ,consecutivo-1)', FALSE  );
-            $this->db->set( 'codigo', 'CONCAT( mid(codigo,1,LOCATE("_",codigo) ) ,consecutivo-1)', FALSE  );
-
-            $this->db->set( 'consecutivo', 'consecutivo-1', FALSE  );
-            
-            $this->db->where('consecutivo >', $data->consecutivo );
-            $this->db->where('id_usuario',$id_session);
-            $this->db->where('id_lote',$data->id_lote );
-            $this->db->where('referencia',$data->referencia);
-            $this->db->where('id_operacion',1);
-
-
-            $this->db->update($this->registros_temporales);
-     
-            if ( $this->db->affected_rows() > 0 ) return TRUE;
-            else return FALSE;
-        }
-
 
 
 
@@ -754,24 +792,29 @@ public function totales_importes($where){
 
 
 
-       public function consecutivo_operacion( $id,$id_factura ){
-              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
-              $this->db->from($this->operaciones.' As o');
-              $this->db->where('o.id',$id);
-              $result = $this->db->get( );
-                  if ($result->num_rows() > 0) {
-                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_factura : $result->row()->conse_remision );
-                        return $consecutivo_actual+1;
-                  }                    
-                  else 
-                      return FALSE;
-                  $result->free_result();
-       }  
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+          //Este es para ver si hay productos en tabla temporal
+          public function existencia_temporales(){
+              $id_session = $this->session->userdata('id');
+              $cant=0;
+
+              $this->db->where('id_usuario',$id_session);
+              $this->db->where('id_operacion',1);
+              $this->db->from($this->registros_temporales);
+              $cant = $this->db->count_all_results();          
+
+              if ( $cant > 0 )
+                 return true;
+              else
+                 return false;              
+
+        }    
 
 
-        //procesando operaciones
+         //procesando operaciones
         public function procesando_operacion( $data ){
 
           $id_session = $this->session->userdata('id');
@@ -779,12 +822,15 @@ public function totales_importes($where){
 
           $consecutivo = self::consecutivo_operacion(1,$data['id_factura']); //cambio
 
+          $consecutivo_unico = self::consecutivo_operacion_unico(1); 
+
           //actualizar (consecutivo) en tabla "operacion" 
           if ($data['id_factura']==1) {
               $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
           } else {
               $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
           }
+          $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  
 
           $this->db->set( 'id_usuario', $id_session );
           $this->db->where('id',1);
@@ -803,6 +849,10 @@ public function totales_importes($where){
 
           $this->db->select($consecutivo.' AS movimiento',false); //cambio
 
+          $this->db->select($consecutivo_unico.' AS movimiento_unico',false); //cambio
+
+
+
           $this->db->from($this->registros_temporales);
 
           $this->db->where('id_usuario',$id_session);
@@ -818,11 +868,13 @@ public function totales_importes($where){
             $value->peso_real = 0;
             $this->db->insert($this->registros, $value);
             $num_movimiento = $value->movimiento;
+            $num_movimiento_unico = $value->movimiento_unico;
           }
 
           //aqui es donde voy a agregar "historico_ctasxpagar"
 
                   $this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
+                  $this->db->select('"'.addslashes($num_movimiento_unico).'" AS movimiento_unico',false); 
                   $this->db->select('m.id_tipo_pago');
                   $this->db->select('m.id_almacen');
                   $this->db->select('m.id_empresa');
@@ -848,7 +900,8 @@ public function totales_importes($where){
 
                   $this->db->where($where);          
 
-                  $this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+                  //$this->db->group_by('m.movimiento,m.id_almacen,m.id_empresa,m.factura');
+                  $this->db->group_by('m.movimiento_unico,m.id_almacen,m.id_empresa,m.factura');
 
 
                   $result_ctas_pagar = $this->db->get();
@@ -862,58 +915,27 @@ public function totales_importes($where){
                   }
 
 
-          //fin de  agregar "historico_ctasxpagar"
+          //fin de  agregar "historico_ctasxpagar" 
 
          
 
           //eliminar los registros en "temporal_registros" del usuario 
           $this->db->delete($this->registros_temporales, array('id_usuario'=>$id_session,'id_operacion'=>$data['id_operacion'])); 
 
-          return $num_movimiento;
+          return $num_movimiento_unico; //$num_movimiento;
 
           $result->free_result();          
 
         }
 
-        public function existencia_temporales(){
-            
-              $id_session = $this->session->userdata('id');
-              $cant=0;
-
-              $this->db->where('id_usuario',$id_session);
-              $this->db->where('id_operacion',1);
-              $this->db->from($this->registros_temporales);
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return true;
-              else
-                 return false;              
-
-        }      
-
-        public function existencia_factura($data){
-              $this->db->where('factura',$data['fact_revision']);
-              $this->db->from($this->historico_registros_entradas);
-              $cant = $this->db->count_all_results();          
-
-              if ( $cant > 0 )
-                 return false;
-              else
-                 return true;              
-
-        }      
-
-
-
-  
+      
 
         //listado de movimiento de una entrada, de un movimiento especifico
         public function listado_movimientos_registros($data){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,m.id_fac_orig,id_tipo_pago, iva');
+          $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,m.id_fac_orig,id_tipo_pago, iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
@@ -945,14 +967,29 @@ public function totales_importes($where){
              $id_estatusid = '';
           }    
 
+
+          if ($data['tipo_entrada']!='T') {
+             $nomb_usuario = ' and ( m.nombre_usuario =  "" )  and ( m.devolucion =  0) and ( m.id_compra =  0)  ';   //Normal
+          } else {
+             $nomb_usuario = ' and ( m.nombre_usuario <>  "" ) ';   //Transferencia
+          }    
+
+          if ($data['tipo_entrada']=='D') {
+              $nomb_usuario = ' and ( m.devolucion <>  0) ';  //devoluciones
+          } 
+
+          if ($data['tipo_entrada']=='C') {
+              $nomb_usuario = ' and ( m.id_compra <>  0) ';  //compra
+          } 
+
           $where = '(
                       (
                         (( m.id_factura = '.$data['id_factura'].' ) OR ('.$data['dev'].'=1) )  AND
-                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 ) '.$id_estatusid.' 
+                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento_unico = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 ) '.$id_estatusid.$nomb_usuario.' 
                       ) 
 
             )';   
-
+            
 
           $this->db->where($where);
 
@@ -969,12 +1006,42 @@ public function totales_importes($where){
             else
                return False;
             $result->free_result();
-        }        
+        }          
 
 
 
-          
 
+
+        /////////////////auxiliares que devuelven consecutivos//////////////////////
+
+
+       public function consecutivo_operacion( $id,$id_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        $consecutivo_actual = ( ($id_factura==1) ? $result->row()->conse_factura : $result->row()->conse_remision );
+                        return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
+       public function consecutivo_operacion_unico( $id ){
+              $this->db->select("o.consecutivo");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        return $result->row()->consecutivo+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
 
 
 	} 

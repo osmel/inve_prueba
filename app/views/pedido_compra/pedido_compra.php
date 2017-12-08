@@ -36,7 +36,7 @@
 						</a>
 					</div>
 
-
+					<!--
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
 						<a href="<?php echo base_url(); ?>solicitar_modificacion"  
@@ -52,6 +52,7 @@
 							type="button" class="btn <?php echo ($modulo==3) ? 'btn-warning': 'btn-info'; ?> btn-block ttip" title="Imprimir y pasarlo al historico.">Aprobados <span class="etiq_btn3"><?php echo "(".$cant[3].")"; ?></span>
 						</a>
 					</div>
+					-->
 
 					<div class="col-xs-12 col-sm-3 col-md-2">
 						<label for="descripcion" class="col-sm-12 col-md-12"></label>
@@ -169,7 +170,8 @@
 													<thead>
 														<tr>
 															<th width="10%">Nro. Movimiento</th>
-															<th width="5%">Consecutivo cambio</th>
+															<!--<th width="5%">Consecutivo cambio</th>-->
+															<th  width="5%">Mts/kgs</th>
 															<th  width="10%">Fecha</th>
 															<th  width="10%">Nro. Control</th>
 															<th  width="10%">Almacén</th>
@@ -178,6 +180,7 @@
 															<th  width="10%">Proveedor</th>
 															<th width="10%">Revisar</th>
 															<th width="10%">Cancelar Pedido</th>
+
 														</tr>
 													</thead>
 												</table>

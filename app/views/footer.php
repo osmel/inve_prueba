@@ -21,9 +21,8 @@
 
 	
 	<script src="<?php echo base_url(); ?>js/bootstrap-3.3.1/dist/js/bootstrap.min.js"></script>
-	 
 
-
+	
 
 	<!-- componente fecha simple -->
 	<?php echo link_tag('css/bootstrap-datepicker.css'); ?>
@@ -35,6 +34,11 @@
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/spin.min.js"></script>
 
 	 
+	<!-- off on -->
+
+    <?php echo link_tag('js/bootstrap-3.3.1/toogle2.2.2/css/bootstrap-toggle.min.css'); ?>
+	 <script src="<?php echo base_url(); ?>js/bootstrap-3.3.1/toogle2.2.2/js/bootstrap-toggle.min.js"></script>
+
 	<!-- componente fecha simple -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/bootstrap-datepicker.js"></script>
 

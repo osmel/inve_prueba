@@ -43,7 +43,9 @@
 					</tr>
 				</thead>
 				<tbody>
-				<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
+				<?php 
+				$saldo2 = 0;
+				if ( isset($movimientos) && !empty($movimientos) ): ?>
 						<?php 
 							 $nomb = ''; 
 							 $mov = 0; 
@@ -53,12 +55,12 @@
 							 $saldo = 0;
 
 							 $total2 = 0;
-							 $saldo2 = 0;
+							 
 						?>
 
 					<?php foreach( $movimientos as $movimiento ): ?>
 
-						<?php if ( ( ($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) || ($id_factura != $movimiento->id_factura) ) && ($total!=0) ) { 
+						<?php if ( ( ($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento_unico) || ($id_factura != $movimiento->id_factura) ) && ($total!=0) ) { 
 
 							$saldo2 = $saldo2+ ($saldo+$total);
 							?>
@@ -82,14 +84,14 @@
 							<?php  	//si hay un cambio total y saldo =0 
 									//y nombre, mov y id_factura toman nuevos valores
 							
-							if (($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento) || ($id_factura != $movimiento->id_factura) ){ ?>
+							if (($nomb != $movimiento->nombre) || ($mov != $movimiento->movimiento_unico) || ($id_factura != $movimiento->id_factura) ){ ?>
 								<tr>
 									<?php if ($nomb != $movimiento->nombre) { ?>
 										<td width="25%" ><?php echo $movimiento->nombre; ?></td>
 									<?php } else {	?>
 										<td width="25%" ></td>
 									<?php }	?>
-									<td width="10%" ><?php echo $movimiento->movimiento; ?></td>		
+									<td width="10%" ><?php echo $movimiento->movimiento_unico; ?></td>		
 									<td width="7%" ><?php echo $movimiento->factura; ?></td>		
 									<td width="8%" ><?php echo $movimiento->almacen; ?></td>
 									
@@ -100,7 +102,7 @@
 								</tr>	
 							<?php 														
 								$nomb = $movimiento->nombre;
-								$mov= $movimiento->movimiento;
+								$mov= $movimiento->movimiento_unico;
 								$id_factura=$movimiento->id_factura;
 								$total=0;
 								$saldo = 0;								
