@@ -139,21 +139,21 @@
 					<ul class="nav navbar-nav navbar-left" id="menu_opciones">
 
 					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
-					<li class="dropdown dropdown-user">
+					<li id="bar_entradas" class="dropdown dropdown-user">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                             <span class="username username-hide-on-mobile color-blanco"> <i class="fa fa-angle-down"></i> Entrada </span>
                             
                         </a>
                         <ul class="dropdown-menu dropdown-menu-default">
-                            <li id="bar_entradas">
+                            <li >
 								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entradas" class="ttip">Entrada</a> 
 							</li> 
 
-							<li id="bar_entradas">
+							<li >
 								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entrada_compra" class="ttip ">Entrada por Compra</a> 
 							</li> 
 
-							<li id="bar_entradas">
+							<li >
 								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_recibida" class="ttip ">Transferencia Recibida</a> 
 							</li>
 

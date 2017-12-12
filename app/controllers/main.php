@@ -113,8 +113,12 @@ class Main extends CI_Controller {
 		$url = $this->input->post('hash_url');
 	
 		switch ($url) {
-			case '/':
 			case '/entradas':
+			case '/entrada_compra':
+			case '/transferencia_recibida':
+				$this->session->set_userdata('modulo', "entradas");		
+			break;
+			case '/':
 			case '/pedidos':
 			case '/devolucion':
 			case '/salidas':
