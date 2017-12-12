@@ -334,6 +334,28 @@ public function totales_importes($where){
         }   
 
 
+        //actualizando precio de la transferencia
+       public function actualizar_precio_transferencia( $data ){
+           
+            $id_session = ($this->session->userdata('id'));
+
+
+            foreach ($data['precios'] as $key => $value) {
+
+                if(!is_numeric($value['precio_nuevo'])) {  //caso cuando el peso viene vacio
+                  $value['precio_nuevo'] = 0;
+                  
+                } 
+                $this->db->set( 'precio_nuevo', $value['precio_nuevo'], FALSE  );
+                $this->db->where('codigo',$value['codigo']);                
+                $this->db->update($this->remoto_registros_transferencia);
+              }
+            
+            return TRUE;       
+        }              
+
+
+
            //procesando operaciones
         public function procesando_operacion_transferencia( $data ){
 
@@ -367,8 +389,8 @@ public function totales_importes($where){
             $this->db->select('id_new_color AS id_color',false);     
             
             
-           //$this->db->select('precio_nuevo AS precio',false);     //
-            $this->db->select('precio AS precio',false);      //
+           $this->db->select('precio_nuevo AS precio',false);     //
+           // $this->db->select('precio AS precio',false);      //
            $this->db->select('precio AS precio_viejo',false);      //
 
            $this->db->select('1 AS cantidad_royo',false);    

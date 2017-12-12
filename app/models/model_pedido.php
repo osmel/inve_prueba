@@ -169,7 +169,7 @@
           $this->db->select('m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select(' m.id_lote, m.consecutivo');
 
-          $this->db->select('m.id_fac_orig,m.id_estatus, c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_apartado');
+          $this->db->select('m.id_fac_orig,m.id_estatus, c.hexadecimal_color, c.color, u.medida,m.id_apartado');
 
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
@@ -177,13 +177,17 @@
           //$this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable, m.nombre_usuario, m.id_compra");  
           
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           //$this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           
           
@@ -438,17 +442,24 @@
           
           $this->db->select(' m.cantidad_um, m.ancho,  m.codigo');
           $this->db->select('m.id_estatus,  m.consecutivo');
-          $this->db->select('c.hexadecimal_color, c.color, u.medida,p.nombre, m.id_lote');
+          $this->db->select('c.hexadecimal_color, c.color, u.medida, m.id_lote');
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
           $this->db->select("prod.imagen");
           $this->db->select("prod.codigo_contable");  
           $this->db->select("a.almacen, m.nombre_usuario,m.id_compra");
+
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
 

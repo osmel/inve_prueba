@@ -49,7 +49,7 @@
       $this->almacenes       = $this->db->dbprefix('catalogo_almacenes');
       $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
 
-      
+      $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');      
 
 
 		}
@@ -274,12 +274,18 @@ public function totales_importes_historica($where){
            $this->db->select("(m.precio*m.cantidad_um)+((m.precio*m.cantidad_um*m.iva))/100 as total"); //, FALSE
           $this->db->select("tff.tipo_factura t_factura,m.nombre_usuario, m.id_compra");  
 
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+
           $this->db->from($this->historico_registros_entradas.' as m');
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
 
@@ -608,7 +614,7 @@ public function totales_importes_historica($where){
           $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as sum_total"); //, FALSE
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color');
-          $this->db->select("tff.tipo_factura t_factura, p.nombre");  
+          $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select('m.cantidad_um, u.medida');
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
@@ -618,11 +624,17 @@ public function totales_importes_historica($where){
                              AS color_devolucion");    //, FALSE
           $this->db->select("prod.codigo_contable, m.devolucion,m.nombre_usuario,m.id_compra");  
 
+          $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';

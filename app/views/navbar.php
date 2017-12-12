@@ -139,27 +139,32 @@
 					<ul class="nav navbar-nav navbar-left" id="menu_opciones">
 
 					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
-						<li id="bar_entradas">
-							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entradas" class="ttip color-blanco">Ent</a> 
-						</li> 
+					<li class="dropdown dropdown-user">
+                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <span class="username username-hide-on-mobile color-blanco"> <i class="fa fa-angle-down"></i> Entrada </span>
+                            
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-default">
+                            <li id="bar_entradas">
+								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entradas" class="ttip">Entrada</a> 
+							</li> 
+
+							<li id="bar_entradas">
+								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entrada_compra" class="ttip ">Entrada por Compra</a> 
+							</li> 
+
+							<li id="bar_entradas">
+								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_recibida" class="ttip ">Transferencia Recibida</a> 
+							</li>
+
+                        </ul>
+                    </li>
+
+
 
 					<?php } ?>	
 
-					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
-						<li id="bar_entradas">
-							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>entrada_compra" class="ttip color-blanco">E_comp</a> 
-						</li> 
-
-					<?php } ?>	
-
-
-
-
-					 <?php if ( ( $perfil == 1 ) || (in_array(1, $coleccion_id_operaciones)) ) { ?>
-						<li id="bar_entradas">
-							<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_recibida" class="ttip color-blanco">Transf</a> 
-						</li>
-					<?php } ?>	
+					
 
 					<?php if ( ( $perfil == 1 ) || (in_array(23, $coleccion_id_operaciones)) ) { ?>
 						<li id="bar_devolucion">

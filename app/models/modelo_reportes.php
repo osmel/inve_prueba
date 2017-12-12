@@ -3433,13 +3433,15 @@ public function buscador_historico_salida($data){
              $tienda_cliente = '';
           }      
 
-          
+            //( m.on_off = '.$data["on_off"].' )
 
           $where = '(
-                        ( m.on_off = '.$data["on_off"].' ) '.$tienda_cliente.' AND 
-                      (
+                     (
+                        ( m.id_operacion = '.$data["id_operacion"].' )
+                         '.$tienda_cliente.' 
+                      
 
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$fechas.$id_usuarioid.$id_almacenid.$id_facturaid.$id_estatusid.'  
+                          '.$fechas.$id_usuarioid.$id_almacenid.$id_facturaid.$id_estatusid.'  
                       ) 
 
                        AND

@@ -110,6 +110,11 @@ class Transferencias extends CI_Controller {
 		     
 		            if ( ($this->form_validation->run() === TRUE) and ($existe) && ($existe_factura) ) {
 
+		            //actualizar precio nuevo	
+		            $data['precios'] =  json_decode(json_encode( $this->input->post('arreglo_precio') ),true  );	
+		            $this->model_transferencia->actualizar_precio_transferencia($data);	
+
+
 		      		//copiar a tabla "registros" e "historico_registros_entradas"
 		      		$data['id_operacion'] =1;
 	      			$data['num_mov'] = $this->model_transferencia->procesando_operacion_transferencia($data);

@@ -29,13 +29,36 @@ jQuery('body').on('change','#id_compra', function (e) {
 	  jQuery('input[name=editar_proveedor]').typeahead("val", jQuery('#id_compra option:selected').attr('prov_nomb') );
 });
 
+var reg = /^[0-9]{1,10}(\.[0-9]{0,2})?$/;
 
-
+jQuery('body').on('keypress paste','.precio_nuevo[restriccion="decimal"]', function (e) {	
+    var nn = jQuery(this);
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
 
 jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 
 		jQuery('#foo').css('display','block');
 		var spinner = new Spinner(opts).spin(target);
+
+		var arreglo_precio = [];
+	    var arreglo = {};
+
+	   jQuery("#tabla_transferencia_recibida tbody tr td input.precio_nuevo").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["codigo"] = jQuery(this).attr('codigo') ;  
+	   		arreglo['precio_nuevo'] = jQuery(this).val();
+	   		arreglo_precio.push( arreglo);
+	   });
+
 
 		jQuery.ajax({
 		        url : 'validar_proceso_transferencia',
@@ -49,6 +72,7 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 		        	movimiento_unico : jQuery("#movimiento_unico").val(),
 		        	movimiento: jQuery("#movimiento").val(),
 		        	id_tienda_origen: jQuery('option:selected', '#id_transferencia').attr('id_tienda_origen'),
+		        	arreglo_precio:arreglo_precio,
 
 		        	
 		        	
@@ -107,7 +131,7 @@ jQuery('body').on('change','#id_transferencia', function (e) {
 });
 
 
-var productos_transferencia = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total'];      	
+var productos_transferencia = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total','P. Nuevo'];      	
 
 jQuery('#tabla_transferencia_recibida').dataTable( {
 	"pagingType": "full_numbers",
@@ -300,9 +324,22 @@ jQuery('#tabla_transferencia_recibida').dataTable( {
 	                "targets": [11]
 	            },	       
 
+	            {
+	                "render": function ( data, type, row ) {
+						
+							texto='<td>'; 
+								texto+='<input restriccion="decimal" value="'+number_format(parseFloat(row[7]), 2, '.', ',')+'" codigo="'+row[1]+'" type="text" class="form-control ttip precio_nuevo" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='</td>';
+						
+						return texto;	
+
+	                },
+	                "targets": 12
+	            },
+
     			{ 
 	                 "visible": false,
-	                "targets": [0,12,13,14] 
+	                "targets": [0,13,14] 
 	            }
 
 	],	
@@ -5914,7 +5951,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+= ((row[15]==1) ? 'T-':'')+'Detalles';
+							texto+= ((row[15]==1) ? 'T-':'S-')+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	

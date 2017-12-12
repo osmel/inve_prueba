@@ -109,7 +109,7 @@
 
 		            
 
-		            		<div class="col-xs-12 col-sm-6 col-md-3">
+		            		<div class="col-xs-12 col-sm-6 col-md-3" style="display: none;">
 									
 									
 			                       	<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="Tienda_Cliente"  >
@@ -126,7 +126,7 @@
 
 		            </div>    
 
-		            <div class="col-xs-12 col-sm-6 col-md-4">
+		            <div class="col-xs-12 col-sm-6 col-md-4" >
 			                       <label id="label_vendedor" for="descripcion" class="col-sm-12 col-md-12">Vendedor</label>
 									<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
 										<input  identificador="" type="text" name="editar_vendedor" 
