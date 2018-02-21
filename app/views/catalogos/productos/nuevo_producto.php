@@ -142,14 +142,14 @@
 					<div class="form-group">
 						<label for="minimo" class="col-sm-12 col-md-12">Cantidad mínima de mts</label>
 						<div class="col-sm-12 col-md-12">
-							<input type="text" class="form-control ttip" title="Números enteros." restriccion="entero" id="minimo" name="minimo" placeholder="minimo mts">
+							<input type="text" class="form-control ttip minimo" title="Números y puntos decimales." restriccion="decimal" id="minimo" name="minimo" placeholder="minimo mts">
 						</div>
 					</div>		
 					
 					<div class="form-group">
 						<label for="minimo_kg" class="col-sm-12 col-md-12">Cantidad mínima de kgs</label>
 						<div class="col-sm-12 col-md-12">
-							<input type="text" class="form-control ttip" title="Números enteros." restriccion="entero" id="minimo_kg" name="minimo_kg" placeholder="minimo kg">
+							<input type="text" class="form-control ttip minimo" title="Números y puntos decimales." restriccion="decimal" id="minimo_kg" name="minimo_kg" placeholder="minimo kg">
 						</div>
 					</div>		
 

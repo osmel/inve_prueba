@@ -38,7 +38,7 @@ echo form_open('validar_edicion_producto', $attr);
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
 							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(3, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
-									 <fieldset class="disabled_almacen">				
+									 <fieldset class="disabled_almacen" disabled>				
 								<?php } else { ?>	
 									 <fieldset class="disabled_almacen" disabled>
 								<?php } ?>	
@@ -118,7 +118,7 @@ echo form_open('validar_edicion_producto', $attr);
 		
 		<?php if (($configuracion->activo==1)) {  ?> 
 			<div class="col-xs-12 col-sm-12 col-md-2">
-					<fieldset class="disabledme" disabled>							
+					<fieldset class="disabledme" >		 <!-- disabled-->					
 
 					<div class="form-group">
 						<label for="factura" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">Factura/Remisión</label>

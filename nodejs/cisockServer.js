@@ -89,6 +89,7 @@ var pool    =    mysql.createPool({
                         for (var i = 0; i <= 5; i++) {  //5almacenes 
                             socket.broadcast.to((team+i).toString()).emit('broadcastNewPost',broadcastData);
                         }
+                        
                    } else {
                       socket.broadcast.to(team.toString()).emit('broadcastNewPost',broadcastData);   
                       socket.broadcast.to((team-team_almacen).toString()).emit('broadcastNewPost',broadcastData);

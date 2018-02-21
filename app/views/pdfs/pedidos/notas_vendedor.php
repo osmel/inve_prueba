@@ -44,12 +44,14 @@
 						<th width="8%">Color</th>
 						<th width="10%">Cantidad</th>
 						<th width="10%">Ancho</th>
-						<?php if ($configuracion->activo==1) { ?> 
-							<th width="9%">Lote</th>
-							<th width="8%">Precio</th>
-						<?php } else { ?> 	
-							<th width="17%">Lote</th>
-						<?php }  ?> 	
+						<th width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 17; ?>%">Lote</th>
+						<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<th width="8%">Precio</th>
+								<?php } ?>	
+
+
+
 					</tr>
 				</thead>	
 				<tbody>	
@@ -64,18 +66,19 @@
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?> <?php echo $movimiento->medida; ?></td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
 							
-							<?php if ($configuracion->activo==1) { ?> 
-								<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
-								<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio+($movimiento->precio*$movimiento->iva)/100; ?></td>
-							<?php } else {  ?> 	
-								<td width="17%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
-							<?php }  ?> 		
+
+							<td width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 17; ?>%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>	
+
+							<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio+($movimiento->precio*$movimiento->iva)/100; ?></td>
+								<?php } ?>		
 
 						</tr>
 					<?php endforeach; ?>
 				<?php else : ?>
 						<tr class="noproducto">
-							<td colspan="9">No se han agregado productos</td>
+							<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 17; ?>">No se han agregado productos</td>
 						</tr>
 				<?php endif; ?>	
 				</tbody>		

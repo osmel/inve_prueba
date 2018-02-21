@@ -372,6 +372,10 @@ $route['procesar_entrar_compra/(:any)/(:any)/(:any)']   				 = 'entrada_compra/p
 
 $route['validar_proceso_compra']    					= 'entrada_compra/validar_proceso_compra';
 
+$route['cargarDependencia_entrada_compra']   = 'entrada_compra/cargar_dependencia';
+$route['refencia_producto_compra']   		 = 'entrada_compra/refencia_producto_compra';
+
+
 ///////////////////salidas///////////////////////
 $route['procesando_servidor']    		= 'salidas/procesando_servidor';
 $route['agregar_prod_salida']    		= 'salidas/agregar_prod_salida';
@@ -452,6 +456,8 @@ $route['conteo_tienda']   			= 'pedidos/conteo_tienda';
 $route['pedidos']						= 'pedidos/listado_apartados';
 
 $route['apartado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4/$5/$6';
+//$route['apartado_detalle/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4';
+
 $route['pedido_detalle/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2/$3/$4';
 $route['pedido_completado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_completado_detalle/$1/$2/$3/$4/$5/$6';
 

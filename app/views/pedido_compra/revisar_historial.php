@@ -149,7 +149,7 @@
 					</div>	
 
 
-					<!--Medida -->
+					<!--Medida 
 					<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
 					    
 							<label for="id_medida_compra" class="col-sm-3 col-md-3 control-label">Mts/kgs</label>
@@ -180,7 +180,7 @@
 							</div>
 					</div>	
 
-
+					-->
 
 					<div class="col-xs-12 col-sm-6 col-md-8">
 						<fieldset id="disa_reportes" disabled>
@@ -269,8 +269,9 @@
 											<th width="8%">Cant. Disponible</th>
 											<th width="5%">Cant. Solicitada</th>
 											<th width="5%">Cant. Aprobada</th>
-											<th width="6%">Enlace</th>
-											<th width="5%">Recepcionado</th>
+											<!--<th width="6%">Enlace</th>
+											<th width="5%">Recepcionado</th> -->
+											<th>UM</th>
 										</tr>
 									</thead>
 								</table>
@@ -289,7 +290,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -302,7 +303,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

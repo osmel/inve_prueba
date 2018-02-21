@@ -43,8 +43,8 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					
-					<a href="<?php echo base_url(); ?>generar_etiquetas_rapida/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
+					<?php $tipo= ($movimientos[0]->id_factura==3) ? 'B-' : (($movimientos[0]->id_compra!=0) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->nombre_usuario!='') ? 'T-' :'E-') )); ?>
+					<a href="<?php echo base_url(); ?>generar_etiquetas_rapida/<?php echo base64_encode($tipo.$num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
 					
 
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir etiquetas
@@ -57,7 +57,8 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_notas_rapida/<?php echo base64_encode($num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
+					<?php $tipo= ($movimientos[0]->id_factura==3) ? 'B-' : (($movimientos[0]->id_compra!=0) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->nombre_usuario!='') ? 'T-' :'E-') )); ?>
+					<a href="<?php echo base_url(); ?>generar_notas_rapida/<?php echo base64_encode($tipo.$num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>
@@ -98,10 +99,15 @@ echo form_open('pdfs/generar', $attr,$hidden );
 								<th class="text-center cursora" style="width:7%">Peso Real <i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:14%">Proveedor<i class="glyphicon glyphicon-sort"></i></th>
 
-								<th class="text-center cursora" width="10%">Precio  <i class="glyphicon glyphicon-sort"></i></th>
-								<th class="text-center cursora" width="10%">Subtotal  <i class="glyphicon glyphicon-sort"></i></th>
-								<th class="text-center cursora" width="10%">IVA  <i class="glyphicon glyphicon-sort"></i></th>
-								<th class="text-center cursora" width="10%">Total  <i class="glyphicon glyphicon-sort"></i></th>								
+								<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>    
+
+									<th class="text-center cursora" width="10%">Precio  <i class="glyphicon glyphicon-sort"></i></th>
+									<th class="text-center cursora" width="10%">Subtotal  <i class="glyphicon glyphicon-sort"></i></th>
+									<th class="text-center cursora" width="10%">IVA  <i class="glyphicon glyphicon-sort"></i></th>
+									<th class="text-center cursora" width="10%">Total  <i class="glyphicon glyphicon-sort"></i></th>				
+
+								<?php } ?>		
 								<th class="text-center cursora" style="width:7%">Lote<i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:8%">No. de Partida<i class="glyphicon glyphicon-sort"></i></th>
 								<th class="text-center cursora" style="width:14%">Comentario<i class="glyphicon glyphicon-sort"></i></th>
@@ -125,10 +131,14 @@ echo form_open('pdfs/generar', $attr,$hidden );
 									<td class="text-center"><?php echo $movimiento->peso_real; ?> kgs</td>
 									<td class="text-center"><?php echo $movimiento->nombre; ?></td>
 									
+									<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
 									<td class="text-center"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>
 									<td class="text-center"><?php echo number_format($movimiento->sum_precio, 2, '.', ','); ?></td>
 									<td class="text-center"><?php echo number_format($movimiento->sum_iva, 2, '.', ','); ?></td>
 									<td class="text-center"><?php echo number_format($movimiento->sum_total, 2, '.', ','); ?></td>
+									
+									<?php } ?>	
 
 									<td class="text-center"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
 									<td class="text-center"><?php echo $movimiento->num_partida; ?></td>

@@ -7,17 +7,22 @@
       	$retorno ="";
     }
 
-if ($val_proveedor) {
+	if ($val_proveedor) {
+
 		$consecutivo_actual = (( ($val_proveedor->id_tipo_pedido == 1) && ($val_proveedor->id_tipo_factura==1) ) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
 		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==2) ? $consecutivo->conse_surtido : $consecutivo_actual);
+		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==3) ? $consecutivo->conse_bodega : $consecutivo_actual);
 	} else {
 		$consecutivo_actual = $consecutivo->conse_factura;
 	}	
+
 ?>		
 
 <input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
 <input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
 <input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>">
+<input type="hidden" id="conse_bodega" name="conse_bodega" value="<?php echo $consecutivo->conse_bodega+1; ?>">
+
 
 <div class="container">
 
@@ -46,13 +51,19 @@ if ($val_proveedor) {
 						</fieldset>	
 					</div>
 
+					
+
 					<div class="col-xs-12 col-sm-6 col-md-2">
 						<fieldset disabled>
 							<div class="form-group">
-								<label for="movimiento">No. Movimiento</label>
-								<div>
-										<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
+								<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
+								<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+									<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 								</div>
+								<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+									<input type="text" title="Movimiento" value="<?php echo $consecutivo->consecutivo+1; ?>	" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Movimiento">
+								</div>
+
 							</div>
 						</fieldset>			
 					</div>

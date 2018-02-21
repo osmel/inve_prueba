@@ -706,7 +706,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)");  
           $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.factura,m.id_factura,m.id_fac_orig, m.id_descripcion, m.num_partida'); 
-          $this->db->select('m.codigo, m.ancho, m.devolucion'); 
+          $this->db->select('m.codigo, m.ancho, m.devolucion, m.precio'); 
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,   m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color');
 
@@ -870,6 +870,7 @@
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
                                           12=>$row->id_estatus,
+                                          13=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? $row->precio : '-'),
                                         );                    
                           
                           
@@ -1164,7 +1165,7 @@ public function detalle_entrada_home($data){
           $this->db->select('m.id, m.mov_salida,m.mov_salida_unico, m.factura, m.id_descripcion,  m.num_partida'); //m.id_empresa, m.id_operacion,
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura, m.fecha_salida');
           $this->db->select('m.ancho,  m.codigo');
-          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.proceso_traspaso');
+          $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.proceso_traspaso, m.precio');
           $this->db->select('c.hexadecimal_color, c.color , p.nombre');
 
           $this->db->select('p.nombre cliente,ca.nombre cargador');  
@@ -1312,6 +1313,7 @@ public function detalle_entrada_home($data){
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
                                           12=>$row->id_estatus,
+                                          13=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  )? $row->precio : '-'),
                                         );                    
                       }
 
@@ -1598,7 +1600,7 @@ public function detalle_salida_home($data){
           $this->db->select('m.ancho, m.codigo'); 
           $this->db->select('m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,fecha_apartado,m.proceso_traspaso');
           $this->db->select('c.hexadecimal_color, c.color,  m.devolucion');
-          $this->db->select('m.cantidad_um, u.medida');
+          $this->db->select('m.cantidad_um, u.medida, m.precio');
           $this->db->select('
                         CASE m.id_apartado
                           WHEN "1" THEN "ab1d1d"
@@ -1751,6 +1753,7 @@ public function detalle_salida_home($data){
                                           10=>$row->proceso_traspaso, //15
                                           11=>$row->codigo_contable, //16
                                           12=>$row->id_estatus,
+                                          13=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  )? $row->precio : '-'),
                                         );             
 
                               
@@ -2145,13 +2148,15 @@ public function detalle_salida_home($data){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
                                       5=>$row->calidad,   //7
-                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? $row->precio : '-'),
+
                                       7=>$row->metros,   //9
                                       8=>$row->kilogramos, //10
                                       9=>"black",  //11
                                       10=>$row->proceso_traspaso, //15
                                       11=>$row->codigo_contable,  //16
                                       12=>$row->id_estatus,
+                                      13=>"precio",
                                     );                    
                             
 
@@ -2366,13 +2371,14 @@ public function detalle_salida_home($data){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
                                       5=>$row->calidad,   //7
-                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? $row->precio : '-'),
                                       7=>$row->metros,   //9
                                       8=>$row->kilogramos, //10
                                       9=>"black",  //11
                                       10=>$row->proceso_traspaso, //15
                                       11=>$row->codigo_contable,  //16
                                       12=>$row->id_estatus,
+                                      13=>"precio",
                                     );                    
                             
 
@@ -2700,13 +2706,14 @@ public function detalle_salida_home($data){
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       4=>$row->composicion,  //6
                                       5=>$row->calidad,   //7
-                                      6=>(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  )? $row->precio : '-'),
                                       7=>$row->metros,   //9
                                       8=>$row->kilogramos, //10
                                       9=>"black",  //11
                                       10=>$row->proceso_traspaso, //15
                                       11=>$row->codigo_contable,  //16
                                       12=>$row->id_estatus,
+                                      13=>"precio",
                                     );                    
 
 
@@ -2901,6 +2908,8 @@ public function detalle_salida_home($data){
                  }                 
 
 
+   
+
           $id_session = $this->db->escape($this->session->userdata('id'));
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)"); 
@@ -2922,6 +2931,7 @@ public function detalle_salida_home($data){
 
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+          //$this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
 
           
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
@@ -3002,13 +3012,20 @@ public function detalle_salida_home($data){
                                       3=>$row->nombre,
                                       4=>$row->fecha,
                                       5=>$row->factura,
-                                      6=>number_format($row->sum_precio, 2, '.', ','),
-                                      7=>number_format($row->sum_iva, 2, '.', ','),
-                                      8=>number_format(($row->sum_precio+$row->sum_iva), 2, '.', ','),
+                                      6=>
+                                      ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_precio, 2, '.', ',') : '-'),
+
+                                      7=>
+                                      ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+                                      
+                                      8=>
+                                      ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format(($row->sum_precio+$row->sum_iva), 2, '.', ',') : '-'),
+                                      
+
                                       9=>$row->devolucion,
                                       10=>$row->id_factura,
                                       11=>$row->id_estatus,
-                                      12=>(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )),
+                                      12=>($row->id_factura==3) ? 'B-' : (($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )),
                                     );
                       }
 
@@ -3211,9 +3228,9 @@ public function buscador_historico_devolucion($data){
                                       2=>$row->nombre,
                                       3=>$row->fecha,
                                       4=>$row->factura,
-                                      5=>number_format($row->sum_precio, 2, '.', ','),
-                                      6=>number_format($row->sum_iva, 2, '.', ','),
-                                      7=>number_format($row->sum_total, 2, '.', ','),
+                                      5=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_precio, 2, '.', ',') : '-'),
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+                                      7=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_total, 2, '.', ',') : '-'),
                                       8=>$row->devolucion,
                                       9=>$row->id_factura,
                                       10=>$row->id_estatus,
@@ -3363,7 +3380,18 @@ public function buscador_historico_salida($data){
           $this->db->select('m.id_apartado apartado, m.consecutivo_venta,m.id_cliente_apartado');  
 
           //$this->db->select("prov_pedido.nombre cliente_pedido");
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov_pedido.nombre END ) AS cliente_pedido");          
+          //$this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov_pedido.nombre END ) AS cliente_pedido");
+
+
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  prov_pedido.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  prov_pedido.nombre
+                          END AS cliente_pedido
+           ',False);
+
           $this->db->select("prov_apartado.nombre cliente_apartado");
 
           $this->db->select("m.on_off");
@@ -3377,6 +3405,7 @@ public function buscador_historico_salida($data){
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT'); //
           $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT'); //
    
 
@@ -3509,9 +3538,10 @@ public function buscador_historico_salida($data){
                                       5=>$row->fecha,
                                       6=>$tipo_salida, 
                                       7=>$row->factura,
-                                      8=>number_format($row->sum_precio, 2, '.', ','),
-                                      9=>number_format($row->sum_iva, 2, '.', ','),
-                                      10=>number_format($row->sum_total, 2, '.', ','),
+                                      8=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_precio, 2, '.', ',') : '-'),
+
+                                      9=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+                                      10=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_total, 2, '.', ',') : '-'),
                                       11=>$row->id_tipo_pedido,
                                       12=>$row->id_tipo_factura,
                                       13=>$client,

@@ -230,10 +230,11 @@ class Devoluciones extends CI_Controller {
 
           $id_movimiento= base64_decode($id_movimiento);
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }  
+         $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
+
    
     
           $data['num_mov'] = $this->modelo_devolucion->procesando_operacion();
@@ -263,7 +264,7 @@ class Devoluciones extends CI_Controller {
               case 2:
               case 3:
               case 4:
-                  if  (in_array(23, $coleccion_id_operaciones))  {                 
+                  if  (in_array(23, $data['coleccion_id_operaciones']))  {                 
                          $data['movimientos']  = $this->modelo_devolucion->listado_movimientos_registros($data);
                          
                          $this->load->view( 'pdfs/pdfs_view',$data );

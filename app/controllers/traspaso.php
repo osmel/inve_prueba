@@ -38,10 +38,11 @@ public function modulo_traspaso(){
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
+           
+           $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                $data['coleccion_id_operaciones'] = array();
+           } 
            
            //no. movimiento
            $data['consecutivo']  = $this->catalogo->listado_consecutivo(26);
@@ -69,7 +70,7 @@ public function modulo_traspaso(){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(26, $coleccion_id_operaciones))  {                 
+                  if  (in_array(26, $data['coleccion_id_operaciones']))  {                 
                             $this->load->view( 'traspaso/modulo_traspaso',$data );
                  }   
               break;
@@ -90,6 +91,10 @@ public function modulo_traspaso(){
   //mostrar la 1ra regilla
   public function procesando_entrada_traspaso(){
       $data=$_POST;
+      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_traspaso->buscador_entrada($data);
       echo $busqueda;
   }
@@ -98,6 +103,10 @@ public function modulo_traspaso(){
   //mostrar la 2da regilla
   public function procesando_salida_traspaso(){
       $data=$_POST;
+       $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_traspaso->buscador_salida($data);
       echo $busqueda;
   }
@@ -218,7 +227,7 @@ public function modulo_traspaso(){
 
      if($this->session->userdata('session') === TRUE ){
         
-          $misdatos = json_decode($this->input->post('datos'));
+        $misdatos = json_decode($this->input->post('datos'));
           
         $data['consecutivo_unico'] =base64_encode($misdatos->consecutivo_unico);         
         $data['consecutivo'] =base64_encode($misdatos->consecutivo);         
@@ -235,6 +244,13 @@ public function modulo_traspaso(){
 
         $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);
         $data['id_factura'] = base64_decode($id_factura);
+
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
+
+
 
         set_time_limit(0); 
         ignore_user_abort(1);
@@ -300,10 +316,10 @@ public function modulo_traspaso(){
       if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         }   
          $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
            
@@ -314,7 +330,7 @@ public function modulo_traspaso(){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(26, $coleccion_id_operaciones))  {                 
+                  if  (in_array(26, $data['coleccion_id_operaciones']))  {                 
                             $this->load->view( 'traspaso/listado_traspaso',$data );
                  }   
               break;
@@ -335,6 +351,10 @@ public function modulo_traspaso(){
   //regilla1 reporte traspaso
   public function procesando_general_traspaso(){  //907 consecutivo_traspaso_unico
     $data=$_POST;
+      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
     $busqueda = $this->model_traspaso->buscador_general_traspaso($data); //ok no
     echo $busqueda;
   } 
@@ -342,6 +362,10 @@ public function modulo_traspaso(){
   //regilla2 reporte traspaso
   public function procesando_traspaso_historico(){
     $data=$_POST;
+      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
     $busqueda = $this->model_traspaso->buscador_traspaso_historico($data); //ok no
     echo $busqueda;
   } 
@@ -354,7 +378,10 @@ public function modulo_traspaso(){
   public function impresion_traspaso_historico() {
 
         $data=$_POST;
-     
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
 
         set_time_limit(0); 
         ignore_user_abort(1);
@@ -414,10 +441,12 @@ public function modulo_traspaso(){
      if($this->session->userdata('session') === TRUE ){
               $id_perfil=$this->session->userdata('id_perfil');
 
-              $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-              if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                    $coleccion_id_operaciones = array();
-               }   
+                    
+            $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+              if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                    $data['coleccion_id_operaciones'] = array();
+               } 
+
                
                //no. movimiento $data
             $data['id_usuario'] = base64_decode($id_usuario);
@@ -439,7 +468,7 @@ public function modulo_traspaso(){
                 case 2:
                 case 3:
                 case 4:
-                      if  (in_array(26, $coleccion_id_operaciones))  {            
+                      if  (in_array(26, $data['coleccion_id_operaciones']))  {            
                           $this->load->view( 'traspaso/traspaso_general_detalle_manual',$data);
                       } else {
                         redirect('');
@@ -461,10 +490,11 @@ public function modulo_traspaso(){
               
               $id_perfil=$this->session->userdata('id_perfil');
 
-              $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-              if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                    $coleccion_id_operaciones = array();
-               }   
+                            
+            $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+              if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                    $data['coleccion_id_operaciones'] = array();
+               } 
     
             $data['consecutivo_traspaso'] = base64_decode($consecutivo_traspaso);       
             $data['id_factura'] = base64_decode($id_factura);       
@@ -476,7 +506,7 @@ public function modulo_traspaso(){
                 case 2:
                 case 3:
                 case 4:
-                      if  (in_array(26, $coleccion_id_operaciones))  {            
+                      if  (in_array(26, $data['coleccion_id_operaciones']))  {            
                           $this->load->view('traspaso/traspaso_detalle',$data);
                       } else {
                         redirect('');
@@ -496,6 +526,10 @@ public function modulo_traspaso(){
   //regilla interior de  "detalle traspaso en proceso"
   public function procesando_traspaso_general_detalle_manual(){ //**aqui
       $data=$_POST;
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_traspaso->buscador_traspaso_general_detalle_manual($data);
       echo $busqueda;
   }
@@ -504,6 +538,10 @@ public function modulo_traspaso(){
   //regilla interior de "historico detalles"
   public function traspaso_historico_detalle(){ //**
       $data=$_POST;
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_traspaso->buscador_traspaso_historico_detalle($data);
       echo $busqueda;
   }

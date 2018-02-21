@@ -79,13 +79,13 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
           
-
-          if ($perfil!=2) {
+          if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones']))   ) ) { 
             $this->db->select("pc.precio", FALSE);  
           }
           
 
-          $this->db->select("p.minimo");
+          //$this->db->select("p.minimo");
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
@@ -130,7 +130,7 @@ public function buscador_revisar_historial_compra($data){
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           //$this->db->order_by($columna, $order); 
     
@@ -164,11 +164,13 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
           
-          if ($perfil!=2) {
+          if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones']))   ) ) { 
             $this->db->select("pc.precio", FALSE);  
           }
           
-          $this->db->select("p.minimo");
+          //$this->db->select("p.minimo");
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
+
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
@@ -215,7 +217,7 @@ public function buscador_revisar_historial_compra($data){
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           $result = $this->db->get();
 
@@ -248,13 +250,13 @@ public function buscador_revisar_historial_compra($data){
           $this->db->select("pc.ancho", FALSE);
           $this->db->select('co.composicion, ca.calidad');
           
-
-          if ($perfil!=2) {
+          if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones']))   ) ) { 
             $this->db->select("pc.precio", FALSE);  
           }
           
 
-          $this->db->select("p.minimo");
+          //$this->db->select("p.minimo");
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_solicitada");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
@@ -302,7 +304,7 @@ public function buscador_revisar_historial_compra($data){
       
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           $result = $this->db->get();
 

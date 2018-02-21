@@ -146,8 +146,9 @@ public function nuevo_pedido_compra($url){
             $dato['id'] = 11;
             $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
-           
-           
+
+
+
 
           switch ($id_perfil) {    
             case 1:          
@@ -177,6 +178,10 @@ public function nuevo_pedido_compra($url){
   //regilla1 "nuevo_pedido_compra"
   public function procesando_entrada_pedido_compra(){
       $data=$_POST;
+       $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_pedido_compra->buscador_entrada_compra($data);
       echo $busqueda;
 
@@ -186,6 +191,10 @@ public function nuevo_pedido_compra($url){
  //regilla2 "nuevo_pedido_compra"
   public function procesando_salida_pedido_compra(){
       $data=$_POST;
+            $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
       $busqueda = $this->model_pedido_compra->buscador_salida_compra($data);
       echo $busqueda;
       
@@ -253,6 +262,7 @@ function quitar_salida_compra(){
       } else {
       
       $data['id'] = $this->input->post('identificador');
+      $data['id_medida'] = $this->input->post('id_medida');
       $actualizar =  $this->model_pedido_compra->quitar_salida_compra( $data );
       $dato['val_compra']  = $this->model_pedido_compra->valores_movimientos_temporal();
       
@@ -351,6 +361,12 @@ function quitar_salida_compra(){
 //regilla externa pendiente_revision
 public function procesando_pedido_compra(){
       $data=$_POST;
+
+          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+          } 
+
           $data['modulo']        = $this->input->post('modulo');      
 
           switch ($data['modulo']) {    
@@ -389,11 +405,14 @@ public function detalle_revision($movimiento, $modulo){
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
-           
+                   
+
+          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+           } 
+
+
            $data['modulo']  = base64_decode($modulo); 
            $data['movimiento']  = base64_decode($movimiento); 
 
@@ -439,7 +458,7 @@ public function detalle_revision($movimiento, $modulo){
           $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
            $data['proveedores']   = $this->modelo->coger_catalogo_proveedores(2);
-           $data['medidas']  = $this->catalogo->listado_medidas();
+           //$data['medidas']  = $this->catalogo->listado_medidas();
 
 
 
@@ -451,7 +470,7 @@ public function detalle_revision($movimiento, $modulo){
             case 2:
             case 3:
             case 4:
-                  if  (in_array(39, $coleccion_id_operaciones))  {                 
+                  if  (in_array(39, $data['coleccion_id_operaciones']))  {                 
                            $this->load->view( 'pedido_compra/'.$revisar,$data );
 
                  }   
@@ -481,10 +500,12 @@ public function proc_pedido_cambio(){
        if($this->session->userdata('session') === TRUE ){
             $id_perfil=$this->session->userdata('id_perfil');
 
-            $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-            if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                  $coleccion_id_operaciones = array();
-             }  
+          
+
+          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+          } 
 
             $errores='';
 
@@ -534,11 +555,12 @@ public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
 
          
           $id_perfil=$this->session->userdata('id_perfil');
+          
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
+          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+          }  
           
           $data['aprobado']         = base64_decode($aprobado);
           $data['movimiento']         = base64_decode($movimiento);
@@ -556,7 +578,7 @@ public function pedido_compra_modal($aprobado,$movimiento,$modulo,$retorno){
             case 2:
             case 3:
             case 4:
-                 if  (in_array(39, $coleccion_id_operaciones))  {                 
+                 if  (in_array(39, $data['coleccion_id_operaciones']))  {                 
                      $this->load->view( 'pedido_compra/pedido_compra_modal', $data );
                   }  else  {
                     redirect('');
@@ -769,6 +791,12 @@ public function confirmar_pedido_compra(){
 public function procesando_revisar_pedido_compra(){
       $data=$_POST;
 
+
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
+
           $data['modulo']        = $this->input->post('modulo');      
 
           switch ($data['modulo']) {    
@@ -778,10 +806,10 @@ public function procesando_revisar_pedido_compra(){
                   $busqueda = $this->model_pedido_compra->buscador_revisar_pedido_compra($data);
               break;
             case 4:
-                  $busqueda = $this->model_pedido_compra->buscador_revisar_cancela_compra($data);
+                  $busqueda = $this->model_pedido_compra->buscador_revisar_cancela_compra($data); //12
               break;
             case 5:   
-                  $busqueda = $this->model_pedido_compra->buscador_revisar_historial_compra($data);
+                  $busqueda = $this->model_pedido_compra->buscador_revisar_historial_compra($data); //14
               break;              
             default:  
                  $busqueda = $this->model_pedido_compra->buscador_revisar_pedido_compra($data);
@@ -906,6 +934,11 @@ impresion_reporte_compra
       $this->load->library('export');
         $data = $_POST;
 
+        $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
+
           switch ($data['modulo']) {
             case 1:          
             case 2:   
@@ -934,6 +967,10 @@ impresion_reporte_compra
  public function impresion_reporte_compra() {
 
         $data = $_POST;
+          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+        if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+              $data['coleccion_id_operaciones'] = array();
+         } 
 
           switch ($data['modulo']) {
             case 1:          

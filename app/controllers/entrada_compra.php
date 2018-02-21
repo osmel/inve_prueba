@@ -14,6 +14,120 @@ class Entrada_compra extends CI_Controller {
 	}
 
 
+
+//Filtro La lista que es dependiente a un elemento padre
+  function cargar_dependencia(){
+    
+    $data['campo']           = $this->input->post('campo');
+
+    $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_color']       = $this->input->post('val_color');
+    $data['val_comp']        = $this->input->post('val_comp');
+    $data['val_calida']      = $this->input->post('val_calida');
+
+    $data['dependencia']        = $this->input->post('dependencia');
+    $data['id_compra']        = $this->input->post('id_compra');
+    
+    $elementos  = false;
+    switch ($data['dependencia']) {
+        case "producto": //nunca será una dependencia
+            $elementos  = $this->model_entrada_compra->listado_productos($data);
+            //echo json_encode($elementos); die;
+            break;
+        case "color":
+            $elementos  = $this->model_entrada_compra->lista_colores($data);
+            break;
+
+        case "composicion":
+            $elementos  = $this->model_entrada_compra->lista_composiciones($data);
+            break;
+        case "calidad":
+            $elementos  = $this->model_entrada_compra->lista_calidad($data);
+            break;
+
+        default:
+    }
+
+
+
+      $variables = array();
+    if ($elementos != false)  {     
+         foreach( (json_decode(json_encode($elementos))) as $clave =>$valor ) {
+            if ($data['dependencia']=="color"){
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => $valor->hexadecimal_color,
+					'mts' => ($valor->total_compra_mts - ($valor->total_entrada_mts+$valor->total_entrada_temp_mts ) )>0, 
+            		'kg' => ($valor->total_compra_kg - ($valor->total_entrada_kg+$valor->total_entrada_temp_kg ) )>0, 
+            		'total_entrada_mts' => $valor->total_entrada_mts,
+            		'total_compra_mts' => $valor->total_compra_mts,
+
+            		'total_entrada_temp_mts' =>$valor->total_entrada_temp_mts,
+            		'total_entrada_temp_kg' =>$valor->total_entrada_temp_kg,
+            		
+            		'total_entrada_kg' => $valor->total_entrada_kg,
+    		        'total_compra_kg' => $valor->total_compra_kg,
+            		
+
+              	)); 
+            } else {
+              array_push($variables,array('nombre' => $valor->nombre, 'identificador' => $valor->id, 'hexadecimal_color' => "FFFFFF",
+					'mts' => ($valor->total_compra_mts - ($valor->total_entrada_mts+$valor->total_entrada_temp_mts ) )>0, 
+            		'kg' => ($valor->total_compra_kg - ($valor->total_entrada_kg+$valor->total_entrada_temp_kg ) )>0, 
+            		'total_entrada_mts' => $valor->total_entrada_mts,
+            		'total_compra_mts' => $valor->total_compra_mts,
+
+            		'total_entrada_temp_mts' =>$valor->total_entrada_temp_mts,
+            		'total_entrada_temp_kg' =>$valor->total_entrada_temp_kg,
+
+
+            		'total_entrada_kg' => $valor->total_entrada_kg,
+    		        'total_compra_kg' => $valor->total_compra_kg,
+
+
+              	));  
+            }
+       }
+    }  
+
+     echo json_encode($variables);
+  }
+
+
+	public function proveedor_id($idcliente){
+		$data['id_cliente'] ='';
+		 if ($this->input->post('id_cliente')) {
+
+		 	 	     $data['descripcion'] = $idcliente;
+		 	 	     $data['idproveedor'] = "2";
+
+					$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
+
+
+					//$data['id_cliente'] =  (string) $this->catalogo->check_existente_proveedor_entrada($idcliente);
+					if (!($data['id_cliente'])){
+						$data['id_cliente'] ='';
+					}
+		  } else {
+		  	$data['id_cliente'] ='';
+		  }	
+ 	   return ($data['id_cliente']);	  
+	}	
+
+	public function refencia_producto_compra(){
+
+	    $data['val_prod']       	  = $this->input->post('val_prod');
+	    $data['val_color']  	      = $this->input->post('val_color');
+	    $data['val_comp'] 	          = $this->input->post('val_comp');
+	    $data['val_calida']           = $this->input->post('val_calida');
+	    $data['val_calida']           = $this->input->post('val_calida');
+	    $data['id_cliente']           = $this->input->post('id_cliente');
+	    $data['id_compra']           = $this->input->post('id_compra');
+	    
+		
+		$dato['cliente_id'] = self::proveedor_id($data['id_cliente']);
+		$dato['ref_prod'] =  $this->model_entrada_compra->refe_producto($data);		
+		echo json_encode($dato);
+
+	}
 //***********************Todos los recepciones**********************************//
 	
 
@@ -34,8 +148,13 @@ class Entrada_compra extends CI_Controller {
 		       	$data['movimientos']  	= $this->model_entrada_compra->listado_movimientos_temporal();
 		       	$data['val_proveedor']  = $this->model_entrada_compra->valores_movimientos_temporal();
 		       	$data['compras']  = $this->model_entrada_compra->listado_compra();
+				
+				// print_r($data['compras']);	
+		       	//print_r($data['compras']); 
+		       	//die;
 		       	
-		       	$data['productos']   	= $this->catalogo->listado_productos_unico_activo();
+		       	$data['id_compra'] =0;
+		       	$data['productos']   	= $this->model_entrada_compra->listado_productos($data);
     	        $data['almacenes']   	= $this->modelo->coger_catalogo_almacenes(2);
     	        $data['facturas']   	= $this->catalogo->listado_tipos_facturas(-1,-1,'1');
     	        $data['pagos']   		= $this->catalogo->listado_tipos_pagos();

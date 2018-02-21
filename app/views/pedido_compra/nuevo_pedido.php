@@ -146,11 +146,9 @@
 					    
 							<label for="id_medida_compra" class="col-sm-3 col-md-3 control-label">Mts/kgs</label>
 							<div class="col-sm-9 col-md-12">
-							    <?php if (!$val_compra) { ?>
-											 <fieldset class="disabledme">				
-										<?php } else { ?>	
-											 <fieldset class="disabledme" disabled>
-										<?php } ?>	
+							    
+											 <fieldset >				
+										
 													<select name="id_medida_compra" id="id_medida_compra" class="form-control">
 															<?php foreach ( $medidas as $medida ){ ?>
 																	<?php 
@@ -287,6 +285,7 @@
 
 
 
+
 								</tr>
 							</thead>
 							</table>
@@ -299,7 +298,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -312,7 +311,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">								
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -331,7 +330,7 @@
 		<!-- Segunda tabla-->
 		<div class="col-md-12">		
 			
-			<h4>Orden Pedido de Compra</h4>	
+			<h4>Orden de Compra</h4>	
 			<br>	
 			<div class="table-responsive">
 				<section>
@@ -349,6 +348,7 @@
 								<th width="8%">Cant. Disponible</th>
 								<th width="8%">Cant. Pedido</th>
 								<th width="8%">Quitar</th>
+								<th width="10%">U.M.</th>
 							</tr>
 						</thead>
 					</table>
@@ -360,7 +360,7 @@
 
 	<br/>
 		
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >												
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">												
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	
@@ -373,7 +373,7 @@
 					</div>	
 				</div>			
 
-				<div class="row bloque_totales" <?php echo 'style="display:'.( ( $el_perfil!=2 ) ? 'block':'none').'"'; ?> >								
+				<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">									
 					<div class="col-sm-0 col-md-4">	
 					  
 					</div>	

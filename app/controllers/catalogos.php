@@ -7,7 +7,7 @@ class Catalogos extends CI_Controller {
     $this->load->model('model_pedido_compra', 'model_pedido_compra'); 
     $this->load->model('catalogo', 'catalogo');  
     $this->load->library(array('email')); 
-    $this->load->library('Jquery_pagination');//-->la estrella del equipo 
+    $this->load->library('Jquery_pagination');//-->la estrella del equipo  
   }
  function marcando_activo(){
 
@@ -67,7 +67,6 @@ class Catalogos extends CI_Controller {
 
      echo json_encode($variables);
   }
-
 
 
  public function procesando_cat_proveedores(){
@@ -236,6 +235,10 @@ class Catalogos extends CI_Controller {
 
         case 'editar_tienda':
            $busqueda = $this->catalogo->buscador_tiendas($data);
+        break;
+
+        case 'editar_bodega':
+           $busqueda = $this->catalogo->buscador_bodegas($data);
         break;
 
 

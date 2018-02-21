@@ -157,21 +157,47 @@ class Pdfs_model extends CI_Model
 
 
           //$this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.movimiento_unico',$data['id_movimiento']);
-          $this->db->where('m.devolucion',$data['dev']);
+          //$this->db->where('m.movimiento_unico',$data['id_movimiento']);
+          //$this->db->where('m.devolucion',$data['dev']);
 
+          $where='';
+          //$where.=  "(  m.movimiento_unico = ".$data['id_movimiento'].')';
+          
+          
+
+          $where.= (($where!='') ? ' and ' : '') . '  m.movimiento_unico = '.$data["id_movimiento"];
+          
+           $where.= (($where!='') ? ' and ' : '') .' m.devolucion = '.$data["dev"];
 
           if ($data['id_estatus']!=0) {
             // $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
-            $this->db->where('m.id_estatus',$data['id_estatus']);
+            //$this->db->where('m.id_estatus',$data['id_estatus']);
+             $where.= (($where!="") ? " and " : "") . ' m.id_estatus = '.$data["id_estatus"];
           } else {
              //$id_estatusid = '';
           }            
 
           if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
-            $this->db->where('m.id_factura',$data['id_factura']);
+            //$this->db->where('m.id_factura',$data['id_factura']);
+            $where.= (($where!="") ? " and " : "") . ' m.id_factura = '.$data["id_factura"];
           }  
 
+          if ($data['tipo_entrada']=='D') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.devolucion <>  0) ';  //devoluciones
+          } else if ($data['tipo_entrada']=='C') {
+               $where.= (($where!="") ? " and " : "") . ' ( m.id_compra <>  0) ';  //compra
+          } else if ($data['tipo_entrada']!='T') {
+             $where.= (($where!="") ? " and " : "") . '  ( m.nombre_usuario =  "" )  and ( m.devolucion =  0) and ( m.id_compra =  0)  ';   //Normal
+          } else {
+             $where.= (($where!="") ? " and " : "") . '  ( m.nombre_usuario <>  "" ) ';   //Transferencia
+          }    
+
+          
+
+           
+          
+
+          $this->db->where('('.$where.')');
 
           $this->db->order_by('m.id_lote', 'asc'); 
           $this->db->order_by('m.codigo', 'asc'); 

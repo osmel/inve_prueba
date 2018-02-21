@@ -232,9 +232,23 @@ public function impresion_etiquetas1($codigo) {
 
 
   public function generar_notas_rapida($id_movimiento,$dev,$id_factura,$id_estatus) {
+             $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+              if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                    $data['coleccion_id_operaciones'] = array();
+               } 
 
         $data['dev']= base64_decode($dev);    
-        $data['id_movimiento']= base64_decode($id_movimiento);
+      //  $data['id_movimiento']= base64_decode($id_movimiento);
+
+              $porciones = explode("-", base64_decode($id_movimiento));
+
+              $tipo_entrada= $porciones[0];
+              $id_movimiento= $porciones[1];
+              
+              $data['tipo_entrada'] = $tipo_entrada;
+              $data['id_movimiento'] = $id_movimiento;
+
+
         $data['id_factura']= base64_decode($id_factura);
         $data['id_estatus']= base64_decode($id_estatus);
 
@@ -349,12 +363,23 @@ public function impresion_etiquetas1($codigo) {
 
    public function generar_etiquetas_rapida($id_movimiento,$dev,$id_factura,$id_estatus) {
         $data['dev']= base64_decode($dev);    
-        $data['id_movimiento']= base64_decode($id_movimiento);
+        //$data['id_movimiento']= base64_decode($id_movimiento);
         $data['id_factura']= base64_decode($id_factura);
         $data['id_estatus']= base64_decode($id_estatus);
 
-        $data['movimientos'] = $this->modelo_pdf->listado_registros($data);
+        
 
+
+        $porciones = explode("-", base64_decode($id_movimiento));
+        //print_r($porciones); die;
+
+              $tipo_entrada= $porciones[0];
+              $id_movimiento= $porciones[1];
+              
+              $data['tipo_entrada'] = $tipo_entrada;
+              $data['id_movimiento'] = $id_movimiento;
+
+            $data['movimientos'] = $this->modelo_pdf->listado_registros($data);  
 
 
         $html = $this->load->view('pdfs/etiq_new_rapida', $data, true);
@@ -468,7 +493,10 @@ public function impresion_etiquetas1($codigo) {
 
  public function generar_pedido_especifico($num_mov,$id_generar,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
 
-
+         $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+              if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                    $data['coleccion_id_operaciones'] = array();
+               } 
 
         $data['num_mov']= base64_decode($num_mov);
         $data['id_generar']= base64_decode($id_generar);
@@ -531,18 +559,17 @@ public function impresion_etiquetas1($codigo) {
         //print_r($data['configuracion']);
 
         switch ($data['id_generar']) { //m.consecutivo m.cantidad_um
-            case 1:
+            case 1:  //2da regilla
                     $data['movimientos'] = $this->modelo_pdf->pedido_especifico_vendedor($data);        
                     $html = $this->load->view('pdfs/pedidos/notas_vendedor', $data, true);
 
                 break;
-            case 2:
-                    //este es de los vendedores
+            case 2:  //1ra regilla
                     $data['movimientos'] = $this->modelo_pdf->pedido_especifico_tienda($data);        
                      $html = $this->load->view('pdfs/pedidos/notas_tienda', $data, true);
                       
                 break;
-            case 3:
+            case 3: //3ra regilla
                     $data['movimientos'] = $this->modelo_pdf->pedido_especifico_completo($data);        
                     $html = $this->load->view('pdfs/pedidos/notas_completo', $data, true);
                 break;

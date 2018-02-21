@@ -222,9 +222,26 @@ class Inventario extends CI_Controller {
       $d_conf['id'] = 7;
       $d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
-      if (($d_conf['configuracion']->activo==1)) {  
+  /*    if (($d_conf['configuracion']->activo==1)) {  
         $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
       }  
+*/
+
+      $existe_factura=true;
+    if (($d_conf['configuracion']->activo==1)) {  
+      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');  
+
+      $data['fact_revision']   = $this->input->post('factura');
+
+      $existe_factura = $this->model_entrada->existencia_factura($data);
+
+      if (!($existe_factura)) {
+          print "El número de factura ya existe";
+      }
+
+    } 
+
+
 
       $this->form_validation->set_rules( 'producto', 'Producto', 'required|callback_valid_selector|xss_clean'); //callback_valid_option
       $this->form_validation->set_rules( 'color', 'Color', 'required|callback_valid_selector|xss_clean'); 
@@ -240,7 +257,7 @@ class Inventario extends CI_Controller {
 
     //print_r($this->input->post('precio'));      
 
-      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) and ($data['codigo'])  and ($dato['codigo1']) ) {
+      if (($this->form_validation->run() === TRUE) and ($data['id_proveedor']) and ($data['codigo'])  and ($dato['codigo1']) and ($existe_factura) ) {
           
           $data['referencia']   = $this->input->post('referencia');
 

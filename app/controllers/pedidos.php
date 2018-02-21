@@ -8,7 +8,7 @@ class Pedidos extends CI_Controller {
 		$this->load->model('catalogo', 'catalogo');  
 		$this->load->model('modelo', 'modelo');  
 		$this->load->library(array('email')); 
-        $this->load->library('Jquery_pagination');//-->la estrella del equipo		
+        $this->load->library('Jquery_pagination');//-->la estrella del equipo	 	
 
 	}
 ////////////////////////////////////////////////////////////
@@ -35,7 +35,8 @@ public function listado_pedidos(){
 
 		       $data['productos'] = $this->modelo_pedido->listado_productos_unico();
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-		       $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+		       
+		       $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 		       
 		       
@@ -69,6 +70,10 @@ public function listado_pedidos(){
 	 //1ra regilla de "/generar_pedidos"
 	public function procesando_pedido_entrada(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_entrada_pedido($data);
 		echo $busqueda;
 	}
@@ -76,6 +81,10 @@ public function listado_pedidos(){
 	//2da regilla de "/generar_pedidos"
 	public function procesando_pedido_salida(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_salida_pedido($data);
 		echo $busqueda;
 	}
@@ -95,12 +104,23 @@ public function listado_pedidos(){
 						$data['descripcion'] = $this->input->post('id_cliente');
 						$data['idproveedor'] = "3";
 
-						if ( $this->input->post('on_off') =="true" ) { //tienda
-							$data['id_cliente'] =  $this->catalogo->checar_existente_tienda($data);
-						} else {  //proveedor
-							$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
-							//print_r(  $data['id_cliente'] );die;
-						}	
+
+
+					      switch ($this->input->post('on_off')) {    
+					        case 0:          
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
+					          break;
+					        case 1:
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_tienda($data);
+					          break;
+					        case 2:
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_bodega($data);
+					          break;
+
+					      } //fin del case
+
+
+
 
 						if (!($data['id_cliente'])){
 							$dato['mensaje'] = "El cliente no existe";
@@ -119,9 +139,9 @@ public function listado_pedidos(){
 		 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 
 		 		
-		 		$data['on_off'] = $this->input->post('on_off')=="true" ? 1 : 0;
+		 		$data['on_off'] = $this->input->post('on_off');
 
-		 		//print_r(  (int)$this->session->userdata('config_tienda_activo')  );
+		 		//echo json_encode($data);
 		 		//die;
 
 				$actualizar = $this->modelo_pedido->actualizar_pedido($data);
@@ -230,6 +250,9 @@ public function listado_pedidos(){
 		            $coleccion_id_operaciones = array();
 		       }   
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
+		       $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
+		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+		       
 		       //no. movimiento $data
 
 		      switch ($id_perfil) {    
@@ -260,6 +283,10 @@ public function listado_pedidos(){
 	//1ra Regilla PARA "Pedidos de vendedores"
 	public function procesando_apartado_pendiente(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_apartados_pendientes($data);
 		echo $busqueda;
 	}	
@@ -267,6 +294,10 @@ public function listado_pedidos(){
 	//2da Regilla PARA "Pedidos de tiendas"
 	public function procesando_pedido_pendiente(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_pedidos_pendientes($data);
 		echo $busqueda;
 	}
@@ -275,6 +306,10 @@ public function listado_pedidos(){
 	//3ra Regilla PARA "Histórico de Pedidos"
 	public function procesando_pedido_completo(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_pedidos_completo($data);
 		echo $busqueda;
 	}
@@ -447,6 +482,10 @@ public function listado_pedidos(){
 	//detalle 1ra Regilla PARA "Pedidos de vendedores"
 	public function procesando_detalle(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+    	if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+            $data['coleccion_id_operaciones'] = array();
+        } 
 		$busqueda = $this->modelo_pedido->buscador_apartados_detalle($data);
 		echo $busqueda;
 	}
@@ -454,6 +493,12 @@ public function listado_pedidos(){
     //detalle "Regilla" de la 2da PARA  "Pedidos de tiendas" 
 	public function procesando_pedido_detalle(){
 		$data=$_POST;
+
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
+
 		$busqueda = $this->modelo_pedido->buscador_pedido_especifico($data);
 		echo $busqueda;
 	}
@@ -461,6 +506,10 @@ public function listado_pedidos(){
     //detalle "Regilla" de la 3ra PARA "Histórico de Pedidos"
 	public function procesando_completo_detalle(){
 		$data=$_POST;
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_pedido->buscador_completo_especifico($data);
 		echo $busqueda;
 	}

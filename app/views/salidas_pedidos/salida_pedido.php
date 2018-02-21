@@ -21,6 +21,7 @@
 
 		$consecutivo_actual = (( ($val_proveedor->id_tipo_pedido == 1) && ($val_proveedor->id_tipo_factura==1) ) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
 		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==2) ? $consecutivo->conse_surtido : $consecutivo_actual);
+		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==3) ? $consecutivo->conse_bodega : $consecutivo_actual);
 	} else {
 		$consecutivo_actual = $consecutivo->conse_factura;
 	}	
@@ -30,6 +31,8 @@
 <input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
 <input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
 <input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>">
+<input type="hidden" id="conse_bodega" name="conse_bodega" value="<?php echo $consecutivo->conse_bodega+1; ?>">
+
 
 <div class="container margenes">
 <div class="panel panel-primary">
@@ -209,32 +212,50 @@
 						<?php if ($val_proveedor) { ?>
 							<fieldset class="disabledme" disabled>							
 								<?php 
+									/*
 									if ($val_proveedor->on_off==1) {
 										$marca='checked'; 
 										$name= 'editar_tienda';
 									} else {
 										$marca='';	
 										$name= 'editar_proveedor';
-									}
+									}*/
 								?>
 
 							
 						<?php } else { ?>
 							<fieldset class="disabledme">						
 							<?php 
+								/*
 								$marca='';	
 								$name= 'editar_proveedor';
+								*/
 							?>	
 						<?php } ?>
+							
+								
 							<div class="form-group">
-								<!--<label for="descripcion">Cliente</label> -->
+
+								<button data-on="Cliente" data="editar_proveedor" class="btn btn-danger  on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==0) ? 'activo' : 'btn-outline' ) :'activo' ); ?>" ">Cliente</button>
+
+								<button data-on="Tienda" data="editar_tienda" class="btn btn-success on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==1) ? 'activo' : 'btn-outline') :'btn-outline' ); ?>" >Tienda</button>
+								
+								<button  data-on="Bodega" data="editar_bodega" class="btn btn-warning on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==2) ? 'activo' : 'btn-outline') :'btn-outline' ); ?>" ">Bodega</button>
+
+								<!--<label for="descripcion">Cliente</label> 
 								<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="on-off" <?php echo $marca; ?> >
+								-->
+
+
+
+								
+								
 
 								<div class="input-group col-xs-12 col-sm-12 col-md-12 ">
 									<?php if ($val_proveedor) { ?>
-									<input identificador="" value="<?php echo $val_proveedor->nombre; ?>" type="text" name="<?php echo $name; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									<input identificador="" type="text" value="<?php echo $val_proveedor->nombre; ?>"  name="<?php echo  ($val_proveedor->on_off==1) ? 'editar_tienda' : ( ($val_proveedor->on_off==2) ? 'editar_bodega' : 'editar_proveedor' ) ; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 									<?php } else { ?>
-									<input  identificador="" type="text" name="<?php echo $name; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+									<input identificador="" type="text" name="<?php echo  ($val_proveedor) ? (($val_proveedor->on_off==1) ? 'editar_tienda': (($val_proveedor->on_off==2) ? 'editar_bodega' : 'editar_proveedor')) :'editar_proveedor' ; ?>" campo="1" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query" autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 									<?php } ?>
 								</div>
 							</div>
@@ -250,7 +271,7 @@
 	<div class="container">	
 
 
-<!--  -->	<h4>Filtros: </h4>	 
+<!--  -->	<h4>Filtros: </h4>	  
 
 
 
@@ -369,6 +390,7 @@
 					<th style="width:5%;">No. de Partida</th>
 					<th style="width:10%;">Agregar</th>
 					<th style="width:5%;">Almacén</th>
+					<th style="width:5%;">Precio</th>
 
 
 				</tr>
@@ -442,7 +464,8 @@
 							<th style="width:5%;">Lote</th>
 							<th style="width:5%;">No. de Partida</th>
 							<th style="width:10%;">Quitar</th>
-							<th style="width:5%;">Almacén</th>						
+							<th style="width:5%;">Almacén</th>		
+							<th style="width:5%;">Precio</th>				
 
 							
 						</tr>

@@ -229,8 +229,8 @@
                                         '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->subtotal, 2, '.', ','),
-                                      6=>number_format($row->sum_iva, 2, '.', ','),
+                                      5=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
                                       7=>
                                            '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
@@ -241,10 +241,10 @@
                                       12=>$row->num_partida,
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
-                                      15=>$row->sum_iva,
-                                      16=>$row->sum_total,
+                                      15=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+                                      16=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_total, 2, '.', ',') : '-'),
                                       17=>$row->codigo_contable,                                         
-                                      18=>number_format($row->precio, 2, '.', ','), 
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                       19=>$row->id_estatus,                    
                                     );
                       }
@@ -469,8 +469,8 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>$row->ancho.' cm',
                                       
-                                      5=>number_format($row->subtotal, 2, '.', ','),
-                                      6=>number_format($row->sum_iva, 2, '.', ','),
+                                      5=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
                                       7=>
                                            '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
                                                type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
@@ -481,10 +481,10 @@
                                       12=>$row->num_partida,
                                       13=>$row->metros,
                                       14=>$row->kilogramos,
-                                      15=>$row->sum_iva,
-                                      16=>$row->sum_total,                                      
+                                      15=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+                                      16=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_total, 2, '.', ',') : '-'),
                                       17=>$row->codigo_contable,
-                                      18=>number_format($row->precio, 2, '.', ','),
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                       19=>$row->id_estatus,
                                     );
                       }
@@ -868,7 +868,7 @@ public function totales_imprimir_traspaso_historico_detalle($data){
 
           $where = '(
                       ( ( m.id_factura =  '.$data["id_factura"].' ) AND
-                        ( m.consecutivo_traspaso_unico =  '.$data['consecutivo_traspaso_unico'].' )
+                        ( m.consecutivo_traspaso_unico =  '.$data['consecutivo_traspaso'].' )
                       )
             )';   
 
@@ -1120,9 +1120,9 @@ public function totales_imprimir_traspaso_historico_detalle($data){
                                       16=>number_format($row->metros, 2, '.', ','), //total
                                       17=>number_format($row->kilogramos, 2, '.', ','), //total
                                       18=>$row->pieza, //total
-                                      19=>number_format($row->subtotal, 2, '.', ','), //total
-                                      20=>number_format($row->iva, 2, '.', ','), //total
-                                      21=>number_format($row->total, 2, '.', ','), //total
+                                      19=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      20=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->iva, 2, '.', ',') : '-'),
+                                      21=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->total, 2, '.', ',') : '-'),
                                       22=>$row->id_factura,
 
                                       
@@ -1437,10 +1437,13 @@ public function totales_importes_traspaso_especifico($where){
                                       10=>number_format($row->metros, 2, '.', ','), //total
                                       11=>number_format($row->kilogramos, 2, '.', ','), //total
                                       12=>$row->pieza, //total
-                                      13=>number_format($row->subtotal, 2, '.', ','), //total
-                                      14=>number_format($row->iva, 2, '.', ','), //total
-                                      15=>number_format($row->total, 2, '.', ','), //total
+                                      13=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      14=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->iva, 2, '.', ',') : '-'),
+                                      15=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->total, 2, '.', ',') : '-'),
                                       16=>$row->id_factura, //responsable
+
+
+
 
                                     );
                       }
@@ -1904,8 +1907,8 @@ public function totales_imprimir_traspaso_historico($data){
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->subtotal, 2, '.', ','), 
-                                      6=>number_format($row->sum_iva, 2, '.', ','), 
+                                      5=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
                                       9=>$row->almacen,
@@ -1918,7 +1921,7 @@ public function totales_imprimir_traspaso_historico($data){
                                       15=>$row->codigo_contable,        
                                       16=>$row->metros,
                                       17=>$row->kilogramos,                         
-                                      18=>number_format($row->precio, 2, '.', ','), 
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                       19=>$row->id_estatus,                               
                                     );
 
@@ -2146,8 +2149,8 @@ public function totales_imprimir_traspaso_historico($data){
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->subtotal, 2, '.', ','), 
-                                      6=>number_format($row->sum_iva, 2, '.', ','),                                       
+                                      5=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->subtotal, 2, '.', ',') : '-'),
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
                                       9=>$row->almacen,
@@ -2160,7 +2163,7 @@ public function totales_imprimir_traspaso_historico($data){
                                       15=>$row->codigo_contable,                                      
                                       16=>$row->metros,                                      
                                       17=>$row->kilogramos,                           
-                                      18=>number_format($row->precio, 2, '.', ','),
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                       19=>$row->id_estatus,
                                     );
 

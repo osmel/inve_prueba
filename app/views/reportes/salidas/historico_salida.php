@@ -187,7 +187,7 @@
 				</div>
 
 
-													<div class="row bloque_totales">						
+													<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">						
 														<div class="col-sm-0 col-md-2">	
 														  
 														</div>	
@@ -206,7 +206,8 @@
 														</div>	
 													</div>			
 
-													<div class="row bloque_totales">		
+														<div class="row bloque_totales" style="display:<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 'block' : 'none'; ?>">	
+																
 														<div class="col-sm-0 col-md-2">	
 														  
 														</div>	

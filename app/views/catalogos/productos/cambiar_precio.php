@@ -171,7 +171,7 @@
 								if (isset($producto->minimo)) 
 								 {	$nomb_nom = $producto->minimo;}
 							?>
-							<input value="<?php echo  set_value('minimo',$nomb_nom); ?>" type="text" class="form-control ttip" title="Números enteros."  restriccion="entero" id="minimo" name="minimo" placeholder="Mínimo mts">
+							<input value="<?php echo  set_value('minimo',$nomb_nom); ?>" type="text" class="form-control ttip minimo" title="Números y puntos decimales." restriccion="decimal" id="minimo" name="minimo" placeholder="Mínimo mts">
 						</div>
 					</div>	
 
@@ -184,7 +184,7 @@
 								if (isset($producto->minimo_kg)) 
 								 {	$nomb_nom = $producto->minimo_kg;}
 							?>
-							<input value="<?php echo  set_value('minimo_kg',$nomb_nom); ?>" type="text" class="form-control ttip" title="Números enteros."  restriccion="entero" id="minimo_kg" name="minimo_kg" placeholder="Mínimo kgs">
+							<input value="<?php echo  set_value('minimo_kg',$nomb_nom); ?>" type="text" class="form-control ttip minimo" title="Números y puntos decimales." restriccion="decimal" id="minimo_kg" name="minimo_kg" placeholder="Mínimo kgs">
 						</div>
 					</div>	
 

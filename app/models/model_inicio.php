@@ -1413,8 +1413,9 @@ precio_nodisp
         }        
 
 
-        public function consecutivo_operacion( $id,$id_tipo_pedido,$id_tipo_factura ){
-              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+
+       public function consecutivo_operacion( $id,$id_tipo_pedido,$id_tipo_factura ){
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_bodega");         
               $this->db->from($this->operaciones.' As o');
               $this->db->where('o.id',$id);
               $result = $this->db->get( );
@@ -1423,8 +1424,24 @@ precio_nodisp
 
                   $consecutivo_actual = (( ($id_tipo_pedido == 1) && ($id_tipo_factura==1) ) ? $result->row()->conse_factura : $result->row()->conse_remision );
                   $consecutivo_actual = ( ($id_tipo_pedido==2) ? $result->row()->conse_surtido : $consecutivo_actual);
+                  $consecutivo_actual = ( ($id_tipo_pedido==3) ? $result->row()->conse_bodega : $consecutivo_actual);
                        
                         return $consecutivo_actual+1;
+                  }                    
+                  else 
+                      return FALSE;
+                  $result->free_result();
+       }  
+
+
+
+       public function consecutivo_operacion_unico( $id ){
+              $this->db->select("o.consecutivo");         
+              $this->db->from($this->operaciones.' As o');
+              $this->db->where('o.id',$id);
+              $result = $this->db->get( );
+                  if ($result->num_rows() > 0) {
+                        return $result->row()->consecutivo+1;
                   }                    
                   else 
                       return FALSE;
@@ -1438,7 +1455,10 @@ precio_nodisp
                 $id_session = $this->session->userdata('id');
                 $fecha_hoy = date('Y-m-d H:i:s');  
 
+                $consecutivo_unico = self::consecutivo_operacion_unico(16); //cambio
+
                 $this->db->set( 'consecutivo_venta', $data['consecutivo'] );  
+                $this->db->set( 'movimiento_unico_apartado', $consecutivo_unico, false ); 
 
                 $this->db->set( 'fecha_vencimiento', $fecha_hoy  );  
                 $this->db->set( 'fecha_apartado', $fecha_hoy  );  
@@ -1460,7 +1480,9 @@ precio_nodisp
               
               //$this->db->set( 'consecutivo', $data['consecutivo'], FALSE  );
 
-              if ($data['id_tipo_pedido']==2) {
+              if ($data['id_tipo_pedido']==3) {
+                   $this->db->set( 'conse_bodega', 'conse_bodega+1', FALSE  );  
+              } else if ($data['id_tipo_pedido']==2) {
                    $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
               }  else if ($data['id_tipo_factura']==1) {
                   $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
@@ -1468,10 +1490,20 @@ precio_nodisp
                   $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
               }
 
+              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  //no porq se actualiza con el 4   
+
 
               $this->db->set( 'id_usuario', $id_session );
               $this->db->where('id',16);
               $this->db->update($this->operaciones);
+
+
+                /*
+              $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  
+              $this->db->set( 'id_usuario', $id_session );
+              $this->db->where('id',4);
+              $this->db->update($this->operaciones);
+              */
 
 
                 if ($this->db->affected_rows() > 0) {

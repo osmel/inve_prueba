@@ -101,28 +101,38 @@ class Reportes extends CI_Controller {
 		//existencia 
 	public function procesando_reporte(){ //13=>$row->num_partida,
 		$data=$_POST;
+  		  
+  		  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                $data['coleccion_id_operaciones'] = array();
+           } 
+
+               
+                            
+                 
+
 		$estatus= $data['extra_search'];  //$row=> 
 		switch ($estatus) {
 			case 'existencia':
 			case 'apartado':
-				$busqueda = $this->modelo_reportes->buscador_entrada_home($data); //13 443
+				$busqueda = $this->modelo_reportes->buscador_entrada_home($data); //13 precio
 			   break;
 			case 'salida':
-				$busqueda = $this->modelo_reportes->buscador_salida_home($data); //13 782
+				$busqueda = $this->modelo_reportes->buscador_salida_home($data); //13 precio
 			   break;
 			case 'devolucion':
 			case 'entrada':
-				$busqueda = $this->modelo_reportes->buscador_entrada_devolucion($data); //13 443
+				$busqueda = $this->modelo_reportes->buscador_entrada_devolucion($data); //13 precio
 			   break;
-			case 'baja': //(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
-				$busqueda = $this->modelo_reportes->buscador_cero_baja($data); //13 1049
+			case 'baja': 
+				$busqueda = $this->modelo_reportes->buscador_cero_baja($data); //6 precio
 			   break;
-			case 'cero': //(($this->session->userdata('id_perfil')==1) ? $row->precio : '-'),   //8
-				$busqueda = $this->modelo_reportes->buscador_cero($data); //13 1049
+			case 'cero': 
+				$busqueda = $this->modelo_reportes->buscador_cero($data); //6 precio
 			   break;
 
 			case 'top':
-				$busqueda = $this->modelo_reportes->buscador_top($data); //1248
+				$busqueda = $this->modelo_reportes->buscador_top($data); //6 precio
 			   break;
 
 
@@ -171,10 +181,10 @@ public function procesando_detalle_reporte(){
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+		     $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       }  
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
@@ -187,7 +197,7 @@ public function procesando_detalle_reporte(){
 		        case 2:
 		        case 3:
 		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		              if  (in_array(9, $data['coleccion_id_operaciones']))  {                 
 		                        $this->load->view( 'reportes/devolucion/historico_devolucion',$data );
 		             }   
 		          break;
@@ -208,6 +218,10 @@ public function procesando_detalle_reporte(){
  public function procesando_historico_devolucion(){
 
     $data=$_POST;
+    $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 	$busqueda  = $this->modelo_reportes->buscador_historico_devolucion($data);
 
     echo $busqueda;
@@ -220,10 +234,10 @@ public function procesando_detalle_reporte(){
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+		       $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 
 
 			  
@@ -241,7 +255,7 @@ public function procesando_detalle_reporte(){
 		        case 2:
 		        case 3:
 		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		              if  (in_array(9, $data['coleccion_id_operaciones']))  {                 
 		                        $this->load->view( 'reportes/entradas/historico_entrada',$data );
 		             }   
 		          break;
@@ -262,7 +276,13 @@ public function procesando_detalle_reporte(){
 
     $data=$_POST;
     //$busqueda = $this->catalogo->buscador_cat_colores($data);
-    //$data['id_operacion'] =1;
+    
+ 
+  		  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                $data['coleccion_id_operaciones'] = array();
+           } 
+
 	$busqueda  = $this->modelo_reportes->buscador_historico_entradas($data);
 
     echo $busqueda;
@@ -277,10 +297,11 @@ public function procesando_detalle_reporte(){
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+
+		      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
@@ -295,7 +316,7 @@ public function procesando_detalle_reporte(){
 		        case 2:
 		        case 3:
 		        case 4:
-		              if  (in_array(9, $coleccion_id_operaciones))  {                 
+		              if  (in_array(9, $data['coleccion_id_operaciones']))  {                 
 		                        $this->load->view( 'reportes/salidas/historico_salida' ,$data );
 		             }   
 		          break;
@@ -314,6 +335,11 @@ public function procesando_detalle_reporte(){
  public function procesando_historico_salida(){
 
     $data=$_POST;
+    $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
+
 	$busqueda  = $this->modelo_reportes->buscador_historico_salida($data);
 
     echo $busqueda;

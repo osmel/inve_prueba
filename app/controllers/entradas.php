@@ -35,7 +35,7 @@ class Entradas extends CI_Controller {
 		       	$data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
 		       	$data['productos']   	= $this->catalogo->listado_productos_unico_activo();
     	        $data['almacenes']   	= $this->modelo->coger_catalogo_almacenes(2);
-    	        $data['facturas']   	= $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+    	        $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
     	        $data['pagos']   		= $this->catalogo->listado_tipos_pagos();
 
  				$dato['id'] = 7;
@@ -392,12 +392,16 @@ class Entradas extends CI_Controller {
 
 
 		      
-
+		      /*
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
 		            $coleccion_id_operaciones = array();
-		       }  
+		       }  */
 
+		      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	                $data['coleccion_id_operaciones'] = array();
+	           } 
 		      $existe = $this->model_entrada->existencia_temporales();
 
 		     
@@ -469,7 +473,7 @@ class Entradas extends CI_Controller {
 			        case 4:
 			        		//solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
 			        		//aparecen en todo el sistema que tiene el numero de entrada
-			              if ( (in_array(9, $coleccion_id_operaciones)) || (in_array(50, $coleccion_id_operaciones))   )  {   //los 
+			              if ( (in_array(9, $data['coleccion_id_operaciones'])) || (in_array(50, $data['coleccion_id_operaciones']))   )  {   //los 
 						       $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/pdfs_view',$data );
 			              } else {

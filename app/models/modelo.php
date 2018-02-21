@@ -397,6 +397,7 @@
             $this->db->set( 'telefono', "AES_ENCRYPT('{$data['telefono']}','{$this->key_hash}')", FALSE );
             $this->db->set( 'id_perfil', $data['id_perfil']);
             $this->db->set( 'id_cliente', $data['id_cliente']);
+            $this->db->set( 'id_tienda', $data['id_cliente']);
             
             $this->db->set( 'coleccion_id_operaciones', $data['coleccion_id_operaciones']);
 
@@ -450,6 +451,7 @@
             $this->db->set( 'telefono', "AES_ENCRYPT('{$data['telefono']}','{$this->key_hash}')", FALSE );
             $this->db->set( 'id_perfil', $data['id_perfil']);
             $this->db->set( 'id_cliente', $data['id_cliente']);
+            $this->db->set( 'id_tienda', $data['id_cliente']);
             
             $this->db->set( 'coleccion_id_operaciones', $data['coleccion_id_operaciones']);
 

@@ -94,6 +94,10 @@ echo form_open('pdfs/generar', $attr,$hidden );
 							<th class="text-center cursora" style="width:9%">Lote<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:9%">No. de Partida<i class="glyphicon glyphicon-sort"></i></th>
 							<th class="text-center cursora" style="width:10%">Vendedor<i class="glyphicon glyphicon-sort"></i></th>
+							<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>    
+									<th class="text-center cursora" width="10%">Precio  <i class="glyphicon glyphicon-sort"></i></th>
+							<?php } ?>		
 							
 						</tr>
 					</thead>		
@@ -116,6 +120,11 @@ echo form_open('pdfs/generar', $attr,$hidden );
 								<td class="text-center"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
 								<td class="text-center"><?php echo $movimiento->num_partida; ?></td>
 								<td class="text-center"><?php echo $movimiento->nom_vendedor; ?></td>
+
+									<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<td class="text-center"><?php echo number_format($movimiento->precio, 2, '.', ','); ?></td>
+									<?php } ?>	
 									
 							</tr>
 								

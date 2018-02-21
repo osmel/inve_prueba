@@ -46,6 +46,7 @@
       $this->historico_ctasxpagar        = $this->db->dbprefix('historico_ctasxpagar');
 
 
+              
 
 
 		}
@@ -582,6 +583,7 @@ public function totales_importes($where){
               //copiar a tabla "registros_cambios"
               foreach ($objeto as $key => $value) {
                 $this->db->insert($this->registros_cambios, $value); 
+                $fac_cambio=$value->factura;
               }              
 
               $this->db->set( 'consecutivo_cambio', 'consecutivo_cambio+1', FALSE  );
@@ -591,13 +593,33 @@ public function totales_importes($where){
               $this->db->set( 'ancho', $data['ancho']   );   
               $this->db->set( 'precio', $data['precio']  );  
               $this->db->set( 'comentario', $data['comentario']);  //
-
-
-
+              
 
               $this->db->where('codigo',$data['codigo']);
-
               $this->db->update($this->registros);
+
+              
+              //cambiando factura en todo el sistema              
+              $this->db->set( 'factura', $data['factura']);  
+              $this->db->where('factura',$fac_cambio);
+              $this->db->update($this->registros);
+              
+
+              $this->db->set( 'factura', $data['factura']);  
+              $this->db->where('factura',$fac_cambio);
+              $this->db->update($this->historico_ctasxpagar);
+              
+
+              $this->db->set( 'factura', $data['factura']);  
+              $this->db->where('factura',$fac_cambio);
+              $this->db->update($this->registros_temporales);
+
+              $this->db->set( 'factura', $data['factura']);  
+              $this->db->where('factura',$fac_cambio);
+              $this->db->update($this->historico_registros_entradas);
+
+
+
 
 
             if ($this->db->affected_rows() > 0){
@@ -942,6 +964,11 @@ public function totales_importes($where){
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y %H:%i") as fecha2', false);
 
           $this->db->select("( CASE WHEN m.devolucion <> 0 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+          //$this->db->select("( CASE WHEN m.id_factura <> 3 THEN 'red' ELSE 'black' END ) AS color_devolucion", FALSE);
+
+           $this->db->select('m.id_compra,m.nombre_usuario', false);
+
+          //12=>($id_factura==3) ? 'B-' : (($id_compra!=0) ? 'C-' : (($devolucion<>0) ? 'D-' :  (($nombre_usuario!='') ? 'T-' :'E-') ))
           
 
           $this->db->select('c.hexadecimal_color, u.medida,p.nombre');

@@ -51,18 +51,17 @@
 					</tr>
 					<tr>
 						<th width="25%">Código</th>
-						<th width="20%">Descripción</th>
+						<th  width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 20 : 38; ?>%">Descripción</th>
 						<th width="8%">Color</th>
 						<th width="10%">Cantidad</th>
-						<th width="10%">Precio</th>
 						<th width="10%">Ancho</th>
-						<?php if ($configuracion->activo==1) { ?> 
-							<th width="9%">Lote</th>
-							<th width="8%">SubTotal</th>
-						<?php } else { ?> 	
-							<th width="17%">Lote</th>
-						<?php }  ?> 
 
+						<th width="9%">Lote</th>
+						<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<th width="10%">Precio</th>
+									<th width="8%">SubTotal</th>
+						<?php } ?>	
 
 					</tr>
 				</thead>	
@@ -73,21 +72,22 @@
 
 							
 							<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
-							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
+							<td width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 20 : 38; ?>%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 							<td width="8%" style="border-top: 1px solid #222222;">
 								<div style="background-color:#<?php echo $movimiento->hexadecimal_color; ?>;display:block;width:15px;height:15px;margin:0 auto;"></div>
 							</td>
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?> <?php echo $movimiento->medida; ?></td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?> </td>
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
 							
-							<?php if ($configuracion->activo==1) { ?> 
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?> cm</td>
+								
 								<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
-								<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->subtotal; ?></td>
-							<?php } else {  ?> 	
-								<td width="17%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo; ?></td>							
-							<?php }  ?> 	
 
+							<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?> </td>
+									
+									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->subtotal; ?></td>
+							<?php } ?>	
 
 
 						</tr>
@@ -102,10 +102,14 @@
 				<tfooter>	
 						<tr>
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
-								<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
+									<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
 
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->iva, 2, '.', ','); ?></span>
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->total, 2, '.', ','); ?></span><br>
+
+									<?php } ?>	
 									
 									<?php  if ($totales->metros>0) { ?>	
 										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>

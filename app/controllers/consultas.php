@@ -73,7 +73,6 @@ class Consultas extends CI_Controller {
 
 
 
-
   public function procesando_consulta_totales(){
     $data=$_POST;
     $busqueda = $this->model_consulta->buscador_consulta_totales($data);

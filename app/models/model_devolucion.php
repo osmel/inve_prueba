@@ -440,6 +440,7 @@
 
           
           $this->db->select("prod.codigo_contable");  
+          $this->db->select("m.id_factura,m.id_compra");
           
           //$this->db->from($this->registros_entradas.' as m');
           $this->db->from($this->historico_registros_entradas.' as m');

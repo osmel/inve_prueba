@@ -10,7 +10,7 @@ class Salidas extends CI_Controller {
 		$this->load->model('modelo', 'modelo'); 
 		$this->load->library(array('email')); 
 		$this->load->library('Jquery_pagination');//-->la estrella del equipo	
-	}
+	} 
 
 
 
@@ -37,7 +37,8 @@ public function confirmar_proc_apartado_sino(){
 			       $data['num_mov'] = $this->input->post('num_mov');
 			       $data['dependencia'] = $this->input->post('dependencia');
 			       $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');				
+				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');	
+				   $data['id_apartado']=2;  //esta en via de ser procesado un apartado			
 
 			      $existe = $this->modelo_salida->existencia_apartado_salida($data);
 
@@ -148,6 +149,7 @@ public function validar_apartado_pedido(){
 	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 	$data['id_almacen'] = $this->input->post('id_almacen');
+	$data['id_apartado']=2;  //esta en via de ser procesado un apartado	
 
 	
 
@@ -159,7 +161,11 @@ public function validar_apartado_pedido(){
 	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
 
 		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		
 
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+
+	
 }		
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +195,7 @@ public function confirmar_proc_pedido_sino(){  //5252
 				   $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
 				   $data['on_off'] =  (int)$this->input->post('on_off');			       
-
+				   $data['id_apartado']=5;  //esta en via de ser procesado un apartado
 			      $existe = $this->modelo_salida->existencia_pedido_salida($data);
 
 			      $errores='';	
@@ -304,6 +310,7 @@ public function validar_salida_pedido(){
 	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 	$data['id_almacen'] = $this->input->post('id_almacen');
+	$data['id_apartado']=5;  //esta en via de ser procesado un apartado
 
 	
 
@@ -317,7 +324,7 @@ public function validar_salida_pedido(){
 
 	//print_r($parametros);die;
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 
 }	
 
@@ -447,7 +454,6 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 		
 		$dato['cliente_id'] = self::proveedor_id($data['id_cliente']);
 		$dato['ref_prod'] =  $this->catalogo->refe_producto($data);		
-		//$dato['prod']
 		echo json_encode($dato);
 
 	}
@@ -905,10 +911,11 @@ public function validar_confirmar_salida_sino(){
 		      $data["retorno"] = base64_decode($retorno);
 		      $data["id_estatus"] = base64_decode($id_estatus);
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }  
+
+		      $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 
 		      $existe = $this->modelo_salida->existencia_temporales();
 		      if (($existe) or ($id_movimiento!=-1) ) {
@@ -950,7 +957,7 @@ public function validar_confirmar_salida_sino(){
 			              
 			              //solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
 			        	  //aparecen en todo el sistema que tiene el numero de salida
-			              if ( (in_array(9, $coleccion_id_operaciones)) || (in_array(50, $coleccion_id_operaciones))   )  {   //los q tienen accesos a reportes
+			              if ( (in_array(9, $data['coleccion_id_operaciones'])) || (in_array(50, $coleccion_id_operaciones))   )  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 			              } else {
@@ -980,16 +987,6 @@ public function validar_confirmar_salida_sino(){
 
 
 
-
-
-
-/*
-	$existe = $this->modelo_salida->existencia_pedido_salida($data);
-	$this->modelo_salida->actualizar_peso_real_salida_pedido($data);
-	$existe = $this->modelo_salida->existencia_salida_peso_real($data);
-	$this->modelo_salida->traspaso_pedido($data);
-	$this->modelo_salida->procesando_operacion_pedido_salida($data) 
-*/
 
 
 

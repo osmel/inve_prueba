@@ -17,7 +17,7 @@
 						<thead>
 
 							<tr>
-								<td colspan="7" style="border-top: 1px solid #222222; ">
+								<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 7 : 6; ?>" style="border-top: 1px solid #222222; ">
 										<span><b>Proveedor: </b> <?php echo strtoupper($movimientos[0]->nombre); ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 										<span><b>Movimiento: </b><?php echo $movimientos[0]->movimiento_unico; ?></span><br>
@@ -43,7 +43,7 @@
 
 
 							<tr>
-								<th colspan="9">
+								<th colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 8; ?>">
 									<p><b>Productos</b></p>
 								</th>
 							</tr>
@@ -53,7 +53,11 @@
 								<th width="10%">Color</th>
 								<th width="4%">UM</th>
 								<th width="10%">Cant.</th>
-								<th width="9%">Precio</th>
+									<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<th width="9%">Precio</th>
+								<?php } ?>	
+
 								<th width="9%">Ancho</th>
 								<th width="9%">Peso Real</th>
 								<th width="9%">Lote</th>
@@ -68,7 +72,14 @@
 									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
 									<td width="4%" style="border-top: 1px solid #222222;"><?php echo $movimiento->medida; ?></td>
 									<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um; ?></td>
+									
+
+								<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>
+								<?php } ?>	
+
+
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->peso_real; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote; ?> - <?php echo $movimiento->consecutivo; ?></td>
@@ -79,16 +90,23 @@
 
 						<?php else : ?>
 								<tr class="noproducto">
-									<td colspan="8">No se han agregado producto</td>
+									<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 8; ?>">No se han agregado producto</td>
 								</tr>
 						<?php endif; ?>	
 
 								<tr>
 
-									<td colspan="9" style="border-top: 1px solid #222222; ">
-										<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span>
+									<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 9 : 8; ?>" style="border-top: 1px solid #222222; ">
+										
+
+									<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
+									
+									<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span>
 											<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->sum_iva, 2, '.', ','); ?></span>
 											<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->sum_total, 2, '.', ','); ?></span><br>
+
+										<?php } ?>	
 											
 											<?php  if ($totales->metros>0) { ?>	
 												<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>

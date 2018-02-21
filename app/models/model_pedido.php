@@ -63,12 +63,25 @@
           $this->db->distinct();          
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura,m.on_off');
           
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE p.nombre END ) AS nombre");          
+          //$this->db->select("(CASE WHEN m.on_off = 1 THEN t.nombre ELSE p.nombre END ) AS nombre");          
+
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  p.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  a.almacen 
+                             ELSE  p.nombre
+                          END AS nombre
+           ',False);
+
+
+
           $this->db->select("m.id_tienda_origen");    
           
           $this->db->from($this->registros_entradas.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.consecutivo_venta','LEFT');
 
           $where = '(  ( m.id_usuario_apartado = '.$id_session.' ) AND   ( m.id_apartado = 4 ) )'; 
           $this->db->where($where);
@@ -174,7 +187,7 @@
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros"); //, FALSE
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos"); //, FALSE
           $this->db->select("prod.imagen"); //, FALSE
-          //$this->db->select("a.almacen");
+          $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable, m.nombre_usuario, m.id_compra");  
           
           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
@@ -212,7 +225,7 @@
                       (
                          
                          (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) AND ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 ) )
-                      )'.$id_almacenid.$id_tipo_facturaid.' 
+                      ) AND ( m.id_estatus <> 14 ) '.$id_almacenid.$id_tipo_facturaid.' 
                        AND
 
                       (
@@ -328,9 +341,11 @@
                                       12=>$row->metros,
                                       13=>$row->kilogramos,                                      
                                       14=>$row->imagen,
-                                      15=>"alm", //$row->almacen,
+                                      15=>$row->almacen,
                                       16=>$row->codigo_contable,
                                       17=>$row->id_estatus,
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
+
                                     );
                       }
 
@@ -438,7 +453,7 @@
           //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           //m.id_empresa,m.id_factura,m.id_operacion, m.id_medida, m.id_usuario, m.id_cargador,, m.id_apartado,   m.fecha_mac fecha, m.cantidad_royo
           //m.precio,, m.comentario
-          $this->db->select('m.id, m.movimiento, m.movimiento_unico, m.factura,  m.id_fac_orig,m.id_descripcion,  m.devolucion, m.num_partida');
+          $this->db->select('m.id, m.movimiento, m.movimiento_unico, m.factura,  m.id_fac_orig,m.id_descripcion,  m.devolucion, m.num_partida, m.precio');
           
           $this->db->select(' m.cantidad_um, m.ancho,  m.codigo');
           $this->db->select('m.id_estatus,  m.consecutivo');
@@ -546,6 +561,7 @@
                                       14=>$row->almacen,
                                       15=>$row->codigo_contable,
                                       16=>$row->id_estatus,
+                                      17=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                     );
                       }
 
@@ -646,7 +662,7 @@
 
 
        public function consecutivo_operacion( $id,$id_tipo_pedido,$id_tipo_factura ){
-              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido");         
+              $this->db->select("o.consecutivo,o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_bodega");         
               $this->db->from($this->operaciones.' As o');
               $this->db->where('o.id',$id);
               $result = $this->db->get( );
@@ -655,6 +671,7 @@
 
                   $consecutivo_actual = (( ($id_tipo_pedido == 1) && ($id_tipo_factura==1) ) ? $result->row()->conse_factura : $result->row()->conse_remision );
                   $consecutivo_actual = ( ($id_tipo_pedido==2) ? $result->row()->conse_surtido : $consecutivo_actual);
+                  $consecutivo_actual = ( ($id_tipo_pedido==3) ? $result->row()->conse_bodega : $consecutivo_actual);
                        
                         return $consecutivo_actual+1;
                   }                    
@@ -705,7 +722,9 @@
               //actualizar (consecutivo) en tabla "operacion"   == "generar_pedido"
               //$this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );
 
-              if ($data['id_tipo_pedido']==2) {
+              if ($data['id_tipo_pedido']==3) {
+                   $this->db->set( 'conse_bodega', 'conse_bodega+1', FALSE  );  
+              } else if ($data['id_tipo_pedido']==2) {
                    $this->db->set( 'conse_surtido', 'conse_surtido+1', FALSE  );  
               }  else if ($data['id_tipo_factura']==1) {
                   $this->db->set( 'conse_factura', 'conse_factura+1', FALSE  );  
@@ -1038,7 +1057,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
 
-          $this->db->select('m.id_usuario_apartado,m.id_apartado, m.id_cliente_apartado,m.fecha_apartado,id_prorroga,m.fecha_vencimiento');  //fecha falta
+          $this->db->select('m.id_usuario_apartado,m.id_apartado, m.movimiento_unico_apartado, m.id_cliente_apartado,m.fecha_apartado,id_prorroga,m.fecha_vencimiento');  //fecha falta
           $this->db->select('p.nombre comprador ');  
           $this->db->select('m.consecutivo_venta');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
@@ -1067,7 +1086,9 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");          
 
+          $this->db->select("m.id_tienda_origen,m.on_off");    
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
+          $this->db->select("sum(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -1076,6 +1097,10 @@
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
+
+
+
+
 
           //filtro de busqueda
 
@@ -1115,7 +1140,8 @@
 
           $this->db->where($where);
           $this->db->order_by($columna, $order); 
-          $this->db->group_by("m.id_usuario_apartado, m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado,m.consecutivo_venta");
+          //$this->db->group_by("m.id_usuario_apartado, m.id_tipo_pedido,m.id_tipo_factura, m.id_cliente_apartado,m.consecutivo_venta");
+          $this->db->group_by("m.id_usuario_apartado,m.id_tipo_pedido,m.id_tipo_factura, m.movimiento_unico_apartado");
 
           //ordenacion
 
@@ -1164,15 +1190,23 @@
                                       8=>$row->id_prorroga,
                                       9=>$perfil,
                                       10=>$row->almacen,
-                                      11=>$row->consecutivo_venta,
+                                      11=>$row->movimiento_unico_apartado, //   consecutivo_venta,
                                       12=>$row->tipo_pedido,
                                       13=>$row->tipo_factura,                                      
                                       14=>$row->id_apartado, 
                                       15=>$row->id_tipo_pedido,   
                                       16=>$row->id_tipo_factura,   
+                                      17=>($row->on_off==1) ? 'R-' : (($row->on_off==2) ? 'B-' :  ( ($row->id_apartado == 2 || $row->id_apartado == 3) ? 'A-' :  'S-' ) ),
+                                      18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->importe, 2, '.', ',') : '-'),
+                                      
+
 
                                     );
                       }
+
+
+
+
 
 
                       
@@ -1280,20 +1314,34 @@
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");          
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
-          $this->db->select("m.id_tienda_origen");    
+          
+          $this->db->select("m.id_tienda_origen,m.on_off");    
+          $this->db->select("sum(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
         
+          //$this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+
+                  $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  prov.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  prov.nombre
+                          END AS cliente_pedido
+           ',False);
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->proveedores.' As pr', 'u.id_cliente = pr.id','LEFT');
+          
+
           //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente_apartado','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
           $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
          
           //filtro de busqueda
           if ($id_almacen!=0) {
@@ -1301,6 +1349,8 @@
           } else {
               $id_almacenid = '';
           } 
+
+          
 
 
           $where = '(
@@ -1333,6 +1383,28 @@
 
          }
 
+
+
+         if (($data['id_tipo_pedido']!="0") AND ($data['id_tipo_pedido']!="") AND ($data['id_tipo_pedido']!= null)) {
+              $where.= (($where!="") ? " and " : "") . "( m.id_tipo_pedido  =  ".$data['id_tipo_pedido']." ) ";
+              
+          } 
+
+
+         if (($data['id_tipo_factura']!="0") AND ($data['id_tipo_factura']!="") AND ($data['id_tipo_factura']!= null)) {
+          //if (($data['id_tipo_factura']!=0) ) { 
+              $where.= (($where!="") ? " and " : "") . "( m.id_tipo_factura  =  ".$data['id_tipo_factura']." ) ";
+          } 
+
+
+          
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $where.= (($where!='') ? ' and ' : '') . '( ( DATE_FORMAT((m.fecha_apartado),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_apartado),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } 
 
 
 
@@ -1391,6 +1463,9 @@
                                       11=>$row->id_apartado,
                                       12=>$row->id_tipo_pedido,   
                                       13=>$row->id_tipo_factura,   
+                                      14=>($row->on_off==1) ? 'R-' : (($row->on_off==2) ? 'B-' :  ( ($row->id_apartado == 2 || $row->id_apartado == 3) ? 'A-' :  'S-' ) ),
+                                      //($row->on_off==1) ? 'R-' : (($row->on_off==2) ? 'B-' :'S-' ),
+                                      15=>  ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->importe, 2, '.', ',') : '-'),
 
                                     );
                       }
@@ -1503,8 +1578,19 @@
           $this->db->select("m.consecutivo_venta");
           $this->db->select("tp.tipo_pedido tip_pedido", false);          
           $this->db->select("tf.tipo_factura");     
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+          //$this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  prov.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  prov.nombre
+                          END AS cliente_pedido
+           ',False);
+
           $this->db->select("m.id_tienda_origen");    
+          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
 
 
 
@@ -1517,6 +1603,7 @@
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
           $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
 
 
 
@@ -1560,6 +1647,29 @@
             $where .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
             $where_total .=' AND (m.id_usuario_apartado = "'.$id_session.'")';
           }
+
+         if (($data['id_tipo_pedido']!="0") AND ($data['id_tipo_pedido']!="") AND ($data['id_tipo_pedido']!= null)) {
+              $where.= (($where!="") ? " and " : "") . "( m.id_tipo_pedido  =  ".$data['id_tipo_pedido']." ) ";
+              
+          } 
+
+
+         if (($data['id_tipo_factura']!="0") AND ($data['id_tipo_factura']!="") AND ($data['id_tipo_factura']!= null)) {
+          //if (($data['id_tipo_factura']!=0) ) { 
+              $where.= (($where!="") ? " and " : "") . "( m.id_tipo_factura  =  ".$data['id_tipo_factura']." ) ";
+          } 
+
+
+          
+          if  ( ($data['fecha_inicial'] !="") and  ($data['fecha_final'] !="")) {
+                           $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial'] ));
+                           $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final'] ));
+                          
+                            $where.= (($where!='') ? ' and ' : '') . '( ( DATE_FORMAT((m.fecha_apartado),"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT((m.fecha_apartado),"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+
+          } 
+
+
           $this->db->where($where);
 
 
@@ -1585,7 +1695,7 @@
 
                               if ($row->apartado==3) {
                                  $client  = $row->comprador;
-                                     $num = $row->consecutivo_venta; //$row->comprador;
+                                     $num = $row->movimiento_unico_apartado; //$row->comprador;
 
                               } else  {
                                 $client = $row->cliente_pedido;
@@ -1609,6 +1719,10 @@
                                       10=>$row->tipo_factura,   
                                       11=>$row->id_tipo_pedido,   
                                       12=>$row->id_tipo_factura,   
+                                      13=>($row->on_off==1) ? 'R-' : (($row->on_off==2) ? 'B-' :  ( ($row->id_apartado == 2 || $row->id_apartado == 3) ? 'A-' :  'S-' ) ),
+                                      //($row->on_off==1) ? 'R-' : (($row->on_off==2) ? 'B-' :'S-' ),
+                                      14=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->importe, 2, '.', ',') : '-'),
+
 
                                                                             
                                     );
@@ -1707,7 +1821,8 @@
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio,m.iva, m.fecha_apartado');  
           $this->db->select('c.hexadecimal_color, m.ancho, um.medida');
-          $this->db->select('c.color,m.cantidad_um,m.movimiento,m.movimiento_unico,m.consecutivo');
+          $this->db->select('c.color,m.cantidad_um,m.movimiento,m.movimiento_unico,m.consecutivo, m.movimiento_unico_apartado');
+
           
           $this->db->select("( CASE WHEN m.id_medida = 1 THEN m.cantidad_um ELSE 0 END ) AS metros");
           $this->db->select("( CASE WHEN m.id_medida = 2 THEN m.cantidad_um ELSE 0 END ) AS kilogramos");
@@ -1734,6 +1849,8 @@
           $this->db->select("tf.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select("prod.codigo_contable");  
+
+          $this->db->select("m.on_off,m.nombre_usuario,m.id_compra");  
           
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -1761,7 +1878,7 @@
                       ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
 
                       (
-                        ( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" ) AND ( m.consecutivo_venta = '.$consecutivo_venta.' )
+                        ( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" ) AND ( m.movimiento_unico_apartado = '.$consecutivo_venta.' )
                       )'.$id_almacenid .'  
                        AND
                       (
@@ -1771,6 +1888,9 @@
                          (m.precio LIKE  "%'.$cadena.'%")
                        )
             )';   
+
+
+
 /*
           $where_total = '( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" )  AND ( m.consecutivo_venta = '.$consecutivo_venta.' ) '.$id_almacenid;
 */
@@ -1808,11 +1928,16 @@
                                       2=>$row->color.
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
+                                   
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode($row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" 
-                                               type="button" class="btn btn-success btn-block">'.$row->movimiento_unico.'</a>', 
+                                             '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                                   type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
+
+
+
+
                                       5=>$row->ancho.' cm',
-                                      6=>$row->precio,
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                       7=>$row->iva,                                  
                                       8=>$row->id_lote.'-'.$row->consecutivo,       
                                       9=>$row->num_partida,
@@ -1827,6 +1952,7 @@
                                       18=>$row->codigo_contable,   
                                       19=>$row->id_fac_orig,   
                                       20=>$row->id_estatus,
+                                      
 
                                       
                                                                      
@@ -1959,7 +2085,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
           // m.id_usuario_apartado,//m.id_fac_orig,
           $this->db->select('m.id_estatus, m.peso_real,  m.devolucion, m.num_partida');  //fecha falta
-          $this->db->select('pr.nombre dependencia');  
+          $this->db->select('pr.nombre dependencia,m.precio');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
           $this->db->select('c.hexadecimal_color,c.color, m.ancho, um.medida');
@@ -1995,7 +2121,16 @@
 
           $this->db->select("m.movimiento,m.movimiento_unico,m.id_cliente_apartado, m.movimiento_unico_apartado, m.consecutivo, m.cantidad_um");
 
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+          //$this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  prov.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  prov.nombre
+                          END AS cliente_pedido
+           ',False);
+
           $this->db->select("m.on_off,m.nombre_usuario,m.id_compra");  
 
 
@@ -2014,7 +2149,7 @@
 
         $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT');
         $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
-
+        $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
 
 
           //filtro de busqueda
@@ -2100,7 +2235,7 @@
                                       17=>$row->kilogramos,                                         
                                       18=>$row->codigo_contable,    
                                       19=>$row->id_estatus,  
-
+                                      20=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
                                                                        
                                     );
                             
@@ -2125,6 +2260,9 @@
                             "id_tipo_pedido"=>$id_tipo_pedido, 
                             "id_tipo_factura"=>$id_tipo_factura, 
                             "on_off"=>$on_off, 
+                            //"concepto"=>($on_off==1) ? 'Salida por Transferencia' : 'Salida', 
+                            
+                            "concepto"=>($on_off==1) ? 'Salida por Transferencia' : (($on_off==2) ? 'Salida por Bodega' :'Salida' ), 
 
                             
                          ),
@@ -2279,8 +2417,18 @@
           $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select("prod.codigo_contable");  
           //$this->db->select("prov.nombre cliente_pedido");  
-          $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
-          $this->db->select("m.id_tienda_origen");                      
+          //$this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE prov.nombre END ) AS cliente_pedido");
+
+          $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  prov.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  prov.nombre
+                          END AS cliente_pedido
+           ',False);
+
+          $this->db->select("m.id_tienda_origen, m.on_off");                      
         
 
 
@@ -2297,6 +2445,7 @@
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT'); //,'LEFT'
           $this->db->join($this->proveedores.' As prov' , 'prov.id = m.consecutivo_venta','LEFT'); //,'LEFT'
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
 
           //filtro de busqueda
 
@@ -2359,6 +2508,7 @@
                             $mi_fecha = date( 'd-m-Y', strtotime($row->fecha_apartado));
                             $mi_hora = date( 'h:ia', strtotime($row->fecha_apartado));
                             $cliente_pedido = $row->cliente_pedido;
+                            $on_off = $row->on_off;
 
                             $dato[]= array(
                                       0=>$row->codigo,
@@ -2367,8 +2517,11 @@
                                       $row->nombre_color.'<div style="margin-right: 15px;float:left;background-color:#'.$row->hexadecimal_color.';width:15px;height:15px;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida, //metros,
                                       4=>$row->ancho.' cm',
-                                      5=>number_format($row->sum_precio, 2, '.', ','),
-                                      6=>number_format($row->sum_iva, 2, '.', ','),
+                                      5=> ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_precio, 2, '.', ',') : '-'),
+
+
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->sum_iva, 2, '.', ',') : '-'),
+
 
                                       7=>$row->id_lote.'-'.$row->consecutivo,         
                                       8=>$row->num_partida,
@@ -2399,6 +2552,8 @@
                         "datos"            =>  array("tipo_pedido"=>$tipo_pedido, "num_mov"=>$num_mov, "cliente_pedido"=>$cliente_pedido, "tipo_apartado"=>$tipo_apartado, "color_apartado"=>$color_apartado, "dependencia"=>$mi_dependencia, "cliente"=>$mi_cliente, "mi_fecha"=>$mi_fecha, "mi_hora"=>$mi_hora,
                           "tipo_pedido"=>$tipo_pedido,
                           "tipo_factura"=>$tipo_factura,  
+                          //"concepto"=>($on_off==1) ? 'Salida por Transferencia' : 'Salida', 
+                          "concepto"=>($on_off==1) ? 'Salida por Transferencia' : (($on_off==2) ? 'Salida por Bodega' :'Salida' ), 
                          ),
                         "totales"            =>  array(
                               "pieza"=>intval( self::totales_campos_completo($where_total)->pieza ),
@@ -2490,7 +2645,7 @@
                 $this->db->where('id_cliente_apartado',$data['id_cliente']);
 
                 $this->db->where('id_apartado', 2 );
-                $this->db->where('consecutivo_venta',$data['consecutivo_venta']);
+                $this->db->where('movimiento_unico_apartado',$data['consecutivo_venta']);
 
 
                 $this->db->update($this->registros ); 
@@ -2521,6 +2676,7 @@
                 $this->db->set( 'id_apartado', 0);
                 $this->db->set( 'id_usuario_apartado', '');
                 $this->db->set( 'consecutivo_venta', 0);
+                
                 $this->db->set( 'id_tipo_pedido', 0, false);
                 $this->db->set( 'id_tipo_factura', 0, false);
 
@@ -2540,7 +2696,7 @@
                 $this->db->where('id_cliente_apartado',$data['id_cliente']);
                 $this->db->where('id_apartado', 2 );
 
-                $this->db->where('consecutivo_venta',$data['consecutivo_venta']);
+                $this->db->where('movimiento_unico_apartado',$data['consecutivo_venta']);
                 
 
                 $this->db->update($this->registros );

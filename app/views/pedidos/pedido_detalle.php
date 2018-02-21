@@ -25,7 +25,8 @@
 		
 
 		<div class="panel panel-primary">
-			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
+			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?>&nbsp;&nbsp;<span></span>
+			</div>
 			<div class="panel-body">
 				
 				

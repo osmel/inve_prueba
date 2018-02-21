@@ -58,6 +58,8 @@
       
       $this->documentos_pagos                           = $this->db->dbprefix('catalogo_documentos_pagos');
 
+      $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');
+
     }
      
 
@@ -127,7 +129,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->select('m.movimiento, m.movimiento_unico');
           $this->db->select('a.almacen,m.id_factura,m.id_fac_orig');
-          $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago,m.id_estatus');
+          $this->db->select('m.factura,tp.tipo_pago,m.id_tipo_pago,m.id_estatus');
 
           $this->db->select("MAX(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y')) as fecha",false);
           $this->db->select('p.dias_ctas_pagar');   
@@ -148,12 +150,19 @@ public function buscador_ctasxpagar($data){
           //esto es para que de el monto que tuve q pagar
           $this->db->select("sum(  ( (pr.id_documento_pago <> 12) && (pr.id_documento_pago <> 13) ) *pr.importe)  AS sepago", FALSE);
           
-          $this->db->select("m.transferencia");
+          $this->db->select("m.transferencia, m.id_compra");
+
+          $this->db->select("( CASE WHEN m.transferencia <> 0 THEN t.nombre ELSE p.nombre END ) AS nombre");
+
+
 
            
           $this->db->from($this->historico_ctasxpagar.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');  //movimiento_unico
@@ -271,7 +280,8 @@ public function buscador_ctasxpagar($data){
                                       13=>(($row->sepago==null) ? 0 : $row->sepago),
                                       14=>$row->id_factura,
                                       15=>$row->id_estatus,
-                                      16=>($row->transferencia==1) ? 'T-' : 'E-',
+                                      //16=>($row->transferencia==1) ? 'T-' : 'E-',
+                                      16=>(($row->id_compra!=0) ? 'C-' : (($row->transferencia==1) ? 'T-' :'E-') ),
                                       
 
                                     );
@@ -328,7 +338,10 @@ public function totales_importes($where,$having){
    
            $this->db->from($this->historico_ctasxpagar.' as m');
            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');           
+           //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');           
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
            $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');      
            //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
@@ -380,7 +393,10 @@ public function totales_importes($where,$having){
 
             $this->db->from($this->historico_ctasxpagar.' as m');
             $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');            
+            //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');            
+            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+            $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
             $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
             $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
 
@@ -498,7 +514,10 @@ public function buscador_pagosrealizados($data){
           $this->db->from($this->historico_pagos_realizados.' as pr');
           $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
           $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura','LEFT');

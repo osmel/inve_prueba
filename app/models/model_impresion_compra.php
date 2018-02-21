@@ -130,7 +130,7 @@ public function buscador_revisar_historial_compra($data){
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           //$this->db->order_by($columna, $order); 
 
@@ -218,7 +218,7 @@ public function buscador_revisar_historial_compra($data){
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           $result = $this->db->get();
 
@@ -308,7 +308,7 @@ public function buscador_revisar_historial_compra($data){
       
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
 
           $result = $this->db->get();
 

@@ -78,8 +78,10 @@
           $this->db->join($this->temporal_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           
           $where = '(                      
-                            ( LOCATE("'.$id_session.'", p.id_usuario_compra) >0)  
+                            ( LOCATE("'.$id_session.'", pc.id_usuario) >0)  
                     ) ';  
+
+        
 
            $this->db->where($where);          
 
@@ -162,8 +164,7 @@
           $this->db->select("m.ancho, p.ancho ancho_producto");
           $this->db->select("m.precio, p.precio precio_producto");
           $this->db->select("( CASE WHEN ".$data['id_medida']." = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
-          
-           $this->db->select("SUM((m.id_medida =".$data['id_medida'].") * m.cantidad_um) as suma", FALSE);
+          $this->db->select("SUM((m.id_medida =".$data['id_medida'].") * m.cantidad_um) as suma", FALSE);
 
 
            if ($id_almacen!=0) {
@@ -180,6 +181,7 @@
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
 
+
           
 
            $where = '(                      
@@ -193,56 +195,60 @@
                                   ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                                   ( p.precio LIKE  "%'.$cadena.'%" ) OR  ( m.precio LIKE  "%'.$cadena.'%" ) OR
                                   ( p.ancho LIKE  "%'.$cadena.'%" ) OR  ( m.ancho LIKE  "%'.$cadena.'%" ) 
-                                 )   AND  (!(LOCATE("'.$id_session.'", id_usuario_compra) >0))         
+                                 )   
                     ) ';  
 
 
 
+                    $where_total ='';         
 
-                      $where_total ='';
-                      if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
-                        and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-                        and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-                        and (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null)) 
-                        ) {
-                          $where .= ' AND ( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                          $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) AND  ( p.id_calidad  =  '.$id_calidad.' )';
-                          $where_total .= '( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                          $where_total .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) AND  ( p.id_calidad  =  '.$id_calidad.' )';
-                      }    
 
-                      elseif
-                       ( 
-                           (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
-                        and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-                        and (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null)) 
-                        ) {
-                          $where .= ' AND ( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                          $where .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) ';
-                          $where_total .= '( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                          $where_total .= ' AND ( p.id_composicion  =  '.$id_composicion.' ) ';
-                      }  
+                             
+            //if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) 
 
-                      elseif 
-                       ( (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
-                        and (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null)) 
-                        ) {
-                          $where .= ' AND ( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                          $where_total .= '( p.descripcion  =  "'.$descripcion.'" ) AND  ( p.id_color  =  '.$id_color.' )';
-                      }  
+            if ($data['id_medida']==1) {  //metro
+               $where.= (($where!="") ? " and " : "") . "  (!(LOCATE('".$id_session."', id_usuario_compra) >0))";
+               $where_total.= (($where_total!="") ? " and " : "") . " (!(LOCATE('".$id_session."', id_usuario_compra) >0))";
+            }   else { //kg
+               $where.= (($where!="") ? " and " : "") . "  (!(LOCATE('".$id_session."', id_usuario_compra_kg) >0))";
+               $where_total.= (($where_total!="") ? " and " : "") . " (!(LOCATE('".$id_session."', id_usuario_compra_kg) >0))";
 
-                      elseif  (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null)) {
-                          $where .= ' AND ( p.descripcion  =  "'.$descripcion.'" )';
-                          $where_total  .= '( p.descripcion  =  "'.$descripcion.'" )';
-                      } 
+            }  
 
+
+
+             
+
+            if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+               $where_total.= (($where_total!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+            }     
+            if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                $where.= (($where!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+                $where_total.= (($where_total!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+            } 
+            if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+               $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+               $where_total.= (($where_total!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+            }
+            
+            //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+            if (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null))  {                
+                $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$descripcion."' )";
+                $where_total.= (($where_total!="") ? " and " : "") . "( p.descripcion  =  '".$descripcion."' )";
+            }
+
+
+
+                      
+          $where.= (($where!="") ? " and " : "") . "( p.activo = 0 )";                      
           $data['where_total']=$where;
           $data['id_almacenid']=$id_almacenid;
 
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia"); //,p.id_usuario_compra,p.id_usuario_compra
 
           $this->db->order_by($columna, $order); 
     
@@ -290,7 +296,9 @@
                                       3=>number_format((($row->ancho>0) ? $row->ancho : $row->ancho_producto), 2, '.', ','),   
                                       4=>$row->composicion, 
                                       5=>$row->calidad, 
-                                      6=>number_format((($row->precio>0) ? $row->precio : $row->precio_producto), 2, '.', ','),  
+                                      6=>
+                                      ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->precio>0) ? $row->precio : $row->precio_producto), 2, '.', ',') : '-'),
+                                        
                                       7=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
@@ -431,16 +439,18 @@ public function totales_importes($data){
 
           $this->db->select("((m.precio*m.iva))/100 as sum_iva");
           $this->db->select("(m.precio)+((m.precio*m.iva))/100 as precio_total");          
-          $this->db->select("a.almacen");
+          $this->db->select("a.almacen,pc.id_medida");
 
           //$this->db->select("COUNT(m.referencia) as 'suma'");
-          $this->db->select("( CASE WHEN ".$data['id_medida']." = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
-           $this->db->select("SUM((m.id_medida =".$data['id_medida'].") * m.cantidad_um) as suma", FALSE);
+          //$this->db->select("( CASE WHEN ".$data['id_medida']." = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
+           //$this->db->select("SUM((m.id_medida =".$data['id_medida'].") * m.cantidad_um) as suma", FALSE);
          
-
+           $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
+           $this->db->select("SUM((m.id_medida = pc.id_medida) * m.cantidad_um) as suma", FALSE);
+         
          //$this->db->select('substring(id_usuario_compra, length("'.$id_session.'")+2,locate(";",id_usuario_compra,LOCATE("'.$id_session.':", id_usuario_compra)+length("'.$id_session.'"))-length("'.$id_session.'")-2) as pedido_compra', FALSE);        
 
-          $this->db->select("pc.cantidad_royo as pedido_compra");
+          $this->db->select("pc.cantidad_royo as pedido_compra, um.medida medida");
 
            if ($id_almacen!=0) {
               $id_almacenid = ' and ( m.id_almacen =  '.$id_almacen.' ) ';  
@@ -456,6 +466,7 @@ public function totales_importes($data){
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenid,'LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = m.id_almacen','LEFT');
           $this->db->join($this->temporal_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
+          $this->db->join($this->unidades_medidas.' As um', 'pc.id_medida = um.id'); //,'LEFT'
 
            $where = '(                      
                                 (
@@ -468,7 +479,7 @@ public function totales_importes($data){
                                   ( ca.calidad LIKE  "%'.$cadena.'%" )  OR 
                                   ( p.precio LIKE  "%'.$cadena.'%" ) OR  ( m.precio LIKE  "%'.$cadena.'%" ) OR
                                   ( p.ancho LIKE  "%'.$cadena.'%" ) OR  ( m.ancho LIKE  "%'.$cadena.'%" ) 
-                                 )  AND  ( LOCATE("'.$id_session.'", id_usuario_compra) >0)  
+                                 )  AND  ( ( LOCATE("'.$id_session.'", id_usuario_compra) >0)  || ( LOCATE("'.$id_session.'", id_usuario_compra_kg) >0)    )
                     ) ';  
 
 
@@ -483,7 +494,7 @@ public function totales_importes($data){
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida"); //,p.id_usuario_compra,p.id_usuario_compra
 
           $this->db->order_by($columna, $order); 
     
@@ -531,13 +542,14 @@ public function totales_importes($data){
                                       3=>number_format((($row->ancho>0) ? $row->ancho : $row->ancho_producto), 2, '.', ','),   
                                       4=>$row->composicion, 
                                       5=>$row->calidad, 
-                                      6=>number_format((($row->precio>0) ? $row->precio : $row->precio_producto), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->precio>0) ? $row->precio : $row->precio_producto), 2, '.', ',') : '-'),  
                                       7=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
                                       10=>$row->referencia,
                                       11=>$row->pedido_compra,
-                                      12=>null, //$row->id_estatus,
+                                      12=>$row->id_medida,
+                                      13=>$row->medida,
                                       
                                       
                                     );
@@ -617,6 +629,7 @@ public function totales_importes_salida($data){
                 $this->db->set( 'cantidad_royo', $value['pedido_compra'], FALSE  );
                 $this->db->where('id_usuario',$id_session);
                 $this->db->where('id_producto',$value['id']);                
+                $this->db->where('id_medida',$value['id_medida']);                
 
                 $this->db->update($this->temporal_pedido_compra);
               }
@@ -684,9 +697,13 @@ public function totales_importes_salida($data){
               $this->db->update($this->operaciones);
 
               //
-
+              /*
               $this->db->set('id_usuario_compra','(CASE WHEN (  LOCATE("'.$id_session.'", id_usuario_compra) >0) THEN REPLACE(id_usuario_compra,"'.$id_session.';","") ELSE id_usuario_compra END )', FALSE);       
-              //$this->db->where('id_usuario',$id_session);
+                $this->db->set('id_usuario_compra_kg','(CASE WHEN (  LOCATE("'.$id_session.'", id_usuario_compra_kg) >0) THEN REPLACE(id_usuario_compra_kg,"'.$id_session.';","") ELSE id_usuario_compra_kg END )', FALSE);   
+                */
+              
+              $this->db->set('id_usuario_compra','');   
+              $this->db->set('id_usuario_compra_kg','');   
               $this->db->update($this->productos);   
 
               $this->db->delete( $this->temporal_pedido_compra, array( 'id_usuario' => $id_session ) );
@@ -851,7 +868,7 @@ public function totales_importes_salida($data){
                                       3=>$row->factura,
                                       4=>$row->almacen,
                                       5=>$row->comentario,
-                                      6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ',') : '-'),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
                                       9=>$row->proveedor,
@@ -978,6 +995,7 @@ public function totales_importes_salida($data){
                 $this->db->set( 'cantidad_aprobada', $value['cantidad'], FALSE  );
                 $this->db->set( 'cantidad_pedida', $data['cant_solicitada'][$key]['cantidad'], FALSE  );
                 $this->db->where('id_producto',$value['id']);                
+                $this->db->where('id_medida',$value['id_medida']);     
                 $this->db->where('movimiento',$data['movimiento']);                
                 $this->db->update($this->historico_pedido_compra);
               }
@@ -1384,7 +1402,7 @@ public function notificador_pedido_compra($data){
                                       3=>$row->factura,
                                       4=>$row->almacen,
                                       5=>$row->comentario,
-                                      6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ',') : '-'),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
                                       9=>$row->proveedor,
@@ -1573,11 +1591,31 @@ public function notificador_pedido_compra($data){
           }            
 
 
+
+
+          $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+
+
+          $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false);  
+
+
+            $this->db->select("max(p.cantidad_aprobada*(p.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(p.cantidad_aprobada*(p.id_medida=2)) total_compra_kg",false);  
+          
+
+
+
           $this->db->from($this->historico_historial_compra.' as p');
           $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
           $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
           $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
           $this->db->join($this->unidades_medidas.' As med', 'med.id= p.id_medida');
+          $this->db->join($this->historico_registros_entradas.' As m' , 'p.referencia = m.referencia AND p.movimiento=m.id_compra AND p.id_medida=m.id_medida','LEFT'); 
+          $this->db->join($this->registros_temporales.' As t' , 'p.referencia = t.referencia AND p.movimiento=t.id_compra AND p.id_medida=t.id_medida','LEFT'); 
+
           
 
 
@@ -1611,6 +1649,8 @@ public function notificador_pedido_compra($data){
 
           $this->db->group_by("p.movimiento");
 
+          //$this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+
           $this->db->order_by($columna, $order); 
     
 
@@ -1643,10 +1683,11 @@ public function notificador_pedido_compra($data){
                                       3=>$row->factura,
                                       4=>$row->almacen,
                                       5=>$row->comentario,
-                                      6=>number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->importe>0) ? $row->importe : $row->importe), 2, '.', ',') : '-'),  
                                       7=>$row->recorrido_status,
                                       8=>$data["modulo"],
                                       9=>$row->proveedor,          
+                                      10=>(($row->total_compra_mts <= ($row->total_entrada_mts+$row->total_entrada_temp_mts)) AND ($row->total_compra_kg <= ($row->total_entrada_kg+$row->total_entrada_temp_kg)) ) ? '<span style="color:red;">Total</span>' : (( (($row->total_entrada_mts+$row->total_entrada_temp_mts) + ($row->total_entrada_kg+$row->total_entrada_temp_kg) ) ==0 ) ? '<span style="color:blue;">Por Procesar</span>' : 'Parcial'),   
                                       
                                       
                                       
@@ -1768,6 +1809,12 @@ public function notificador_pedido_compra($data){
             $this->db->from($this->temporal_pedido_compra);
             $this->db->where('id_producto',$data['id']);
             $this->db->where('id_usuario',$id_session);
+
+            $this->db->where('id_medida',$data['id_medida']);
+
+           
+
+
             $login = $this->db->get();
             if ($login->num_rows() > 0) {
                 return true;
@@ -1792,7 +1839,15 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
             $id_session = $this->session->userdata('id');
             $fecha_hoy = date('Y-m-d H:i:s');
           
-            $this->db->set( 'id_usuario_compra', 'CONCAT(id_usuario_compra,"'.$id_session.'",";")', FALSE );    
+            
+
+          if ($data['id_medida']==1) {  //metro
+                $this->db->set( 'id_usuario_compra', 'CONCAT(id_usuario_compra,"'.$id_session.'",";")', FALSE );    
+            }   else { //kg
+               $this->db->set( 'id_usuario_compra_kg', 'CONCAT(id_usuario_compra,"'.$id_session.'",";")', FALSE );    
+
+            }  
+            
             $this->db->where('id',$data['id']);
             $this->db->update($this->productos);   
 
@@ -1836,11 +1891,21 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
             $id_session = $this->session->userdata('id');
             
           
-            $this->db->set('id_usuario_compra','(CASE WHEN (  LOCATE("'.$id_session.'", id_usuario_compra) >0) THEN REPLACE(id_usuario_compra,"'.$id_session.';","") ELSE id_usuario_compra END )', FALSE);       
+            
+
+            if ($data['id_medida']==1) {  //metro
+               $this->db->set('id_usuario_compra','');   
+                //$this->db->set('id_usuario_compra','(CASE WHEN (  LOCATE("'.$id_session.'", id_usuario_compra) >0) THEN REPLACE(id_usuario_compra,"'.$id_session.';","") ELSE id_usuario_compra END )', FALSE);       
+            }   else { //kg
+              $this->db->set('id_usuario_compra_kg','');   
+               //$this->db->set('id_usuario_compra_kg','(CASE WHEN (  LOCATE("'.$id_session.'", id_usuario_compra_kg) >0) THEN REPLACE(id_usuario_compra_kg,"'.$id_session.';","") ELSE id_usuario_compra_kg END )', FALSE);       
+
+            }  
+
             $this->db->where('id',$data['id']);
             $this->db->update($this->productos);   
 
-            $this->db->delete( $this->temporal_pedido_compra, array( 'id_producto' => $data['id'] ) );
+            $this->db->delete( $this->temporal_pedido_compra, array( 'id_producto' => $data['id'], 'id_medida' => $data['id_medida']  ) );
 
            return TRUE;
             
@@ -1998,10 +2063,12 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
           $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
           $this->db->select('co.composicion, ca.calidad'); //a.almacen, , p.activo, p.fecha_mac, p.uid,
           $this->db->select("pc.ancho, pc.precio");
-          $this->db->select("p.minimo");
+          //$this->db->select("p.minimo");
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
+          $this->db->select("um.medida, pc.id_medida");
                                      
 
 
@@ -2022,6 +2089,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
           $this->db->join($this->historico_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->unidades_medidas.' As um', 'pc.id_medida= um.id');
           
           
 
@@ -2046,7 +2114,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
 
           $this->db->where($where);
 
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia, pc.id_medida");
 
           $this->db->order_by($columna, $order); 
     
@@ -2094,7 +2162,8 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
                                       3=>number_format((($row->ancho>0) ? $row->ancho : $row->ancho), 2, '.', ','),   
                                       4=>$row->composicion, 
                                       5=>$row->calidad, 
-                                      6=>number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ',') : '-'),
+
                                       7=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
@@ -2103,6 +2172,9 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
                                       12=>$row->cantidad_aprobada,
                                       13=>"",
                                       14=>"",
+                                      15=>$row->medida,
+                                      16=>$row->id_medida,
+
                                       
                                       
                                     );
@@ -2239,7 +2311,8 @@ public function totales_importes_revisa($data){
           $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
           $this->db->select('co.composicion, ca.calidad');
           $this->db->select("pc.ancho,pc.precio");
-          $this->db->select("p.minimo"); //a.almacen,, p.activo,p.fecha_mac,p.uid,
+          //$this->db->select("p.minimo"); //a.almacen,, p.activo,p.fecha_mac,p.uid,
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
@@ -2253,6 +2326,7 @@ public function totales_importes_revisa($data){
               $id_almacenidid = '';
             }   
 
+            $this->db->select("um.medida, pc.id_medida");
           $this->db->from($this->productos.' as p');
           $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
           $this->db->join($this->composiciones.' As co', 'p.id_composicion = co.id','LEFT');
@@ -2260,6 +2334,7 @@ public function totales_importes_revisa($data){
           $this->db->join($this->historico_cancela_pedido_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->unidades_medidas.' As um', 'pc.id_medida= um.id');
           
           $where = '(                      
                             (
@@ -2281,7 +2356,7 @@ public function totales_importes_revisa($data){
 
 
           $this->db->where($where);
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia,pc.id_medida");
           $this->db->order_by($columna, $order); 
           $this->db->limit($largo,$inicio); 
 
@@ -2322,13 +2397,19 @@ public function totales_importes_revisa($data){
                                       3=>number_format((($row->ancho>0) ? $row->ancho : $row->ancho), 2, '.', ','),   
                                       4=>$row->composicion, 
                                       5=>$row->calidad, 
-                                      6=>number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ','),  
+                                      
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ',') : '-'),
                                       7=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
                                       10=>$row->referencia,
                                       11=>$row->cantidad_pedida,
                                       12=>$row->cantidad_aprobada,
+                                      13=>"",
+                                      14=>"",
+                                      15=>$row->medida,
+                                      16=>$row->id_medida,
+
                                     );
                       }
 
@@ -2461,7 +2542,8 @@ public function totales_importes_cancela_compra($data){
           $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
           $this->db->select('co.composicion, ca.calidad');
           $this->db->select("pc.ancho,pc.precio");
-          $this->db->select("p.minimo"); //a.almacen,
+          //$this->db->select("p.minimo"); //a.almacen,
+          $this->db->select("( CASE WHEN pc.id_medida = 1 THEN p.minimo ELSE p.minimo_kg END ) AS minimo", FALSE);
           $this->db->select("COUNT(m.referencia) as 'suma'");
           $this->db->select("pc.cantidad_pedida as cantidad_pedida");
           $this->db->select("pc.cantidad_aprobada as cantidad_aprobada");
@@ -2472,6 +2554,9 @@ public function totales_importes_cancela_compra($data){
           //$this->db->select("h.id_compra, h.devolucion, h.movimiento_unico, h.nombre_usuario, h.id_fac_orig, h.id_estatus");
 
           //$this->db->select("sum(h.cantidad_um)*(h.referencia= pc.referencia and h.id_compra= pc.movimiento and h.id_medida=pc.id_medida) as suma_cantidad_um");
+
+          $this->db->select("um.medida, pc.id_medida");
+
 
 
            if ($id_almacen!=0) {
@@ -2490,6 +2575,7 @@ public function totales_importes_cancela_compra($data){
           $this->db->join($this->historico_historial_compra.' As pc', 'pc.id_producto = p.id','LEFT');
           $this->db->join($this->almacenes.' As a', 'a.id = pc.id_almacen'.$id_almacenid,'LEFT');
           $this->db->join($this->registros.' As m', 'm.referencia= p.referencia'.$id_almacenidid,'LEFT');
+          $this->db->join($this->unidades_medidas.' As um', 'pc.id_medida= um.id');
          // $this->db->join($this->historico_registros_entradas.' As h', 'h.referencia= pc.referencia and h.id_compra= pc.movimiento and h.id_medida=pc.id_medida','LEFT');
 
           $where = '(                      
@@ -2512,7 +2598,7 @@ public function totales_importes_cancela_compra($data){
 
 
           $this->db->where($where);
-          $this->db->group_by("p.referencia");
+          $this->db->group_by("p.referencia, pc.id_medida");
           $this->db->order_by($columna, $order); 
           $this->db->limit($largo,$inicio); 
 
@@ -2556,7 +2642,7 @@ public function totales_importes_cancela_compra($data){
                                       3=>number_format((($row->ancho>0) ? $row->ancho : $row->ancho), 2, '.', ','),   
                                       4=>$row->composicion, 
                                       5=>$row->calidad, 
-                                      6=>number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ','),  
+                                      6=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format((($row->precio>0) ? $row->precio : $row->precio), 2, '.', ',') : '-'),
                                       7=>'Optimo:'.$row->minimo.'<br/>  Reales:'. $row->suma,
                                       8=>$row->codigo_contable,
                                       9=>$row->id, 
@@ -2565,6 +2651,8 @@ public function totales_importes_cancela_compra($data){
                                       12=>$row->cantidad_aprobada,
                                       13=>(self::total_diferencia('pc.referencia ="'.$row->referencia.'" and pc.movimiento ='.$row->movimiento)->importe), //$mov_entrada,
                                       14=>(self::botones_compra('pc.referencia ="'.$row->referencia.'" and pc.movimiento ='.$row->movimiento)),
+                                      15=>$row->medida,
+                                      16=>$row->id_medida,
 
                                     );
                       }

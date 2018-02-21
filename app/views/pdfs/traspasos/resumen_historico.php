@@ -21,15 +21,18 @@
 			<table style="width: 100%; border: 2px solid #222222; font-size: 12px;">
 				<thead>
 					<tr>
-						<th width="20%">Traspaso</th>
+						<th width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 20 : 37; ?>%">Traspaso</th>
 						<th width="10%">Almacén</th>
 						<th width="13%">Fecha</th>
 						<th width="10%">Número</th>
 						<th width="10%">Total Metros</th>
 						<th width="10%">Total Kgs</th>
 						<th width="10%">Pieza</th>
+						<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>   
 						<th width="10%">Subtotal</th>
 						<th width="7%">IVA</th>
+						<?php } ?>	
 
 					</tr>
 				</thead>	
@@ -39,16 +42,18 @@
 						<tr>
 
 							
-							<td width="20%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_factura; ?></td>			
+							<td width="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) ? 20 : 37; ?>%" style="border-top: 1px solid #222222;"><?php echo $movimiento->tipo_factura; ?></td>			
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->almacen; ?></td>			
 							<td width="13%" style="border-top: 1px solid #222222;"><?php echo $movimiento->fecha_apartado; ?></td>			
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->consecutivo_traspaso_unico; ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->metros, 2, '.', ','); ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->kilogramos, 2, '.', ','); ?></td>					
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->pieza; ?></td>			
-							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->subtotal, 2, '.', ','); ?></td>					
+							<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>  
+							<td width="10%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->subtotal, 2, '.', ','); ?></td>
 							<td width="7%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->iva, 2, '.', ','); ?></td>				
-
+							<?php } ?>	
 
 
 						</tr>
@@ -63,10 +68,12 @@
 				<tfooter>	
 						<tr>
 							<td width="100%" style="border-top: 1px solid #222222; font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
-								<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
-
+								<?php  if (($this->session->userdata('id_perfil')==1) || ( (in_array(80, $coleccion_id_operaciones)) || (in_array(81, $coleccion_id_operaciones))   ) ) {
+								?>  
+									<span><b>Subtotal: </b><?php echo number_format($totales->subtotal, 2, '.', ','); ?></span> 
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Iva: </b><?php echo number_format($totales->iva, 2, '.', ','); ?></span>
 									<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Total: </b><?php echo number_format($totales->total, 2, '.', ','); ?></span><br>
+								<?php } ?>		
 									
 									<?php  if ($totales->metros>0) { ?>	
 										<span><b>Total Metros: </b> <?php echo $totales->metros; ?></span>

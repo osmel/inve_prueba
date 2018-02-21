@@ -22,12 +22,6 @@ jQuery(document).ready(function($) {
 var target = document.getElementById('foo');
 
 
-jQuery('body').on('change','#id_compra', function (e) {
-		//alert('aa');
-	  //jQuery('#tabla_transferencia_recibida').dataTable().fnDraw();
-	  console.log(jQuery('#id_compra option:selected').attr('prov_nomb') );
-	  jQuery('input[name=editar_proveedor]').typeahead("val", jQuery('#id_compra option:selected').attr('prov_nomb') );
-});
 
 var reg = /^[0-9]{1,10}(\.[0-9]{0,2})?$/;
 
@@ -3915,6 +3909,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 	   jQuery("#tabla_revisa_pedido_compra tbody tr td input.cant_aprobada").each(function(e) { //cant_solicitada
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo["id_medida"] = jQuery(this).attr('id_medida') ;  
 	   		arreglo['cantidad'] = jQuery(this).val();
 	   		//alert(arreglo['cantidad']);
 	   		arreglo_cant_aprobada.push( arreglo);
@@ -3923,6 +3918,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 	   jQuery("#tabla_revisa_pedido_compra tbody tr td input.cant_solicitada").each(function(e) { //cant_solicitada
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo["id_medida"] = jQuery(this).attr('id_medida') ;  
 	   		arreglo['cantidad'] = jQuery(this).val();
 	   		arreglo_cant_solicitada.push( arreglo);
 	   });
@@ -4149,10 +4145,10 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 			};
 
 		if  (data.length>0) {   
-
+				/*
 				if ( (jQuery("#el_perfil").val() == '2') ) {
 							 api.column(6).visible(false);
-				}
+				}*/
 
 
 				//importe https://datatables.net/reference/api/
@@ -4205,7 +4201,7 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 						texto='<td>'; 
 						  texto+='<fieldset '+habilitar+'>'; 
-							texto+='<input restriccion="entero"  identificador="'+row[9]+'" value="'+row[11]+'" type="text" class="form-control ttip pedido_compra cant_solicitada" title="Números enteros."  placeholder="entero">';							
+							texto+='<input  title="Números y puntos decimales." restriccion="decimal"   id_medida="'+row[16]+'" identificador="'+row[9]+'" value="'+row[11]+'" type="text" class="form-control ttip pedido_compra cant_solicitada"   placeholder="decimal">';							
 						  texto+='</fieldset>'; 
 						texto+='</td>';
 						return texto;	
@@ -4224,7 +4220,7 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 						texto='<td>'; 
 
 						texto+='<fieldset '+habilitar+'>'; 
-							texto+='<input restriccion="entero"  identificador="'+row[9]+'" value="'+row[12]+'" type="text" class="form-control ttip pedido_compra cant_aprobada" title="Números enteros."  placeholder="entero">';							
+							texto+='<input  title="Números y puntos decimales." restriccion="decimal"   id_medida="'+row[16]+'" identificador="'+row[9]+'" value="'+row[12]+'" type="text" class="form-control ttip pedido_compra cant_aprobada"  placeholder="decimal">';							
 						texto+='</fieldset>'; 
 						texto+='</td>';
 						return texto;	
@@ -4232,7 +4228,7 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 	                },
 	                "targets": 9
 	            },	       
-
+	            /*
 	            { //enlace
 	                "render": function ( data, type, row ) {
 						return row[14];	
@@ -4246,13 +4242,22 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 	                },
 	                "targets": 11
-	            },     
+	            },
+	            */     
 
+	            { //unidad medida
+	                "render": function ( data, type, row ) {
+						return row[15];	
+
+	                },
+	                "targets": 10
+	            },     
     			
     			{ 
 		                 "visible": false,
-		                "targets": [12]
+		                "targets": [11,12,13,14,15,16] //6,
 		        }
+
 
 	          /*
 	            {
@@ -4270,6 +4275,28 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 
 
 	        ],
+
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+				var api = this.api();
+
+				api.column(6).visible(true);	
+
+				if (aData.length >0){
+      				if (aData[0][6]=="-") {
+                		api.column(6).visible(false);	
+                	} else {
+                		api.column(6).visible(true);	
+		     			
+                	}
+                } else {
+	            		api.column(6).visible(false);	
+                }
+
+
+
+	},	
+
+
 });	
 
 /////////////////////////////////////////////////Status de pedido de compra/////////////////////////////////////////////////////////////////
@@ -4461,18 +4488,64 @@ jQuery('#tabla_pedido_compra').dataTable( {
 
 	                "targets": 9
 	            },	  
-	            /*
+	            
 	            {
 	                "render": function ( data, type, row ) {
-						return row[10];		
+						
+						switch(jQuery("#modulo").val()) {
+							    case '5':
+								    	return row[10]; 
+							        break;
+							    default:
+							    		return "estatus"; 
+					              break;
+						}				
 
 	                },
 
 	                "targets": 10
-	            }          */
+	            }          
 
 
 	        ],
+
+
+"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+				var api = this.api();
+
+				api.column(1).visible(false);	//UM mtrs o kg
+				api.column(6).visible(true);	
+
+				if (aData.length >0){
+      				if (aData[0][6]=="-") {
+                		api.column(6).visible(false);	
+                	} else {
+                		api.column(6).visible(true);	
+		     			
+                	}
+                } else {
+	            		api.column(6).visible(false);	
+                }
+
+
+                api.column(10).visible(true);	
+                  
+						
+						switch(jQuery("#modulo").val()) {
+							    case '5':
+								    	api.column(10).visible(true);	
+							        break;
+							    default:
+							    		api.column(10).visible(false);	
+					              break;
+						}				
+         
+
+
+
+
+	},	
+
 });	
 
 
@@ -4737,13 +4810,34 @@ jQuery('#tabla_entrada_pedido_compra').dataTable( {
 	                },
 	                "targets": 8
 	            },
+	            
 				{ 
 		                 "visible": false,
-		                "targets": [9,10,11]
+		                "targets": [9,10,11] //6,
 		        }
 
 
 	        ],
+
+"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+				var api = this.api();
+
+				api.column(6).visible(true);	
+
+				if (aData.length >0){
+      				if (aData[0][6]=="-") {
+                		api.column(6).visible(false);	
+                	} else {
+                		api.column(6).visible(true);	
+		     			
+                	}
+                } else {
+	            		api.column(6).visible(false);	
+                }
+
+
+
+	},		        
 });	
 
 
@@ -4995,7 +5089,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 				{
 	                "render": function ( data, type, row ) {
 						texto='<td>'; 
-							texto+='<input restriccion="entero" value="'+row[11]+'" identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra" title="Números enteros."  placeholder="entero">';							
+							texto+='<input title="Números y puntos decimales." restriccion="decimal"  value="'+row[11]+'"  id_medida="'+row[12]+'"  identificador="'+row[9]+'" type="text" class="form-control ttip pedido_compra"   placeholder="entero">';							
 						texto+='</td>';
 						return texto;	
 
@@ -5007,7 +5101,7 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 	            {
 	                "render": function ( data, type, row ) {
 						texto='<td><button'; 
-							texto+='type="button" identificador="'+row[9]+'" class="btn btn-danger btn-block quitar_compra">'; 
+							texto+='type="button" identificador="'+row[9]+'" id_medida="'+row[12]+'" class="btn btn-danger btn-block quitar_compra">'; 
 							 texto+='Quitar';
 						texto+='</button></td>';
 						return texto;	
@@ -5015,13 +5109,42 @@ jQuery('#tabla_salida_pedido_compra').dataTable( {
 	                },
 	                "targets": 9
 	            },
+	            { 
+	                "render": function ( data, type, row ) {
+	                		return row[13];
+	                },
+	                "targets": [10]
+	            },
 				{ 
 		                 "visible": false,
-		                "targets": [10,11,12]
+		                "targets": [11,12,13] //6,
 		        }	            
 
 
 	        ],
+
+
+
+"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+				var api = this.api();
+
+				api.column(6).visible(true);	
+
+				if (aData.length >0){
+      				if (aData[0][6]=="-") {
+                		api.column(6).visible(false);	
+                	} else {
+                		api.column(6).visible(true);	
+		     			
+                	}
+                } else {
+	            		api.column(6).visible(false);	
+                }
+
+
+
+	},	
+
 });	
 
 //jQuery('.pedido_compra[restriccion="entero"]').bind('keypress paste', function (event) {
@@ -5034,18 +5157,29 @@ jQuery('body').on('keypress paste','.pedido_compra[restriccion="entero"]', funct
     }
 });
 
-
+/*
 jQuery('table').on('click','.quitar_compra', function (e) {
 
 	jQuery(this).attr('disabled', true);				        
 	
 	identificador = (jQuery(this).attr('identificador'));
+	id_medida = (jQuery(this).attr('id_medida'));
+	alert(id_medida);
+});	
+*/
+jQuery('table').on('click','.quitar_compra', function (e) {
+
+	jQuery(this).attr('disabled', true);				        
+	
+	identificador = (jQuery(this).attr('identificador'));
+	id_medida = (jQuery(this).attr('id_medida'));
 	
 
 	jQuery.ajax({
 		        url : '/quitar_salida_compra', //
 		        data : { 
 		        	identificador: identificador,
+		        	id_medida: id_medida
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -5102,6 +5236,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 	   jQuery("#tabla_salida_pedido_compra tbody tr td input.pedido_compra").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo["id_medida"] = jQuery(this).attr('id_medida') ;  
 	   		arreglo['pedido_compra'] = jQuery(this).val();
 	   		arreglo_pedido_compra.push( arreglo);
 	   });
@@ -5610,6 +5745,37 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		           
 		            
 		        ],
+
+	  "fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+	    			var api = this.api();
+	    			api.column(6).visible(true);	
+	    			api.column(7).visible(true);	
+	    			api.column(8).visible(true);	
+	     			
+		
+				if (aData.length >0){
+      				if (aData[0][6]=="-") {
+                		api.column(6).visible(false);	
+                		api.column(7).visible(false);	
+                		api.column(8).visible(false);	
+                	} else {
+                		api.column(6).visible(true);	
+		    			api.column(7).visible(true);	
+		    			api.column(8).visible(true);	
+		     			
+                	}
+                } else {
+	                	api.column(6).visible(false);	
+                		api.column(7).visible(false);	
+                		api.column(8).visible(false);	
+                }
+		          
+
+	                
+	},		        
+
+
+
 	});	
 
 
@@ -5776,6 +5942,36 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		           
 		            
 		        ],
+
+
+		"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+			    			var api = this.api();
+			    			api.column(5).visible(true);	
+			    			api.column(6).visible(true);	
+			    			api.column(7).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][5]=="-") {
+		                		api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                	} else {
+		                		api.column(5).visible(true);	
+				    			api.column(6).visible(true);	
+				    			api.column(7).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                }
+				          
+
+			                
+			},	
+
 	});	
 
 
@@ -5951,7 +6147,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
 							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
-							texto+= ((row[15]==1) ? 'T-':'S-')+'Detalles';
+							//texto+= ((row[15]==1) ? 'T-':'S-')+'Detalles';
+							texto+= ((row[15]==1) ? 'T-': ((row[15]==2) ? 'B-' : 'S-'))+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
@@ -5968,6 +6165,36 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 		           
 		            
 		        ],
+
+		 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+			    			var api = this.api();
+			    			api.column(8).visible(true);	
+			    			api.column(9).visible(true);	
+			    			api.column(10).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][8]=="-") {
+		                		api.column(8).visible(false);	
+		                		api.column(9).visible(false);	
+		                		api.column(10).visible(false);	
+		                	} else {
+		                		api.column(8).visible(true);	
+				    			api.column(9).visible(true);	
+				    			api.column(10).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(8).visible(false);	
+		                		api.column(9).visible(false);	
+		                		api.column(10).visible(false);	
+		                }
+				          
+
+			                
+			},		
+
+
 	});		
 
 
@@ -7063,19 +7290,19 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[18];	
+						return row[18];	 //precio
 	                },
 	                "targets": [5]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[5];	
+						return row[5];	//subtotal
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[6];	
+						return row[6];	//iva
 	                },
 	                "targets": [7]
 	            },
@@ -7126,6 +7353,36 @@ jQuery('#tabla_entrada_traspaso').dataTable( {
 	                 "targets": [13,14,15,16,17,18,19]
 	            }		            
 	        ],
+
+
+			"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+			    			var api = this.api();
+			    			api.column(5).visible(true);	
+			    			api.column(6).visible(true);	
+			    			api.column(7).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][18]=="-") {
+		                		api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                	} else {
+		                		api.column(5).visible(true);	
+				    			api.column(6).visible(true);	
+				    			api.column(7).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                }
+				          
+
+			                
+			},	
+
 });	
 
 
@@ -7392,19 +7649,19 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[18];	
+						return row[18];	 //precio
 	                },
 	                "targets": [5]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[5];	
+						return row[5];	//subtotal
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[6];	
+						return row[6];	//iva
 	                },
 	                "targets": [7]
 	            },
@@ -7450,6 +7707,37 @@ jQuery('#tabla_salida_traspaso').dataTable( {
 	                 "targets": [13,14,15,16,17,18,19]
 	            }		            
 	        ],
+
+
+
+			"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+			    			var api = this.api();
+			    			api.column(5).visible(true);	
+			    			api.column(6).visible(true);	
+			    			api.column(7).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][18]=="-") {
+		                		api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                	} else {
+		                		api.column(5).visible(true);	
+				    			api.column(6).visible(true);	
+				    			api.column(7).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                }
+				          
+
+			                
+			},		
+
 });	
 
 
@@ -7731,13 +8019,13 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	            },     
 				{  //suma de precio subtotal
 	                "render": function ( data, type, row ) {
-						return row[13];										
+						return row[13];	//subtotal									
 	                },
 	                "targets": [12]
 	            },     
 				{ //iva
 	                "render": function ( data, type, row ) {
-						return row[14];										
+						return row[14];		//iva								
 	                },
 	                "targets": [13]
 	            },     	            
@@ -7761,11 +8049,34 @@ jQuery('#tabla_traspaso_historico').dataTable( {
 	            }	            
 	],	
 
+
 	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
 		var arreglo =arr_general_traspaso;
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 	    	}
+
+						var api = this.api();
+			    			api.column(12).visible(true);	
+			    			api.column(13).visible(true);	
+			    			
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][13]=="-") {
+		                		api.column(12).visible(false);	
+			    				api.column(13).visible(false);	
+		                	} else {
+			                	api.column(12).visible(true);	
+				    			api.column(13).visible(true);	
+				    				
+		                	}
+		                } else {
+			                api.column(12).visible(false);	
+			    			api.column(13).visible(false);	
+			    			
+		                }	  
+
 	},	
 
 
@@ -8006,19 +8317,19 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[18];	
+						return row[18];	 //precio
 	                },
 	                "targets": [5]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[5];	
+						return row[5];	//subtotal
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[6];	
+						return row[6];	//iva
 	                },
 	                "targets": [7]
 	            },
@@ -8138,6 +8449,30 @@ jQuery('#traspaso_historico_detalle').dataTable( {
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 
 	    	}
+
+				var api = this.api();
+			    			api.column(5).visible(true);	
+			    			api.column(6).visible(true);	
+			    			api.column(7).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][18]=="-") {
+		                		api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                	} else {
+		                		api.column(5).visible(true);	
+				    			api.column(6).visible(true);	
+				    			api.column(7).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                }
+
 	},	
 
 	"language": {  //tratamiento de lenguaje
@@ -8264,13 +8599,13 @@ jQuery('#tabla_general_traspaso').dataTable( {
 	            },     
 				{  //suma de precio subtotal
 	                "render": function ( data, type, row ) {
-						return row[19];										
+						return row[19];			//subtotal							
 	                },
 	                "targets": [12]
 	            },     
 				{ //iva
 	                "render": function ( data, type, row ) {
-						return row[20];										
+						return row[20];		 //iva								
 	                },
 	                "targets": [13]
 	            },     	            
@@ -8309,6 +8644,27 @@ jQuery('#tabla_general_traspaso').dataTable( {
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 	    	}
+
+							var api = this.api();
+			    			api.column(12).visible(true);	
+			    			api.column(13).visible(true);	
+			    			
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][19]=="-") {
+		                		api.column(12).visible(false);	
+			    				api.column(13).visible(false);	
+		                	} else {
+			                	api.column(12).visible(true);	
+				    			api.column(13).visible(true);	
+				    				
+		                	}
+		                } else {
+			                api.column(12).visible(false);	
+			    			api.column(13).visible(false);	
+			    			
+		                }	    	
 	},	
 
 "infoCallback": function( settings, start, end, max, total, pre ) {
@@ -8854,19 +9210,19 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[18];	
+						return row[18];	//precio
 	                },
 	                "targets": [5]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[5];	
+						return row[5];	//subtotal
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[6];	
+						return row[6];	//iva
 	                },
 	                "targets": [7]
 	            },
@@ -8909,6 +9265,32 @@ jQuery('#traspaso_general_detalle_manual').dataTable( {
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 
 	    	}
+
+
+						var api = this.api();
+			    			api.column(5).visible(true);	
+			    			api.column(6).visible(true);	
+			    			api.column(7).visible(true);	
+			     			
+				
+						if (aData.length >0){
+		      				if (aData[0][18]=="-") {
+		                		api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                	} else {
+		                		api.column(5).visible(true);	
+				    			api.column(6).visible(true);	
+				    			api.column(7).visible(true);	
+				     			
+		                	}
+		                } else {
+			                	api.column(5).visible(false);	
+		                		api.column(6).visible(false);	
+		                		api.column(7).visible(false);	
+		                }	    	
+
+
 	},	
 
 	"language": {  //tratamiento de lenguaje

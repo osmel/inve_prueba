@@ -65,16 +65,17 @@ if ($val_proveedor) {
 											<option value="0" prov_nomb="">Selecciona una opción</option> 
 												<?php foreach ( $compras as $compra ){ ?>
 															<?php 
+
 															$seleccionado='';
 																if ($val_proveedor) { //comprobar una vez que ya esten inhabilitados factura
-																	 if ($compra->movimiento==$val_proveedor->id_compra) {
+																	 if ($compra['movimiento']==$val_proveedor->id_compra) {
 																			$seleccionado='selected';
 																		} else {
 																			$seleccionado='';
 																		}
 																}
 															?>
-															<option value="<?php echo $compra->movimiento; ?>" prov_nomb="<?php echo $compra->nombre; ?>" <?php echo $seleccionado; ?>> <?php echo $compra->movimiento; ?></option>
+															<option value="<?php echo $compra['movimiento']; ?>" prov_nomb="<?php echo $compra['nombre']; ?>" almacen="<?php echo $compra['id_almacen']; ?>" <?php echo $seleccionado; ?>> <?php echo $compra['movimiento'].' - '.$compra['almacen']; ?></option>
 												<?php } ?>
 									</select>
 								</fieldset>
@@ -182,7 +183,7 @@ if ($val_proveedor) {
 							    	que no sean almacenista 
 							    	ENTONCES lista editable -->
 							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(1, $coleccion_id_operaciones)) ) && (!$val_proveedor) && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
-									 <fieldset class="disabledme">				
+									 <fieldset class="disabledme"  disabled>				
 								<?php } else { ?>	
 									 <fieldset class="disabledme" disabled>
 								<?php } ?>	
@@ -398,13 +399,17 @@ if ($val_proveedor) {
 							<div class="form-group">
 								<label for="descripcion" class="col-sm-12 col-md-12">Mts/kgs</label>
 								<div class="col-sm-12 col-md-12">
-									<select name="id_medida" id="id_medida" class="form-control">
+									<select name="id_medida" id="id_medida" tipo="entrada_compra" class="form-control">
 											<?php foreach ( $medidas as $medida ){ ?>
-													<option value="<?php echo $medida->id; ?>"><?php echo $medida->medida; ?></option>
+
+													<option <?php  //echo (($medida->id==$compras[0]->id_medida) ? 'selected' : ''); ?> value="<?php echo $medida->id; ?>"><?php echo $medida->medida; ?></option>
 											<?php } ?>
 									</select>
+									<span id="diferencia" style="color:#a55a5a;"></span>
 								</div>
+
 							</div>
+
 						</div>		
 
 						<div class="col-xs-12 col-sm-4 col-md-2">

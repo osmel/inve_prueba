@@ -50,15 +50,303 @@
 
 
 
-
+      //catalogos
+      $this->productos                      = $this->db->dbprefix('catalogo_productos');
+      $this->colores                        = $this->db->dbprefix('catalogo_colores');
+      $this->composiciones                  = $this->db->dbprefix('catalogo_composicion');
+      $this->calidades                      = $this->db->dbprefix('catalogo_calidad');
 		}
 
-        //listado de compras
-        public function listado_compra() {
 
-            $this->db->select("m.movimiento, m.id_proveedor, prov.nombre");
+    //********************Dependencia
+
+
+/*
+
+SELECT `p`.`descripcion` nombre, `p`.`id`, 
+  CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null) THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS total_entrada_mts,
+  CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null) THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS total_entrada_kg, 
+  CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null) THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS total_entrada_temp_mts, 
+  CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null) THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS total_entrada_temp_kg, 
+  max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts, 
+  max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg 
+
+FROM (`inven_catalogo_productos` as p) 
+  JOIN `inven_historico_historial_compra` As pc ON `p`.`referencia` = `pc`.`referencia` 
+  LEFT JOIN `inven_historico_registros_entradas` As m ON `pc`.`referencia` = `m`.`referencia` AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida 
+  LEFT JOIN `inven_temporal_registros` As t ON `pc`.`referencia` = `t`.`referencia` AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida 
+
+WHERE `p`.`activo` = 0 AND `pc`.`movimiento` = 2 
+
+GROUP BY `p`.`descripcion`, `p`.`referencia`
+
+
+
+
+///////////////
+
+
+SELECT `p`.`descripcion` nombre, `p`.`id`, 
+  m.cantidad_um, m.id_medida,
+  t.cantidad_um, t.id_medida,
+  pc.cantidad_aprobada,pc.id_medida,
+  pc.referencia
+
+FROM (`inven_catalogo_productos` as p) 
+  JOIN `inven_historico_historial_compra` As pc ON `p`.`referencia` = `pc`.`referencia` 
+  LEFT JOIN `inven_historico_registros_entradas` As m ON `pc`.`referencia` = `m`.`referencia` AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida 
+  LEFT JOIN `inven_temporal_registros` As t ON `pc`.`referencia` = `t`.`referencia` AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida 
+
+WHERE `p`.`activo` = 0 AND `pc`.`movimiento` = 2 
+
+GROUP BY `p`.`descripcion`, `p`.`referencia`
+
+
+
+
+*/
+
+
+
+
+       public function listado_productos($data){
+        //$this->db->distinct();
+          $this->db->select("p.descripcion nombre");  
+          $this->db->select("p.id");   //m.cantidad_royo*
+
+          $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+
+
+          $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false);  
+
+
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg",false);  
+          
+
+
+
+          $this->db->from($this->productos.' as p');
+          $this->db->join($this->historico_historial_compra.' As pc' , 'p.referencia = pc.referencia'); //,'LEFT'
+          $this->db->join($this->historico_registros_entradas.' As m' , 'pc.referencia = m.referencia AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida','LEFT'); 
+          $this->db->join($this->registros_temporales.' As t' , 'pc.referencia = t.referencia AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida','LEFT'); 
+          
+          $this->db->where('p.activo',0);
+          $this->db->where('pc.movimiento',$data['id_compra']);
+
+          $this->db->group_by("p.descripcion, p.referencia"); //,pc.id_medida
+          $this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+          
+          
+          //$result = $this->db->get();
+
+          $this->db->get();
+          $consulta = $this->db->last_query();
+          $result = $this->db->query('select * from ('.$consulta.') as tabla group by nombre order by nombre');
+
+
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }     
+
+
+
+         public function lista_colores($data){
+
+            //$this->db->distinct();
+            $this->db->select("c.color nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+            $this->db->select("c.hexadecimal_color", FALSE);  
+
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+                    $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false); 
+
+
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg",false);  
+          
+
+            
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->colores.' As c', 'p.id_color = c.id','LEFT');
+            $this->db->join($this->historico_historial_compra.' As pc' , 'p.referencia = pc.referencia'); //,'LEFT'
+            $this->db->join($this->historico_registros_entradas.' As m' , 'pc.referencia = m.referencia AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida','LEFT'); 
+            $this->db->join($this->registros_temporales.' As t' , 'pc.referencia = t.referencia AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida','LEFT');
+
+            $this->db->where('p.activo',0);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('pc.movimiento',$data['id_compra']);
+
+
+            $this->db->group_by("c.color"); //,pc.id_medida
+            //$this->db->having("(total_compra_mts > total_entrada_mts) OR (total_compra_kg > total_entrada_kg) ");
+            $this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+          
+
+            $this->db->order_by('c.color', 'asc'); 
+            
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }  
+
+
+         public function lista_composiciones($data){
+            //distinct
+
+            //$this->db->distinct();
+
+            $this->db->select("c.composicion nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+
+
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+                    $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false); 
+
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg",false);  
+
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->composiciones.' As c', 'p.id_composicion = c.id','LEFT');
+            $this->db->join($this->historico_historial_compra.' As pc' , 'p.referencia = pc.referencia'); //,'LEFT'
+            $this->db->join($this->historico_registros_entradas.' As m' , 'pc.referencia = m.referencia AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida','LEFT'); 
+            $this->db->join($this->registros_temporales.' As t' , 'pc.referencia = t.referencia AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida','LEFT');
+            
+            $this->db->where('p.activo',0);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('p.id_color', $data['val_color']);
+            $this->db->where('pc.movimiento',$data['id_compra']);
+
+            $this->db->group_by("c.composicion"); //,pc.id_medida
+            //$this->db->having("(total_compra_mts > total_entrada_mts) OR (total_compra_kg > total_entrada_kg) ");
+            $this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+          
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }   
+
+
+         public function lista_calidad($data){
+            //distinct
+            //$this->db->distinct();
+
+            $this->db->select("c.calidad nombre", FALSE);  
+            $this->db->select("c.id", FALSE);  
+
+
+             $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+                    $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false); 
+
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg",false);  
+
+
+
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->calidades.' As c', 'p.id_calidad = c.id','LEFT');
+            $this->db->join($this->historico_historial_compra.' As pc' , 'p.referencia = pc.referencia'); //,'LEFT'
+            $this->db->join($this->historico_registros_entradas.' As m' , 'pc.referencia = m.referencia AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida','LEFT'); 
+            $this->db->join($this->registros_temporales.' As t' , 'pc.referencia = t.referencia AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida','LEFT');
+
+            $this->db->where('p.activo',0);
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('p.id_color', $data['val_color']);
+            $this->db->where('p.id_composicion', $data['val_comp']);
+            $this->db->where('pc.movimiento',$data['id_compra']);
+
+            $this->db->group_by("c.calidad"); //,pc.id_medida
+            //$this->db->having("(total_compra_mts > total_entrada_mts) OR (total_compra_kg > total_entrada_kg) ");            
+            $this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+          
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }    
+
+
+
+        public function refe_producto($data){
+            $this->db->select("p.referencia,p.comentario,p.imagen,p.precio,p.ancho,p.codigo_contable");  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+                    $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false); 
+
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(pc.cantidad_aprobada*(pc.id_medida=2)) total_compra_kg",false);  
+
+            $this->db->from($this->productos.' as p');
+            $this->db->join($this->historico_historial_compra.' As pc' , 'p.referencia = pc.referencia'); //,'LEFT'
+            $this->db->join($this->historico_registros_entradas.' As m' , 'pc.referencia = m.referencia AND pc.movimiento=m.id_compra AND pc.id_medida=m.id_medida','LEFT'); 
+            $this->db->join($this->registros_temporales.' As t' , 'pc.referencia = t.referencia AND pc.movimiento=t.id_compra AND pc.id_medida=t.id_medida','LEFT');
+
+            $this->db->where('p.descripcion', ($data['val_prod']) );
+            $this->db->where('p.id_color', $data['val_color']);
+            $this->db->where('p.id_composicion', $data['val_comp']);
+            $this->db->where('p.id_calidad', $data['val_calida']);
+
+            $this->db->where('p.activo',0);
+            $this->db->where('pc.movimiento',$data['id_compra']);
+
+             $this->db->group_by("p.referencia"); //,pc.id_medida
+             //$this->db->having("(total_compra_mts > total_entrada_mts) OR (total_compra_kg > total_entrada_kg) ");            
+             $this->db->having("(total_compra_mts > (total_entrada_mts+total_entrada_temp_mts)) OR (total_compra_kg > (total_entrada_kg+total_entrada_temp_kg))");
+          
+
+
+            $result = $this->db->get();
+            
+            if ( $result->num_rows() > 0 )
+               return $result->row();
+            else
+               return False;
+            $result->free_result();
+        }      
+    //********************
+
+        //listado de compras
+        /*public function listado_compra() {
+
+            $this->db->select("m.movimiento, m.id_proveedor, prov.nombre, um.medida, m.id_medida, m.id_almacen");
+            $this->db->select("a.almacen");
       
             $this->db->from($this->historico_historial_compra.' as m');
+            $this->db->join($this->unidades_medidas.' As um' , 'um.id = m.id_medida','LEFT');
+            $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen');
             $this->db->join($this->proveedores.' As prov', 'prov.id= m.id_proveedor');
             $this->db->group_by('m.movimiento'); 
             $result = $this->db->get();
@@ -69,7 +357,69 @@
                    return False;
                 $result->free_result();
       }    
+      */
 
+
+    public function listado_compra(){
+
+            $this->db->select("p.movimiento, p.id_proveedor, prov.nombre, med.medida, p.id_medida, p.id_almacen");
+            $this->db->select("a.almacen");
+
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
+            $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
+
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=1)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=1)) END AS  total_entrada_temp_mts",false);  
+            $this->db->select("CASE WHEN (sum(t.cantidad_um*(t.id_medida=2)) is null)  THEN 0 Else sum(t.cantidad_um*(t.id_medida=2)) END AS  total_entrada_temp_kg",false);  
+
+
+            $this->db->select("max(p.cantidad_aprobada*(p.id_medida=1)) total_compra_mts",false);  
+            $this->db->select("max(p.cantidad_aprobada*(p.id_medida=2)) total_compra_kg",false);  
+          
+
+            $this->db->from($this->historico_historial_compra.' as p');
+            $this->db->join($this->almacenes.' As a' , 'a.id = p.id_almacen','LEFT');
+            $this->db->join($this->productos.' As pr', 'pr.referencia= p.referencia');
+            $this->db->join($this->proveedores.' As prov', 'prov.id= p.id_proveedor');
+            $this->db->join($this->unidades_medidas.' As med', 'med.id= p.id_medida');
+            $this->db->join($this->historico_registros_entradas.' As m' , 'p.referencia = m.referencia AND p.movimiento=m.id_compra AND p.id_medida=m.id_medida','LEFT'); 
+            $this->db->join($this->registros_temporales.' As t' , 'p.referencia = t.referencia AND p.movimiento=t.id_compra AND p.id_medida=t.id_medida','LEFT'); 
+
+          
+          $this->db->group_by("p.movimiento");
+
+          $result = $this->db->get();
+
+
+              if ( $result->num_rows() > 0 ) {
+                $dato=array();
+                foreach ($result->result() as $row) {
+
+                          if (!(($row->total_compra_mts <= ($row->total_entrada_mts+$row->total_entrada_temp_mts)) AND ($row->total_compra_kg <= ($row->total_entrada_kg+$row->total_entrada_temp_kg)) ) )  {
+                            $dato[]= array(
+                                 'status'=>(($row->total_compra_mts <= ($row->total_entrada_mts+$row->total_entrada_temp_mts)) AND ($row->total_compra_kg <= ($row->total_entrada_kg+$row->total_entrada_temp_kg)) ) ? 'Total' : (( (($row->total_entrada_mts+$row->total_entrada_temp_mts) + ($row->total_entrada_kg+$row->total_entrada_temp_kg) ) ==0 ) ? 'Por Procesar' : 'Parcial'),   
+                                 "id_medida"=>$row->id_medida,
+                                 "almacen"=>$row->almacen,
+                                 "movimiento"=>$row->movimiento,
+                                 "nombre"=>$row->nombre,
+                                 "id_almacen"=>$row->id_almacen,
+                                 //3=>$row->movimiento,
+
+                               );
+                          }
+                }
+        
+                  return  ( $dato ); 
+              }   
+              else {
+                  
+                  return false; //json_encode($output);
+                  
+
+              }
+
+              $result->free_result();           
+
+      }  
 
 
 
@@ -1003,6 +1353,7 @@ public function totales_importes($where){
 
 
           $this->db->select("prod.codigo_contable, m.id_compra");            
+          $this->db->select('m.nombre_usuario', false); 
           
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1

@@ -595,6 +595,9 @@ class Main extends CI_Controller {
 
 	/////////////hasta aqui toda la gestion de colaboradores////////////	
 
+	
+	
+	//Inicio de vendedores 
 	/////////////presentacion, filtro y paginador////////////	
 	function dashboard() { 
     if($this->session->userdata('session') === TRUE ){
@@ -621,30 +624,11 @@ class Main extends CI_Controller {
 		            case 4:
 		                $this->load->view( 'principal/dashboard',$data );
 		              break;
-		              /*
-		            case 2:
-		            	$data['id_almacen'] =  $this->session->userdata('id_almacen');
-		              	$status_almacen  = $this->modelo->status_almacen($data);       
-		              	if ($status_almacen->activo==1) {
-		              		$this->load->view( 'principal/dashboard',$data );	
-		              	} else {
-		              		$this->login();
-		              		//redirect('');		
-		              		
-		              	}
-		              break;
-					*/
 		            case 3: //vendedor
 		                $data['colores'] =  $this->catalogo->listado_colores(  );
 		            	$data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
 		                $this->load->view( 'principal/inicio',$data );
 		              break;
-		            /*case 5: //conteo
-		                $data['colores'] =  $this->catalogo->listado_colores(  );
-		            	$data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
-		                $this->load->view( 'principal/conteo_fisico',$data );
-		              break;	*/	
-
 		            default:  
 		              redirect('');
 		              break;
@@ -734,8 +718,8 @@ class Main extends CI_Controller {
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 		      $data['consecutivo']  = $this->catalogo->listado_consecutivo(16);
-	          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
-	          $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+	          $data['facturas']   = $this->catalogo->listado_tipos_facturas_especifico(1);
+	          $data['pedidos']   = $this->catalogo->listado_tipos_pedidos_especifico(3);
 
 	
 			      switch ($id_perfil) {    

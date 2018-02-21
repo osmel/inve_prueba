@@ -1144,7 +1144,8 @@
             )';   
 
 
-          $where_total ='';
+          
+        /*
           if ( (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null))
             and (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null))
             and (($id_color!="0") AND ($id_color!="") AND ($id_color!= null))
@@ -1179,7 +1180,29 @@
           elseif  (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null)) {
               $where .= ' AND ( p.descripcion  =  "'.$descripcion.'" )';
               $where_total  .= '( p.descripcion  =  "'.$descripcion.'" )';
-          } 
+          } */
+
+
+          $where_total ='';
+          if  (($id_calidad!="0") AND ($id_calidad!="") AND ($id_calidad!= null)) {
+               $where.= (($where!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+               $where_total.= (($where_total!="") ? " and " : "") . "( p.id_calidad  =  ".$id_calidad." )";
+            }     
+            if (($id_composicion!="0") AND ($id_composicion!="") AND ($id_composicion!= null)) {
+                $where.= (($where!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+                $where_total.= (($where_total!="") ? " and " : "") . "( p.id_composicion  =  ".$id_composicion." ) ";
+            } 
+            if  (($id_color!="0") AND ($id_color!="") AND ($id_color!= null)) {
+               $where.= (($where!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+               $where_total.= (($where_total!="") ?  " and " : "") . "( p.id_color  =  ".$id_color." )";
+            }
+            
+            //if ( ($data['val_prod_id'] !="")  && ($data['val_prod_id'] !="0") ) {
+            if (($descripcion!="0") AND ($descripcion!="") AND ($descripcion!= null))  {                
+                $where.= (($where!="") ? " and " : "") . "( p.descripcion  =  '".$descripcion."' )";
+                $where_total.= (($where_total!="") ? " and " : "") . "( p.descripcion  =  '".$descripcion."' )";
+            }
+
 
           $data['where_total']=$where_total;
 
@@ -1803,11 +1826,7 @@
 
             $this->db->select("p.referencia,p.comentario,p.imagen,p.precio,p.ancho,p.codigo_contable", FALSE);  
             $this->db->from($this->productos.' as p');
-
-            
-            //$this->db->where('p.descripcion', $data['val_prod']);
             $this->db->where('p.descripcion', ($data['val_prod']) );
-
             $this->db->where('p.id_color', $data['val_color']);
             $this->db->where('p.id_composicion', $data['val_comp']);
             $this->db->where('p.id_calidad', $data['val_calida']);
@@ -1951,7 +1970,7 @@
   //-----------consecutivo------------------
         public function listado_consecutivo($id=-1){
 
-          $this->db->select('o.id, o.operacion, o.consecutivo, o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_ajuste_factura,o.conse_ajuste_remision'); 
+          $this->db->select('o.id, o.operacion, o.consecutivo, o.conse_factura,o.conse_remision,o.conse_surtido,o.conse_ajuste_factura,o.conse_ajuste_remision, o.conse_bodega'); 
           $this->db->from($this->operaciones .' as o');
 
           if ($id!=-1) {
@@ -3250,6 +3269,23 @@
 
 
 
+      public function catalogo_tipos_facturas(){
+
+
+          $this->db->select('c.id, c.tipo_factura');
+          $this->db->from($this->tipos_facturas.' as c');
+          $where = '( c.estatus <> 1 ) ';
+          $this->db->where($where);
+
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }  
+
 
         public function listado_tipos_facturas($limit=-1, $offset=-1){
           
@@ -3278,6 +3314,23 @@
             $result->free_result();
         }        
 
+
+        public function listado_tipos_facturas_especifico($id){
+          
+          $this->db->select('c.id, c.tipo_factura');
+          $this->db->from($this->tipos_facturas.' as c');
+          $where = '( c.estatus <> '.$id.' ) ';
+          $this->db->where($where);
+         
+          
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }        
 
       
 
@@ -3408,6 +3461,24 @@
                return False;
             $result->free_result();
         }      
+
+
+      public function listado_tipos_pedidos_especifico($id){
+          
+          $this->db->select('c.id, c.tipo_pedido');
+          $this->db->from($this->tipos_pedidos.' as c');
+          $where = '( c.si_remision <> '.$id.' ) ';
+          $this->db->where($where);
+          
+          $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 )
+               return $result->result();
+            else
+               return False;
+            $result->free_result();
+        }      
+
 
 
 
@@ -3781,6 +3852,7 @@
 
                           (( m.id_apartado = 0 ) OR ( m.id_apartado = 3 ) OR ( m.id_apartado = 6 ) ) AND  ( m.estatus_salida = "0" ) AND  (( m.devolucion != 2 ) AND  ( m.id_user_devolucion = "" )) 
                           AND  ( m.cod_devolucion = "" ) 
+                          AND  ( m.on_off = 0 ) 
                         ) AND (m.id_almacen = '.$data['id_almacen'].' )  
                          AND
                         (
@@ -4040,6 +4112,39 @@
       }    
 
 
+      public function buscador_bodegas($data){
+            $this->db->select( 'id' );
+            $this->db->select("almacen", FALSE);  
+            $this->db->from($this->almacenes);
+
+            //AND (id='.$this->session->userdata("id_tienda_cliente").')
+          $where = '(  (activo=1)  AND 
+                        ( id LIKE  "%'.$data['key'].'%" ) OR (almacen LIKE  "%'.$data['key'].'%") 
+
+            )';   
+  
+          $this->db->where($where);
+
+          /*
+            $this->db->where('(LOCATE("'.$data['idproveedor'].'", coleccion_id_actividad) >0)' );
+          */
+              $result = $this->db->get();
+              if ( $result->num_rows() > 0 ) {
+                  foreach ($result->result() as $row) 
+                      {
+                            $dato[]= array(
+                                       "value"=>$row->id." | ".$row->almacen,
+                                       "key"=>$row->id,
+                                       "descripcion"=>$row->almacen
+                                    );
+                      }
+                      return json_encode($dato);
+              }   
+              else 
+                 return False;
+              $result->free_result();
+      }    
+
 public function checar_existente_tienda($data){
             $this->db->select("id", FALSE);         
             $this->db->from($this->catalogo_tiendas);
@@ -4062,6 +4167,26 @@ public function checar_existente_tienda($data){
             $login->free_result();
     } 
 
+
+public function checar_existente_bodega($data){
+            $this->db->select("id", FALSE);         
+            $this->db->from($this->almacenes);
+            $where = '(
+                          ( almacen =  "'.addslashes($data['descripcion']).'" ) 
+              )';   
+  
+            $this->db->where($where);
+
+            
+            $login = $this->db->get();
+            if ($login->num_rows() > 0) {
+                $fila = $login->row(); 
+                return $fila->id;
+            }    
+            else
+                return false;
+            $login->free_result();
+    } 
     
     //checar si el proveedor ya existe
     public function check_existente_proveedor($data){
