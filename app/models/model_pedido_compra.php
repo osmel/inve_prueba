@@ -282,7 +282,7 @@
                             $imagen ='<img src="'.base_url().$nombre_fichero.$strNoCache.'" border="0" width="100%" height="auto">';
 
                         } else {
-                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            $imagen ='<img src="'.base_url().'img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
 
@@ -528,7 +528,7 @@ public function totales_importes($data){
                             $imagen ='<img src="'.base_url().$nombre_fichero.$strNoCache.'" border="0" width="100%" height="auto">';
 
                         } else {
-                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            $imagen ='<img src="'.base_url().'img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
 
@@ -2148,7 +2148,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
                             $imagen ='<img src="'.base_url().$nombre_fichero.$strNoCache.'" border="0" width="100%" height="auto">';
 
                         } else {
-                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            $imagen ='<img src="'.base_url().'img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
 
@@ -2385,7 +2385,7 @@ public function totales_importes_revisa($data){
                             $imagen ='<img src="'.base_url().$nombre_fichero.$strNoCache.'" border="0" width="100%" height="auto">';
 
                         } else {
-                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            $imagen ='<img src="'.base_url().'img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
                             $dato[]= array(
@@ -2627,7 +2627,7 @@ public function totales_importes_cancela_compra($data){
                             $imagen ='<img src="'.base_url().$nombre_fichero.$strNoCache.'" border="0" width="100%" height="auto">';
 
                         } else {
-                            $imagen ='<img src="img/sinimagen.png" border="0" width="75" height="75">';
+                            $imagen ='<img src="'.base_url().'img/sinimagen.png" border="0" width="75" height="75">';
                         }
 
                           /*
