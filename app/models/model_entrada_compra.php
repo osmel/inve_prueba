@@ -47,7 +47,7 @@
 
 
       $this->historico_historial_compra      = $this->db->dbprefix('historico_historial_compra');
-
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
 
 
       //catalogos
