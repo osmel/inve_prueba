@@ -74,6 +74,11 @@ public function eliminar_remoto(){
           $this->db->set( 'conse_factura', 0 );  
           $this->db->set( 'conse_remision', 0 );  
           $this->db->set( 'conse_surtido', 0 );  
+          $this->db->set( 'conse_bodega', 0 );  
+          $this->db->set( 'conse_transferencia', 0 );  
+          $this->db->set( 'conse_ajuste_remision', 0 );  
+          $this->db->set( 'conse_ajuste_factura', 0 );  
+
           $this->db->update($this->catalogo_operaciones );
 
 
