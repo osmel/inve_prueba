@@ -4069,6 +4069,7 @@
                           (( m.id_apartado = 0 ) OR ( m.id_apartado = 3 ) OR ( m.id_apartado = 6 ) ) AND  ( m.estatus_salida = "0" ) AND  (( m.devolucion != 2 ) AND  ( m.id_user_devolucion = "" )) 
                           AND  ( m.cod_devolucion = "" ) 
                           AND  ( m.on_off = 0 ) 
+                          AND  ( m.id_almacen <> 0 ) 
                         ) AND (m.id_almacen = '.$data['id_almacen'].' )  
                          AND
                         (
