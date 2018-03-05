@@ -324,15 +324,20 @@ public function validar_salida_pedido(){
 	if ($data['id_tipo_pedido']==3) { //bodega
 				
 				 $data['id_tipo_pedido_new'] = 1; //venta
-				$data['id_tipo_factura_new'] = 1; //remision
+				$data['id_tipo_factura_new'] = 1; //factura
 				$parametros=( $this->modelo_salida->procesando_operacion_pedido_bodega($data) );	
 
 				//die;
 				 $data['id_tipo_pedido_new'] = 1; //venta
 				$data['id_tipo_factura_new'] = 2; //remision
-				$parametros=( $this->modelo_salida->procesando_operacion_pedido_bodega($data) );
+				$parametros1=( $this->modelo_salida->procesando_operacion_pedido_bodega($data) );
 				
 				if  ( $this->modelo_salida->checar_bodega_sihay2_tipoFactura($data) == false ) { //Solo se creo 1 salida, por tanto va directo
+					 
+					  $data['id_tipo_factura_new']= ($parametros !=FALSE) ? 1 : 2;
+					  $parametros= ($parametros !=FALSE) ? $parametros : $parametros1;
+					  
+					  				
 						redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  ) ;
 				} else { // se creo 2 salidas
 
