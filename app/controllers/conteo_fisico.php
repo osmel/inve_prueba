@@ -313,7 +313,7 @@ public function historial_conteos($data){
                $data['id_factura'] = 1;
                $data['productos']  = $this->catalogo->listado_productos_existente($data);
 
-               $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');  
+               $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();  
 
               switch ($id_perfil) {    
                 case 1: 
@@ -430,7 +430,7 @@ function conteos_opciones() {
                     
                     $data['dato']['filtro']   = $this->model_conteo_fisico->obtener_filtro($data);
 
-                     $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+                     $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 
               switch ($id_perfil) {    
                 case 1: 
@@ -579,7 +579,7 @@ public function procesar_conteo($id_almacen,$id_descripcion,$id_color,$id_compos
                 $coleccion_id_operaciones = array();
            }   
 
-            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+            $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
             $data['dato']['vista']  = "tabla_conteos"; 
@@ -804,7 +804,7 @@ public function ajustes($data){
                 $coleccion_id_operaciones = array();
            }   
 
-            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+            $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 
@@ -881,7 +881,7 @@ public function entrada_sobrante($modulo,$retorno){
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
            $data['almacenes']   = $this->modelo->listado_almacenes();
-           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+           $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
 
@@ -908,7 +908,7 @@ public function entrada_sobrante($modulo,$retorno){
             $data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
             $data['productos']   = $this->catalogo->listado_productos_unico_activo();
 
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
               $data['pagos']   = $this->catalogo->listado_tipos_pagos();
 
             
@@ -1097,7 +1097,7 @@ public function validar_proceso_sobrante(){
            $data['productos'] = $this->catalogo->listado_productos_unico();
            $data['colores'] = $this->catalogo->listado_colores_unico();
            $data['almacenes']   = $this->modelo->listado_almacenes();
-           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+           $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
 
@@ -1363,7 +1363,7 @@ public function resumen_conteo(){
                 $coleccion_id_operaciones = array();
            }   
 
-            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+            $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
             $data['almacenes']   = $this->modelo->listado_almacenes();  
             $data['productos'] = $this->catalogo->listado_productos_unico(); 
 

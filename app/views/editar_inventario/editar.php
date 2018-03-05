@@ -152,7 +152,7 @@ echo form_open('validar_edicion_producto', $attr);
 
 		<div class="col-xs-12 col-sm-6 col-md-2">
 			<div class="form-group">
-				<label for="descripcion" class="col-sm-12 col-md-12">Tipo de factura</label>
+				<label for="descripcion" class="col-sm-12 col-md-12">Tipo</label>
 				<div class="col-sm-12 col-md-12">
 					<fieldset disabled>	
 						<select name="id_factura" id="id_factura" class="form-control">

@@ -68,8 +68,8 @@
 	</div>
 
 
-
-		   <div class="col-xs-12 col-sm-6 col-md-3" <?php echo 'style="display:'.( (($config_almacen->activo==0) ) ? 'none':'block').'"'; ?> >
+			<?php //echo (($val_proveedor) ? (($val_proveedor->on_off==2) ? 'block' : 'none') :'none' ); ?>"
+		   <div class="col-xs-12 col-sm-6 col-md-2 id_almacen_generar_pedido" <?php echo 'style="display:'.(($val_proveedor) ? (($val_proveedor->on_off==2) ? 'block' : 'none') :'none' ).'"'; ?> >
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
@@ -77,18 +77,19 @@
 					    <div class="form-group">
 							<label for="id_almacen_generar_pedido">Almacén</label>
 							<div >
-							    <!--Los administradores o con permisos de entrada 
-							    							****2121 sistema.js por ajax deshabilita sino hay en la regilla 
-							    	que no sean almacenista 
-							    	ENTONCES lista editable -->
-							    <?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(4, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
-									 <fieldset class="disabled_almacen">				
-								<?php } else { ?>	
-									 <fieldset class="disabled_almacen" disabled>
-								<?php } ?>	
+							    
+
+												<?php if ($val_proveedor) { ?>
+													<fieldset class="disabledme" disabled>							
+													
+												<?php } else { ?>
+													<fieldset class="disabledme">						
+													
+												<?php } ?>
+
 											<select name="id_almacen_generar_pedido" id="id_almacen_generar_pedido" class="form-control">
-												<!--<option value="0">Selecciona una opción</option>-->
-													<option value="0">Todos</option>
+												
+													<!--<option value="0">Todos</option>-->
 													<?php foreach ( $almacenes as $almacen ){ ?>
 															<?php 
 															   
@@ -131,7 +132,7 @@
 									<fieldset class="disabledme">						
 								<?php } ?>
 
-											<select name="id_tipo_pedido" id="id_tipo_pedido"  pantalla="generar_pedidos"class="form-control">
+											<select name="id_tipo_pedido" id="id_tipo_pedido"  pantalla="generar_pedidos" class="form-control">
 												<!--<option value="0">Selecciona una opción</option>-->
 													<?php foreach ( $pedidos as $pedido ){ ?>
 															<?php 
@@ -158,7 +159,7 @@
 
 					<?php
 					$mostrando ="display:block";
-					 if (($val_proveedor) && ($val_proveedor->id_tipo_pedido==2)) { 
+					 if (($val_proveedor) && ($val_proveedor->id_tipo_pedido!=1)) { 
 
 								$mostrando ="display:none";
 							}
@@ -169,7 +170,7 @@
 					<!--Tipos de factura -->
 					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" style="<?php echo $mostrando; ?>";>
 					    
-							<label for="id_tipo_factura" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<label for="id_tipo_factura" class="col-sm-3 col-md-12">Tipo</label>
 							<div class="col-sm-9 col-md-12">
 							    <!--Los administradores o con permisos de entrada 
 							    	Y que no este inhabilitado y 
@@ -211,42 +212,20 @@
 					<div class="col-xs-12 col-sm-6 col-md-3" >
 						<?php if ($val_proveedor) { ?>
 							<fieldset class="disabledme" disabled>							
-								<?php 
-									/*
-									if ($val_proveedor->on_off==1) {
-										$marca='checked'; 
-										$name= 'editar_tienda';
-									} else {
-										$marca='';	
-										$name= 'editar_proveedor';
-									}*/
-								?>
-
-							
+													
 						<?php } else { ?>
 							<fieldset class="disabledme">						
-							<?php 
-								/*
-								$marca='';	
-								$name= 'editar_proveedor';
-								*/
-							?>	
+						
 						<?php } ?>
 							
 								
 							<div class="form-group">
 
-								<button data-on="Cliente" data="editar_proveedor" class="btn btn-danger  on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==0) ? 'activo' : 'btn-outline' ) :'activo' ); ?>" ">Cliente</button>
+								<button data-on="Cliente" data="editar_proveedor" class="btn btn-danger  on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==0) ? 'activo' : 'btn-outline' ) :'activo' ); ?>" >Cliente</button>
 
 								<button data-on="Tienda" data="editar_tienda" class="btn btn-success on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==1) ? 'activo' : 'btn-outline') :'btn-outline' ); ?>" >Tienda</button>
 								
-								<button  data-on="Bodega" data="editar_bodega" class="btn btn-warning on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==2) ? 'activo' : 'btn-outline') :'btn-outline' ); ?>" ">Bodega</button>
-
-								<!--<label for="descripcion">Cliente</label> 
-								<input type="checkbox" data-toggle="toggle" data-on="Tienda" data-off="Cliente" data-onstyle="success" data-offstyle="danger" id="on-off" <?php echo $marca; ?> >
-								-->
-
-
+								<button  data-on="Bodega" data="editar_bodega" class="btn btn-warning on-off <?php echo (($val_proveedor) ? (($val_proveedor->on_off==2) ? 'activo' : 'btn-outline') :'btn-outline' ); ?>" >Bodega</button>
 
 								
 								

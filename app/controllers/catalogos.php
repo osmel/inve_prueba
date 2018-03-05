@@ -75,14 +75,9 @@ class Catalogos extends CI_Controller {
     echo $busqueda;
   } 
 
-
-
-
  
   public function procesando_cat_producto(){
     $data=$_POST;
-   
-
     $busqueda = $this->catalogo->buscador_cat_producto($data);
     echo $busqueda;
   } 

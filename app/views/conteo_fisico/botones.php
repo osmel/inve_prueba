@@ -181,7 +181,7 @@
 					<!--Tipos de factura -->
 						<div class="col-xs-12 col-sm-6 col-md-3" >
 								
-									<label for="descripcion">Tipo de Factura</label>
+									<label for="descripcion">Tipo</label>
 								    <!--Los administradores o con permisos de entrada 
 								    	Y que no este inhabilitado y 
 								    	que no sean facturaista 

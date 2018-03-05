@@ -79,7 +79,7 @@ class Inventario extends CI_Controller {
               $data['estatuss']  = $this->catalogo->listado_estatus_excluir(-1,-1,9);
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
 
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
               $data['pagos']   = $this->catalogo->listado_tipos_pagos();
 
 

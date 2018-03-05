@@ -375,11 +375,18 @@ public function totales_importes($where){
               $this->db->set( 'conse_remision', 'conse_remision+1', FALSE  );  
           }
             $this->db->set( 'consecutivo', 'consecutivo+1', FALSE  );  
-
-
           $this->db->set( 'id_usuario', $id_session );
           $this->db->where('id',70);
           $this->db->update($this->operaciones);
+
+
+          //actualizando nuevos consecutivos
+           $this->catalogo->actualizando_nuevos_consecutivos($data);
+           
+           //Obtener nuevos consecutivos
+           $new_consecutivo   = $this->catalogo->consecutivo_general($data);
+
+
           
 
             
@@ -411,6 +418,15 @@ public function totales_importes($where){
           $this->db->select($consecutivo.' AS movimiento',false); // 
           $this->db->select($consecutivo_unico.' AS movimiento_unico',false); //cambio
 
+
+          $this->db->select($new_consecutivo->c1.' AS c1',false); 
+          $this->db->select($new_consecutivo->c2.' AS c2',false); 
+          $this->db->select($new_consecutivo->c1234.' AS c1234',false); 
+          $this->db->select($new_consecutivo->c234.' AS c234',false); 
+          $this->db->select($new_consecutivo->c34.' AS c34',false);           
+
+
+
           //id_empresa (poner el origin de tienda desde donde viene la transferencia)
             
           $this->db->select('id_tienda_origen AS id_empresa');  //                
@@ -441,6 +457,14 @@ public function totales_importes($where){
 
               $this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
               $this->db->select('"'.addslashes($num_movimiento_unico).'" AS movimiento_unico',false); 
+
+
+              $this->db->select($new_consecutivo->c1.' AS c1',false); 
+              $this->db->select($new_consecutivo->c2.' AS c2',false); 
+              $this->db->select($new_consecutivo->c1234.' AS c1234',false); 
+              $this->db->select($new_consecutivo->c234.' AS c234',false); 
+              $this->db->select($new_consecutivo->c34.' AS c34',false); 
+              
               $this->db->select($data['id_almacen'].' AS id_almacen',false);  
               $this->db->select($data['id_factura'].' AS id_factura',false);  
               $this->db->select($data['id_factura'].' AS id_fac_orig',false);  

@@ -23,7 +23,7 @@ public function borrardatos() {
   
   print_r($this->modelo_borrar_datos->eliminar_todos());
   echo '<br/>';
-//  print_r($this->modelo_borrar_datos->eliminar_remoto());
+  print_r($this->modelo_borrar_datos->eliminar_remoto());
 } 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,8 @@ public function modulo_traspaso(){
            $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
 
-           $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+
+           $data['facturas']    = $this->catalogo->catalogo_tipos_facturas();
            $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
            $dato['id'] = 12;
            $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
@@ -321,7 +322,8 @@ public function modulo_traspaso(){
               $data['coleccion_id_operaciones'] = array();
          }   
          $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-         $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+         
+         $data['facturas']    = $this->catalogo->catalogo_tipos_facturas();
            
           switch ($id_perfil) {    
             case 1:          

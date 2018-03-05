@@ -14,6 +14,13 @@ class Entradas extends CI_Controller {
 	}
 
 
+public function consecutivo_entrada(){
+	$data=$_POST;
+	$data['conse_general']  	= $this->catalogo->consecutivo_general($data);
+	echo json_encode($data['conse_general']);
+
+}	
+
 //***********************Todos los recepciones**********************************//
 	
 
@@ -31,8 +38,26 @@ class Entradas extends CI_Controller {
 		       	$data['lotes']      	= $this->catalogo->listado_lotes(-1,-1,'1');
 
 		       	$data['consecutivo']  	= $this->catalogo->listado_consecutivo(1);
+
+
 		       	$data['movimientos']  	= $this->model_entrada->listado_movimientos_temporal();
 		       	$data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
+		       	//print_r($data['val_proveedor']); die;
+
+		       	$data['id_operacion']  =  1; //entrada
+		       	if  ($data['val_proveedor']) {
+		       		$data['conse_general']  	=$data['val_proveedor'];
+		       	} else {
+
+			       	  
+			        	$data['id_almacen']  =  1; //bod.1
+			       	    $data['id_factura']  =  1;  //factura
+			       	     $data['id_pedido']  =  0; //no tiene pedido
+				     	 $data['conse_general']  	= $this->catalogo->consecutivo_general($data);
+		       	}
+
+
+
 		       	$data['productos']   	= $this->catalogo->listado_productos_unico_activo();
     	        $data['almacenes']   	= $this->modelo->coger_catalogo_almacenes(2);
     	        $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
@@ -174,6 +199,14 @@ class Entradas extends CI_Controller {
           $data['id_estatus']   = $this->input->post('id_estatus');
 
           $data['id_lote']   		= $this->input->post('id_lote');
+
+
+          $data['c1']   		= $this->input->post('c1');
+          $data['c2']   		= $this->input->post('c2');
+          $data['c1234']   		= $this->input->post('c1234');
+          $data['c234']   		= $this->input->post('c234');
+          $data['c34']   		= $this->input->post('c34');
+
           $data         =   $this->security->xss_clean($data);  
           $guardar            = $this->model_entrada->anadir_producto_temporal( $data );
           //print_r($guardar); die;
@@ -261,6 +294,13 @@ class Entradas extends CI_Controller {
 		
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
+
+
+              
+                
+              $data['id_operacion'] =1;	     
+              $data['id_pedido']  =  0; //no tiene pedido
+		      $data['id_almacen']   = $this->input->post('id_almacen');
 		      $data['id_factura']   = $this->input->post('id_factura');
 		      $data['id_estatus']   = 0; //$this->input->post('id_estatus');
 
@@ -278,7 +318,7 @@ class Entradas extends CI_Controller {
 
 
 		      		//copiar a tabla "registros" e "historico_registros_entradas"
-		      		$data['id_operacion'] =1;
+		      		
 	      			$data['num_mov'] = $this->model_entrada->procesando_operacion($data);
 	      			
 			        $this->load->library('ciqrcode');
@@ -333,6 +373,7 @@ class Entradas extends CI_Controller {
 			$data['id_factura'] = base64_decode($id_factura);
 			//$data['id_estatus'] = base64_decode($id_estatus);
 			 $data['id_estatus']   = 0; 
+			 $data['id_operacion']= 1;
 
 		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
@@ -349,6 +390,8 @@ class Entradas extends CI_Controller {
 			      switch ($id_perfil) {    
 			        case 1:          
 						    $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+						    //echo 'sad';
+						   // print_r($data['movimientos']);die;
 			                $this->load->view( 'pdfs/pdfs_view',$data );
 			          break;
 			        case 2:

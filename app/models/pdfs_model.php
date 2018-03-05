@@ -93,10 +93,12 @@ class Pdfs_model extends CI_Model
 
             $this->db->from($this->historico_registros_salidas.' as m');
 
+
             $this->db->where('m.id_operacion',2);
-            $this->db->where('m.mov_salida',$data['id_movimiento']);
+            $this->db->where('m.mov_salida_unico',$data['id_movimiento']);
             $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
             $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
+
 
             if (!(isset($data['id_estatus']))) {
                $this->db->where('m.id_estatus !=',15);
@@ -130,7 +132,7 @@ class Pdfs_model extends CI_Model
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario'); //, m.fecha_mac fecha
           $this->db->select("(DATE_FORMAT(m.fecha_entrada,'%d-%m-%Y %H:%i')) as fecha",false);
 
-          //$this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y  %H:%I:%S")  fecha', false);
+          
 
           $this->db->select('
                         CASE m.id_estatus
@@ -145,7 +147,8 @@ class Pdfs_model extends CI_Model
           $this->db->select('m.peso_real');
           $this->db->select('a.almacen');
 
-          $this->db->select('m.id_factura');
+          $this->db->select('m.id_factura, m.c234, m.id_operacion, m.devolucion');
+          $this->db->select('tipfac.tipo_factura, m.id_almacen');
           
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
@@ -155,13 +158,14 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');          
           $this->db->join($this->productos.' as prod', 'prod.referencia = m.referencia','LEFT');
 
+          
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
 
-          //$this->db->where('m.id_usuario',$id_session);
-          //$this->db->where('m.movimiento_unico',$data['id_movimiento']);
-          //$this->db->where('m.devolucion',$data['dev']);
+
+          
 
           $where='';
-          //$where.=  "(  m.movimiento_unico = ".$data['id_movimiento'].')';
+          
           
           
 
@@ -182,6 +186,7 @@ class Pdfs_model extends CI_Model
             $where.= (($where!="") ? " and " : "") . ' m.id_factura = '.$data["id_factura"];
           }  
 
+          /*
           if ($data['tipo_entrada']=='D') {
               $where.= (($where!="") ? " and " : "") . '  ( m.devolucion <>  0) ';  //devoluciones
           } else if ($data['tipo_entrada']=='C') {
@@ -192,7 +197,29 @@ class Pdfs_model extends CI_Model
              $where.= (($where!="") ? " and " : "") . '  ( m.nombre_usuario <>  "" ) ';   //Transferencia
           }    
 
-          
+          */
+
+          if ($data['tipo_entrada']=='E') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  1 ) and ( m.devolucion =  0) and ( m.id_compra =  0)  '; 
+          } 
+
+          if ($data['tipo_entrada']=='B') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  72 ) ';  //compra
+          } 
+
+          if ($data['tipo_entrada']=='T') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  70 ) ';  //compra
+          } 
+
+
+          if ($data['tipo_entrada']=='D') {
+              $where.= (($where!="") ? " and " : "") . ' ( m.devolucion <>  0) ';  //devoluciones
+          } 
+
+          if ($data['tipo_entrada']=='C') {
+              //$nomb_usuario = ' and ( m.id_compra <>  0) ';  //compra
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  71 ) ';  //compra
+          } 
 
            
           
@@ -272,6 +299,8 @@ class Pdfs_model extends CI_Model
           $this->db->where('m.mov_salida_unico',$data['id_movimiento']);
           $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
           $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
+
+          $this->db->group_by('m.id');
 
           if (!(isset($data['id_estatus']))) {
              $this->db->where('m.id_estatus !=',15);

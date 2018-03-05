@@ -307,7 +307,7 @@
 					<!--Tipos de factura -->
 					<div class="col-xs-12 col-sm-6 col-md-2 tipo_factura" style="<?php echo $mostrando; ?>";>
 					    
-							<label for="id_tipo_factura_salida" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<label for="id_tipo_factura_salida" class="col-sm-3 col-md-12">Tipo</label>
 							<div class="col-sm-9 col-md-12">
 							    <!--Los administradores o con permisos de entrada 
 							    	Y que no este inhabilitado y 

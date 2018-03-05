@@ -30,7 +30,7 @@ class Ctasxpagar extends CI_Controller {
            }   
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
               
               $dato['id'] = 7;
               $data['config_factura'] = $this->catalogo->coger_configuracion($dato); 

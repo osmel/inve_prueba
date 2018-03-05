@@ -108,9 +108,9 @@
 			
 
 
-							<div class="col-sm-2 col-md-2 tipo_factura">
+							<div class="col-sm-2 col-md-2 tipo_factura" >
 
-							<label for="id_tipo_factura" class="col-sm-12 col-md-12 ">Tipo de factura</label>
+							<label for="id_tipo_factura" class="col-sm-12 col-md-12 ">Tipo</label>
 							<div class="col-sm-12 col-md-12">
 							    <!--Los administradores o con permisos de entrada 
 							    	Y que no este inhabilitado y 

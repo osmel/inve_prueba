@@ -338,7 +338,13 @@ $route['procesar_entradas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'entradas/pr
 
 $route['procesar_entrar/(:any)/(:any)/(:any)']   				 = 'entradas/procesar_entrar/$1/$2/$3';
 
+
+
+
 $route['validar_proceso']    = 'entradas/validar_proceso';
+
+$route['consecutivo_entrada']    = 'entradas/consecutivo_entrada';
+
 
 
 $route['generar_etiquetas/(:any)/(:any)/(:any)/(:any)']   		  = 'pdfs/generar_etiquetas/$1/$2/$3/$4';
@@ -403,6 +409,10 @@ $route['confirmar_proc_pedido_sino']    = 'salidas/confirmar_proc_pedido_sino';
 $route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3/$4/$5';
 $route['validar_salida_pedido']    = 'salidas/validar_salida_pedido';
 $route['detalles_salidas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3/$4/$5';
+
+$route['detalles_salidas_bodegas/(:any)']    = 'salidas/detalles_salidas_bodegas/$1';
+
+
 
 
 ///para el caso de salida por pedidos "apartados" VENDEDOR
@@ -877,6 +887,8 @@ $route['transferencia_recibida']						= 'transferencias/transferencia_recibida';
 $route['procesando_transferencia_recibida']						= 'transferencias/procesando_transferencia_recibida';
 
 $route['validar_proceso_transferencia']						= 'transferencias/validar_proceso_transferencia';
+
+$route['procesar_entrar_transferencia/(:any)/(:any)/(:any)']   				 = 'transferencias/procesar_entrar_transferencia/$1/$2/$3';
 
 
 

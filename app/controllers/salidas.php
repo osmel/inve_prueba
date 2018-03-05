@@ -160,7 +160,7 @@ public function validar_apartado_pedido(){
 	//aqui me quede
 	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		//redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 		
 
 		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
@@ -196,7 +196,7 @@ public function confirmar_proc_pedido_sino(){  //5252
 				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
 				   $data['on_off'] =  (int)$this->input->post('on_off');			       
 				   $data['id_apartado']=5;  //esta en via de ser procesado un apartado
-			      $existe = $this->modelo_salida->existencia_pedido_salida($data);
+			      $existe = $this->modelo_salida->existencia_pedido_salida($data);  //ok
 
 			      $errores='';	
 
@@ -302,7 +302,7 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_ped
 //cuando dice "si" con la modal de confirmar el pedido
 public function validar_salida_pedido(){ 
 
-
+	
 	//print_r($db['remoto']['database']);die;
 	
 		$data['id_cargador'] = $this->input->post('id_cargador');
@@ -312,25 +312,109 @@ public function validar_salida_pedido(){
 	$data['id_almacen'] = $this->input->post('id_almacen');
 	$data['id_apartado']=5;  //esta en via de ser procesado un apartado
 
-	
+
 
 	if ($data['id_tipo_factura']!=0) {
 		$this->modelo_salida->traspaso_pedido($data);
 	}
 
 
-	$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );
+	//print_r($data);	die;	
+
+	if ($data['id_tipo_pedido']==3) { //bodega
+				
+				 $data['id_tipo_pedido_new'] = 1; //venta
+				$data['id_tipo_factura_new'] = 1; //remision
+				$parametros=( $this->modelo_salida->procesando_operacion_pedido_bodega($data) );	
+
+				//die;
+				 $data['id_tipo_pedido_new'] = 1; //venta
+				$data['id_tipo_factura_new'] = 2; //remision
+				$parametros=( $this->modelo_salida->procesando_operacion_pedido_bodega($data) );
+				
+				if  ( $this->modelo_salida->checar_bodega_sihay2_tipoFactura($data) == false ) { //Solo se creo 1 salida, por tanto va directo
+						redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  ) ;
+				} else { // se creo 2 salidas
+
+					redirect('detalles_salidas_bodegas/'.base64_encode($data['num_mov']) );	
+				}
+
+	} else {
+		$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );	
+
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+	}	
+
+	
 
 
 	//print_r($parametros);die;
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		
 
 }	
 
 
 
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+	//2da regilla(reporte) para Imprimir el pdf (solo para bodegas)
+/////////////////////////////////////////////////////////////////////////////////
 
+public function detalles_salidas_bodegas($num_movimiento_pedido){
+			
+
+		 if($this->session->userdata('session') === TRUE ){
+		      $id_perfil=$this->session->userdata('id_perfil');
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }  
+	      			
+	      			$num_movimiento_pedido  = base64_decode($num_movimiento_pedido);
+	      			 $data['movimientos'] = $this->modelo_salida->bodegas_agrupado_tipoFactura($num_movimiento_pedido) ; 
+	      			 //print_r($data['movimientos']);
+	      			//die;
+	      			//aqui es donde tengo que traer todos los datos para crear el redirect a detalles_salidas  
+	      			//detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura)
+	      			/*
+			'detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  )
+					
+					-->
+	      			*/
+
+		      		//$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros_bodega($data);
+
+
+
+					      switch ($id_perfil) {    
+					        case 1:          
+								       
+					                   $this->load->view( 'pdfs/salidas/multiples_salida_bodega',$data );
+					          break;
+					        case 2:
+					        case 3:
+					        case 4:
+					              
+					              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
+					                   $this->load->view( 'pdfs/salidas/multiples_salida_bodega',$data );
+					              } else {
+					          		 redirect('');    	
+					              }  
+
+					          break;
+
+
+					        default:  
+					          redirect('');
+					          break;
+					      }
+			      
+		    }
+		    else{ 
+		      redirect('');
+		    }  
+	}
 
 
 
@@ -484,7 +568,7 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
 
-     		   $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+     		   $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 
 			   $dato['id'] = 10;

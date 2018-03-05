@@ -98,6 +98,7 @@
 
 
 
+ 
  //regilla1 "nuevo_pedido_compra"
  public function buscador_entrada_compra($data){
 
@@ -2538,7 +2539,7 @@ public function totales_importes_cancela_compra($data){
           
 
           $this->db->select("SQL_CALC_FOUND_ROWS(p.id)"); //
-          $this->db->select('p.id, p.referencia,p.codigo_contable');
+          $this->db->select('p.id, p.referencia,p.codigo_contable, m.id_operacion');
           $this->db->select('p.descripcion, p.imagen, c.hexadecimal_color,c.color nombre_color');
           $this->db->select('co.composicion, ca.calidad');
           $this->db->select("pc.ancho,pc.precio");
@@ -2703,7 +2704,7 @@ public function botones_compra($data){
 
               //(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') ))
               $this->db->select('pc.movimiento');  
-              $this->db->select("h.id_compra, h.devolucion, h.movimiento_unico, h.nombre_usuario, h.id_fac_orig, h.id_estatus, h.precio");
+              $this->db->select("h.id_compra, h.devolucion, h.movimiento_unico, h.nombre_usuario, h.id_fac_orig, h.id_estatus, h.precio, h.c234, h.id_operacion");
 
               
               $this->db->from($this->historico_historial_compra.' As pc');
@@ -2723,7 +2724,7 @@ public function botones_compra($data){
                   foreach ($result->result() as $row) {
                     $retorno= "detalle_revision/".base64_encode($row->movimiento).'/'.base64_encode(5);  
 
-                             $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>';   //.' - '.$row->precio
+                             $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->c234.'</a>';   //.' - '.$row->precio
 
                             $dato.=$mov_entrada;
                                        

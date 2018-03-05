@@ -38,6 +38,8 @@ if ($val_proveedor) {
 <input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
 <input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
 
+<input type="hidden" id="id_operacion" name="id_operacion" value="<?php echo $id_operacion; ?>">
+
 <div class="container">
 
 	<br>
@@ -46,9 +48,47 @@ if ($val_proveedor) {
 
 	<div class="row">
 
-		<h4 class="col-xs-12 col-sm-6 col-md-6">Registro de Entradas</h4>
+		<h4 class="col-xs-12 col-sm-6 col-md-6">Registro de Entradas </h4>
 
 		<input type="hidden" id="oculto_producto" name="oculto_producto" value="" color="" composicion="" calidad="">
+
+		<div style="display:none;" class="col-sm-6 col-md-6">
+			
+ 			   
+ 			   <div class="col-xs-6 col-sm-3 col-md-1">
+					    	<div class="form-group">
+								<input type="text" title="1" value="<?php echo $conse_general->c1+(!$val_proveedor); ?>" class="form-control ttip" id="c1" name="c1">
+							</div>	
+				</div>	
+
+				<div class="col-xs-6 col-sm-3 col-md-1">
+					    	<div class="form-group">
+								<input type="text" title="2" value="<?php echo $conse_general->c2+(!$val_proveedor); ?>" class="form-control ttip" id="c2" name="c2">
+							</div>	
+				</div>	
+
+ 			   <div class="col-xs-6 col-sm-3 col-md-1">
+					    	<div class="form-group">
+								<input type="text" title="1234" value="<?php echo $conse_general->c1234+(!$val_proveedor); ?>" class="form-control ttip" id="c1234" name="c1234">
+							</div>	
+				</div>	
+
+				<!--<div class="col-xs-6 col-sm-3 col-md-1" >
+					    	<div class="form-group">
+								<input type="text" title="234" value="<?php echo $conse_general->c234+(!$val_proveedor); ?>" class="form-control ttip" id="c234" name="c234" style="color:red; ">
+							</div>	
+				</div>	-->
+
+ 			   <div class="col-xs-6 col-sm-3 col-md-1">
+					    	<div class="form-group">
+								<input type="text" title="34" value="<?php echo $conse_general->c34+(!$val_proveedor); ?>" class="form-control ttip" id="c34" name="c34">
+							</div>	
+				</div>	
+
+
+		 	
+		</div>
+
 
 		<div class="col-xs-12 col-sm-2 col-md-2">
 				<fieldset class="disabledme">						
@@ -61,7 +101,7 @@ if ($val_proveedor) {
 								<?php } else { ?>
 									<fieldset class="disabledme">						
 								<?php } ?>
-									<select name="id_compra" id="id_compra" class="form-control">
+									<select name="id_compra" id="id_compra" tipo="entrada"  class="form-control">
 											<option value="0" prov_nomb="">Selecciona una opción</option> 
 												<?php foreach ( $compras as $compra ){ ?>
 															<?php 
@@ -101,7 +141,7 @@ if ($val_proveedor) {
 			</fieldset>	
 		</div>
 
-		<div class="col-xs-6 col-sm-3 col-md-2">
+		<div style="display:none;" class="col-xs-6 col-sm-3 col-md-2">
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
@@ -116,6 +156,21 @@ if ($val_proveedor) {
 				</div>
 			</fieldset>			
 		</div>
+
+
+		<div class="col-xs-6 col-sm-3 col-md-2">
+			<fieldset disabled>
+				<div class="form-group">
+					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
+					<div class="col-sm-6 col-md-12">
+
+								<input type="text" title="234" value="<?php echo $conse_general->c234+(!$val_proveedor); ?>" class="form-control ttip" id="c234" name="c234" style="color:red; ">
+					</div>								
+
+				</div>
+			</fieldset>			
+		</div>
+
 	</div>
 	
 	<div class="row">
@@ -187,7 +242,7 @@ if ($val_proveedor) {
 								<?php } else { ?>	
 									 <fieldset class="disabledme" disabled>
 								<?php } ?>	
-											<select name="id_almacen" id="id_almacen" class="form-control">
+											<select name="id_almacen" id="id_almacen" tipo="entrada"  class="form-control">
 												<!--<option value="0">Selecciona una opción</option>-->
 													<?php foreach ( $almacenes as $almacen ){ ?>
 															<?php 
@@ -254,7 +309,7 @@ if ($val_proveedor) {
 					<!--Tipos de factura -->
 					<div class="col-xs-12 col-sm-6 col-md-2">
 					    
-							<label for="id_factura" class="col-sm-3 col-md-12">Tipo de factura</label>
+							<label for="id_factura" class="col-sm-3 col-md-12">Tipo</label>
 							<div class="col-sm-9 col-md-12">
 							    <!--Los administradores o con permisos de entrada 
 							    	Y que no este inhabilitado y 
@@ -267,7 +322,7 @@ if ($val_proveedor) {
 									<fieldset class="disabledme">						
 								<?php } ?>
 
-											<select name="id_factura" id="id_factura" class="form-control">
+											<select name="id_factura" id="id_factura" tipo="entrada"  class="form-control">
 												<!--<option value="0">Selecciona una opción</option>-->
 													<?php foreach ( $facturas as $factura ){ ?>
 															<?php 

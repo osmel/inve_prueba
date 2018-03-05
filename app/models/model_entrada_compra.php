@@ -441,7 +441,7 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
 
           $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.id_operacion',1);
+          $this->db->where('m.id_operacion',71);
           $this->db->where('m.id_compra <>',0);
 
           $this->db->order_by('m.id_lote', 'asc'); 
@@ -466,13 +466,13 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
           $this->db->select('m.id, m.id_empresa, m.factura,m.id_almacen,m.id_factura,m.id_fac_orig, m.id_fac_orig, m.id_tipo_pago,m.iva');
           $this->db->select('p.nombre');
           $this->db->select('m.id_compra');
-
+          $this->db->select('m.c1, m.c2, m.c1234, m.c234, m.c34, m.id_operacion');
           
           $this->db->from($this->registros_temporales.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
 
           $this->db->where('m.id_usuario',$id_session);
-          $this->db->where('id_operacion',1);
+          $this->db->where('id_operacion',71);
           $this->db->where('m.id_compra <>',0);
 
            $result = $this->db->get();
@@ -524,7 +524,7 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
           $this->db->where('id_usuario',$id_session);
           $this->db->where('id_lote',$data['id_lote']);
           $this->db->where('referencia',$data['referencia']);
-          $this->db->where('id_operacion',1);
+          $this->db->where('id_operacion',71);
 
           $this->db->from($this->registros_temporales);
           $cant = $this->db->count_all_results()+$cant;          
@@ -537,6 +537,13 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
               $this->db->set( 'fecha_entrada', $fecha_hoy  );  
               $this->db->set( 'movimiento', $data['movimiento']); //depende de "id_tipo_pago y id_factura"
               $this->db->set( 'movimiento_unico', $data['movimiento_unico']);   //unico y nuevo
+
+
+              $this->db->set('c1', $data['c1']);   
+              $this->db->set('c2', $data['c2']);   
+              $this->db->set('c1234', $data['c1234']);   
+              $this->db->set('c234', $data['c234']);   
+              $this->db->set('c34', $data['c34']);               
 
               $this->db->set( 'id_compra', $data['id_compra']);   //unico y nuevo
               
@@ -577,12 +584,12 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
 
               $this->db->set( 'id_lote', $data['id_lote']);     
               $this->db->set( 'consecutivo', $i);           //data['consecutivo']
-              $this->db->set( 'id_operacion', 1);           //data['consecutivo']
+              $this->db->set( 'id_operacion', 71);           //data['consecutivo']
 
               $this->db->where('id_usuario',$id_session);
               $this->db->where('id_lote',$data['id_lote']);
               $this->db->where('referencia',$data['referencia']);
-              $this->db->where('id_operacion',1);  //esto significa que es entrada, 
+              $this->db->where('id_operacion',71);  //esto significa que es entrada, 
 
               $this->db->insert($this->registros_temporales);
             
@@ -879,7 +886,7 @@ public function totales_importes($where){
             $this->db->from($this->registros_temporales.' as m');
 
             $this->db->where('m.id',$data['id']);
-            $this->db->where('m.id_operacion',1);
+            $this->db->where('m.id_operacion',71);
             $this->db->where('m.id_compra <>',0);
 
              $result = $this->db->get();
@@ -904,7 +911,7 @@ public function totales_importes($where){
             $this->db->where('id_usuario',$id_session);
             $this->db->where('id_lote',$data->id_lote );
             $this->db->where('referencia',$data->referencia);
-            $this->db->where('id_operacion',1);
+            $this->db->where('id_operacion',71);
             $this->db->where('id_compra <>',0);
 
 
@@ -1051,7 +1058,7 @@ public function totales_importes($where){
           $this->db->where('id_usuario',$id_session);
           $this->db->where('id_lote',$data['id_lote']);
           $this->db->where('referencia',$data['referencia']);
-          $this->db->where('id_operacion',1);
+          $this->db->where('id_operacion',71);
 
           $this->db->from($this->registros_temporales);
           $cant = $this->db->count_all_results(); 
@@ -1079,7 +1086,7 @@ public function totales_importes($where){
             $this->db->where('m.id_usuario',$id_session);
             $this->db->where('id_lote',$data['id_lote']);
             $this->db->where('referencia',$data['referencia']);
-            $this->db->where('id_operacion',1);
+            $this->db->where('id_operacion',71);
 
             $this->db->order_by('m.consecutivo', 'asc'); 
 
@@ -1201,7 +1208,7 @@ public function totales_importes($where){
               $cant=0;
 
               $this->db->where('id_usuario',$id_session);
-              $this->db->where('id_operacion',1);
+              $this->db->where('id_operacion',71);
               $this->db->where('id_compra <>',0);
               $this->db->from($this->registros_temporales);
               $cant = $this->db->count_all_results();          
@@ -1236,6 +1243,12 @@ public function totales_importes($where){
           $this->db->where('id',71);
           $this->db->update($this->operaciones);
 
+          //actualizando nuevos consecutivos
+           $this->catalogo->actualizando_nuevos_consecutivos($data);
+           
+           //Obtener nuevos consecutivos
+           $new_consecutivo   = $this->catalogo->consecutivo_general($data);
+
 
           self::reordenar_new_temporal(); //cambio
           self::actualizando_consecutivo_productos($data['id_operacion']); //cambio
@@ -1250,6 +1263,13 @@ public function totales_importes($where){
           $this->db->select($consecutivo.' AS movimiento',false); //cambio
 
           $this->db->select($consecutivo_unico.' AS movimiento_unico',false); //cambio
+
+
+          $this->db->select($new_consecutivo->c1.' AS c1',false); 
+          $this->db->select($new_consecutivo->c2.' AS c2',false); 
+          $this->db->select($new_consecutivo->c1234.' AS c1234',false); 
+          $this->db->select($new_consecutivo->c234.' AS c234',false); 
+          $this->db->select($new_consecutivo->c34.' AS c34',false); 
 
 
 
@@ -1273,6 +1293,12 @@ public function totales_importes($where){
           }
 
           //aqui es donde voy a agregar "historico_ctasxpagar"
+
+                  $this->db->select($new_consecutivo->c1.' AS c1',false); 
+                  $this->db->select($new_consecutivo->c2.' AS c2',false); 
+                  $this->db->select($new_consecutivo->c1234.' AS c1234',false); 
+                  $this->db->select($new_consecutivo->c234.' AS c234',false); 
+                  $this->db->select($new_consecutivo->c34.' AS c34',false); 
 
                   $this->db->select('"'.addslashes($num_movimiento).'" AS movimiento',false); 
                   $this->db->select('"'.addslashes($num_movimiento_unico).'" AS movimiento_unico',false); 
@@ -1336,8 +1362,8 @@ public function totales_importes($where){
 
           $id_session = $this->session->userdata('id');
                     
-          $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,m.id_fac_orig,id_tipo_pago, iva');
-          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
+          $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.id_empresa, m.factura, m.id_descripcion, m.devolucion, num_partida,id_almacen, a.almacen, id_factura,m.id_fac_orig,id_tipo_pago, iva');
+          $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia, m.id_operacion, m.c234');
           $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y %H:%i") as fecha2', false);
@@ -1369,7 +1395,7 @@ public function totales_importes($where){
              $id_estatusid = '';
           }    
 
-
+          /*
           if ($data['tipo_entrada']!='T') {
              $nomb_usuario = ' and ( m.nombre_usuario =  "" )  and ( m.devolucion =  0) and ( m.id_compra =  0)  ';   //Normal
           } else {
@@ -1383,12 +1409,34 @@ public function totales_importes($where){
           if ($data['tipo_entrada']=='C') {
               $nomb_usuario = ' and ( m.id_compra <>  0) ';  //compra
           } 
+          */
+
+          if ($data['tipo_entrada']=='E') {
+              $nomb_usuario = ' and  ( m.id_operacion =  1 ) and ( m.devolucion =  0) and ( m.id_compra =  0)  '; 
+          } 
+
+          if ($data['tipo_entrada']=='B') {
+              $nomb_usuario = ' and  ( m.id_operacion =  72 ) ';  //compra
+          } 
+
+          if ($data['tipo_entrada']=='T') {
+              $nomb_usuario = ' and  ( m.id_operacion =  70 ) ';  //compra
+          } 
+
+
+          if ($data['tipo_entrada']=='D') {
+              $nomb_usuario = ' and ( m.devolucion <>  0) ';  //devoluciones
+          } 
+
+          if ($data['tipo_entrada']=='C') {
+              $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  //compra
+          } 
 
 
           $where = '(
                       (
                         (( m.id_factura = '.$data['id_factura'].' ) OR ('.$data['dev'].'=1) )  AND
-                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento_unico = '.$data['num_mov'].' ) AND ( m.id_operacion = 1 ) '.$id_estatusid.$nomb_usuario.' 
+                        ( m.devolucion = '.$data['dev'].' ) AND ( m.movimiento_unico = '.$data['num_mov'].' ) AND ( m.id_operacion = 71 ) '.$id_estatusid.$nomb_usuario.' 
                       ) 
 
             )';   

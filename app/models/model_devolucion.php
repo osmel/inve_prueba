@@ -46,6 +46,7 @@
       $this->registros_cambios               = $this->db->dbprefix('registros_cambios');
 
       $this->almacenes             = $this->db->dbprefix('catalogo_almacenes');
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
       
 
 
@@ -442,18 +443,19 @@
           $this->db->select("prod.codigo_contable");  
           $this->db->select("m.id_factura,m.id_compra");
           
-          //$this->db->from($this->registros_entradas.' as m');
+          $this->db->select('tipfac.tipo_factura, m.id_almacen', false); 
+
+          
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
           
 
-          //$this->db->where('m.id_usuario',$id_session);
-          //$this->db->where('m.id_operacion',1);
-          //$this->db->where('m.movimiento',$data['num_mov']);
 
           $where = '(
                       (

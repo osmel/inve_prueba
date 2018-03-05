@@ -48,7 +48,7 @@
 								<th width="5%">SubTotal</th>
 								<th width="5%">IVA</th>
 
-								<th width="6%">Tipo de Factura</th>						
+								<th width="6%">Tipo</th>						
 								<th width="5%">Movimiento</th>
 								<th width="16%">Proveedor</th>
 								<th width="8%">Ingreso</th>

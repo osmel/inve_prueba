@@ -2407,7 +2407,7 @@ public function buscador_ajustes($data){
           
           
 
-          $where_cond= "<b>Tipo de Factura:</b> ".(($data['id_factura']==1) ? "Factura " : "Remisión ").';'.(($data['proveedor']!=' ') ? "<b>Proveedor:</b> ".$data['proveedor'] : '').';'.$where_cond;
+          $where_cond= "<b>Tipo:</b> ".(($data['id_factura']==1) ? "Factura " : "Remisión ").';'.(($data['proveedor']!=' ') ? "<b>Proveedor:</b> ".$data['proveedor'] : '').';'.$where_cond;
 
           foreach ($objeto as $key => $value) {
               $value->filtro = $where_cond;

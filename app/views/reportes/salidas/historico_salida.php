@@ -36,7 +36,7 @@
 
 							<!--Tipos de factura -->
 							<div class="col-xs-12 col-sm-6 col-md-2">
-									<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo de factura</label>
+									<label for="id_factura_historicos" class="col-sm-3 col-md-12">Tipo</label>
 									<div class="col-sm-9 col-md-12">
 													<select name="id_factura_historicos" vista="salida" id="id_factura_historicos" class="form-control">
 															<option value="0">Todos</option>	

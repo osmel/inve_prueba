@@ -32,7 +32,11 @@ echo form_open('pdfs/generar', $attr,$hidden );
 ?>		
 <div class="container margenes">
 			<div class="panel panel-primary">
-			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php echo $num_mov; ?>
+
+
+
+
+			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php  echo '['.(($movimientos[0]->id_operacion==72) ? 'B' : (($movimientos[0]->id_operacion==71) ? 'C' : (($movimientos[0]->devolucion<>0) ? 'D' :  (($movimientos[0]->id_operacion==70) ? 'T' :'E') )) ).']  '.$movimientos[0]->id_almacen.'-'.$movimientos[0]->tipo_factura.'-'.(($movimientos[0]->devolucion<>0) ? $movimientos[0]->movimiento_unico : $movimientos[0]->c234); ?>
 				     &nbsp;  &nbsp;  &nbsp; <b>Almacén</b>: <?php echo $movimientos[0]->almacen; ?>
 			</div>
 			<div class="panel-body">		
@@ -43,7 +47,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<?php $tipo= ($movimientos[0]->id_factura==3) ? 'B-' : (($movimientos[0]->id_compra!=0) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->nombre_usuario!='') ? 'T-' :'E-') )); ?>
+					<?php $tipo= (($movimientos[0]->id_operacion==72) ? 'B-' : (($movimientos[0]->id_operacion==71) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->id_operacion==70) ? 'T-' :'E-') )) ); ?>
 					<a href="<?php echo base_url(); ?>generar_etiquetas_rapida/<?php echo base64_encode($tipo.$num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>" 
 					
 
@@ -57,7 +61,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 				
 				<div class="col-sm-3 col-md-3">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<?php $tipo= ($movimientos[0]->id_factura==3) ? 'B-' : (($movimientos[0]->id_compra!=0) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->nombre_usuario!='') ? 'T-' :'E-') )); ?>
+					<?php $tipo= (($movimientos[0]->id_operacion==72) ? 'B-' : (($movimientos[0]->id_operacion==71) ? 'C-' : (($movimientos[0]->devolucion<>0) ? 'D-' :  (($movimientos[0]->id_operacion==70) ? 'T-' :'E-') )) ); ?>
 					<a href="<?php echo base_url(); ?>generar_notas_rapida/<?php echo base64_encode($tipo.$num_mov); ?>/<?php echo base64_encode($movimientos[0]->devolucion); ?>/<?php echo base64_encode($id_factura); ?>/<?php echo base64_encode($id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>

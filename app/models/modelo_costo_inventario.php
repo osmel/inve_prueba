@@ -256,7 +256,7 @@ public function totales_importes_historica($where){
 
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)");  //, FALSE
-          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida,m.id_operacion, m.c234');
           $this->db->select('m.id_factura,m.id_fac_orig');
           $this->db->select('m.ancho, m.precio, m.codigo');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo,  m.fecha_mac fecha, m.fecha_entrada,m.proceso_traspaso');
@@ -275,6 +275,10 @@ public function totales_importes_historica($where){
           $this->db->select("tff.tipo_factura t_factura,m.nombre_usuario, m.id_compra");  
 
           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+
+          $this->db->select('m.id_almacen,tff.tipo_factura');
+
+
 
           $this->db->from($this->historico_registros_entradas.' as m');
           //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -406,8 +410,8 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
                                       11=> date( 'd-m-Y', strtotime($fecha)),
@@ -601,13 +605,9 @@ public function totales_importes_historica($where){
 
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          //$this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); 
-          //$this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
-          //m.id,m.id_empresa,m.id_operacion, ,m.id_fac_orig, m.id_cargador, m.id_usuario, m.id_color, m.id_composicion, m.id_calidad, m.referencia,
-          //m.id_medida,m.cantidad_royo,, m.comentario, fecha_apartado,
-          //$this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
+          
           $this->db->select("SQL_CALC_FOUND_ROWS(m.movimiento_unico)");  //, FALSE
-          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida');
+          $this->db->select('m.movimiento,m.movimiento_unico, m.factura, m.id_descripcion,  m.num_partida,m.id_operacion, m.c234');
           $this->db->select('m.id_factura,  m.ancho, m.precio,  m.codigo');
           $this->db->select('(m.precio*m.cantidad_um) as subtotal');           
           $this->db->select("(m.precio*m.cantidad_um*m.iva)/100 as sum_iva"); //, FALSE
@@ -625,6 +625,8 @@ public function totales_importes_historica($where){
           $this->db->select("prod.codigo_contable, m.devolucion,m.nombre_usuario,m.id_compra");  
 
           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+          $this->db->select('m.id_almacen,tff.tipo_factura');
+
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
@@ -741,8 +743,8 @@ public function totales_importes_historica($where){
                                       6=>number_format($row->sum_iva, 2, '.', ','),
                                       7=>$row->t_factura,
                                       8=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                       9=>$columna6,
                                       10=>$columna7,
                                       11=> date( 'd-m-Y', strtotime($fecha)),

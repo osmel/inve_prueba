@@ -68,6 +68,7 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 		        	id_tienda_origen: jQuery('option:selected', '#id_transferencia').attr('id_tienda_origen'),
 		        	arreglo_precio:arreglo_precio,
 
+
 		        	
 		        	
 
@@ -104,7 +105,7 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
 						
 												$catalogo = e.target.name;
-												window.location.href = 'procesar_entrar/'+jQuery.base64.encode("T-"+data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val())+'/'+jQuery.base64.encode(jQuery("#id_estatus").val());
+												window.location.href = 'procesar_entrar_transferencia/'+jQuery.base64.encode("T-"+data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val())+'/'+jQuery.base64.encode(jQuery("#id_estatus").val());
 									        	
 									        }
 								});			
@@ -118,10 +119,10 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 
 
 jQuery('body').on('change','#id_transferencia', function (e) {
-		//console.log( jQuery('option:selected', this).attr('id_tienda_origen') );
-
-		//$('option:selected', this).attr('mytag');
+	   
 	  jQuery('#tabla_transferencia_recibida').dataTable().fnDraw();
+	  jQuery('#id_factura[tipo="entrada"]').trigger('change');
+
 });
 
 
@@ -5707,12 +5708,20 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 
 		"columnDefs": [
+
+			            {
+		                "render": function ( data, type, row ) {
+
+		                	return '['+row[12][0]+'] '+row[14]+'-'+row[15]+'-'+row[13];
+		                },
+		                "targets": 0
+		            },
 			    	
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8] 
+		                "targets": [1,2,3,4,5,6,7,8] 
 		            },
 
 
@@ -5738,7 +5747,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [10]
+		                "targets": [10,11,12,13,14,15]
 		            }
 		            
 		          
@@ -5907,12 +5916,21 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 
 		"columnDefs": [
+
+					
+					{ 
+		                "render": function ( data, type, row ) {
+		                		return '['+row[11][0]+'] '+row[12]+'-'+row[13]+'-'+row[0];
+		                },
+		                "targets": [0] 
+		            },
+
 			    	
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7] 
+		                "targets": [1,2,3,4,5,6,7] 
 		            },
 
 
@@ -5935,7 +5953,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [9,10,11]
+		                "targets": [9,10,11,12,13]
 		            }
 		            
 		          
@@ -6119,9 +6137,9 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 			    	 {
 		                "render": function ( data, type, row ) {
 							if (row[13]==null) {
-								return '<b/> Nro.'+row[1];												
+								return '<b/> Nro.'+row[16];												
 							} else {
-								return row[13]+'<b/> Nro.'+row[1];		
+								return row[13]+'<b/> Nro.'+row[16];		
 							}
 
 							
@@ -6158,7 +6176,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [12,13,14,15]
+		                "targets": [12,13,14,15,16]
 		            }
 		            
 		          

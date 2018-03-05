@@ -118,47 +118,6 @@ jQuery('#id_almacen_pedido').change(function(e) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-jQuery('body').on('click','.on-off', function (e) {
-
-	 jQuery(this).siblings().removeClass('activo');
-	 jQuery(this).siblings().addClass('btn-outline');
-	 jQuery(this).removeClass('btn-outline');
-	 jQuery(this).addClass('activo');
-
-
-	 if (jQuery(this).attr('data') == "editar_bodega") {
-		 	jQuery('#id_tipo_pedido option[value="3"]').prop('selected', true);
-		 	jQuery("#id_tipo_pedido").trigger('change');
-			 	//jQuery('#id_tipo_pedido option:eq(2)').prop('selected', true);
- 				//jQuery('#id_tipo_pedido  option:contains("bodega")')
-	} else {
-		if ( jQuery('#id_tipo_pedido option:selected').val() ==3 ) {
-			jQuery('#id_tipo_pedido option[value="1"]').prop('selected', true);
-		 	jQuery("#id_tipo_pedido").trigger('change');
-		}
-	}
-	 jQuery('.buscar_proveedor').prop('name', jQuery(this).attr('data') );
-	 jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
-
-	
-});	
-
-/*
-jQuery('#on-off').change(function() {
-		//alert('asd');
-	      
-	      //console.log($(this).prop('checked'));
-
-	      if ($(this).prop('checked')) {
-	         	jQuery('.buscar_proveedor').prop('name','editar_tienda');
-
-	      } else {
-	      		jQuery('.buscar_proveedor').prop('name','editar_proveedor');
-	      }
-
-	      jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
-});
-*/
 
 
 
@@ -1775,9 +1734,34 @@ jQuery('#editar_prod_devolucion, #editar_prod_inven').on('keyup keypress', funct
 
 
 //actualizar el consecutivo de la entrada. Cuando cambie la id_factura
-jQuery('#id_factura').on('change', function(e) {
+
+
+jQuery('body').on('change','#id_factura[tipo="entrada"], #id_almacen[tipo="entrada"]', function (e) {	
   consecutivo_actual = ( (jQuery(this).val()==1) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
   jQuery("#movimiento").val(consecutivo_actual);
+
+		jQuery.ajax({
+		        url : 'consecutivo_entrada',
+		        data : { 
+		        	id_operacion: jQuery("#id_operacion").val(), 
+		        	  id_almacen: jQuery("#id_almacen").val(),
+		        	  id_factura: jQuery("#id_factura").val(),
+		        	   id_pedido: 0, // no pedido
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+						console.log(data);
+						jQuery("#c1").val( parseInt(data.c1)+1);
+						jQuery("#c2").val( parseInt(data.c2)+1);
+						jQuery("#c1234").val( parseInt(data.c1234)+1);
+						jQuery("#c234").val( parseInt(data.c234)+1);
+						jQuery("#c34").val( parseInt(data.c34)+1);
+						//{c1: "0", c2: "0", c1234: "0", c234: "0", c34: "0"}
+				}
+		});	
+
+
 });
 
 
@@ -1795,6 +1779,7 @@ jQuery('body').on('click','#conf_entrada_compra', function (e) {
 		        		  dato: "valor",
 		        	id_factura: jQuery("#id_factura").val(),
 		        	id_estatus: jQuery("#id_estatus").val(),
+		        	id_almacen: jQuery("#id_almacen").val(),
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -1853,6 +1838,7 @@ jQuery('body').on('click','#conf_entrada', function (e) {
 		        		  dato: "valor",
 		        	id_factura: jQuery("#id_factura").val(),
 		        	id_estatus: jQuery("#id_estatus").val(),
+		        	id_almacen: jQuery("#id_almacen").val(),
 		        },
 		        type : 'POST',
 		        dataType : 'json',
@@ -2132,7 +2118,7 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'SubTotal', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 			
-			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
+			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
 			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
 			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén','Precio'];
 
@@ -4011,6 +3997,8 @@ jQuery('body').on('change','#id_compra', function (e) {
 		
 	  jQuery('input[name=editar_proveedor]').typeahead("val", jQuery('#id_compra option:selected').attr('prov_nomb') );
 	  jQuery('#id_almacen option[value="'+jQuery('#id_compra option:selected').attr('almacen')+'"]').prop('selected', true);
+	  //provocar movimiento en almacen para q actualice los consecutivos
+	  jQuery('#id_factura[tipo="entrada"]').trigger('change');
 
 	  jQuery("#producto").html(''); 
 	  var id_compra= jQuery('#id_compra option:selected').val();
@@ -5152,7 +5140,14 @@ jQuery('#tabla_apartado').dataTable({
 						return row[18];	
 	                },
 	                "targets": [11]
-	            }	            
+	            },
+
+
+  				{ 
+		                 "visible": false,
+		                "targets": [12,13,14,15,16,17,18]
+		        }
+
 
 	],	
 
@@ -5168,12 +5163,14 @@ jQuery('#tabla_apartado').dataTable({
 		}
 
 
+
 		var arreglo =apartado_pendiente;
+		api.column(11).visible(true);	
 		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
 	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
 	    	}
 
-	    api.column(11).visible(true);	
+	    	
 				if (aData.length >0){
       				if (aData[0][18]=="-") {
                 		api.column(11).visible(false);	
@@ -7610,7 +7607,7 @@ jQuery('#pedido_entrada').dataTable( {
  		 				   	     d.ancho = jQuery('#ancho_pedido').val();  		  
  		 					  d.id_color = jQuery('#color_pedido').val();  		  
  		 				  d.id_proveedor = jQuery('#proveedor_pedido').val();  
- 		 				    d.id_almacen = jQuery('#id_almacen_generar_pedido').val();  
+ 		 				    d.id_almacen = (jQuery("#id_tipo_pedido").val()==3) ?  jQuery('#id_almacen_generar_pedido').val() : 0;  
 
 							d.id_tipo_pedido = jQuery("#id_tipo_pedido").val();
 							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura").val();
@@ -8048,7 +8045,7 @@ jQuery('#pedido_salida').dataTable( {
 	                
 			},
 });	
-/*
+
 
 jQuery('body').on('click','.on-off', function (e) {
 
@@ -8058,27 +8055,33 @@ jQuery('body').on('click','.on-off', function (e) {
 	 jQuery(this).addClass('activo');
 
 
-	 if (jQuery(this).attr('data') == "editar_bodega") {
+	if (jQuery(this).attr('data') == "editar_bodega") {  //Bodega
 		 	jQuery('#id_tipo_pedido option[value="3"]').prop('selected', true);
 		 	jQuery("#id_tipo_pedido").trigger('change');
-			 	//jQuery('#id_tipo_pedido option:eq(2)').prop('selected', true);
- 				//jQuery('#id_tipo_pedido  option:contains("bodega")')
+
+			 	
 	} else {
-		if ( jQuery('#id_tipo_pedido option:selected').val() ==3 ) {
+		if ( jQuery('#id_tipo_pedido option:selected').val() ==3 ) {  //tienda
 			jQuery('#id_tipo_pedido option[value="1"]').prop('selected', true);
 		 	jQuery("#id_tipo_pedido").trigger('change');
+
 		}
 	}
-	 jQuery('.buscar_proveedor').prop('name', jQuery(this).attr('data') );
-	 jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
+
+	//cambiar el tipo de proveedor, bodega o tienda
+	jQuery('.buscar_proveedor').prop('name', jQuery(this).attr('data') );
+	jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
 
 	
 });	
-*/
+
 
 
 jQuery('#id_tipo_pedido[pantalla="generar_pedidos"]').on('change', function(e) {
-	if  (jQuery(this).val()==3) {
+
+
+	if  (jQuery(this).val()==3) { //bodega
+		 //aqui
 		 jQuery('.tipo_factura').css('display','none');			
 
 		 if (!(jQuery('button[data="editar_bodega"]').hasClass('activo') )) {
@@ -8087,7 +8090,8 @@ jQuery('#id_tipo_pedido[pantalla="generar_pedidos"]').on('change', function(e) {
 			 jQuery('button[data="editar_bodega"]').removeClass('btn-outline');
 			 jQuery('button[data="editar_bodega"]').addClass('activo');
 		}	 
-	} else if  (jQuery(this).val()==2)  {
+	} else if  (jQuery(this).val()==2)  { //surtido
+		
 		jQuery('.tipo_factura').css('display','none');			
 		if (jQuery('button[data="editar_bodega"]').hasClass('activo') ) {
 			 jQuery('button[data="editar_proveedor"]').siblings().removeClass('activo');
@@ -8095,7 +8099,8 @@ jQuery('#id_tipo_pedido[pantalla="generar_pedidos"]').on('change', function(e) {
 			 jQuery('button[data="editar_proveedor"]').removeClass('btn-outline');
 			 jQuery('button[data="editar_proveedor"]').addClass('activo');
 		}	 
-	} else {
+	} else {  //venta
+		
 		jQuery('.tipo_factura').css('display','block');	
 		if (jQuery('button[data="editar_bodega"]').hasClass('activo') ) {
 			 jQuery('button[data="editar_proveedor"]').siblings().removeClass('activo');
@@ -8104,6 +8109,11 @@ jQuery('#id_tipo_pedido[pantalla="generar_pedidos"]').on('change', function(e) {
 			 jQuery('button[data="editar_proveedor"]').addClass('activo');
 		}
 	}
+
+
+	//alert(jQuery('button.on-off.activo').attr('data'));
+	jQuery('.buscar_proveedor').prop('name', jQuery('button.on-off.activo').attr('data') );
+	jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
 
 	jQuery('#pedido_entrada').dataTable().fnDraw();
 });
@@ -8119,8 +8129,29 @@ jQuery('#id_tipo_pedido[pantalla="generar_pedidos"], #id_tipo_factura[pantalla="
 	consecutivo_actual = (( (jQuery("#id_tipo_pedido").val() == 1) && (jQuery("#id_tipo_factura").val()==1) ) ? jQuery("#conse_factura").val() : jQuery("#conse_remision").val() );
 	consecutivo_actual = ( (jQuery("#id_tipo_pedido").val()==2) ? jQuery("#conse_surtido").val() : consecutivo_actual);
 	consecutivo_actual = ( (jQuery("#id_tipo_pedido").val()==3) ? jQuery("#conse_bodega").val() : consecutivo_actual);
-
+	//activar almacen 
+	if (jQuery("#id_tipo_pedido").val()==3) {
+		jQuery('.id_almacen_generar_pedido').css('display','block');
+	} else {
+		jQuery('.id_almacen_generar_pedido').css('display','none');
+	}
 	jQuery("#movimiento").val(consecutivo_actual);
+
+
+
+
+/*
+editar_proveedor
+editar_tienda
+
+
+jQuery('.buscar_proveedor').prop('name', 'editar_bodega' );
+jQuery('.buscar_proveedor').typeahead("val",'');  //borrar la casilla
+
+*/
+
+
+
 });
 
 

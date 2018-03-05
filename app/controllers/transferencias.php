@@ -29,8 +29,22 @@ class Transferencias extends CI_Controller {
 
 		       	$data['consecutivo']  	= $this->catalogo->listado_consecutivo(70);
 		       	$data['val_proveedor']  = $this->model_entrada->valores_movimientos_temporal();
+
+				$data['id_operacion']  =  70; //entrada
+
+	            if  ($data['val_proveedor']) {
+	              $data['conse_general']    =$data['val_proveedor'];
+	            } else {
+	                $data['id_almacen']  =  1; //bod.1
+	                  $data['id_factura']  =  1;  //factura
+	                   $data['id_pedido']  =  0; //no tiene pedido
+	               $data['conse_general']   = $this->catalogo->consecutivo_general($data);
+	            }
+
+
     	        $data['almacenes']   	= $this->modelo->coger_catalogo_almacenes(2);
-    	        $data['facturas']   	= $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+    	        //$data['facturas']   	= $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+    	        $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
     	        $data['pagos']   		= $this->catalogo->listado_tipos_pagos();
 
     	        $data['transferencias']   		= $this->model_transferencia->listado_transferencias();
@@ -90,7 +104,12 @@ class Transferencias extends CI_Controller {
 		      $data['movimiento_unico']   = $this->input->post('movimiento_unico');
 		      $data['id_tienda_origen']   = $this->input->post('id_tienda_origen');
 
+		      $data['id_operacion'] =70;	     //71
+              $data['id_pedido']  =  0; //no tiene pedido
 		      
+		      
+		      //$data['id_estatus']   = 0; //$this->input->post('id_estatus');
+
 		      $data['dev'] = 0; 
 
 
@@ -116,7 +135,7 @@ class Transferencias extends CI_Controller {
 
 
 		      		//copiar a tabla "registros" e "historico_registros_entradas"
-		      		$data['id_operacion'] =1;
+		      		//$data['id_operacion'] =70;
 	      			$data['num_mov'] = $this->model_transferencia->procesando_operacion_transferencia($data);
 	      			//echo json_encode($data['num_mov']);
 	      			//die;
@@ -162,6 +181,58 @@ class Transferencias extends CI_Controller {
 	
 
 
+//para imprimir la factura despues de procesada
+	public function procesar_entrar_transferencia($num_mov,$id_factura,$id_estatus){ 
+
+		 if($this->session->userdata('session') === TRUE ){
+
+			$data['dev'] = 0;
+
+ 			  $porciones = explode("-", base64_decode($num_mov));
+		      $data['tipo_entrada'] = $porciones[0];
+		      $data['num_mov'] = $porciones[1];
+		      
+			$data['id_factura'] = base64_decode($id_factura);
+			//$data['id_estatus'] = base64_decode($id_estatus);
+			 $data['id_estatus']   = 0; 
+			 $data['id_operacion']= 70;
+
+		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
+		            $coleccion_id_operaciones = array();
+		       }  			
+
+		       $data['etiq_mov'] ="de Entrada";
+
+		       
+
+
+
+		      $id_perfil=$this->session->userdata('id_perfil');
+			      switch ($id_perfil) {    
+			        case 1:          
+						    $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+						    //echo 'sad';
+						   // print_r($data['movimientos']);die;
+			                $this->load->view( 'pdfs/pdfs_view',$data );
+			          break;
+			        case 2:
+			        case 3:
+			        case 4:
+			              if  (in_array(1, $coleccion_id_operaciones))  {                 
+						    $data['movimientos']  = $this->model_entrada->listado_movimientos_registros($data);
+			                $this->load->view( 'pdfs/pdfs_view',$data );
+			             }   
+			          break;
+
+
+			        default:  
+			          redirect('');
+			          break;
+			      }		
+		 }	      
+
+	}	
 
 
 	

@@ -107,13 +107,13 @@ public function listado_pedidos(){
 
 
 					      switch ($this->input->post('on_off')) {    
-					        case 0:          
+					        case 0:  //cliente normal        
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
 					          break;
-					        case 1:
+					        case 1:  //tienda
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_tienda($data);
 					          break;
-					        case 2:
+					        case 2: // bodega
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_bodega($data);
 					          break;
 

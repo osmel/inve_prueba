@@ -14,7 +14,7 @@
 									<span><b>Tipo de Pedido: </b> <?php echo $totales->tipo_pedido; ?></span><br>
 
 									<?php  if ($totales->tipo_factura!="no") { ?>	
-										<span><b>Tipo de factura: </b> <?php echo $totales->tipo_factura; ?></span><br>
+										<span><b>Tipo: </b> <?php echo $totales->tipo_factura; ?></span><br>
 									<?php } ?>		
 
 

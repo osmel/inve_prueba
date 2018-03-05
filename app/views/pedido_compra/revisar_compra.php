@@ -247,7 +247,7 @@
 					<!-- Segunda tabla-->
 					<div class="col-md-12">		
 						
-						<h4>Orden Pedido de Compra</h4>	
+						<h4>Orden de Compra</h4>	
 						<br>	
 						<div class="table-responsive">
 							<section>

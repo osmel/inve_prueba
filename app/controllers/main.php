@@ -610,7 +610,7 @@ class Main extends CI_Controller {
           $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
           $data['productos'] = $this->catalogo->listado_productos_unico();
           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-          $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+          $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 
           $data['medidas']  = $this->catalogo->listado_medidas();
           

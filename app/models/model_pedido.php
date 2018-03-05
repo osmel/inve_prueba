@@ -175,10 +175,8 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)", FALSE); //
 
-          //m.id_empresa, m.id_factura, m.id_operacion,
-          //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          //m.id_medida,m.id_cargador, m.id_usuario, ,  m.fecha_mac fecha
-          $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.factura,  m.id_descripcion, m.devolucion, m.num_partida');
+          
+          $this->db->select('m.id, m.movimiento,m.movimiento_unico, m.factura,  m.id_descripcion, m.devolucion, m.num_partida,m.id_operacion,m.c234');
           $this->db->select('m.cantidad_um, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
           $this->db->select(' m.id_lote, m.consecutivo');
 
@@ -191,15 +189,20 @@
           $this->db->select("prod.codigo_contable, m.nombre_usuario, m.id_compra");  
           
           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+          $this->db->select('tipfac.tipo_factura, m.id_almacen');
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); //,'LEFT'
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color'); //,'LEFT'
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); //,'LEFT'
-          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa'); //,'LEFT'
+          
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
+
+          
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
+
 
           //$this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           
@@ -221,10 +224,12 @@
               $id_tipo_facturaid = '';
           } 
 
+           $id_operacion = '(( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) )';
+
           $where = '(
                       (
                          
-                         (( m.id_apartado = 0 ) AND ( m.id_operacion = "1" ) AND ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 ) )
+                         (( m.id_apartado = 0 ) AND ( '.$id_operacion.' ) AND ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 ) )
                       ) AND ( m.id_estatus <> 14 ) '.$id_almacenid.$id_tipo_facturaid.' 
                        AND
 
@@ -308,7 +313,7 @@
                   foreach ($result->result() as $row) {
 
                          
-                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>';  
+                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>';  
                           
 
 
@@ -453,7 +458,7 @@
           //$this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
           //m.id_empresa,m.id_factura,m.id_operacion, m.id_medida, m.id_usuario, m.id_cargador,, m.id_apartado,   m.fecha_mac fecha, m.cantidad_royo
           //m.precio,, m.comentario
-          $this->db->select('m.id, m.movimiento, m.movimiento_unico, m.factura,  m.id_fac_orig,m.id_descripcion,  m.devolucion, m.num_partida, m.precio');
+          $this->db->select('m.id, m.movimiento, m.movimiento_unico, m.factura,  m.id_fac_orig,m.id_descripcion,  m.devolucion, m.num_partida, m.precio, m.id_operacion,m.c234');
           
           $this->db->select(' m.cantidad_um, m.ancho,  m.codigo');
           $this->db->select('m.id_estatus,  m.consecutivo');
@@ -465,6 +470,7 @@
           $this->db->select("a.almacen, m.nombre_usuario,m.id_compra");
 
           $this->db->select("( CASE WHEN m.nombre_usuario <> '' THEN t.nombre ELSE p.nombre END ) AS nombre");
+          $this->db->select('tipfac.tipo_factura, m.id_almacen');
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -477,6 +483,7 @@
 
           $this->db->join($this->usuarios.' As us' , 'us.id = m.id_usuario_apartado','LEFT');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
 
           //filtro de busqueda
         
@@ -527,7 +534,7 @@
                   foreach ($result->result() as $row) {
 
 
-                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>'; 
+                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>'; 
 
 
 
@@ -1157,7 +1164,7 @@
                     $found_rows = $cantidad_consulta->row(); 
                     $registros_filtrados =  ( (int) $found_rows->cantidad);
 
-
+                     $dato=array();
                   foreach ($result->result() as $row) {
                         $fecha_venc= date( 'd-m-Y h:ia', strtotime($row->fecha_vencimiento));
                         $actual = new DateTime($fecha_venc);
@@ -1815,7 +1822,7 @@
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id_usuario_apartado)"); //
 
           //,m.movimiento,m.consecutivo, m.id_usuario_apartado, m.id_cliente_apartado, c.color nombre_color,
-          $this->db->select('m.peso_real, m.id_estatus, m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.peso_real, m.id_estatus, m.devolucion, m.num_partida,m.id_operacion, m.c234');  //fecha falta
           $this->db->select('p.nombre comprador');  
           $this->db->select('pr.nombre cliente');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as vendedor', FALSE);
@@ -1851,6 +1858,7 @@
           $this->db->select("prod.codigo_contable");  
 
           $this->db->select("m.on_off,m.nombre_usuario,m.id_compra");  
+          $this->db->select('m.id_almacen');
           
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -1863,6 +1871,8 @@
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido'); //,'LEFT'
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura'); //,'LEFT'
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura'); //,'LEFT'
+
+
 
 
 
@@ -1930,8 +1940,8 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                    
                                       4=>
-                                             '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
+                                             '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
 
 
 
@@ -2084,7 +2094,7 @@
 
           $this->db->select("SQL_CALC_FOUND_ROWS(m.id)"); //
           // m.id_usuario_apartado,//m.id_fac_orig,
-          $this->db->select('m.id_estatus, m.peso_real,  m.devolucion, m.num_partida');  //fecha falta
+          $this->db->select('m.id_estatus, m.peso_real,  m.devolucion, m.num_partida,m.id_operacion, m.c234');  //fecha falta
           $this->db->select('pr.nombre dependencia,m.precio');  
           $this->db->select('CONCAT(u.nombre,"  ",u.apellidos) as cliente', FALSE);
           $this->db->select('m.codigo,m.id_descripcion, m.id_lote,m.precio, m.fecha_apartado,m.iva');  
@@ -2133,7 +2143,7 @@
 
           $this->db->select("m.on_off,m.nombre_usuario,m.id_compra");  
 
-
+          $this->db->select('m.id_almacen');
 
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -2151,6 +2161,8 @@
         $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
         $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
 
+          
+          
 
           //filtro de busqueda
 
@@ -2218,8 +2230,8 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.(($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )).$row->movimiento_unico.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
                                       7=>$row->iva,

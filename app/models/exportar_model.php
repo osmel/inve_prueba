@@ -313,7 +313,20 @@ class Exportar_model extends CI_Model
 
           $this->db->select("tff.tipo_factura t_factura");  
 
-          $this->db->select('m.movimiento');
+          //$this->db->select('m.movimiento');
+          $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tff.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
           $this->db->select('p.nombre');
           $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as ppp',false);
             
@@ -325,6 +338,7 @@ class Exportar_model extends CI_Model
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+
           
           
           $this->db->join($this->tipos_facturas.' As tff' , 'tff.id = m.id_factura','LEFT');
@@ -483,7 +497,21 @@ class Exportar_model extends CI_Model
           $this->db->select('c.color');
           $this->db->select('CONCAT(m.cantidad_um, u.medida) cantidad', false);
           $this->db->select('CONCAT(m.ancho, " cm") ancho', false);
-          $this->db->select('m.movimiento');
+          //$this->db->select('m.movimiento');
+
+           $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
 
           if ($estatus!="apartado") { //existencia
               $this->db->select('p.nombre Proveedor');
@@ -537,6 +565,7 @@ class Exportar_model extends CI_Model
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
                                
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';//' OR (m.consecutivo LIKE  "%'.$cadena.'%") ';
@@ -915,6 +944,24 @@ class Exportar_model extends CI_Model
           $this->db->select('CONCAT(m.ancho, " cm") ancho', false);
           $this->db->select('m.movimiento');
 
+          //((m.id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))),
+
+            
+
+          $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
+
           if ($estatus!="apartado") { //existencia
               $this->db->select('p.nombre Proveedor');
               $this->db->select('CONCAT(m.id_lote,"-",m.consecutivo) lote', false);
@@ -968,7 +1015,7 @@ class Exportar_model extends CI_Model
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
-                               
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura');                                
 
 
 

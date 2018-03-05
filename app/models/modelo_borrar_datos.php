@@ -109,6 +109,18 @@ public function eliminar_remoto(){
          $this->db->empty_table( 'inven_historico_registros_transferencia' );
          $this->db->empty_table( 'remoto_registros_transferencia');
          
+
+          $this->db->empty_table( 'inven_consecutivos' );
+
+
+          $this->db->set( 'c1', 0 );  
+          $this->db->set( 'c2', 0 );  
+          $this->db->set( 'c1234', 0 );  
+          $this->db->set( 'c234', 0 );  
+          $this->db->set( 'c34', 0 );  
+
+          $this->db->update('inven_consecutivos' );
+
          /*$this->db->empty_table( 'inven_remoto_colores');
          $this->db->empty_table( 'inven_remoto_composicion');
          $this->db->empty_table( 'inven_remoto_productos');

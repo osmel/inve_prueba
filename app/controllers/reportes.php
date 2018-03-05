@@ -69,7 +69,7 @@ class Reportes extends CI_Controller {
 	                $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
 	             $data['productos'] = $this->catalogo->listado_productos_unico();
 	           $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-	            $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+	            $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 						$dato['id'] = 7;
 			 $data['configuracion'] = $this->catalogo->coger_configuracion($dato);               
 
@@ -106,9 +106,7 @@ class Reportes extends CI_Controller {
           if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
                 $data['coleccion_id_operaciones'] = array();
            } 
-
-               
-                            
+           
                  
 
 		$estatus= $data['extra_search'];  //$row=> 
@@ -187,7 +185,7 @@ public function procesando_detalle_reporte(){
 		       }  
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 				
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -242,7 +240,7 @@ public function procesando_detalle_reporte(){
 
 			  
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
                $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
 
 
@@ -305,7 +303,7 @@ public function procesando_detalle_reporte(){
 
 
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
               $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
 
 		      switch ($id_perfil) {    
@@ -390,7 +388,7 @@ public function procesando_detalle_reporte(){
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 
           switch ($id_perfil) {    
             case 1:          
@@ -444,7 +442,7 @@ public function procesando_costo_inventario(){ //13=>$row->num_partida,
               $data['lotes']  = $this->catalogo->listado_lotes(-1,-1,'1');
               $data['productos'] = $this->catalogo->listado_productos_unico();
               $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-              $data['facturas']   = $this->catalogo->listado_tipos_facturas(-1,-1,'1');
+              $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 
           switch ($id_perfil) {    
             case 1:          
