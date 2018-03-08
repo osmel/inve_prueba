@@ -3905,6 +3905,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 
 	    var arreglo_cant_aprobada = [];
 	    var arreglo_cant_solicitada = [];
+	    var arreglo_precio_aprobado = [];
 	    var arreglo = {};
 
 	   jQuery("#tabla_revisa_pedido_compra tbody tr td input.cant_aprobada").each(function(e) { //cant_solicitada
@@ -3915,6 +3916,18 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 	   		//alert(arreglo['cantidad']);
 	   		arreglo_cant_aprobada.push( arreglo);
 	   });
+
+
+	   jQuery("#tabla_revisa_pedido_compra tbody tr td input.precio_aprobado").each(function(e) { //cant_solicitada
+	   		arreglo = {};
+	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
+	   		arreglo["id_medida"] = jQuery(this).attr('id_medida') ;  
+	   		arreglo['precio'] = jQuery(this).val();
+	   		//alert(arreglo['cantidad']);
+	   		arreglo_precio_aprobado.push( arreglo);
+	   });
+
+
 
 	   jQuery("#tabla_revisa_pedido_compra tbody tr td input.cant_solicitada").each(function(e) { //cant_solicitada
 	   		arreglo = {};
@@ -3930,6 +3943,7 @@ jQuery('body').on('click','#proc_pedido_cambio', function (e) {
 		        type : 'POST',
 		       	data : { 
 		        	arreglo_cant_aprobada:arreglo_cant_aprobada,
+		        	arreglo_precio_aprobado:arreglo_precio_aprobado,
 		        	arreglo_cant_solicitada: arreglo_cant_solicitada,
 		        	id_almacen:id_almacen,		
 		        	factura:factura,
@@ -4188,8 +4202,27 @@ jQuery('#tabla_revisa_pedido_compra').dataTable( {
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [1,2,3,4,5,6,7]
+	                "targets": [1,2,3,4,5,7]
 	            },
+
+				{  //precio aprobado = precio
+	                "render": function ( data, type, row ) {
+						
+						modulo= jQuery("#modulo").val(); 
+
+						habilitar = ((modulo == 1) ? '': 'disabled'); //solo en admin esta deshabilitado
+
+						texto='<td>'; 
+
+						texto+='<fieldset '+habilitar+'>'; 
+							texto+='<input  title="Números y puntos decimales." restriccion="decimal"   id_medida="'+row[16]+'" identificador="'+row[9]+'" value="'+row[6]+'" type="text" class="form-control ttip pedido_compra precio_aprobado"  placeholder="decimal">';							
+						texto+='</fieldset>'; 
+						texto+='</td>';
+						return texto;	
+
+	                },
+	                "targets": 6
+	            },	       
 
 				        
 

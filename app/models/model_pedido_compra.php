@@ -995,6 +995,7 @@ public function totales_importes_salida($data){
 
                 $this->db->set( 'cantidad_aprobada', $value['cantidad'], FALSE  );
                 $this->db->set( 'cantidad_pedida', $data['cant_solicitada'][$key]['cantidad'], FALSE  );
+                $this->db->set( 'precio', $data['precio_aprobado'][$key]['precio'], FALSE  ); //new
                 $this->db->where('id_producto',$value['id']);                
                 $this->db->where('id_medida',$value['id_medida']);     
                 $this->db->where('movimiento',$data['movimiento']);                
@@ -2175,6 +2176,7 @@ ALTER TABLE  `inven_historico_historial_compra` ADD  `id_proveedor` INT( 11 ) NO
                                       14=>"",
                                       15=>$row->medida,
                                       16=>$row->id_medida,
+                                      //17=>$row->precio_aprobado,
 
                                       
                                       

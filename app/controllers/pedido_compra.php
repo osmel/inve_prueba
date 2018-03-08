@@ -419,7 +419,7 @@ public function detalle_revision($movimiento, $modulo){
            
 
            switch ($data['modulo']) {
-             case 1:
+             case 1: //revisión admin
                   $data['retorno'] ='/pendiente_revision';
                   $revisar = 'revisar_compra';
                   $data['val_compra']  = $this->model_pedido_compra->valores_revision_temporal($data);
@@ -439,8 +439,8 @@ public function detalle_revision($movimiento, $modulo){
                   $revisar = 'revisar_compra_cancelada';
                   $data['val_compra']  = $this->model_pedido_compra->valores_revision_cancelar($data);
                break;
-             case 5:
-                  $data['retorno'] ='/gestionar_pedido_compra';
+             case 5:  //Historico
+                  $data['retorno'] ='/gestionar_pedido_compra';   
                   $revisar = 'revisar_historial';
                   $data['val_compra']  = $this->model_pedido_compra->valores_revision_historial($data);
                break;
@@ -523,6 +523,7 @@ public function proc_pedido_cambio(){
                       $data['comentario'] =   $this->input->post('comentario');
                       $data['cant_solicitada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_solicitada') ),true  );
                       $data['cant_aprobada'] =  json_decode(json_encode( $this->input->post('arreglo_cant_aprobada') ),true  );
+                      $data['precio_aprobado'] =  json_decode(json_encode( $this->input->post('arreglo_precio_aprobado') ),true  );
                         
                       $dato['aprobado'] = $this->model_pedido_compra->actualizar_cantidad_aprobado($data);
                       $dato['exito'] = true;

@@ -299,7 +299,7 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
 
 
         public function refe_producto($data){
-            $this->db->select("p.referencia,p.comentario,p.imagen,p.precio,p.ancho,p.codigo_contable");  
+            $this->db->select("p.referencia,p.comentario,p.imagen,pc.precio,p.ancho,p.codigo_contable");  
             $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=1)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=1)) END AS  total_entrada_mts",false);  
             $this->db->select("CASE WHEN (sum(m.cantidad_um*(m.id_medida=2)) is null)  THEN 0 Else sum(m.cantidad_um*(m.id_medida=2)) END AS  total_entrada_kg",false);  
 
