@@ -7800,7 +7800,7 @@ jQuery('#pedido_entrada').dataTable( {
 
     			{ 
 	                 "visible": false,
-	                "targets": [13,14,15,16,17,18]
+	                "targets": [13,14,15,16,17,18,19]
 	            }	            
 	        ],
 
@@ -7821,7 +7821,21 @@ jQuery('#pedido_entrada').dataTable( {
                 } else {
 	                	api.column(12).visible(false);	
                 }
-		          
+		         
+                //mostrar codigo en función del rol
+                api.column(0).visible(true);	
+				if (aData.length >0){
+      				if (aData[0][19]==2) {
+                		api.column(0).visible(false);	
+                		
+                	} else {
+                		api.column(0).visible(true);	
+		    			
+		     			
+                	}
+                } else {
+	                	api.column(0).visible(false);	
+                }		          
 
 	                
 			},
@@ -8020,7 +8034,7 @@ jQuery('#pedido_salida').dataTable( {
 	            },	            	            
 				{ 
 	                 "visible": false,
-	                "targets": [13,14,15,16,17]
+	                "targets": [13,14,15,16,17,18]
 	            }		            
 	        ],
  		"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
@@ -8040,10 +8054,25 @@ jQuery('#pedido_salida').dataTable( {
                 } else {
 	                	api.column(12).visible(false);	
                 }
-		          
 
-	                
-			},
+		  //mostrar codigo en función del rol
+               api.column(0).visible(true);  
+	        	if (aData.length >0){
+	              if (aData[0][18]==2) {
+	                    api.column(0).visible(false); 
+	                    
+	                  } else {
+	                    api.column(0).visible(true);  
+	              
+	              
+	                  }
+	                } else {
+	                    api.column(0).visible(false); 
+	                } 
+			          
+
+		                
+				},
 });	
 
 

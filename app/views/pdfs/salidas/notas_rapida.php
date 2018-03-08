@@ -1,4 +1,14 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/*
+print_r( $this->session->userdata('id_perfil')==2 );
+echo '<br>';
+print_r( (in_array(84, $coleccion_id_operaciones)) ) ; 
+echo '<br>';
+echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 6 : 7;
+
+die;
+*/
+ ?>
 
 <html lang="es_MX">
 <head>
@@ -17,7 +27,7 @@
 						<thead>
 
 							<tr>
-								<td colspan="7" style="border-top: 1px solid #222222; ">
+								<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 7 : 6; ?>" style="border-top: 1px solid #222222; ">
 										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
 										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
@@ -58,12 +68,17 @@
 
 
 							<tr>
-								<th colspan="9">
+								<th colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 9 : 8; ?>">
 									<p><b>Productos</b></p>
 								</th>
 							</tr>
 							<tr>
-								<th width="25%">Código</th>
+								<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones))   ) ) {
+								?>   
+									<th width="25%">Código</th>
+								<?php } ?>	
+
+								
 								<th width="23%">Descripción</th>
 								<th width="8%">Color</th>
 								<th width="4%">UM</th>
@@ -77,11 +92,18 @@
 								
 							</tr>
 						</thead>
-						<tbody>
+						<tbody style="font-size: 14px;">	
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr>
+									
+								
+								<?php if (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones))   ) ) {
+								?>   
 									<td width="25%" style="border-top: 1px solid #222222;"><?php echo $movimiento->codigo; ?></td>								
+								<?php } ?>	
+
+
 									<td width="23%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_descripcion.'<br/><b style="color:red;">Cód: </b>'.$movimiento->codigo_contable; ?></td>
 									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color; ?></td>
 									<td width="4%" style="border-top: 1px solid #222222;"><?php echo $movimiento->medida; ?></td>
@@ -95,13 +117,13 @@
 							<?php endforeach; ?>
 						<?php else : ?>
 								<tr class="noproducto">
-									<td colspan="10">No se han agregado producto</td>
+									<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 9 : 8; ?>">No se han agregado producto</td>
 								</tr>
 						<?php endif; ?>	
 
 
 								<tr>
-									<td colspan="9" style="border-top: 1px solid #222222; ">
+									<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 9: 8; ?>" style="border-top: 1px solid #222222; ">
 											
 											<!--
 											<span><b>Subtotal: </b><?php echo number_format($totales->sum_precio, 2, '.', ','); ?></span> 

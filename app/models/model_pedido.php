@@ -350,6 +350,7 @@
                                       16=>$row->codigo_contable,
                                       17=>$row->id_estatus,
                                       18=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
+                                      19=> ( ($this->session->userdata('id_perfil')==1) ||  (in_array(84, $data['coleccion_id_operaciones'])) ) ? 1 : 2,
 
                                     );
                       }
@@ -569,6 +570,7 @@
                                       15=>$row->codigo_contable,
                                       16=>$row->id_estatus,
                                       17=>( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->precio, 2, '.', ',') : '-'),
+                                      18=> ( ($this->session->userdata('id_perfil')==1) ||  (in_array(84, $data['coleccion_id_operaciones'])) ) ? 1 : 2,
                                     );
                       }
 

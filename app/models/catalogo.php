@@ -1211,7 +1211,7 @@
           $data['where_total']=$where_total;
 
   
-          $this->db->where($where);
+          //$this->db->where($where);
     
           //ordenacion
           $this->db->order_by($columna, $order); 

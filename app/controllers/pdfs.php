@@ -134,6 +134,11 @@ public function impresion_etiquetas1($codigo) {
 
   public function generar_salida_rapida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
 
+         $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+                $data['coleccion_id_operaciones'] = array();
+           }
+
         $data['id_movimiento']       = base64_decode($id_movimiento);
         $data['id_tipo_pedido']      = base64_decode($id_tipo_pedido);
         $data['id_tipo_factura']     = base64_decode($id_tipo_factura);

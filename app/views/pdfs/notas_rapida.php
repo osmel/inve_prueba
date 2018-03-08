@@ -63,7 +63,7 @@
 								<th width="9%">Lote</th>
 							</tr>
 						</thead>	
-						<tbody>	
+						<tbody style="font-size: 14px;">	
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr>
