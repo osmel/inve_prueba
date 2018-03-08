@@ -2046,7 +2046,7 @@ if ( jQuery('#config_entrada_activo').val() == 1 ) { //si tiene factura
 		var apartado_informe = ['Código', 'Producto', 'Color',  'Cantidad',  'Ancho', 'No. Movimiento', 'Dependencia', 'Tipo Apartado', 'Fecha','Factura', 'No. de Partida','Almacén'];
     	var cero_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
     	var baja_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
-    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
+    	var top = ['Referencia', 'Producto', 'Metros Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio','Factura'];
 
 } else { //sino tiene factura
 
@@ -2068,7 +2068,7 @@ if ( jQuery('#config_entrada_activo').val() == 1 ) { //si tiene factura
 
 	    	var cero_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
 	    	var baja_informe = ['Referencia', 'Producto', 'Existencias', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
-	    	var top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
+	    	var top = ['Referencia', 'Producto', 'Metros Vendidos', 'Imagen', 'Color', 'Especificaciones', 'Composición', 'Calidad', 'Precio'];
 
 }
 
@@ -3058,7 +3058,7 @@ var rep_devolucion = ['Código', 'Producto', 'Color', 'Cantidad',  'Ancho', 'No.
 
       var rep_cero = ['Referencia', 'Producto', 'Existencias', 'Color', 'Composición', 'Calidad', 'Precio'];
 	  var rep_baja = ['Referencia', 'Producto', 'Existencias', 'Color', 'Composición', 'Calidad', 'Precio'];
-	   var rep_top = ['Referencia', 'Producto', 'Rollos Vendidos', 'Color', 'Composición', 'Calidad', 'Precio'];
+	   var rep_top = ['Referencia', 'Producto', 'Metros Vendidos', 'Color', 'Composición', 'Calidad', 'Precio'];
 
 jQuery('#tabla_reporte').dataTable( {
 		

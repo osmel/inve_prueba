@@ -1029,6 +1029,7 @@ public function totales_importes($where){
           } else {
              $id_estatusid = '';
           }    
+          
 
 
        

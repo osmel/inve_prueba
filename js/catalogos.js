@@ -560,7 +560,7 @@ cuentas
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(0)+'"'; //0 ->para q no envie status
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+=row[16]+'Detalles';
 							texto+='</a>';
@@ -741,7 +741,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"'
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(0)+'"'; //0 ->para q no envie status
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+=row[16]+'Detalles';
 							texto+='</a>';
@@ -937,7 +937,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[15])+'"';
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(0)+'"'; //0 ->para q no envie status
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+=row[16]+'Detalles';
 							texto+='</a>';
@@ -5732,7 +5732,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_notas";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[12]+row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(row[11])+'"'; //
+							texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[12]+row[0])+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[10])+'/'+jQuery.base64.encode(jQuery("#id_estatuss_historicos").val())+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							texto+=row[12]+'Detalles';
 							texto+='</a>';

@@ -23,7 +23,7 @@
 
 <div class="container margenes">
 <div class="panel panel-primary">
-<div class="panel-heading">Detalles del Pedido de Compra</div>
+<div class="panel-heading">Detalles del Orden de Compra</div>
 <div class="panel-body">		
 	
 	<div class="row">		
@@ -398,7 +398,7 @@
 		</div>
 			<div class="col-sm-4 col-md-4">
 				<button id="proc_pedido_compra" type="button"  class="btn btn-success btn-block">
-					<span class="">Procesar Pedido de Compra</span>
+					<span class="">Procesar Orden de Compra</span>
 				</button>
 			</div>
 	</div>

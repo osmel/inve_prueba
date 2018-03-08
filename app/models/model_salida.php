@@ -1530,7 +1530,7 @@ public function bodegas_agrupado_tipoFactura( $num_movimiento_pedido ){
           $this->db->group_by('m.id');
 
           if (!(isset($data['id_estatus']))) {
-             $this->db->where('m.id_estatus !=',15);
+             $this->db->where('m.id_estatus !=',15);  //15=Ajuste
           } else if ($data['id_estatus']==15) {
              //$id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
              $this->db->where('m.id_estatus',$data['id_estatus']);

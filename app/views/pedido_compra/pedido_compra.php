@@ -155,7 +155,7 @@
 						   	<div class="notif-bot-pedidos"></div>
 							
 								<div class="col-sm-4 col-md-4">
-									<a href="nuevo_pedido_compra/<?php echo base64_encode($_SERVER["REQUEST_URI"]); ?>" id="nuevo_pedido_compra" type="button" class="btn btn-success btn-block">Nuevo Pedido de Compra</a>
+									<a href="nuevo_pedido_compra/<?php echo base64_encode($_SERVER["REQUEST_URI"]); ?>" id="nuevo_pedido_compra" type="button" class="btn btn-success btn-block">Nuevo Orden de Compra</a>
 								</div>
 									
 								<div class="col-sm-12 col-md-12">

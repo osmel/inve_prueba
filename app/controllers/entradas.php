@@ -432,6 +432,7 @@ public function consecutivo_entrada(){
 		      $data['id_factura']= base64_decode($id_factura);
 		      
 		      $data['id_estatus']= base64_decode($id_estatus);
+		      //print_r($data['id_estatus']); die;
 
 
 		      

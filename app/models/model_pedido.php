@@ -224,13 +224,16 @@
               $id_tipo_facturaid = '';
           } 
 
+          $id_estatus = ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(86, $data['coleccion_id_operaciones'])) )  ) ?  ' ' : ' AND ( m.id_estatus <> 14 ) ' );
+
+          
            $id_operacion = '(( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) )';
 
           $where = '(
                       (
                          
                          (( m.id_apartado = 0 ) AND ( '.$id_operacion.' ) AND ( m.estatus_salida = "0" ) AND ( m.proceso_traspaso = 0 ) )
-                      ) AND ( m.id_estatus <> 14 ) '.$id_almacenid.$id_tipo_facturaid.' 
+                      )  '.$id_estatus.$id_almacenid.$id_tipo_facturaid.' 
                        AND
 
                       (
