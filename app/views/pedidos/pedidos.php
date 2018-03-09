@@ -34,13 +34,13 @@
 
 
 
-		   <div class="row" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
+		   <div class="row" >
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">
 
 					
 					    
-							<div class="col-sm-2 col-md-2">
+							<div class="col-sm-2 col-md-2" <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 
 							<label for="id_almacen" class="col-sm-12 col-md-12">Almacén</label>
 							<div class="col-sm-12 col-md-12">
@@ -90,7 +90,7 @@
     							<?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(10, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabled_almacen">				
 								<?php } else { ?>	
-									 <fieldset class="disabled_almacen" disabled>
+									 <fieldset class="disabled_almacen" > <!--disabled-->
 								<?php } ?>	
 
 											<select name="id_tipo_pedido" id="id_tipo_pedido"  pantalla="pedir"class="form-control id_tipo_pedido">
@@ -120,7 +120,7 @@
 								<?php if (( ( $this->session->userdata( 'id_perfil' ) == 1  ) || (in_array(10, $coleccion_id_operaciones)) )  && (( $this->session->userdata( 'id_perfil' ) != 2 ) ) ){ ?>
 									 <fieldset class="disabled_almacen">				
 								<?php } else { ?>	
-									 <fieldset class="disabled_almacen" disabled>
+									 <fieldset class="disabled_almacen" > <!--disabled-->
 								<?php } ?>	
 											<select name="id_tipo_factura" id="id_tipo_factura" pantalla="pedir" class="form-control id_tipo_factura">
 												<option value="0">Todos</option>

@@ -294,6 +294,7 @@ GROUP BY `p`.`descripcion`, `p`.`referencia`
             else
                return False;
             $result->free_result();
+            
         }    
 
 
