@@ -56,10 +56,10 @@
 		<fieldset disabled>
 			<div class="form-group">
 				
-				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+				<div class="col-xs-12 col-sm-6 col-md-12" style="margin-top:0px;">
 					<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px;">
+				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px; display:none;">
 					<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>	" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Movimiento">
 				</div>
 
