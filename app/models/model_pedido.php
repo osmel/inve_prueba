@@ -1858,7 +1858,7 @@
           $this->db->select("a.almacen");
           $this->db->select("m.id_factura,m.id_fac_orig,m.id_tipo_factura,m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
-          $this->db->select("tf.tipo_factura");  
+          $this->db->select("tff.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select("prod.codigo_contable");  
 
@@ -2126,7 +2126,7 @@
 
           $this->db->select("m.id_factura,m.id_tipo_factura, m.id_tipo_pedido");
           $this->db->select("tp.tipo_pedido");          
-          $this->db->select("tf.tipo_factura");  
+          $this->db->select("tff.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select("prod.codigo_contable");  
           //$this->db->select("prov.nombre cliente_pedido");          
@@ -2430,7 +2430,7 @@
          ',False);  
           $this->db->select("a.almacen");
           $this->db->select("m.id_factura,m.id_factura_original,m.id_tipo_factura,m.id_tipo_pedido");
-          $this->db->select("tf.tipo_factura");  
+          $this->db->select("tff.tipo_factura");  
           $this->db->select("tff.tipo_factura t_factura");  
           $this->db->select("prod.codigo_contable");  
           //$this->db->select("prov.nombre cliente_pedido");  
