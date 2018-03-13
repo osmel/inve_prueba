@@ -154,7 +154,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->select("( CASE WHEN m.transferencia <> 0 THEN t.nombre ELSE p.nombre END ) AS nombre");
 
-
+          $this->db->select('tipfac.tipo_factura, m.id_almacen, m.id_operacion, m.c234');
 
            
           $this->db->from($this->historico_ctasxpagar.' as m');
@@ -165,7 +165,10 @@ public function buscador_ctasxpagar($data){
 
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento AND pr.id_factura=m.id_factura','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');  //movimiento_unico
+          
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
+
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
            
 
 
@@ -202,13 +205,11 @@ public function buscador_ctasxpagar($data){
 
           
 
-
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
           $where = '(
                       (
-                          
-                          
 
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                          
                       ) 
 
@@ -232,7 +233,7 @@ public function buscador_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento_unico,m.id_factura, m.id_almacen,m.id_empresa'); //,m.factura
+          $this->db->group_by('m.id,m.movimiento_unico,m.id_factura, m.id_almacen,m.id_empresa'); //,m.id
 
           
           $this->db->having($data['having']);
@@ -280,8 +281,13 @@ public function buscador_ctasxpagar($data){
                                       13=>(($row->sepago==null) ? 0 : $row->sepago),
                                       14=>$row->id_factura,
                                       15=>$row->id_estatus,
-                                      //16=>($row->transferencia==1) ? 'T-' : 'E-',
-                                      16=>(($row->id_compra!=0) ? 'C-' : (($row->transferencia==1) ? 'T-' :'E-') ),
+                                            //16=>(($row->id_compra!=0) ? 'C-' : (($row->transferencia==1) ? 'T-' :'E-') ),
+                                      16=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' :'E-') )),
+                                      17=>$row->c234,
+                                      18=>$row->id_almacen,
+                                      19=>$row->tipo_factura,
+                                      20=>$row->id,
+
                                       
 
                                     );
@@ -344,10 +350,10 @@ public function totales_importes($where,$having){
 
            $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');      
            //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
 
            $this->db->where($where);          
-           $this->db->group_by('m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+           $this->db->group_by('m.id,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
            $this->db->having($having);
 
            $result = $this->db->get();
@@ -398,11 +404,11 @@ public function totales_importes($where,$having){
             $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
 
             $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+            $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
 
           
               $this->db->where($where);          
-              $this->db->group_by('m.movimiento_unico,m.id_factura,m.id_almacen,m.id_empresa,m.factura');
+              $this->db->group_by('m.id,m.movimiento_unico,m.id_factura,m.id_almacen,m.id_empresa,m.factura');
               $this->db->having($having);
              $result = $this->db->get();
 
@@ -510,21 +516,54 @@ public function buscador_pagosrealizados($data){
           $this->db->select("sum((pri.id_documento_pago = 13)*pri.importe*-1)+sum((pri.id_documento_pago <> 13)*pri.importe) AS pago_importe", FALSE);
 
 
-          
+          $this->db->select('tipfac.tipo_factura, m.id_almacen, m.id_operacion, m.c234');
+
+        $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS conse_nuevo",FALSE);
+
+
           $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT'); //
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          //$this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
-
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura AND pri.id_operacion=m.id_operacion','LEFT');
+
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
+
+
+
+
+            if ($data['tipo_entrada']=='E') {
+                $nomb_usuario = ' and  ( m.id_operacion =  1 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='B') {
+                $nomb_usuario = ' and  ( m.id_operacion =  72 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='T') {
+                $nomb_usuario = ' and  ( m.id_operacion =  70 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='C') {
+                $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
+            }           
 
           $where = '(
                       (
-                         ( pr.movimiento_unico = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' )
+                        ( pr.movimiento_unico = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' ) '.$nomb_usuario.'
                       ) 
                        AND
                       (  
@@ -581,6 +620,7 @@ public function buscador_pagosrealizados($data){
                                           "dias_vencidos"=>abs($row->diferencia_dias-$row->dias_ctas_pagar),
                                           "monto_restante"=>(($row->monto_restante==null) ? $row->total : $row->monto_restante),
                                           "pago_importe"=>(($row->pago_importe==null) ? $row->total : $row->pago_importe),
+                                          "conse_nuevo" => $row->conse_nuevo,
                                                      
                                       );
 
@@ -598,6 +638,13 @@ public function buscador_pagosrealizados($data){
                                       9=>$row->id_factura,
                                       10=>$activar_modificar,  
                                       11=>$activar_eliminar,   
+                                      12=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' :'E-') )),
+                                      13=>$row->c234,
+                                      14=>$row->id_almacen,
+                                      15=>$row->tipo_factura
+
+
+
                                     );
                       }
 
@@ -660,20 +707,26 @@ public function buscador_pagosrealizados($data){
  public function total_pagosrealizados($where){
               
 
-          $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+         // $this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
           
-          $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+             $this->db->from($this->historico_pagos_realizados.' as pr');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT'); //
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT'); 
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_empresa','LEFT');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura','LEFT');
+              $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura AND pri.id_operacion=m.id_operacion','LEFT');
+
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
+
+          $this->db->where($where);   
+
           $this->db->group_by('pr.id');
 
 
           
-             $this->db->where($where);          
+                    
              
              $result = $this->db->get();
 
@@ -722,11 +775,30 @@ public function encabezado_pagosrealizados($data){
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
+
+
+
+            if ($data['tipo_entrada']=='E') {
+                $nomb_usuario = ' and  ( m.id_operacion =  1 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='B') {
+                $nomb_usuario = ' and  ( m.id_operacion =  72 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='T') {
+                $nomb_usuario = ' and  ( m.id_operacion =  70 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='C') {
+                $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
+            }   
+
 
           $where = '(
                       (
-                         ( m.movimiento_unico = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )
+                         ( m.movimiento_unico = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )'.$nomb_usuario.'
                       ) 
           )';   
            
@@ -777,9 +849,27 @@ public function encabezado_pagosrealizados($data){
 
           $this->db->select('m.total,m.id_factura,m.id_almacen,m.id_empresa');
           $this->db->from($this->historico_ctasxpagar.' as m');
+
+            if ($data['tipo_entrada']=='E') {
+                $nomb_usuario = ' and  ( m.id_operacion =  1 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='B') {
+                $nomb_usuario = ' and  ( m.id_operacion =  72 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='T') {
+                $nomb_usuario = ' and  ( m.id_operacion =  70 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='C') {
+                $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
+            }   
+
           $where = '(
                           ( m.movimiento_unico =  '.$data["movimiento"].' ) 
                           AND ( m.id_factura =  '.$data["id_factura"].' ) 
+                          '.$nomb_usuario.'
           )';   
   
           $this->db->where($where);
@@ -800,7 +890,11 @@ public function encabezado_pagosrealizados($data){
         
         //$this->db->set( 'movimiento', $data['movimiento'] );  
         $this->db->set( 'movimiento_unico', $data['movimiento'] );  
-        
+
+        $id_operacion = (($data['tipo_entrada']=='B') ? 72 : (($data['tipo_entrada']=='C') ? 71 :  (($data['tipo_entrada']=='T') ? 70 : 1 ) ));
+
+        $this->db->set( 'id_operacion', $id_operacion ); 
+
         $this->db->set( 'id_documento_pago', $data['id_documento_pago'] );  
         $this->db->set( 'instrumento_pago', $data['instrumento_pago'] );  
         //$this->db->set( 'importe', $data['importe'] );  
@@ -942,19 +1036,52 @@ public function impresion_pagosrealizados($data){
           $this->db->select('p.dias_ctas_pagar');   
           $this->db->select("m.total+sum((pri.id_documento_pago <> 12)*pri.importe*-1)+sum((pri.id_documento_pago = 12)*pri.importe) AS monto_restante", FALSE);          
 
+
+        $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS conse_nuevo",FALSE);
+
+
           
           $this->db->from($this->historico_pagos_realizados.' as pr');
-          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          //$this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_ctasxpagar.' As m' , 'm.movimiento_unico = pr.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT'); //
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');          
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
           $this->db->join($this->historico_pagos_realizados.' As pri' , 'pri.movimiento_unico = m.movimiento_unico AND pri.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
           
+
+            if ($data['tipo_entrada']=='E') {
+                $nomb_usuario = ' and  ( m.id_operacion =  1 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='B') {
+                $nomb_usuario = ' and  ( m.id_operacion =  72 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='T') {
+                $nomb_usuario = ' and  ( m.id_operacion =  70 ) ';  
+            } 
+
+            if ($data['tipo_entrada']=='C') {
+                $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
+            }           
+
 
           $where = '(
                       (
-                         ( pr.movimiento_unico = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' )
+                         ( pr.movimiento_unico = '.$data["movimiento"].' ) AND ( pr.id_factura = '.$data["id_factura"].' ) '.$nomb_usuario.'
                          
                       ) 
 
@@ -1026,11 +1153,25 @@ public function impresion_ctasxpagar($data){
           
           $this->db->select("(DATE_ADD(fecha_entrada, INTERVAL p.dias_ctas_pagar DAY)) as fecha_ven", false);   
 
+
+        $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS conse_nuevo",FALSE);          
+
           $this->db->from($this->historico_ctasxpagar.' as m');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
           
 
 
@@ -1065,9 +1206,10 @@ public function impresion_ctasxpagar($data){
           }
 
 
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1086,7 +1228,7 @@ public function impresion_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+          $this->db->group_by('m.id,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);
@@ -1139,7 +1281,7 @@ public function impresion_ctasxpagar($data){
            $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');           
            $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');      
            //$this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento = m.movimiento','LEFT');
-           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+           $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
 
 
 
@@ -1175,9 +1317,13 @@ public function impresion_ctasxpagar($data){
           }
 
 
+$id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+
+
+
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1194,7 +1340,7 @@ public function impresion_ctasxpagar($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento_unico,m.id_factura,m.id_almacen,m.id_empresa,m.factura');
+          $this->db->group_by('m.id,m.movimiento_unico,m.id_factura,m.id_almacen,m.id_empresa,m.factura'); //
 
           
           $this->db->having($data['having']);           
@@ -1280,7 +1426,7 @@ public function impresion_ctas_especificas($data){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
           
 
 
@@ -1314,10 +1460,11 @@ public function impresion_ctas_especificas($data){
             $proveedorid = '';
           }
 
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1329,14 +1476,18 @@ public function impresion_ctas_especificas($data){
             )';   
 
 
+
+          
+
+
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                         '.$id_operacion.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.id_empresa,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+          $this->db->group_by('m.id,m.id_empresa,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);
@@ -1392,7 +1543,7 @@ public function impresion_ctas_detalladas($data){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
           $this->db->join($this->documentos_pagos.' As dp' , 'dp.id = pr.id_documento_pago','LEFT');
           
 
@@ -1425,10 +1576,12 @@ public function impresion_ctas_detalladas($data){
           } else {
             $proveedorid = '';
           }
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1441,13 +1594,14 @@ public function impresion_ctas_detalladas($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                         '.$id_operacion.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
 
 
           $this->db->where($where.$data['filtro']);          
+           //$this->db->where($where);          
 
-          //$this->db->group_by('m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+          //$this->db->group_by('m.id,m.movimiento,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
           //$this->db->having($data['having']);
           //ordenacion
           $this->db->order_by('m.id_empresa,m.id_factura,m.movimiento_unico, pr.fecha_pago', 'ASC'); 
@@ -1514,7 +1668,7 @@ public function impresion_ctas_antiguedad($data){
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
           
 
 
@@ -1548,10 +1702,12 @@ public function impresion_ctas_antiguedad($data){
             $proveedorid = '';
           }
 
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1564,7 +1720,7 @@ public function impresion_ctas_antiguedad($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                         '.$id_operacion.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
@@ -1572,7 +1728,7 @@ public function impresion_ctas_antiguedad($data){
 
                   
          
-         $this->db->group_by('m.id_empresa,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+         $this->db->group_by('m.id,m.id_empresa,m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);
@@ -1613,7 +1769,28 @@ public function exportar_ctasxpagar($data){
           $id_factura= $data['id_factura'];
 
 
-          $this->db->select('m.movimiento,m.movimiento_unico,m.factura');
+          $this->db->select('m.factura'); //m.movimiento,m.movimiento_unico,
+
+          $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
+
+
+
+
+
+          //$this->db->select('tipfac.tipo_factura, m.id_almacen, m.id_operacion, m.c234');
+
+
           $this->db->select('a.almacen');
           $this->db->select('p.nombre, m.factura,tp.tipo_pago,m.id_tipo_pago');
 
@@ -1641,8 +1818,8 @@ public function exportar_ctasxpagar($data){
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');          
           $this->db->join($this->catalogo_tipos_pagos.' As tp' , 'tp.id = m.id_tipo_pago','LEFT');
-          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura','LEFT');
-           
+          $this->db->join($this->historico_pagos_realizados.' As pr' , 'pr.movimiento_unico = m.movimiento_unico AND pr.id_factura=m.id_factura AND pr.id_operacion=m.id_operacion','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
 
 
          if ($id_almacen!=0) {
@@ -1675,10 +1852,12 @@ public function exportar_ctasxpagar($data){
             $proveedorid = '';
           }
 
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+
 
           $where = '(
                       (
-                         ( m.id_operacion = '.$data["id_operacion"].' ) '.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
+                         '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
                       ) 
                        AND
                       (  ( m.movimiento_unico LIKE  "%'.$cadena.'%" )OR 
@@ -1691,13 +1870,13 @@ public function exportar_ctasxpagar($data){
 
 
           $where_total= '(
-                         ( m.id_operacion = '.$data["id_operacion"].' )'.$fechas.$id_almacenid.$id_facturaid.' 
+                         '.$id_operacion.$fechas.$id_almacenid.$id_facturaid.' 
                       )';
            
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
+          $this->db->group_by('m.id, m.movimiento_unico,m.id_factura'); //,m.id_almacen,m.id_empresa,m.factura
 
           
           $this->db->having($data['having']);

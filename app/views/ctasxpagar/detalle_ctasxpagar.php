@@ -27,6 +27,7 @@ if (ltrim($retorno)=="") {
 
 
 
+<input type="hidden" id="tipo_entrada" name="tipo_entrada" value="<?php echo $tipo_entrada; ?>">
 <input type="hidden" id="movimiento" name="movimiento" value="<?php echo $movimiento; ?>">
 <input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura; ?>">
 
@@ -159,7 +160,7 @@ if (ltrim($retorno)=="") {
 									<?php if (($configuracion->activo==1) and ( ( $perfil == 1 ) || (( (in_array(29, $coleccion_id_operaciones)) || (in_array(30, $coleccion_id_operaciones)) ) && (in_array(28, $coleccion_id_operaciones)))  ))
 									 { ?> 
 										<div class="col-xs-12 col-sm-4 col-md-3 marginbuttom">
-											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($movimiento).'/'.base64_encode($id_factura); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
+											<a href="<?php echo base_url(); ?>nuevo_pago/<?php echo base64_encode($tipo_entrada.'-'.$movimiento).'/'.base64_encode($id_factura); ?>" type="button" class="btn btn-success btn-block">Nuevo Pago</a>
 										</div>
 										<fieldset id="disa_pagosrealizado"	>
 											<div class="col-sm-4 col-md-4 marginbuttom">

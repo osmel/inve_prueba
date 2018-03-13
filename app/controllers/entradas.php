@@ -422,10 +422,8 @@ public function consecutivo_entrada(){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
 		      $porciones = explode("-", base64_decode($id_movimiento));
-
 		      $tipo_entrada= $porciones[0];
 		      $id_movimiento= $porciones[1];
-		      
 		      $data['tipo_entrada'] = $tipo_entrada;
 
 		      $data['dev']= base64_decode($dev);

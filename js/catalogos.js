@@ -527,12 +527,23 @@ cuentas
 		},
 	
 		"columnDefs": [
+
+		
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return '['+row[16][0]+'] '+row[18]+'-'+row[19]+'-'+row[17];
+		                },
+		                "targets": [0] 
+		            },
+
+
 			    	
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
+		                "targets": [1,2,3,4,5,6,7,8,9,10] 
 		            },
 
      				 {
@@ -543,7 +554,7 @@ cuentas
 
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
 							texto+=row[11];
 							texto+='</a>';
@@ -575,7 +586,7 @@ cuentas
   					
   					{ 
 		                 "visible": false,
-		                "targets": [13,14]
+		                "targets": [13,14,15,16,17,18,19,20]
 		            }
 		            
 		          
@@ -712,11 +723,18 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 
 
 		"columnDefs": [
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return '['+row[16][0]+'] '+row[18]+'-'+row[19]+'-'+row[17];
+		                },
+		                "targets": [0] 
+		            },		
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9,10] 
+		                "targets": [1,2,3,4,5,6,7,8,9,10] 
 		            },
      				 {
 		                "render": function ( data, type, row ) {
@@ -725,7 +743,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
 						$otro_retorno="listado_ctasxpagar";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+							texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-warning btn-block">';
 							texto+=row[11];
 							texto+='</a>';
@@ -756,7 +774,7 @@ jQuery('#tabla_ctasxpagar').dataTable( {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [13,14]
+		                "targets": [13,14,15,16,17,18,19,20]
 		            }
 		            
 		          
@@ -775,7 +793,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 	            	"url" : "procesando_ctas_pagadas",
 	         		"type": "POST",
 	         		 "data": function ( d ) {
-	         		 	d.id_operacion=1;
+	         		 	//d.id_operacion=1;
 						var fecha = (jQuery('.fecha_historicos[vista="ctas_pagadas"]').val()).split(' / ');
 						d.fecha_inicial2 = fecha[0];
 						d.fecha_final2 = fecha[1];	
@@ -891,12 +909,20 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 
 
 		"columnDefs": [
-			    	
+
+
+			    	{ 
+		                "render": function ( data, type, row ) {
+		                		return '['+row[16][0]+'] '+row[18]+'-'+row[19]+'-'+row[17];
+		                },
+		                "targets": [0] 
+		            },
+
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,1,2,3,4,5,6,7,8,9] 
+		                "targets": [1,2,3,4,5,6,7,8,9] 
 		            },
 
      				 {
@@ -908,7 +934,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
 						if (row[12]!=2) {
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
+								texto+=' href="procesar_ctasxpagar/'+jQuery.base64.encode(row[16]+row[0])+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[14])+'"'; //
 								texto+='type="button" class="btn btn-warning btn-block">';
 								texto+=row[13]; //"Pagado"; //"row[10];
 								texto+='</a>';
@@ -952,7 +978,7 @@ jQuery('#tabla_ctas_pagadas').dataTable( {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [12,13,14]
+		                "targets": [12,13,14,15,16,17,18,19,20]
 		            }
 		        ],
 
@@ -1005,7 +1031,8 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 	            	"url" : "/procesando_pagos_realizados",
 	         		"type": "POST",
 	         		 "data": function ( d ) {
-	         		 	d.id_operacion=1;
+	         		 	//d.id_operacion=1;
+	         		 	d.tipo_entrada=jQuery("#tipo_entrada").val();
 	         		 	d.movimiento=jQuery("#movimiento").val();
 	         		 	d.id_factura=jQuery("#id_factura").val();
 	         		 }
@@ -1044,7 +1071,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 
 
 			    if (settings.json.totales) {
-				    jQuery('#etiq_num_mov').val(  settings.json.totales.movimiento);
+				    jQuery('#etiq_num_mov').val(  settings.json.totales.conse_nuevo); //movimiento
 					jQuery('#etiq_almacen').val( settings.json.totales.almacen); //
 					jQuery('#etiq_proveedor').val( settings.json.totales.nombre);
 
@@ -1093,7 +1120,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 		                "render": function ( data, type, row ) {
 						if (row[10]!=0) { //si esta autorizado a eliminar
 							texto='<td>';
-								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
+								texto+='<a href="/editar_pago_realizado/'+jQuery.base64.encode(row[12]+row[5])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" type="button"'; 
 								texto+=' class="btn btn-warning btn-sm btn-block" >';
 									texto+=' <span class="glyphicon glyphicon-edit"></span>';
 								texto+=' </a>';
@@ -1120,7 +1147,7 @@ jQuery('#tabla_pagos_realizados').dataTable( {
 
 	                	if (row[11]!=0) { //si esta autorizado a eliminar
 	                	
-							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
+							texto='<td><a href="/eliminar_pago/'+jQuery.base64.encode(row[5])+'/'+jQuery.base64.encode(row[1])+'/'+jQuery.base64.encode(row[12]+row[8])+'/'+jQuery.base64.encode(row[9])+'" '; 
 								texto+='class="btn btn-danger  btn-block" data-toggle="modal" data-target="#modalMessage">';
 								texto+='<span class="glyphicon glyphicon-remove"></span>';
 							texto+='</a></td>';
@@ -1157,10 +1184,12 @@ jQuery('body').on('click','.impresion_ctas_detalle', function (e) {
   	    busqueda    = jQuery('input[type=search]').val();
 		movimiento  = jQuery("#movimiento").val();
 		id_factura  = jQuery("#id_factura").val();
+		tipo_entrada = jQuery("#tipo_entrada").val();
     abrir('POST', '/impresion_ctas_detalle', {
     		busqueda  :busqueda,
 		  movimiento:movimiento,   			
-		  id_factura:id_factura,   		
+		  id_factura:id_factura,   
+		  tipo_entrada:tipo_entrada		
     }, '_blank' );
 });
 
@@ -1282,7 +1311,7 @@ jQuery('body').on('click','.impresion_ctas_especificas', function (e) {
 jQuery('body').on('click','.impresion_ctas_detalladas_rapida', function (e) {
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
+		//id_operacion=1;
 		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
@@ -1297,7 +1326,7 @@ jQuery('body').on('click','.impresion_ctas_detalladas_rapida', function (e) {
     abrir('POST', 'impresion_ctas_detalladas', { //_rapida
     			busqueda:busqueda,
 			extra_search:extra_search,
-			id_operacion: id_operacion,
+			//id_operacion: id_operacion,
 			
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,
@@ -1424,7 +1453,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
   	    //busqueda      = jQuery('input[type=search]').val();
   	    busqueda      = jQuery(this).parent().parent().siblings("section").find("input[type=search]").val();
 	    extra_search = jQuery(this).attr('tipo'); 
-		id_operacion=1;
+		//id_operacion=1;
 		var fecha = (jQuery('.fecha_historicos[vista="cuentas"]').val()).split(' / ');
 		fecha_inicial = fecha[0];
 		fecha_final = fecha[1];
@@ -1440,7 +1469,7 @@ jQuery('body').on('click','.exportar_ctas', function (e) {
     abrir('POST', 'exportar_ctasxpagar', {
     			busqueda:busqueda,
 			extra_search:extra_search,
-			id_operacion: id_operacion,
+			//id_operacion: id_operacion,
 			
 			fecha_inicial:fecha_inicial, 
 			fecha_final: fecha_final,

@@ -366,6 +366,7 @@ public function validar_salida_pedido(){
 	//2da regilla(reporte) para Imprimir el pdf (solo para bodegas)
 /////////////////////////////////////////////////////////////////////////////////
 
+
 public function detalles_salidas_bodegas($num_movimiento_pedido){
 			
 

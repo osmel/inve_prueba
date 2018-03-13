@@ -62,9 +62,7 @@ public function listado_pedidos(){
 		    else{ 
 		      redirect('');
 		    }  		
-		
-		
-	}
+}
 
 
 	 //1ra regilla de "/generar_pedidos"

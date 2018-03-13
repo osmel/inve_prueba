@@ -147,7 +147,13 @@ class Ctasxpagar extends CI_Controller {
 
      if($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
-          $data['movimiento'] = base64_decode($movimiento);
+          //$data['movimiento'] = base64_decode($movimiento);
+          $porciones = explode("-", base64_decode($movimiento));
+          $data['tipo_entrada'] = $porciones[0];
+          $data['movimiento'] = $porciones[1];
+          
+
+
           $data['retorno'] = base64_decode($retorno);
           $data['id_factura'] = base64_decode($id_factura);
 
@@ -204,7 +210,14 @@ class Ctasxpagar extends CI_Controller {
 function nuevo_pago($movimiento,$id_factura){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
-      $data['movimiento']= base64_decode($movimiento);
+      //$data['movimiento']= base64_decode($movimiento);
+
+      $porciones = explode("-", base64_decode($movimiento));
+      $data['tipo_entrada'] = $porciones[0];
+      $data['movimiento'] = $porciones[1];
+
+      //print_r($data);die;
+
       $data['id_factura']= base64_decode($id_factura);
       $data['pago'] =  $this->modelo_ctasxpagar->nuevo_pago_realizado($data);
 
@@ -214,7 +227,7 @@ function nuevo_pago($movimiento,$id_factura){
        }   
 
        $data['doc_pagos'] =  $this->catalogo->listado_documentos_pagos();
-       $data['retorno']='procesar_ctasxpagar/'.base64_encode($data["movimiento"]).'/'.base64_encode("listado_ctasxpagar").'/'.base64_encode($data['id_factura']); 
+       $data['retorno']='procesar_ctasxpagar/'.base64_encode($data["tipo_entrada"].'-'.$data["movimiento"]).'/'.base64_encode("listado_ctasxpagar").'/'.base64_encode($data['id_factura']); 
 
       switch ($id_perfil) {    
         case 1:
@@ -261,6 +274,7 @@ function nuevo_pago($movimiento,$id_factura){
           $data['fecha_pago']   = date('Y-m-d',strtotime($this->input->post('fecha_pago')));
 
           $data['movimiento']   = $this->input->post('movimiento');
+          $data['tipo_entrada'] = $this->input->post('tipo_entrada');
           $data['total']   = $this->input->post('total');
           $data['id_factura']   = $this->input->post('id_factura');
           $data['id_almacen']   = $this->input->post('id_almacen');
@@ -956,10 +970,10 @@ public function impresion_ctas_detalladas() {
                                        (                                
                                           SELECT  MAX(DATE_FORMAT(pr1.fecha_pago,"%Y-%m-%d")) 
                                                 FROM '.$this->db->dbprefix('historico_ctasxpagar').' m1
-                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento = m1.movimiento
-                                                AND pr1.id_factura=m1.id_factura
-                                                where m1.movimiento = m.movimiento AND m1.id_factura=m.id_factura
-                                                GROUP BY m1.movimiento, m1.id_factura, m1.id_empresa    
+                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento_unico = m1.movimiento_unico
+                                                AND pr1.id_factura=m1.id_factura AND pr1.id_operacion=m1.id_operacion
+                                                where m1.movimiento_unico = m.movimiento_unico AND m1.id_factura=m.id_factura  AND m1.id_operacion=m.id_operacion
+                                                GROUP BY m1.id,m1.movimiento_unico, m1.id_factura, m1.id_empresa    
 
 
                                        )  >=  "'.$data['fecha_inicial3'].'" 
@@ -968,10 +982,10 @@ public function impresion_ctas_detalladas() {
                                        (                                
                                           SELECT  MAX(DATE_FORMAT(pr1.fecha_pago,"%Y-%m-%d")) 
                                                FROM '.$this->db->dbprefix('historico_ctasxpagar').' m1
-                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento = m1.movimiento
-                                                AND pr1.id_factura=m1.id_factura
-                                                where m1.movimiento = m.movimiento AND m1.id_factura=m.id_factura
-                                                GROUP BY m1.movimiento, m1.id_factura, m1.id_empresa    
+                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento_unico = m1.movimiento_unico
+                                                AND pr1.id_factura=m1.id_factura AND pr1.id_operacion=m1.id_operacion
+                                                where m1.movimiento_unico = m.movimiento_unico AND m1.id_factura=m.id_factura AND m1.id_operacion=m.id_operacion
+                                                GROUP BY m1.id,m1.movimiento_unico, m1.id_factura, m1.id_empresa    
 
 
 
@@ -992,14 +1006,15 @@ public function impresion_ctas_detalladas() {
                                         (SELECT 
                                         sum((pr1.id_documento_pago <> 12)*pr1.importe*-1)+sum((pr1.id_documento_pago = 12)*pr1.importe)                                         
                                          FROM '.$this->db->dbprefix('historico_ctasxpagar').' m1
-                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento = m1.movimiento
-                                                AND pr1.id_factura=m1.id_factura
-                                                where m1.movimiento = m.movimiento AND m1.id_factura=m.id_factura
-                                                GROUP BY m1.movimiento, m1.id_factura, m1.id_empresa    
+                                                INNER JOIN '.$this->db->dbprefix('historico_pagos_realizados').' pr1 ON pr1.movimiento_unico = m1.movimiento_unico
+                                                AND pr1.id_factura=m1.id_factura AND pr1.id_operacion=m1.id_operacion
+                                                where m1.movimiento_unico = m.movimiento_unico AND m1.id_factura=m.id_factura AND m1.id_operacion=m.id_operacion
+                                                GROUP BY m1.id,m1.movimiento_unico, m1.id_factura, m1.id_empresa    
                                         )  ) ) <= 0
                         ) 
                         )'.$data['otro'];                          
                   
+
 
                   $data["condicion"]=' AND ( (m.id_tipo_pago<>2)) '; 
               break;
@@ -1094,24 +1109,24 @@ public function impresion_ctas_detalladas() {
 
                 $data['tipo']='porpagar';
 
-                if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
-                                 $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
-                                 $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
-                                
-                                       
-                                $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
+                  if  ( ($data['fecha_inicial2'] !="") and  ($data['fecha_final2'] !="")) {
+                                   $fecha_inicial = date( 'Y-m-d', strtotime( $data['fecha_inicial2'] ));
+                                   $fecha_final = date( 'Y-m-d', strtotime( $data['fecha_final2'] ));
+                                  
+                                  $data['fecha_especifica'] =  ' AND ( ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  >=  "'.$fecha_inicial.'" )  AND  ( DATE_FORMAT(fecha_ven,"%Y-%m-%d")  <=  "'.$fecha_final.'" ) )'; 
 
-                } else {
-                 $data['fecha_especifica'] = '';
-                }
+
+                  } else {
+                    $data['fecha_especifica'] = '';
+                  }
 
 
                 $data['having'] = '(
-                                     ( ( monto_restante >0 ) OR ( monto_restante IS null ) )  '.$data['fecha_especifica'].'
-                                  )';  
-                $data["condicion"]=' AND (DATEDIFF( NOW( ) ,  fecha_entrada )-p.dias_ctas_pagar<=0 ) 
-                           AND (m.id_tipo_pago<>2 ) '; // y no se ha pagado
-
+                                    ( ( monto_restante >0 ) OR ( monto_restante IS null ) ) '.$data['fecha_especifica'].'
+                                  )'; 
+                                  //<=0 ) 
+                  $data["condicion"]=' AND ( (DATEDIFF( NOW( ) ,  m.fecha_entrada )-p.dias_ctas_pagar) <= 0 ) 
+                          AND (m.id_tipo_pago<>2 ) ';  // y no se ha pagado
                      
                 break;
             case "pagadas":    

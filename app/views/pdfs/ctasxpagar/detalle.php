@@ -8,7 +8,7 @@
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 						<th width="70%">
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
-							<span><b>Num. Mov: </b> <?php echo $movimientos[0]->movimiento_unico; ?></span><br>
+							<span><b>Num. Mov: </b> <?php echo $movimientos[0]->conse_nuevo; //movimiento_unico; ?></span><br>
 							<span><b>Almaceén: </b> <?php echo $movimientos[0]->almacen; ?></span><br>
 							<span><b>Proveedor: </b> <?php echo $movimientos[0]->nombre; ?></span><br>
 							<span><b>Fecha Entrada: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
