@@ -38,12 +38,27 @@ jQuery('body').on('keypress paste','.precio_nuevo[restriccion="decimal"]', funct
     }
 });
 
+jQuery('body').on('keypress paste','.peso_nuevo[restriccion="decimal"]', function (e) {	
+    var nn = jQuery(this);
+    var strValue = nn[0].value.toString() + String.fromCharCode(e.which);
+    strValue = jQuery.trim(strValue);
+    var bool = reg.test(strValue);
+    if (bool) {
+        return true;
+    }
+    else { 
+        e.preventDefault();
+    }
+});
+
+
 jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 
 		jQuery('#foo').css('display','block');
 		var spinner = new Spinner(opts).spin(target);
 
 		var arreglo_precio = [];
+		var arreglo_peso = [];
 	    var arreglo = {};
 
 	   jQuery("#tabla_transferencia_recibida tbody tr td input.precio_nuevo").each(function(e) {
@@ -53,6 +68,12 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 	   		arreglo_precio.push( arreglo);
 	   });
 
+	   jQuery("#tabla_transferencia_recibida tbody tr td input.peso_nuevo").each(function(e) {
+	   		arreglo = {};
+	   		arreglo["codigo"] = jQuery(this).attr('codigo') ;  
+	   		arreglo['peso_nuevo'] = jQuery(this).val();
+	   		arreglo_peso.push( arreglo);
+	   });
 
 		jQuery.ajax({
 		        url : 'validar_proceso_transferencia',
@@ -67,6 +88,7 @@ jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 		        	movimiento: jQuery("#movimiento").val(),
 		        	id_tienda_origen: jQuery('option:selected', '#id_transferencia').attr('id_tienda_origen'),
 		        	arreglo_precio:arreglo_precio,
+		        	arreglo_peso:arreglo_peso,
 
 
 		        	
@@ -126,7 +148,7 @@ jQuery('body').on('change','#id_transferencia', function (e) {
 });
 
 
-var productos_transferencia = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total','P. Nuevo'];      	
+var productos_transferencia = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total','Precio Nuevo','Peso Nuevo'];      	
 
 jQuery('#tabla_transferencia_recibida').dataTable( {
 	"pagingType": "full_numbers",
@@ -331,10 +353,22 @@ jQuery('#tabla_transferencia_recibida').dataTable( {
 	                },
 	                "targets": 12
 	            },
+	            {
+	                "render": function ( data, type, row ) {
+						
+							texto='<td>'; 
+								texto+='<input restriccion="decimal" value="'+number_format(parseFloat(row[15]), 2, '.', ',')+'" codigo="'+row[1]+'" type="text" class="form-control ttip peso_nuevo" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='</td>';
+						
+						return texto;	
+
+	                },
+	                "targets": 13
+	            },	            
 
     			{ 
 	                 "visible": false,
-	                "targets": [0,13,14] 
+	                "targets": [0,14,15] 
 	            }
 
 	],	

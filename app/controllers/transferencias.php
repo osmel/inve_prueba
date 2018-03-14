@@ -133,6 +133,10 @@ class Transferencias extends CI_Controller {
 		            $data['precios'] =  json_decode(json_encode( $this->input->post('arreglo_precio') ),true  );	
 		            $this->model_transferencia->actualizar_precio_transferencia($data);	
 
+		            //actualizar PESO nuevo	
+		            $data['pesos'] =  json_decode(json_encode( $this->input->post('arreglo_peso') ),true  );	
+		            $this->model_transferencia->actualizar_peso_transferencia($data);	
+
 
 		      		//copiar a tabla "registros" e "historico_registros_entradas"
 		      		//$data['id_operacion'] =70;

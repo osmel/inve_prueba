@@ -147,7 +147,7 @@
           //,  m.num_partida,  p.nombre, 
 
           $this->db->select('m.id,m.codigo, m.id_descripcion'); 
-          $this->db->select('c.hexadecimal_color,u.medida,m.cantidad_um,m.ancho, m.id_lote, m.consecutivo,s.estatus'); 
+          $this->db->select('c.hexadecimal_color,u.medida,m.cantidad_um,m.ancho, m.peso_real, m.id_lote, m.consecutivo,s.estatus'); 
           $this->db->select('m.precio');
           $this->db->select('m.iva');
           $this->db->select("((m.precio*m.cantidad_um*m.iva))/100 as sum_iva");
@@ -217,6 +217,7 @@
                                       12=>$row->sum_iva, //15
                                       13=>$row->sum_total, //16
                                       14=>$row->estatus, //16
+                                      15=>$row->peso_real,
                                     );
                    }
 
@@ -354,6 +355,26 @@ public function totales_importes($where){
             return TRUE;       
         }              
 
+        //actualizando peso de la transferencia
+       public function actualizar_peso_transferencia( $data ){
+           
+            $id_session = ($this->session->userdata('id'));
+
+
+            foreach ($data['pesos'] as $key => $value) {
+
+                if(!is_numeric($value['peso_nuevo'])) {  //caso cuando el peso viene vacio
+                  $value['peso_nuevo'] = 0;
+                  
+                } 
+                $this->db->set( 'peso_real', $value['peso_nuevo'], FALSE  );
+                $this->db->where('codigo',$value['codigo']);                
+                $this->db->update($this->remoto_registros_transferencia);
+              }
+            
+            return TRUE;       
+        }              
+
 
 
            //procesando operaciones
@@ -401,7 +422,7 @@ public function totales_importes($where){
            $this->db->select('precio AS precio_viejo',false);      //
 
            $this->db->select('1 AS cantidad_royo',false);    
-           $this->db->select('0 AS peso_real',false);   
+           //$this->db->select('0 AS peso_real',false);   
            $this->db->select('"p-trans" AS num_partida',false);                      
            $this->db->select('"p-trans" AS comentario',false);   
            
@@ -412,7 +433,7 @@ public function totales_importes($where){
            $this->db->select($data['id_factura'].' AS id_fac_orig',false);  
            $this->db->select($data['id_tipo_pago'].' AS id_tipo_pago',false);
 
-          $this->db->select('id_descripcion, id_lote, consecutivo, id_estatus, codigo, ancho, cantidad_um, id_medida, iva, nombre_usuario');
+          $this->db->select('id_descripcion, id_lote, consecutivo, id_estatus, codigo, ancho, peso_real, cantidad_um, id_medida, iva, nombre_usuario');
           $this->db->select('"'.$id_session.'" AS id_usuario',false); 
           $this->db->select($data['id_operacion'].' AS id_operacion',false);  //creo 1(entrada)
           $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
@@ -515,7 +536,7 @@ public function totales_importes($where){
                     
           $this->db->select('m.id, m.movimiento,m.id_empresa, m.factura, m.id_descripcion, m.id_operacion,m.devolucion, num_partida,id_almacen, a.almacen, id_factura,m.id_fac_orig,id_tipo_pago, iva');
           $this->db->select('m.id_color, m.id_composicion, m.id_calidad, m.referencia');
-          $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.precio, m.codigo, m.comentario');
+          $this->db->select('m.id_medida, m.cantidad_um,m.peso_real, m.cantidad_royo, m.ancho, m.peso_real,m.precio, m.codigo, m.comentario');
           $this->db->select('m.id_estatus, m.id_lote, m.consecutivo, m.id_cargador, m.id_usuario, m.fecha_mac fecha');
           $this->db->select('DATE_FORMAT((m.fecha_mac),"%d-%m-%Y %H:%i") as fecha2', false);
 

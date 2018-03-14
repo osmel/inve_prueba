@@ -979,7 +979,7 @@ public function bodegas_agrupado_tipoFactura( $num_movimiento_pedido ){
          $this->db->select('"'.$fecha_hoy.'" AS fecha_transferencia',false);
          $this->db->select('"'.$consecutivo.'" AS mov_salida',false); 
          $this->db->select('"'.$consecutivo_unico.'" AS mov_salida_unico',false); 
-         $this->db->select('m.id_empresa, m.id_descripcion, m.id_color,m.id_calidad,m.id_composicion,m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,m.precio, m.codigo, m.id_estatus, m.id_lote,m.consecutivo, m.id_usuario_apartado,m.on_off,m.consecutivo_venta,prod.imagen');
+         $this->db->select('m.id_empresa, m.id_descripcion, m.id_color,m.id_calidad,m.id_composicion,m.referencia, m.id_medida, m.cantidad_um, m.cantidad_royo, m.ancho,m.peso_real,m.precio, m.codigo, m.id_estatus, m.id_lote,m.consecutivo, m.id_usuario_apartado,m.on_off,m.consecutivo_venta,prod.imagen');
          $this->db->select('"'.$id_session.'" AS id_usuario_salida',false);  
          $this->db->select('"'.$this->session->userdata('config_tienda_activo').'" AS id_tienda_origen',FALSE);
 
@@ -1108,7 +1108,7 @@ public function bodegas_agrupado_tipoFactura( $num_movimiento_pedido ){
                           //crear la referencia  que faltan (id_descripcion, id_color,id_composicion, id_calidad)
                            //falta definir id_usuario, activo, imagen, img_20170927OMwe615
                           $cons= 'INSERT INTO '.$bd_transferencia->dbprefix("catalogo_productos").' (descripcion, id_composicion, id_color, id_calidad, precio, ancho,  id_usuario,comentario,imagen,activo,referencia)  
-                         SELECT t.id_descripcion, t.id_new_composicion, t.id_new_color, t.id_new_calidad,t.precio,t.ancho,"usuario","transferencia",
+                         SELECT t.id_descripcion, t.id_new_composicion, t.id_new_color, t.id_new_calidad,t.precio,t.ancho, "usuario","transferencia",
                          RTRIM(SUBSTRING( t.imagen, LOCATE(".", t.imagen ) , 4 )) imagen,
 
                      0,
@@ -1160,7 +1160,7 @@ public function bodegas_agrupado_tipoFactura( $num_movimiento_pedido ){
 
 
 
-                                       //crear el grupo  que faltan (id_descripcion, id_composicion, id_calidad) e incluir la imagen
+                         //crear el grupo  que faltan (id_descripcion, id_composicion, id_calidad) e incluir la imagen
 
                           $cons= '
                                   UPDATE '.$bd_transferencia->dbprefix("catalogo_productos").' p 
