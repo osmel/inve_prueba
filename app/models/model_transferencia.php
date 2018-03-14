@@ -404,7 +404,8 @@ public function totales_importes($where){
            $this->db->select('0 AS peso_real',false);   
            $this->db->select('"p-trans" AS num_partida',false);                      
            $this->db->select('"p-trans" AS comentario',false);   
-           $this->db->select($data['factura'].' AS factura',false);   
+           
+           $this->db->select('"'.addslashes($data['factura']).'" AS factura',false); 
 
            $this->db->select($data['id_almacen'].' AS id_almacen',false);  
            $this->db->select($data['id_factura'].' AS id_factura',false);  
@@ -469,7 +470,7 @@ public function totales_importes($where){
               $this->db->select($data['id_factura'].' AS id_factura',false);  
               $this->db->select($data['id_factura'].' AS id_fac_orig',false);  
               $this->db->select($data['id_tipo_pago'].' AS id_tipo_pago',false);
-              $this->db->select($data['factura'].' AS factura',false);   
+              $this->db->select('"'.addslashes($data['factura']).'" AS factura',false); 
               $this->db->select('m.id_empresa'); // aqui es origen
               $this->db->select('m.id_tienda_origen'); 
               $this->db->select('"'.$fecha_hoy.'" AS fecha_entrada',false);
