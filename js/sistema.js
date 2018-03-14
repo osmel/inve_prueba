@@ -2633,8 +2633,8 @@ jQuery('#existencia_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','block');
 	jQuery('.bloque_totales').css('display','block');
@@ -2692,9 +2692,9 @@ jQuery('#salida_reporte').click(function (e) {
 	
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
-	jQuery('#id_factura_reporte').append('<option value="3">Surtidos</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
+	jQuery('#id_factura_reporte').append('<option value="3">S</option>');
     jQuery('#factura_reporte').val('');
     if (jQuery('#config_salida_activo').val()==1 ) {
 		jQuery('#bloque_factura').css('display','block');
@@ -2753,8 +2753,8 @@ jQuery('#apartado_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','none');
 	jQuery('.bloque_totales').css('display','block');
@@ -2806,8 +2806,8 @@ jQuery('#cero_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','none');
 	jQuery('.bloque_totales').css('display','none');
@@ -2857,8 +2857,8 @@ jQuery('#baja_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','none');
 	jQuery('.bloque_totales').css('display','none');
@@ -2911,8 +2911,8 @@ jQuery('#top_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','none');
 	jQuery('.bloque_totales').css('display','none');
@@ -2952,8 +2952,8 @@ jQuery('#entrada_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','block');
 	jQuery('.bloque_totales').css('display','block');
@@ -3006,8 +3006,8 @@ jQuery('#devolucion_reporte').click(function (e) {
 
 	jQuery('#id_factura_reporte').html(''); 
 	jQuery('#id_factura_reporte').append('<option value="0">Todos</option>');
-	jQuery('#id_factura_reporte').append('<option value="1">Factura</option>');
-	jQuery('#id_factura_reporte').append('<option value="2">Remisión</option>');
+	jQuery('#id_factura_reporte').append('<option value="1">A</option>');
+	jQuery('#id_factura_reporte').append('<option value="2">B</option>');
 	jQuery('#factura_reporte').val('');
 	jQuery('#bloque_factura').css('display','block');
 	jQuery('.bloque_totales').css('display','block');
