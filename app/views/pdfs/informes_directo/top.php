@@ -33,7 +33,7 @@
 						<th width="<?php echo (($this->session->userdata('id_perfil')==1) ? 13 : 20); ?>%">Referencia</th>
 						<th width="25%">Descripción</th>
 						
-						<th width="15%">Rollos Vendidos</th>
+						<th width="15%">Metros Vendidos</th>
 						
 						
 						<!-- <th width="12%">Imagen</th> -->
