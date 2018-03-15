@@ -157,6 +157,10 @@
 								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_recibida" class="ttip ">Transferencia Recibida</a> 
 							</li>
 
+							<li >
+								<a title="Generar Entradas al Almacén." href="<?php echo base_url(); ?>transferencia_bodega" class="ttip ">Transferencia Bodega</a> 
+							</li>
+
                         </ul>
                     </li>
 

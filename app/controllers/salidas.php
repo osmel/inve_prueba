@@ -319,9 +319,9 @@ public function validar_salida_pedido(){
 	}
 
 
-	//print_r($data);	die;	
 
-	if ($data['id_tipo_pedido']==3) { //bodega
+
+	if ($data['id_tipo_pedido']==3) { //bodega 
 				
 				 $data['id_tipo_pedido_new'] = 1; //venta
 				$data['id_tipo_factura_new'] = 1; //factura
@@ -379,18 +379,7 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 	      			
 	      			$num_movimiento_pedido  = base64_decode($num_movimiento_pedido);
 	      			 $data['movimientos'] = $this->modelo_salida->bodegas_agrupado_tipoFactura($num_movimiento_pedido) ; 
-	      			 //print_r($data['movimientos']);
-	      			//die;
-	      			//aqui es donde tengo que traer todos los datos para crear el redirect a detalles_salidas  
-	      			//detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura)
-	      			/*
-			'detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  )
-					
-					-->
-	      			*/
-
-		      		//$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros_bodega($data);
-
+	      		
 
 
 					      switch ($id_perfil) {    

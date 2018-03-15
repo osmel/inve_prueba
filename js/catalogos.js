@@ -51,6 +51,329 @@ jQuery('body').on('keypress paste','.peso_nuevo[restriccion="decimal"]', functio
     }
 });
 
+//transferencia recibida bodega
+
+
+
+jQuery('body').on('click','#conf_entrada_bodega', function (e) {
+
+		jQuery('#foo').css('display','block');
+		var spinner = new Spinner(opts).spin(target);
+
+		jQuery.ajax({
+		        url : 'validar_proceso_bodega',
+		        data : { 
+		        	factura: jQuery("#factura").val(),
+		        	mov_salida_unico: jQuery("#id_transferencia_bodega").val(),
+		        	id_almacen: jQuery("option:selected", "#id_transferencia_bodega").attr("id_almacen"),
+		        	id_tipo_pago: jQuery("#id_tipo_pago").val(),
+		        	id_factura: jQuery("#id_factura").val(),
+		        	movimiento_unico : jQuery("#movimiento_unico").val(), //numero nuevo de entrada
+		        	movimiento: jQuery("#movimiento").val(),
+		        	id_almacen_destino : jQuery("option:selected", "#id_transferencia_bodega").attr("id_almacen_destino"),
+
+
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+					if(data.exito != true){
+						spinner.stop();
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','block');
+						jQuery('#messages').addClass('alert-danger');
+						jQuery('#messages').html(data.error);
+						jQuery('html,body').animate({
+							'scrollTop': jQuery('#messages').offset().top
+						}, 1000);
+					}else{
+						
+						spinner.stop();
+						//borrar el mensaje q quedo	
+						jQuery('#foo').css('display','none');
+						jQuery('#messages').css('display','none');
+
+
+
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(dato) {	
+									        	MY_Socket.sendNewPost(dato.vendedor+' - '+dato.tienda+' - '+dato.compra,'conf_entrada');
+						
+												$catalogo = e.target.name;
+												window.location.href = 'procesar_entrar_bodega/'+jQuery.base64.encode("B-"+data.num_mov)+'/'+jQuery.base64.encode(jQuery("#id_factura").val());
+									        	
+									        }
+								});			
+								
+						
+					}		        			        	  
+				}
+		});	
+
+});
+
+
+jQuery('body').on('change','#id_transferencia_bodega', function (e) {
+	  jQuery('#id_almacen option[value="'+jQuery('#id_transferencia_bodega option:selected').attr('id_almacen_destino')+'"]').prop('selected', true);
+	  jQuery('#id_tipo_pago option[value="2"]').prop('selected', true);
+	  jQuery('#id_factura option[value="'+jQuery('#id_transferencia_bodega option:selected').attr('id_factura_entrada')+'"]').prop('selected', true);
+	  jQuery('#tabla_transferencia_bodega').dataTable().fnDraw();
+	  jQuery('#id_factura[tipo="entrada"]').trigger('change');  //actualiza los consecutivos
+
+});
+
+
+
+var productos_transferencia_bodega = ['Código', 'Descripción','Color', 'Medida','Ancho','Lote - No. consecutivo','Estatus','Precio','Subtotal','IVA','Total'];      	
+
+jQuery('#tabla_transferencia_bodega').dataTable( {
+	"pagingType": "full_numbers",
+	"processing": true,
+	"serverSide": true,
+	"ajax": {
+            	"url" : "procesando_transferencia_bodega",
+         		"type": "POST",
+         		 "data": function ( d ) {
+	     				  d.mov_salida_unico = jQuery("#id_transferencia_bodega").val(); 
+	     				  d.id_almacen = jQuery("option:selected","#id_transferencia_bodega").attr("id_almacen"); 
+	     				  d.id_almacen_destino = jQuery("option:selected", "#id_transferencia_bodega").attr("id_almacen_destino");
+	     				  d.id_factura = jQuery("option:selected","#id_transferencia_bodega").attr("id_factura_entrada");
+	     				  
+
+	    		}
+     },   
+	"infoCallback": function( settings, start, end, max, total, pre ) {
+	    if (settings.json.totales) {
+		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
+		  	jQuery('#total_peso').html( 'Total de kgs:'+number_format(settings.json.totales.peso, 2, '.', ','));
+			jQuery('#total_kg').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
+			jQuery('#total_metro').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_pieza').html( 'Total de piezas: 0');
+		    jQuery('#total_peso').html( 'Total de kgs: 0.00');
+			jQuery('#total_kg').html( 'Total de kgs: 0.00');
+			jQuery('#total_metro').html('Total de mts: 0.00');
+
+		}	
+
+
+	    if (settings.json.totales_importe) {
+		  	jQuery('#total_subtotal').html( 'SubTotal:'+number_format(settings.json.totales_importe.subtotal, 2, '.', ','));
+			jQuery('#total_iva').html( 'IVA:'+number_format(settings.json.totales_importe.iva, 2, '.', ','));
+			jQuery('#total_total').html('Total:'+ number_format(settings.json.totales_importe.total, 2, '.', ','));
+
+		} else {
+		    jQuery('#total_subtotal').html( 'Subtotal: 0.00');
+			jQuery('#total_iva').html( 'IVA: 0.00');
+			jQuery('#total_total').html('Total de mts: 0.00');
+
+		}	
+
+
+			if (settings.json.recordsTotal==0) {
+				jQuery("#disa_reportes").attr('disabled', true);					
+			} else {
+				jQuery("#disa_reportes").attr('disabled', false);					
+			}
+
+	    return pre
+  	} ,    
+
+
+	"footerCallback": function( tfoot, data, start, end, display ) {
+		
+
+	   var api = this.api(), data;
+			var intVal = function ( i ) {
+				return typeof i === 'string' ?
+					i.replace(/[\$,]/g, '')*1 :
+					typeof i === 'number' ?
+						i : 0;
+			};
+
+		if  (data.length>0) {   
+				
+				total_metro = api  
+					.column( 10 )   //metro 
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+				total_kilogramo = api
+					.column( 11)  //kg
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );
+
+				
+				total_subtotal = api
+					.column( 8)  //subtotal
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				total_iva = api
+					.column( 12) //sum de ivas
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );	
+				
+				total_total = api
+					.column( 13 )  //sum de totales
+					.data()
+					.reduce( function (a, b) {
+						return intVal(a) + intVal(b);
+					} );					
+
+				total_pieza = (end-start);	
+			        
+			        jQuery('#pieza').html( 'Total de piezas:'+ total_pieza);
+			        jQuery('#kg').html( 'Total de kgs:'+number_format(total_kilogramo, 2, '.', ','));
+			        jQuery('#metro').html('Total de mts:'+ number_format(total_metro, 2, '.', ','));
+
+					//importes
+					jQuery('#subtotal').html('SubTotal:'+ number_format(total_subtotal, 2, '.', ','));
+					jQuery('#iva').html('IVA:' + number_format( total_iva, 2, '.', ','));
+					jQuery('#total').html('Total:'+ number_format(total_total, 2, '.', ','));
+
+		} else 	{
+
+			        jQuery('#pieza').html('Total de piezas: 0');
+			        jQuery('#peso').html('Total de peso real: 0.00');
+			        jQuery('#metro').html('Total de mts: 0.00');
+					jQuery('#kg').html('Total de kgs: 0.00');	
+
+					//importes
+					jQuery('#subtotal').html('SubTotal: 0.00');	
+					jQuery('#iva').html('IVA: 0.00');	
+					jQuery('#total').html('Total: 0.00');	
+
+		}	
+    },	
+
+   "columnDefs": [
+
+   				{  //codigo viejo
+		                "render": function ( data, type, row ) { 
+		                			return row[1];
+		                },
+		                "targets": [1]   
+		        },  
+   				{ //descripcion
+		                "render": function ( data, type, row ) { 
+		                			return row[2];
+		                },
+		                "targets": [2]   
+		        },  
+    			
+    			{ //color, medida, ancho
+	                "render": function ( data, type, row ) {
+						return data;	
+	                },
+	                "targets": [3,4,5]
+	            },
+    			
+
+    			{ //lote y consecutivo
+	                "render": function ( data, type, row ) {
+						return row[6];	
+	                },
+	                "targets": [6]
+	            },
+
+	            { //estatus
+	                "render": function ( data, type, row ) {
+						return row[14];	
+	                },
+	                "targets": [7]
+	            },
+
+    			{  //precio
+	                "render": function ( data, type, row ) {
+						
+						return number_format(parseFloat(row[7]), 2, '.', ',');	
+	                },
+	                "targets": [8]
+	            },
+
+    			{ //subtotal
+	                "render": function ( data, type, row ) {
+						
+						return number_format(parseFloat(row[8]), 2, '.', ',');	
+	                },
+	                "targets": [9]
+	            },
+
+    			{   //iva = (subtotal*iva)/100
+	                "render": function ( data, type, row ) {
+						return number_format(parseFloat((row[8]*row[9])/100), 2, '.', ',');	
+	                },
+	                "targets": [10]
+	            },
+    			{ //total =  (subtotal+ (subtotal*iva) ) /100
+	                "render": function ( data, type, row ) {
+						return number_format((parseFloat(row[8])+parseFloat((row[8]*row[9])/100)), 2, '.', ',');	
+	                },
+	                "targets": [11]
+	            },	       
+
+
+    			{ 
+	                 "visible": false,
+	                "targets": [0,12,13,14,15] 
+	            }
+
+	],	
+
+
+	"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+		var arreglo =productos_transferencia_bodega;
+		for (var i=0; i<=arreglo.length-1; i++) { //cant_colum
+	    		nHead.getElementsByTagName('th')[i].innerHTML = arreglo[i]; 
+	    	}
+	},	
+
+	"language": {  //tratamiento de lenguaje
+		"lengthMenu": "Mostrar _MENU_ registros por página",
+		"zeroRecords": "No hay registros",
+		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		"infoEmpty": "No hay registros disponibles",
+		"infoFiltered": "(Mostrando _TOTAL_ de _MAX_ registros totales)",  
+		"emptyTable":     "No hay registros",
+		"infoPostFix":    "",
+		"thousands":      ",",
+		"loadingRecords": "Leyendo...",
+		"processing":     "Procesando...",
+		"search":         "Buscar:",
+		"paginate": {
+			"first":      "Primero",
+			"last":       "Último",
+			"next":       "Siguiente",
+			"previous":   "Anterior"
+		},
+		"aria": {
+			"sortAscending":  ": Activando para ordenar columnas ascendentes",
+			"sortDescending": ": Activando para ordenar columnas descendentes"
+		},
+	},
+});	
+
+
+
+
+
+//transferencia externa
+
 
 jQuery('body').on('click','#conf_transferencia_recibida', function (e) {
 

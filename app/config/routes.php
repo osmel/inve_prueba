@@ -891,6 +891,13 @@ $route['validar_proceso_transferencia']						= 'transferencias/validar_proceso_t
 $route['procesar_entrar_transferencia/(:any)/(:any)/(:any)']   				 = 'transferencias/procesar_entrar_transferencia/$1/$2/$3';
 
 
+/////////////////////////////////////////////Entrada Transferencia recibida de bodega
+
+$route['transferencia_bodega']						= 'entrada_bodega/transferencia_bodega';
+$route['procesando_transferencia_bodega']						= 'entrada_bodega/procesando_transferencia_bodega';
+$route['validar_proceso_bodega']						= 'entrada_bodega/validar_proceso_bodega';
+$route['procesar_entrar_bodega/(:any)/(:any)']   				 = 'entrada_bodega/procesar_entrar_bodega/$1/$2';
+
 
 
 //recepcion, devolucion_venta, transferencia_salida, ajuste_positivo
