@@ -27,10 +27,11 @@ public function confirmar_proc_apartado_sino(){
  	if($this->session->userdata('session') === TRUE ) {
 			      $id_perfil=$this->session->userdata('id_perfil');
 
-			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-			            $coleccion_id_operaciones = array();
-			       }  
+			      
+				  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
 
 			       $data['id_cargador'] = $this->input->post('id_cargador');
 			       $data['id_almacen'] = $this->input->post('id_almacen');
@@ -102,11 +103,11 @@ public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_p
 		    } else {
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
 
+			  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 		       $data['num_mov'] 				= base64_decode($num_mov);	
 		       $data['id_cargador'] 			= base64_decode($id_cargador);	
 		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
@@ -122,7 +123,7 @@ public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_p
 			        case 2:
 			        case 3:
 			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones))  {    
+			             if  (in_array(2, $data['coleccion_id_operaciones']))  {    
 			                $this->load->view( 'salidas/salida_apartado_modal',$data );
 			              }  else  {
 			                redirect('');
@@ -183,10 +184,10 @@ public function confirmar_proc_pedido_sino(){  //5252
 
 			      $id_perfil=$this->session->userdata('id_perfil');
 
-			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-			            $coleccion_id_operaciones = array();
-			       }  
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
 
 			       $data['id_cargador'] = $this->input->post('id_cargador');
 			       $data['id_almacen'] = $this->input->post('id_almacen');
@@ -260,10 +261,10 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_ped
 		    } else {
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+		  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 
 		       $data['num_mov'] 				= base64_decode($num_mov);	
 		       $data['id_cargador'] 			= base64_decode($id_cargador);	
@@ -280,7 +281,7 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_ped
 			        case 2:
 			        case 3:
 			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones))  {    
+			             if  (in_array(2, $data['coleccion_id_operaciones']))  {    
 			                 $this->load->view( 'salidas/salida_factura_modal',$data );
 			              }  else  {
 			                redirect('');
@@ -372,11 +373,10 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }  
-	      			
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 	      			
 	      			$num_movimiento_pedido  = base64_decode($num_movimiento_pedido);
 	      			 $data['movimientos'] = $this->modelo_salida->bodegas_agrupado_tipoFactura($num_movimiento_pedido) ; 
 	      		
@@ -391,7 +391,7 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 					        case 3:
 					        case 4:
 					              
-					              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
+					              if  (in_array(9, $data['coleccion_id_operaciones']))  {   //los q tienen accesos a reportes
 					                   $this->load->view( 'pdfs/salidas/multiples_salida_bodega',$data );
 					              } else {
 					          		 redirect('');    	
@@ -425,11 +425,10 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }  
-
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
 				   $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
 		      		$data["id_tipo_factura"] = base64_decode($id_tipo_factura);
 	
@@ -451,7 +450,7 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 					        case 3:
 					        case 4:
 					              
-					              if  (in_array(9, $coleccion_id_operaciones))  {   //los q tienen accesos a reportes
+					              if  (in_array(9, $data['coleccion_id_operaciones']))  {   //los q tienen accesos a reportes
 					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 					              } else {
 					          		 redirect('');    	
@@ -546,11 +545,11 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
-		       
+		  	   $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
+
 		       //no. movimiento
 		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
 		       //valor del cliente, cargador, factura, 
@@ -578,7 +577,7 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 			        case 2:
 			        case 3:
 			        case 4:
-			              if  (in_array(2, $coleccion_id_operaciones) )  {                 
+			              if  (in_array(2, $data['coleccion_id_operaciones']) )  {                 
 			                        $this->load->view( 'salidas/salida',$data );
 			             }   
 			          break;
@@ -777,11 +776,10 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 								      
 
-			      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-			            $coleccion_id_operaciones = array();
-			       }  
-
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
 			      $existe = $this->modelo_salida->existencia_temporales();
 
 			      $errores='';
@@ -870,10 +868,11 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 		    } else {
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+		  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
+
 		       $data['valor'] 				= base64_decode($valor);
 		       $data['id_cliente'] 			= $id_cliente;
 		       $data['id_almacen'] 				= base64_decode($id_almacen);
@@ -892,7 +891,7 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 			        case 2:
 			        case 3:
 			        case 4:
-			             if  (in_array(2, $coleccion_id_operaciones))  {    
+			             if  (in_array(2, $data['coleccion_id_operaciones']))  {    
 			                 $this->load->view( 'salidas/salida_modal', $data );
 			              }  else  {
 			                redirect('');
@@ -917,10 +916,10 @@ public function validar_confirmar_salida_sino(){
 		    } else {
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		      $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-		            $coleccion_id_operaciones = array();
-		       }   
+		  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+		            $data['coleccion_id_operaciones'] = array();
+		       } 
 
 		       	$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 				$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');	
@@ -953,7 +952,7 @@ public function validar_confirmar_salida_sino(){
 				        case 2:
 				        case 3:
 				        case 4:
-				             if  (in_array(2, $coleccion_id_operaciones) )  {    
+				             if  (in_array(2, $data['coleccion_id_operaciones']) )  {    
 				                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 				              }  else  {
 				                redirect('');
@@ -1036,7 +1035,7 @@ public function validar_confirmar_salida_sino(){
 			              
 			              //solo el que tiene 9 porque nos lleva a un detalle de reporte, este es para los botones que
 			        	  //aparecen en todo el sistema que tiene el numero de salida
-			              if ( (in_array(9, $data['coleccion_id_operaciones'])) || (in_array(50, $coleccion_id_operaciones))   )  {   //los q tienen accesos a reportes
+			              if ( (in_array(9, $data['coleccion_id_operaciones'])) || (in_array(50, $data['coleccion_id_operaciones']))   )  {   //los q tienen accesos a reportes
 						       $data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
 			                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
 			              } else {

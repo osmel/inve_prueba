@@ -305,10 +305,6 @@
 
           $id_perfil = $this->session->userdata('id_perfil');
 
-          $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-          if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                $coleccion_id_operaciones = array();
-           }   
 
 
                   
@@ -529,10 +525,6 @@
 
                   $id_perfil = $this->session->userdata('id_perfil');
 
-                  $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-                  if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
-                        $coleccion_id_operaciones = array();
-                   }   
 
 
                   foreach ($result->result() as $row) {

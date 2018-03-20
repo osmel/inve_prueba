@@ -9405,9 +9405,14 @@ jQuery('body').on('click','#impresion', function (e) {
 	});
 
 	jQuery('.buscar_prod_inven').on('typeahead:selected', function (e, datum,otro) {
+		//console.log(datum);
 
 	    jQuery('#producto').val(datum.id_descripcion);
 	    jQuery('#codigo_original').val(datum.key);
+
+	    //jQuery('#id_almacen').attr('id_almacen',datum.id_almacen);
+	    jQuery('#id_almacen').val(datum.id_almacen);
+
 
 
 	    jQuery('#oculto_producto').attr('color',datum.id_color );

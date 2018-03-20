@@ -27,20 +27,18 @@ public function listado_pedidos(){
 		       }   
 		       
 		       //no. movimiento
-		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(4);
+		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(4);  //consecutivo viejo
+
+		       
+
 		       //valor del cliente, cargador, factura, 
 		       $data['val_proveedor']  = $this->modelo_pedido->valores_movimientos_temporal();
 
-		       //print_r($data['val_proveedor']); die;
-
-		       $data['productos'] = $this->modelo_pedido->listado_productos_unico();
+		       $data['productos']   = $this->modelo_pedido->listado_productos_unico();
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-		       
 		       $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
-		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
+		       $data['pedidos']     = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
 		       
-		       
-
 		      switch ($id_perfil) {    
 		        case 1:          
 		                    $this->load->view( 'salidas_pedidos/salida_pedido',$data );
@@ -94,16 +92,9 @@ public function listado_pedidos(){
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
-
-
-
 			  if ($this->input->post('id_cliente')) {
-
 						$data['descripcion'] = $this->input->post('id_cliente');
 						$data['idproveedor'] = "3";
-
-
-
 					      switch ($this->input->post('on_off')) {    
 					        case 0:  //cliente normal        
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
@@ -114,19 +105,13 @@ public function listado_pedidos(){
 					        case 2: // bodega
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_bodega($data);
 					          break;
-
 					      } //fin del case
-
-
-
-
 						if (!($data['id_cliente'])){
 							$dato['mensaje'] = "El cliente no existe";
 						}
 			  } else {
-			  	$data['id_cliente']=null;
-			  	$dato['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
-
+				  	$data['id_cliente']=null;
+				  	$dato['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
 			  }	 		
 
 			if  ($data['id_cliente'])  {
@@ -135,25 +120,14 @@ public function listado_pedidos(){
 		 		$data['movimiento_unico'] = $this->input->post('movimiento_unico');
 		 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 		 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-
-		 		
 		 		$data['on_off'] = $this->input->post('on_off');
-
-		 		//echo json_encode($data);
-		 		//die;
-
+		 		$data['id_operacion_salida'] = 93; //salida apartado (vendedor)
 				$actualizar = $this->modelo_pedido->actualizar_pedido($data);
 				$dato['exito']  = true;
 			} else {      
-					
 	       		$dato['exito'] = validation_errors('<span class="error">','</span>');
-
 	      	}		
-
-			  
 			echo json_encode($dato);
-
-
 		}	
     }
 
@@ -164,7 +138,6 @@ public function listado_pedidos(){
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
-
 	 		$data['id'] = $this->input->post('identificador');
 			$actualizar = $this->modelo_pedido->quitar_pedido($data);
 			$dato['exito']  = true;
@@ -186,6 +159,9 @@ public function listado_pedidos(){
   		        $data['num_mov'] = $this->input->post('num_mov');
   		        $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
   		        $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
+  		        $data['id_operacion_pedido'] = 96; //pedido apartado (vendedor)
+  		        $data['id_operacion_salida'] = 93; //salida apartado (vendedor)
 
 			    $actualizar = $this->modelo_pedido->pedido_definitivamente($data);
 
