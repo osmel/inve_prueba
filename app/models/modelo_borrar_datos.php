@@ -53,7 +53,8 @@
     //Hasta la victoria siempre querido comandante
 
 public function eliminar_remoto(){
-  $bd_transferencia = $this->load->database('remoto2', TRUE);
+  
+  /*$bd_transferencia = $this->load->database('remoto2', TRUE);
 
   $bd_transferencia->empty_table( $bd_transferencia->dbprefix("remoto_registros_transferencia")); 
   $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_productos")); 
@@ -61,7 +62,7 @@ public function eliminar_remoto(){
   $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_calidad")); 
   $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_colores")); 
   $this->db = $this->load->database('default', TRUE);
-          return "remoto fue eliminado";
+          return "remoto fue eliminado";*/
 
 
 }  
