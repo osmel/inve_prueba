@@ -2,18 +2,16 @@
 <?php $this->load->view( 'header' ); ?>
 <div class="container margenes">
 
-	<input type="hidden" id="id_tipo_pedido" name="id_tipo_pedido" value="<?php echo $id_tipo_pedido; ?>">		
-	<input type="hidden" id="id_tipo_factura" name="id_tipo_factura" value="<?php echo $id_tipo_factura; ?>">		
-
-
-		<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
+	<input type="hidden" id="id_operacion_salida" name="id_operacion_salida" value="<?php echo $id_operacion_salida; ?>">		
+	<input type="hidden" id="id_almacen_pedido" name="id_almacen_pedido" value="<?php echo $id_almacen; ?>">		
+	<input type="hidden" id="mov_salida_unico" name="mov_salida_unico" value="<?php echo $mov_salida_unico ; ?>">
 
 
 		<div class="panel panel-primary">
 			<div class="panel-heading">Detalles de pedido &nbsp;&nbsp;&nbsp;<?php echo "<b>ALM:</b> ". $almacen; ?><span></span></div>
 			<div class="panel-body">
 				
-						<input type="hidden" id="consecutivo_venta" value="<?php echo $consecutivo_venta ; ?>">		
+						
 
 					<div class="row">
 						<div class="col-sm-4 col-md-5">
@@ -80,8 +78,8 @@
 	<div class="container row">					
 		<div class="col-md-12">		
 					  
-						<input type="hidden" id="mov_salida" value="<?php echo $mov_salida ; ?>">
-						<input type="hidden" id="id_apartado" value="<?php echo $id_apartado ; ?>">
+						
+						
 
 						<div class="table-responsive">
 							<section>
@@ -140,9 +138,11 @@
 
 								<div class="col-sm-3 col-md-3">
 									<label for="descripcion" class="col-sm-12 col-md-12"></label>
-									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($mov_salida); ?>/<?php echo base64_encode(3); ?>/<?php echo base64_encode($id_apartado); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($consecutivo_venta); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>" 
+									<a href="<?php echo base_url(); ?>generar_pedido_especifico/<?php echo base64_encode($mov_salida_unico); ?>/<?php echo base64_encode(3); ?>/<?php echo base64_encode($id_almacen); ?>/<?php echo base64_encode($id_operacion_salida); ?>" 
 										type="button" class="btn btn-success btn-block" target="_blank">Imprimir
 									</a>
+
+									
 								</div>
 
 								<div class="col-sm-3 col-md-3">

@@ -73,7 +73,7 @@ echo form_open('validar_edicion_producto', $attr);
 			</fieldset>	
 		</div>
 
-		<div class="col-xs-12 col-sm-6 col-md-3">
+		<div style="display:none;" class="Bueno col-xs-12 col-sm-6 col-md-3">
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>

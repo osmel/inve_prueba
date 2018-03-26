@@ -8,7 +8,6 @@
     }
 
 	if ($val_proveedor) {
-
 		$consecutivo_actual = (( ($val_proveedor->id_tipo_pedido == 1) && ($val_proveedor->id_tipo_factura==1) ) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
 		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==2) ? $consecutivo->conse_surtido : $consecutivo_actual);
 		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==3) ? $consecutivo->conse_bodega : $consecutivo_actual);
@@ -53,7 +52,7 @@
 
 					
 
-					<div class="col-xs-12 col-sm-6 col-md-2">
+					<div style="display:none;" class="Bueno col-xs-12 col-sm-6 col-md-2">
 						<fieldset disabled>
 							<div class="form-group">
 								<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>

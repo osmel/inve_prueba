@@ -1886,22 +1886,14 @@
     public function checar_existente_proveedor($data){
             $this->db->select("id", FALSE);         
             $this->db->from($this->proveedores);
-             
-
             $where = '(
                         (
                           ( nombre =  "'.addslashes($data['descripcion']).'" ) 
                           
                          )
-
               )';   
-  
             $this->db->where($where);
-
-
             $this->db->where('(LOCATE("'.$data['idproveedor'].'", coleccion_id_actividad) >0)' );
-           
-            
             $login = $this->db->get();
             if ($login->num_rows() > 0) {
                 $fila = $login->row(); 
@@ -2205,97 +2197,18 @@
 
 
 
-   //pedido
-
-  public function actualizando_nuevos_consecutivos_pedido( $data ){
-            
-                ///////////
-                $this->db->set( 'c1234', 'c1234+1', FALSE  );  
-                $where = '(
-                            (
-                              ( g.id_operacion =  '.$data["id_operacion"].' ) AND 
-                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
-                              ( g.id_factura =  '.$data["id_factura"].' ) AND 
-                              ( g.id_pedido =  '.$data["id_pedido"].' ) 
-                              
-                             )
-
-                  )';   
-                $this->db->where($where);
-                $this->db->update($this->consecutivo_general.' as g');
-
-
-                ///////////
-               if ( ($data["id_operacion"] ==4 ) || ($data["id_operacion"] ==96 )  || ($data["id_operacion"] ==97 ) || ($data["id_operacion"] ==98 )) {
-                    $id_operacion = '(( g.id_operacion =  4 ) OR ( g.id_operacion =  96 )  OR ( g.id_operacion =  97 ) OR ( g.id_operacion =  98) )';
-               }
-
-                ///////////
-               $this->db->set( 'c234', 'c234+1', FALSE  );  
-                $where = '(
-                            (
-                              '.$id_operacion.' AND 
-                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
-                              ( g.id_factura =  '.$data["id_factura"].' ) AND 
-                              ( g.id_pedido =  '.$data["id_pedido"].' ) 
-                              
-                             )
-
-                  )';   
-                $this->db->where($where);
-                $this->db->update($this->consecutivo_general.' as g');
-
-                ///////////
-               $this->db->set( 'c34', 'c34+1', FALSE  );  
-                $where = '(
-                            (
-                              '.$id_operacion.' AND 
-                              ( g.id_factura =  '.$data["id_factura"].' ) AND 
-                              ( g.id_pedido =  '.$data["id_pedido"].' ) 
-                             )
-                  )';   
-                $this->db->where($where);
-                $this->db->update($this->consecutivo_general.' as g');
-
-                ///////////
-               $this->db->set( 'c2', 'c2+1', FALSE  );  
-                $where = '(
-                            (
-                              '.$id_operacion.' AND 
-                              ( g.id_almacen =  '.$data["id_almacen"].' ) 
-                             )
-                  )';   
-                $this->db->where($where);
-                $this->db->update($this->consecutivo_general.' as g');
-
-
-                ///////////
-               $this->db->set( 'c1', 'c1+1', FALSE  );  
-                $where = '(
-                            (
-                              ( g.id_operacion =  '.$data["id_operacion"].' ) 
-                             )
-                  )';   
-                $this->db->where($where);
-                $this->db->update($this->consecutivo_general.' as g');
-
-
-        }           
-
-
-
-       public function consecutivo_general_pedido($data){
+ //pedido 
+public function consecutivo_general_pedido($data){
           $id_session = $this->session->userdata('id');
 
           $this->db->select('g.c1, g.c2, g.c1234,  g.c234,  g.c34'); 
           $this->db->from($this->consecutivo_general.' as g');
-
             $where = '(
                         (
-                          ( g.id_operacion =  '.$data["id_operacion"].' ) AND 
+                          ( g.id_operacion =  '.$data["id_operacion_pedido"].' ) AND 
                           ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
-                          ( g.id_factura =  '.$data["id_factura"].' ) AND 
-                          ( g.id_pedido =  '.$data["id_pedido"].' ) 
+                          ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                          ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) 
                           
                          )
 
@@ -2303,23 +2216,19 @@
             $this->db->where($where);
             $result = $this->db->get();
 
-            if ( $result->num_rows() > 0 ) {
-                return $result->row();
-            } else {
-
-
+            if ( $result->num_rows() > 0 ) { //si existe ya el registro porq se uso antes, pues q envie los consecutivos
+                return $result->row();  
+            } else {  //en caso de no existir el registro, pues entonces, construira uno apartir de los que ya existen
                   //obtener c1, c2, c234, c34
-
-
                      ///////////
-                     if ( ($data["id_operacion"] ==4 ) || ($data["id_operacion"] ==96 )  || ($data["id_operacion"] ==97 ) || ($data["id_operacion"] ==98 )) {
+                     if ( ($data["id_operacion_pedido"] ==4 ) || ($data["id_operacion_pedido"] ==96 )  || ($data["id_operacion_pedido"] ==97 ) || ($data["id_operacion_pedido"] ==98 )) {
                           $id_operacion = '(( g.id_operacion =  4 ) OR ( g.id_operacion =  96 )  OR ( g.id_operacion =  97 ) OR ( g.id_operacion =  98 ) )';
                      }
 
                   $this->db->select('max(g.c1* ( ('.$id_operacion.')  )  ) as c1',false);
                   $this->db->select('max(g.c2* ( ('.$id_operacion.') AND ( g.id_almacen =  '.$data["id_almacen"].' ) )  ) as c2',false);
-                  $this->db->select('max(g.c234* ( ('.$id_operacion.') AND ( g.id_almacen =  '.$data["id_almacen"].' )  AND ( g.id_factura =  '.$data["id_factura"].' ) AND ( g.id_pedido =  '.$data["id_pedido"].' ) )  ) as c234',false);
-                  $this->db->select('max(g.c34* ( ('.$id_operacion.')  AND ( g.id_factura =  '.$data["id_factura"].' ) AND ( g.id_pedido =  '.$data["id_pedido"].' ) )  ) as c34',false);
+                  $this->db->select('max(g.c234* ( ('.$id_operacion.') AND ( g.id_almacen =  '.$data["id_almacen"].' )  AND ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) )  ) as c234',false);
+                  $this->db->select('max(g.c34* ( ('.$id_operacion.')  AND ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) )  ) as c34',false);
                    $this->db->from($this->consecutivo_general.' as g');
                     $where = '(
                                 (
@@ -2355,10 +2264,10 @@
 
 
                   $this->db->set( 'id_usuario',  $id_session );
-                  $this->db->set( 'id_operacion', $data['id_operacion'] );  
+                  $this->db->set( 'id_operacion', $data['id_operacion_pedido'] );  
                   $this->db->set( 'id_almacen', $data['id_almacen'] );  
-                  $this->db->set( 'id_factura', $data['id_factura'] );  
-                  $this->db->set( 'id_pedido', $data['id_pedido'] );  
+                  $this->db->set( 'id_tipo_factura', $data['id_tipo_factura'] );  
+                  $this->db->set( 'id_tipo_pedido', $data['id_tipo_pedido'] );  
                   $this->db->insert($this->consecutivo_general );
 
 
@@ -2369,10 +2278,10 @@
 
                     $where = '(
                                 (
-                                  ( g.id_operacion =  '.$data["id_operacion"].' ) AND 
+                                  ( g.id_operacion =  '.$data["id_operacion_pedido"].' ) AND 
                                   ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
-                                  ( g.id_factura =  '.$data["id_factura"].' ) AND 
-                                  ( g.id_pedido =  '.$data["id_pedido"].' ) 
+                                  ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                                  ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) 
                                   
                                  )
 
@@ -2385,6 +2294,84 @@
                
             $result->free_result();
         }        
+
+
+ 
+
+  public function actualizando_nuevos_consecutivos_pedido( $data ){
+            
+                ///////////
+                $this->db->set( 'c1234', 'c1234+1', FALSE  );  
+                $where = '(
+                            (
+                              ( g.id_operacion =  '.$data["id_operacion_pedido"].' ) AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) 
+                              
+                             )
+
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+                ///////////
+               if ( ($data["id_operacion_pedido"] ==4 ) || ($data["id_operacion_pedido"] ==96 )  || ($data["id_operacion_pedido"] ==97 ) || ($data["id_operacion_pedido"] ==98 )) {
+                    $id_operacion = '(( g.id_operacion =  4 ) OR ( g.id_operacion =  96 )  OR ( g.id_operacion =  97 ) OR ( g.id_operacion =  98) )';
+               }
+
+                ///////////
+               $this->db->set( 'c234', 'c234+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) 
+                              
+                             )
+
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+                ///////////
+               $this->db->set( 'c34', 'c34+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido =  '.$data["id_tipo_pedido"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+                ///////////
+               $this->db->set( 'c2', 'c2+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+                ///////////
+               $this->db->set( 'c1', 'c1+1', FALSE  );  
+                $where = '(
+                            (
+                              ( g.id_operacion =  '.$data["id_operacion_pedido"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+        }           
 
 
 
@@ -2411,6 +2398,186 @@
                return False;
             $result->free_result();
         } 
+
+
+///////////salida
+public function consecutivo_general_salida($data){
+          $id_session = $this->session->userdata('id');
+
+          $this->db->select('g.c1, g.c2, g.c1234,  g.c234,  g.c34'); 
+          $this->db->from($this->consecutivo_general.' as g');
+            $where = '(
+                        (
+                          ( g.id_operacion =  '.$data["id_operacion_salida"].' ) AND 
+                          ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                          ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                          ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) 
+                          
+                         )
+
+              )';   
+            $this->db->where($where);
+            $result = $this->db->get();
+
+            if ( $result->num_rows() > 0 ) { //si existe ya el registro porq se uso antes, pues q envie los consecutivos
+                return $result->row();  
+            } else {  //en caso de no existir el registro, pues entonces, construira uno apartir de los que ya existen
+                  //obtener c1, c2, c234, c34
+                     ///////////
+                     if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 )) {
+                          $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95 ) )';
+                     }
+
+
+
+                  $this->db->select('max(g.c1* ( ('.$id_operacion.')  )  ) as c1',false);
+                  $this->db->select('max(g.c2* ( ('.$id_operacion.') AND ( g.id_almacen =  '.$data["id_almacen"].' ) )  ) as c2',false);
+                  $this->db->select('max(g.c234* ( ('.$id_operacion.') AND ( g.id_almacen =  '.$data["id_almacen"].' )  AND ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) )  ) as c234',false);
+                  $this->db->select('max(g.c34* ( ('.$id_operacion.')  AND ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) )  ) as c34',false);
+                   $this->db->from($this->consecutivo_general.' as g');
+                    $where = '(
+                                (
+                                  '.$id_operacion.'
+                                 )
+
+                      )';   
+                    $this->db->where($where);
+                    $result = $this->db->get();
+
+                    if ( $result->num_rows() > 0 ) {
+                          $c1 = ($result->row()->c1 == NULL) ? 0 : $result->row()->c1;
+                          $c2 = ($result->row()->c2 == NULL) ? 0 : $result->row()->c2;
+                        $c234 = ($result->row()->c234 == NULL) ? 0 : $result->row()->c234;
+                         $c34 = ($result->row()->c34 == NULL) ? 0 : $result->row()->c34;
+                    } else {
+
+                        $c1 = 0;
+                        $c2 = 0;
+                        $c234 = 0;
+                        $c34 = 0;
+                    }    
+
+
+
+                  //en caso de no existir que cree una nueva fila
+                   $this->db->set( 'c1', $c1);  
+                   $this->db->set( 'c2', $c2);  
+                   //$this->db->set( 'c1234', $c1234);  
+                   $this->db->set( 'c234', $c234);  
+                   $this->db->set( 'c34', $c34);  
+
+
+
+                  $this->db->set( 'id_usuario',  $id_session );
+                  $this->db->set( 'id_operacion', $data['id_operacion_salida'] );  
+                  $this->db->set( 'id_almacen', $data['id_almacen'] );  
+                  $this->db->set( 'id_tipo_factura', $data['id_tipo_factura'] );  
+                  $this->db->set( 'id_tipo_pedido', $data['id_tipo_pedido'] );  
+                  $this->db->insert($this->consecutivo_general );
+
+
+
+
+                  $this->db->select('g.c1, g.c2, g.c1234,  g.c234,  g.c34'); 
+                  $this->db->from($this->consecutivo_general.' as g');
+
+                    $where = '(
+                                (
+                                  ( g.id_operacion =  '.$data["id_operacion_salida"].' ) AND 
+                                  ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                                  ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                                  ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) 
+                                  
+                                 )
+
+                      )';   
+                    $this->db->where($where);
+                    $result = $this->db->get();
+                    return $result->row();
+              
+            }
+               
+            $result->free_result();
+        }        
+
+
+
+
+  public function actualizando_nuevos_consecutivos_salida( $data ){
+            
+                ///////////
+                $this->db->set( 'c1234', 'c1234+1', FALSE  );  
+                $where = '(
+                            (
+                              ( g.id_operacion =  '.$data["id_operacion_salida"].' ) AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) 
+                              
+                             )
+
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+                ///////////
+               if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 )) {
+                    $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95) )';
+               }
+
+                ///////////
+               $this->db->set( 'c234', 'c234+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) 
+                              
+                             )
+
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+                ///////////
+               $this->db->set( 'c34', 'c34+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_tipo_factura =  '.$data["id_tipo_factura"].' ) AND 
+                              ( g.id_tipo_pedido=  '.$data["id_tipo_pedido"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+                ///////////
+               $this->db->set( 'c2', 'c2+1', FALSE  );  
+                $where = '(
+                            (
+                              '.$id_operacion.' AND 
+                              ( g.id_almacen =  '.$data["id_almacen"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+                ///////////
+               $this->db->set( 'c1', 'c1+1', FALSE  );  
+                $where = '(
+                            (
+                              ( g.id_operacion =  '.$data["id_operacion_salida"].' ) 
+                             )
+                  )';   
+                $this->db->where($where);
+                $this->db->update($this->consecutivo_general.' as g');
+
+
+        }           
+        
 
 //-----------excluir "todos" en estatus------------------
         public function listado_estatus_excluir($limit=-1, $offset=-1,$tipo=-1){
@@ -3686,6 +3853,9 @@
             $result->free_result();
         }  
 
+     
+
+
 
         public function listado_tipos_facturas($limit=-1, $offset=-1){
           
@@ -4742,9 +4912,7 @@ public function checar_existente_bodega($data){
           $this->db->from($this->productos.' as p');
           $this->db->where('p.activo',0);
           $this->db->order_by('p.descripcion', 'asc'); 
-
           $result = $this->db->get();
-
             if ( $result->num_rows() > 0 )
                return $result->result();
             else

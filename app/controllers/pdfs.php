@@ -132,16 +132,16 @@ public function impresion_etiquetas1($codigo) {
     }
 
 
-  public function generar_salida_rapida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
+  public function generar_salida_rapida($num_mov,$id_operacion_salida,$id_estatus){
 
          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
           if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
                 $data['coleccion_id_operaciones'] = array();
            }
 
-        $data['id_movimiento']       = base64_decode($id_movimiento);
-        $data['id_tipo_pedido']      = base64_decode($id_tipo_pedido);
-        $data['id_tipo_factura']     = base64_decode($id_tipo_factura);
+        $data['num_mov']       = base64_decode($num_mov);
+        $data['id_operacion_salida']      = base64_decode($id_operacion_salida);
+        
         $data['id_estatus']     = base64_decode($id_estatus);
         /////////////
 
@@ -496,7 +496,8 @@ public function impresion_etiquetas1($codigo) {
 /////////////////////////Pedidos/////////////////////////////////////
 
 
- public function generar_pedido_especifico($num_mov,$id_generar,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
+// public function generar_pedido_especifico($num_mov,$id_generar,$id_cliente,$id_almacen,$consecutivo_venta,$id_operacion_pedido){
+public function generar_pedido_especifico($num_mov,$id_generar,$id_almacen,$id_operacion_pedido){  //,$id_cliente,$consecutivo_venta
 
          $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
               if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
@@ -505,13 +506,8 @@ public function impresion_etiquetas1($codigo) {
 
         $data['num_mov']= base64_decode($num_mov);
         $data['id_generar']= base64_decode($id_generar);
-        $data['id_cliente']= base64_decode($id_cliente);
         $data['id_almacen']= base64_decode($id_almacen);
-        $data['consecutivo_venta']= base64_decode($consecutivo_venta);
-        $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-        $data['id_tipo_factura'] = base64_decode($id_tipo_factura);             
-
-        
+        $data['id_operacion_pedido'] = base64_decode($id_operacion_pedido);
 
         
         $data['id']=$data['id_almacen'];

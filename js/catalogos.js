@@ -6426,7 +6426,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 	            	"url" : "procesando_historico_salida",
 	         		"type": "POST",
 	         		 "data": function ( d ) {
-	         		 	d.id_operacion=2;
+	         		 	
 
 						var fecha = (jQuery('.fecha_historicos').val()).split(' / ');
 						d.fecha_inicial = fecha[0];
@@ -6554,24 +6554,35 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
 		"columnDefs": [
 			    	 {
+		                "render": function ( data, type, row ) { //movimiento salida
+							
+								return row[17];
+							
+
+							
+		                },
+		                "targets": 0
+		            },
+
+    	 			{
 		                "render": function ( data, type, row ) {
 							if (row[13]==null) {
-								return '<b/> Nro.'+row[16];												
+								return '<b/> Nro.'+row[18];												
 							} else {
-								return row[13]+'<b/> Nro.'+row[16];		
+								return row[13]+'<b/> Nro.'+row[18];		
 							}
 
 							
 		                },
 		                "targets": 1
-		            },
+		            },		            
 
 
 			    	{ 
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0,2,3,4,5,6,7,8,9,10] 
+		                "targets": [2,3,4,5,6,7,8,9,10] 
 		            },
 
 
@@ -6582,10 +6593,11 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 						$otro_retorno="listado_devolucion";
 		        		texto='<td>';
 							texto+='<a style="padding: 1px 0px 1px 0px;"';
-							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[11])+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
+							//detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_operacion_salida,$retorno,$id_estatus){
+							texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[0])+'/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[4])+'/'+jQuery.base64.encode(row[20])+'/'+jQuery.base64.encode("listado_salidas")+'/'+jQuery.base64.encode(row[14])+'"'; //
 							texto+='type="button" class="btn btn-success btn-block">';
 							//texto+= ((row[15]==1) ? 'T-':'S-')+'Detalles';
-							texto+= ((row[15]==1) ? 'T-': ((row[15]==2) ? 'B-' : 'S-'))+'Detalles';
+							texto+= row[19]+'Detalles';
 							texto+='</a>';
 						texto+='</td>';
 							return texto;	
@@ -6595,7 +6607,7 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
   					
   					{ 
 		                 "visible": false,
-		                "targets": [12,13,14,15,16]
+		                "targets": [12,13,14,15,16,17,18,19]
 		            }
 		            
 		          

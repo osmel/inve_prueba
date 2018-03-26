@@ -390,12 +390,12 @@ $route['procesando_servidor_salida']    = 'salidas/procesando_servidor_salida';
 $route['quitar_prod_salida']		    = 'salidas/quitar_prod_salida';
 
 $route['generar_salida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida/$1/$2/$3/$4';
-$route['generar_salida_rapida/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida_rapida/$1/$2/$3/$4';
+$route['generar_salida_rapida/(:any)/(:any)/(:any)']    = 'pdfs/generar_salida_rapida/$1/$2/$3';
 
 
 
 
-$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5/$6/$7';
+$route['detalle_salidas/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalle_salidas/$1/$2/$3/$4/$5/$6';
 
 $route['procesar_salidas']    = 'salidas/procesar_salidas';
 
@@ -406,9 +406,9 @@ $route['validar_confirmar_salida_sino']    = 'salidas/validar_confirmar_salida_s
 ///para el caso de salida por pedidos
 
 $route['confirmar_proc_pedido_sino']    = 'salidas/confirmar_proc_pedido_sino';
-$route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3/$4/$5';
+$route['proc_salida_pedido_definitivo/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_salida_pedido_definitivo/$1/$2/$3/$4';
 $route['validar_salida_pedido']    = 'salidas/validar_salida_pedido';
-$route['detalles_salidas/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3/$4/$5';
+$route['detalles_salidas/(:any)/(:any)/(:any)/(:any)']    = 'salidas/detalles_salidas/$1/$2/$3/$4';
 
 $route['detalles_salidas_bodegas/(:any)']    = 'salidas/detalles_salidas_bodegas/$1';
 
@@ -417,7 +417,7 @@ $route['detalles_salidas_bodegas/(:any)']    = 'salidas/detalles_salidas_bodegas
 
 ///para el caso de salida por pedidos "apartados" VENDEDOR
 $route['confirmar_proc_apartado_sino']    = 'salidas/confirmar_proc_apartado_sino';
-$route['proc_apartado_pedido_definitivo/(:any)/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_apartado_pedido_definitivo/$1/$2/$3/$4/$5';
+$route['proc_apartado_pedido_definitivo/(:any)/(:any)/(:any)/(:any)']      = 'salidas/proc_apartado_pedido_definitivo/$1/$2/$3/$4';
 $route['validar_apartado_pedido']    = 'salidas/validar_apartado_pedido';
 
 
@@ -458,6 +458,7 @@ $route['detalles_imagen/(:any)/(:any)']    		= 'main/detalles_imagen/$1/$2';
 
 
 
+
 /////////////////////////////////////////////Listado de todos los pedidos
 // conteo con notificacion push
 $route['conteo_tienda']   			= 'pedidos/conteo_tienda';
@@ -465,19 +466,25 @@ $route['conteo_tienda']   			= 'pedidos/conteo_tienda';
 
 $route['pedidos']						= 'pedidos/listado_apartados';
 
-$route['apartado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4/$5/$6';
+$route['apartado_detalle/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3';
 //$route['apartado_detalle/(:any)/(:any)/(:any)/(:any)'] = 'pedidos/apartado_detalle/$1/$2/$3/$4';
 
-$route['pedido_detalle/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2/$3/$4';
-$route['pedido_completado_detalle/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_completado_detalle/$1/$2/$3/$4/$5/$6';
+//$route['pedido_detalle/(:any)/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2/$3/$4';
+
+$route['pedido_detalle/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_detalle/$1/$2/$3';
+
+$route['pedido_completado_detalle/(:any)/(:any)/(:any)']    			= 'pedidos/pedido_completado_detalle/$1/$2/$3';
 
 
-$route['eliminar_apartado_detalle/(:any)/(:any)/(:any)/(:any)']    	= 'pedidos/eliminar_apartado_detalle/$1/$2/$3/$4';
+$route['eliminar_apartado_detalle/(:any)/(:any)/(:any)']    	= 'pedidos/eliminar_apartado_detalle/$1/$2/$3';
 $route['validar_eliminar_apartado_detalle']    			= 'pedidos/validar_eliminar_apartado_detalle';
 
 
-$route['eliminar_pedido_detalle/(:any)/(:any)']    			= 'pedidos/eliminar_pedido_detalle/$1/$2';
+$route['eliminar_pedido_detalle/(:any)/(:any)/(:any)']    			= 'pedidos/eliminar_pedido_detalle/$1/$2/$3';
 $route['validar_eliminar_pedido_detalle']    			= 'pedidos/validar_eliminar_pedido_detalle';
+
+
+$route['imprimir_reportes_pedido']    		= 'pedidos/imprimir_reportes_pedido';
 
 ////////
 
@@ -541,7 +548,7 @@ $route['marcando_prorroga_venta']    			= 'pedidos/marcando_prorroga_venta';
 $route['marcando_prorroga_tienda']    			= 'pedidos/marcando_prorroga_tienda';
 
 
-$route['generar_pedido_especifico/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_pedido_especifico/$1/$2/$3/$4/$5/$6/$7';
+$route['generar_pedido_especifico/(:any)/(:any)/(:any)/(:any)']    = 'pdfs/generar_pedido_especifico/$1/$2/$3/$4';
 
 
 //////////****************Aqui para las impresiones**************////////////////////

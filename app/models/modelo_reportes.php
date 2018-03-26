@@ -1200,6 +1200,49 @@ public function detalle_entrada_home($data){
           //$this->db->select('us.nombre as nom_cliente');   
           $this->db->select("( CASE WHEN m.on_off = 1 THEN t.nombre ELSE us.nombre END ) AS nom_cliente");
 
+            $this->db->select("m.id_operacion_salida");
+
+             $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS movi_salida",FALSE);
+
+
+
+            $this->db->select("m.id_operacion_pedido");
+            $this->db->select("
+                CONCAT('[',
+                ( CASE 
+                  WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                   WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                  else 'T' 
+                end),
+                ']',m.id_almacen,'-',  
+                  (CASE 
+                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                  else tf.tipo_factura
+                end)
+
+                ,'-',m.cp234   
+               )
+                AS movi_pedido",FALSE);          
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia'); 
@@ -1208,7 +1251,8 @@ public function detalle_entrada_home($data){
           $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); 
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente');  //,'LEFT'
-          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');                  
+          $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');                
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');  
 
 
           if ($estatus=="apartado") {
@@ -1309,8 +1353,8 @@ public function detalle_entrada_home($data){
                                           3=>$row->cantidad_um.' '.$row->medida,
                                           4=>$row->ancho.' cm',
                                           5=> //
-                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida_unico).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_tipo_pedido).'/'.base64_encode($row->id_tipo_factura).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
-                                          type="button" class="btn btn-success btn-block">'.'S-'.$row->mov_salida_unico.'</a>',
+                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida_unico).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_operacion_salida).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
+                                          type="button" class="btn btn-success btn-block">'.$row->movi_salida.'</a>',
                                           6=>$columna7,//id_lote
                                           7=>$row->metros, // 9
                                           8=>$row->kilogramos,  //10
@@ -3413,6 +3457,50 @@ public function buscador_historico_salida($data){
           $this->db->select("prov_apartado.nombre cliente_apartado");
 
           $this->db->select("m.on_off");
+
+          $this->db->select("m.id_operacion_salida");
+
+             $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS movi_salida",FALSE);
+
+
+
+            $this->db->select("m.id_operacion_pedido");
+            $this->db->select("
+                CONCAT('[',
+                ( CASE 
+                  WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                   WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                  else 'T' 
+                end),
+                ']',m.id_almacen,'-',  
+                  (CASE 
+                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                  else tf.tipo_factura
+                end)
+
+                ,'-',m.cp234   
+               )
+                AS movi_pedido",FALSE);
+
           
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -3482,9 +3570,11 @@ public function buscador_historico_salida($data){
 
             //( m.on_off = '.$data["on_off"].' )
 
+          $id_operacion = ' (( m.id_operacion_salida =  2 ) OR ( m.id_operacion_salida =  93 )  OR ( m.id_operacion_salida =  94 ) OR ( m.id_operacion_salida =  95 )) ';
+
           $where = '(
                      (
-                        ( m.id_operacion = '.$data["id_operacion"].' )
+                        '.$id_operacion.'
                          '.$tienda_cliente.' 
                       
 
@@ -3508,7 +3598,7 @@ public function buscador_historico_salida($data){
 
           $this->db->where($where);          
 
-          $this->db->group_by('m.mov_salida_unico,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente'); //,m.id_estatus
+          $this->db->group_by('m.mov_salida_unico,m.id_operacion_salida,m.id_almacen'); //,m.id_estatus ,m.id_cliente
 
           
           //ordenacion
@@ -3565,7 +3655,12 @@ public function buscador_historico_salida($data){
                                       13=>$client,
                                       14=>$row->id_estatus,
                                       15=>$row->on_off,
-                                      16=>$row->movimiento_unico_apartado
+                                      16=>$row->movimiento_unico_apartado,
+                                      17=>$row->movi_salida,
+                                      18=>$row->movi_pedido,
+                                      19=>(($row->id_operacion_salida==2) ? 'S-' : (($row->id_operacion_salida==93) ? 'A-' :  ( ($row->id_operacion_salida == 94) ? 'T-' :  'B-' ) )),
+                                      20=>$row->id_operacion_salida,
+                                      21=>$row->id_operacion_pedido,
 
                                     );
                       }

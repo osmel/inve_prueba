@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Pedidos extends CI_Controller {
+
+
+class Pedidos extends CI_Controller { //Claseprueba1
 
 	public function __construct(){
 		parent::__construct();
@@ -9,6 +11,7 @@ class Pedidos extends CI_Controller {
 		$this->load->model('modelo', 'modelo');  
 		$this->load->library(array('email')); 
         $this->load->library('Jquery_pagination');//-->la estrella del equipo	 	
+        $this->load->library('miclase');
 
 	}
 ////////////////////////////////////////////////////////////
@@ -16,7 +19,9 @@ class Pedidos extends CI_Controller {
 				//generar_pedido
 	////////////////////////////////////////////////////////////
 ///mostrar el pedido
-public function listado_pedidos(){
+public function listado_pedidos(){ 
+
+
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
@@ -96,13 +101,13 @@ public function listado_pedidos(){
 						$data['descripcion'] = $this->input->post('id_cliente');
 						$data['idproveedor'] = "3";
 					      switch ($this->input->post('on_off')) {    
-					        case 0:  //cliente normal        
+					        case 0:  	//cliente normal        
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
 					          break;
-					        case 1:  //tienda
+					        case 1:  	//tienda
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_tienda($data);
 					          break;
-					        case 2: // bodega
+					        case 2: 	//bodega
 					              $data['id_cliente'] =  $this->catalogo->checar_existente_bodega($data);
 					          break;
 					      } //fin del case
@@ -121,7 +126,8 @@ public function listado_pedidos(){
 		 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 		 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 		 		$data['on_off'] = $this->input->post('on_off');
-		 		$data['id_operacion_salida'] = 93; //salida apartado (vendedor)
+
+		 		
 				$actualizar = $this->modelo_pedido->actualizar_pedido($data);
 				$dato['exito']  = true;
 			} else {      
@@ -153,32 +159,117 @@ public function listado_pedidos(){
 	public function pedido_definitivo(){
 
 		if($this->session->userdata('session') === TRUE ){
-	
+				$datos['exito'] =false;	
 		        $id_perfil=$this->session->userdata('id_perfil');
  
   		        $data['num_mov'] = $this->input->post('num_mov');
   		        $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
   		        $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
-  		        $data['id_operacion_pedido'] = 96; //pedido apartado (vendedor)
-  		        $data['id_operacion_salida'] = 93; //salida apartado (vendedor)
+				$data['factor_salida'] = $this->input->post('factor_salida');
+				$datos['descripcion'] = $this->input->post('cliente');
 
-			    $actualizar = $this->modelo_pedido->pedido_definitivamente($data);
+  		        $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido'); //pedido normal =4 , tienda=97, bodega=98
+			    $data['consecutivo_unico'] = $this->modelo_pedido->pedido_definitivamente($data);
 
-				if ( $actualizar !== FALSE ){
-					echo TRUE;
+				if ( $data['consecutivo_unico']  !== FALSE ){
+					//actualizar el consecutivo único de pedido, por almacenes
+
+					 $datos['almacenes'] = $this->modelo_pedido->actualizar_consecutivo_pedido_multiples_almacenes($data);
+					 $datos['movimientos'] = $this->modelo_pedido->imprimir_pedido_definitivamente($data);
+				     $datos['totales'] = $this->modelo_pedido->imprimir_total_campos($data);  
+
+
+					$datos['exito'] =true;	
 				} else {
-					echo '<span class="error">No se han podido apartar los productos</span>';
+					$datos['exito'] = '<span class="error">No se han podido apartar los productos</span>';
 				}
 		
 		} else {      
 			
-   			 echo validation_errors('<span class="error">','</span>');
+   			 $datos['exito'] = validation_errors('<span class="error">','</span>');
 
   		}		
 
+  		echo json_encode($datos);
 	
 	}	
+
+
+
+
+/////////////////////////////Hasta aqui la regilla de INICIO ///////////////////////////////////////
+
+	public function imprimir_reportes_pedido(){
+
+		 if($this->session->userdata('session') === TRUE ){
+		 		
+			    $misdatos = json_decode($this->input->post('datos'));
+			    
+		 				    
+                $data['almacenes'] 	 = json_decode($misdatos->almacenes,true);
+			    $data['movimientos'] = ($misdatos->movimientos);
+                $data['totales'] 	 = ($misdatos->totales);
+                $data['descripcion'] = $misdatos->descripcion;
+
+			    $dato['id'] = 7;
+                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
+
+
+                $html = $this->load->view('pdfs/apartados/informe_pedido', $data, true);
+
+
+			   		set_time_limit(0); 
+			        ignore_user_abort(1);
+			        ini_set('memory_limit','512M'); 
+
+			        $this->load->library('Pdf');
+			        $pdf = new Pdf('P', 'mm', 'A4', true, 'UTF-8', false);
+			        $pdf->SetCreator(PDF_CREATOR);
+			        $pdf->SetTitle('Titulo Generación de Etiqueta');
+			        $pdf->SetSubject('Subtitulo');
+			        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+			        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+			 
+			        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+			 
+
+			        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+			 
+			        $pdf->setFontSubsetting(true);
+
+			        
+			        $pdf->SetFont('Times', '', 8,'','true');
+
+			 
+			        $pdf->setTextShadow(array('enabled' => true, 'depth_w' => 0.2, 'depth_h' => 0.2, 'color' => array(196, 196, 196), 'opacity' => 1, 'blend_mode' => 'Normal'));
+			 
+			        $pdf->setPrintHeader(false);
+			        $pdf->setPrintFooter(false);
+
+			        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+			        $pdf->SetMargins(10, 10, 10,true);
+			        
+			        $pdf->SetAutoPageBreak(true, 10);
+
+			        $pdf->AddPage('P', array( 215.9,  279.4)); //en mm 21.59cm por 27.94cm
+
+
+
+			        
+			        $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html, $border = 0, $ln = 1, $fill = 0, $reseth = true, $align = '', $autopadding = true);
+			        $nombre_archivo = utf8_decode("informe".".pdf");
+			        $pdf->Output($nombre_archivo, 'I');
+
+
+
+
+				
+		  
+		}
+	}	
+
 
 
   //cuando selecciona los filtros  de producto, composicion, ancho, color, proveedor de generar_pedido	
@@ -291,7 +382,9 @@ public function listado_pedidos(){
 
 
 	 //listado 1ra Regilla PARA "Pedidos de vendedores"
-	public function apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
+//	public function apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_operacion_pedido){
+
+	public function apartado_detalle($num_mov,$id_almacen,$id_operacion_pedido){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -303,11 +396,11 @@ public function listado_pedidos(){
 		       }   
 		       
 		       //no. movimiento $data
-		       	$data['id_usuario'] = base64_decode($id_usuario);
-				$data['id_cliente'] = base64_decode($id_cliente);
+		       	//$data['id_usuario'] = base64_decode($id_usuario);
+				$data['num_mov'] = base64_decode($num_mov);
 				$data['id_almacen'] = base64_decode($id_almacen);
-				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+				$data['id_operacion_pedido'] = base64_decode($id_operacion_pedido);
+				
 
 				$data['id']=$data['id_almacen'];
 				if ($data['id']==0){
@@ -316,7 +409,7 @@ public function listado_pedidos(){
 					$data['almacen'] = $this->catalogo->coger_almacen($data)->almacen;
 				}
 
-				$data['consecutivo_venta'] = base64_decode($consecutivo_venta);				
+				//$data['consecutivo_venta'] = base64_decode($consecutivo_venta);				
 				
 
 
@@ -348,7 +441,7 @@ public function listado_pedidos(){
 
  	//detalle "Regilla" de la 2da PARA  "Pedidos de tiendas" 
 
-	public function pedido_detalle($num_mov,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
+	public function pedido_detalle($num_mov,$id_almacen,$id_operacion_pedido){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -362,8 +455,7 @@ public function listado_pedidos(){
 		       //no. movimiento $data
 				$data['num_mov'] = base64_decode($num_mov);
 				$data['id_almacen'] = base64_decode($id_almacen);
-				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+				$data['id_operacion_pedido'] = base64_decode($id_operacion_pedido);
 
 
 				$data['id']=$data['id_almacen'];
@@ -398,7 +490,8 @@ public function listado_pedidos(){
 	}
 
     //listado "Regilla" de la 3ra PARA "Histórico de Pedidos"
-	public function pedido_completado_detalle($mov_salida,$id_apartado,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
+	//public function pedido_completado_detalle($mov_salida,$id_apartado,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
+	public function pedido_completado_detalle($mov_salida_unico,$id_almacen,$id_operacion_salida){
 
 
 		if($this->session->userdata('session') === TRUE ){
@@ -410,12 +503,10 @@ public function listado_pedidos(){
 		       }   
 		       
 		       //no. movimiento $data
-				$data['mov_salida'] = base64_decode($mov_salida);
-				$data['id_apartado'] = base64_decode($id_apartado);
+				$data['mov_salida_unico'] = base64_decode($mov_salida_unico);
 				$data['id_almacen'] = base64_decode($id_almacen);
-
-				$data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-				$data['id_tipo_factura'] = base64_decode($id_tipo_factura);
+				$data['id_operacion_salida'] = base64_decode($id_operacion_salida);
+				
 
 				$data['id']=$data['id_almacen'];
 				if ($data['id']==0){
@@ -424,7 +515,7 @@ public function listado_pedidos(){
 					$data['almacen'] = $this->catalogo->coger_almacen($data)->almacen;
 				}
 
-				$data['consecutivo_venta'] = base64_decode($consecutivo_venta);				
+				//$data['consecutivo_venta'] = base64_decode($consecutivo_venta);				
 
 		      switch ($id_perfil) {    
 		        case 1:          
@@ -493,26 +584,23 @@ public function listado_pedidos(){
 
 
 	//Eliminar 1ra Regilla PARA "Pedidos de vendedores"
-	public function eliminar_apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_tipo_pedido,$id_tipo_factura){
+	
+	//public function eliminar_apartado_detalle($id_usuario,$id_cliente,$id_almacen,$consecutivo_venta,$id_operacion_pedido){
+	public function eliminar_apartado_detalle($num_mov,$id_almacen,$id_operacion_pedido){
 
 
 	    if ($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
 
-           $data['id_usuario'] = base64_decode($id_usuario);
-		   $data['id_cliente'] = base64_decode($id_cliente);
+           $data['num_mov'] = base64_decode($num_mov);
 		   $data['id_almacen'] = base64_decode($id_almacen);
-		   $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-		   $data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
-				
-		   
+		   $data['id_operacion_pedido'] = base64_decode($id_operacion_pedido);
 
           $coleccion_id_operaciones= json_decode($this->session->userdata('coleccion_id_operaciones')); 
           if ( (count($coleccion_id_operaciones)==0) || (!($coleccion_id_operaciones)) ) {
                 $coleccion_id_operaciones = array();
            }   
 
-           $data['consecutivo_venta'] = base64_decode($consecutivo_venta);
 				
           switch ($id_perfil) {    
             case 1:
@@ -541,13 +629,10 @@ public function listado_pedidos(){
 
 
 	function validar_eliminar_apartado_detalle(){
-		$data['id_usuario'] = $this->input->post('id_usuario');
-		$data['id_cliente'] = $this->input->post('id_cliente');
+		$data['num_mov'] = $this->input->post('num_mov');
 		$data['id_almacen'] = $this->input->post('id_almacen');
-		$data['consecutivo_venta'] = $this->input->post('consecutivo_venta');
+		$data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
 
-		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
 		$this->modelo_pedido->cancelar_traspaso_apartado_detalle($data);
 
@@ -562,16 +647,16 @@ public function listado_pedidos(){
 
 
 	//Eliminar "Regilla" de la 2da PARA  "Pedidos de tiendas" 
-	public function eliminar_pedido_detalle($num_mov,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
+	//public function eliminar_pedido_detalle($num_mov,$id_almacen,$id_tipo_pedido,$id_tipo_factura){
+	public function eliminar_pedido_detalle($num_mov,$id_almacen,$id_operacion_pedido){	
 
 
 	    if ($this->session->userdata('session') === TRUE ){
           $id_perfil=$this->session->userdata('id_perfil');
-
-           $data['num_mov'] = base64_decode($num_mov);
-           $data['id_almacen'] = base64_decode($id_almacen);
-           $data['id_tipo_pedido'] = base64_decode($id_tipo_pedido);
-		   $data['id_tipo_factura'] = base64_decode($id_tipo_factura);				
+			
+		   $data['num_mov'] = base64_decode($num_mov);
+		   $data['id_almacen'] = base64_decode($id_almacen);
+		   $data['id_operacion_pedido'] = base64_decode($id_operacion_pedido);			
 				
 		   
 
@@ -609,8 +694,7 @@ public function listado_pedidos(){
 	function validar_eliminar_pedido_detalle(){
 		$data['num_mov'] = $this->input->post('num_mov');
 		$data['id_almacen'] = $this->input->post('id_almacen');
-		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+		$data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
 		
 				$this->modelo_pedido->cancelar_traspaso_pedido_detalle($data);
 				

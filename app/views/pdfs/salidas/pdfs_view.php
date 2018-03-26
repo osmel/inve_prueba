@@ -31,7 +31,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 ?>		
 <div class="container margenes">
 			<div class="panel panel-primary">
-			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php echo $encabezado['num_movimiento']; ?> </div>
+			<div class="panel-heading">Número de Movimiento <?php echo $etiq_mov; ?>: <?php echo $movimientos[0]->mov; ?> </div>
 			<div class="panel-body">
 
 
@@ -65,14 +65,14 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 				<div class="col-sm-4 col-md-4" style="margin-bottom:25px">
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_salida_rapida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
+					<a href="<?php echo base_url(); ?>generar_salida_rapida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($movimientos[0]->id_operacion_salida); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">Imprimir nota
 					</a>
 				</div>				
 
 				<div class="col-sm-4 col-md-4"  <?php echo 'style="display:'.( (($config_impresion->activo==0) ) ? 'none':'block').'"'; ?>>
 					<label for="descripcion" class="col-sm-12 col-md-12"></label>
-					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($id_tipo_pedido); ?>/<?php echo base64_encode($id_tipo_factura); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
+					<a href="<?php echo base_url(); ?>generar_salida/<?php echo base64_encode($encabezado['num_movimiento']); ?>/<?php echo base64_encode($movimientos[0]->id_operacion_salida); ?>/<?php echo base64_encode($movimientos[0]->id_estatus); ?>"  
 						type="button" class="btn btn-success btn-block" target="_blank">PDF nota
 					</a>
 				</div>

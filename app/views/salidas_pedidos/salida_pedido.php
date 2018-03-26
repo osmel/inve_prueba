@@ -50,7 +50,7 @@
 		</fieldset>	
 	</div>
 	
-	<div class="col-xs-12 col-sm-6 col-md-2">
+	<div style="display:none;" class="Bueno col-xs-12 col-sm-6 col-md-2">
 		<label for="movimiento" >No. Movimiento</label>	
 
 		<fieldset disabled>

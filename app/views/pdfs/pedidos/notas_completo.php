@@ -7,7 +7,10 @@
 					<tr>
 						<td>
 							<p style="font-size: 15px; line-height: 20px; padding: 0px; margin-bottom: 0px;">
-								<span><b>Tipo Aparatdo: </b> <?php echo $movimientos[0]->tipo_pedido.'-'.$movimientos[0]->tipo_apartado; ?></span><br>
+								<!-- <span><b>Tipo Aparatdo: </b> <?php echo $movimientos[0]->tipo_pedido.'-'.$movimientos[0]->tipo_apartado; ?></span><br> -->
+
+								<span><b>Mov. Salida: </b> <?php echo $movimientos[0]->movi_salida; ?></span><br>
+								<span><b>Mov. Pedido: </b> <?php echo $movimientos[0]->movi_pedido; ?></span><br>
 
 								<?php if ( $movimientos[0]->tipo_apartado=='Vendedor' ) { ?>
 
@@ -15,8 +18,10 @@
 								<span><b>Fecha: </b><?php echo $movimientos[0]->fecha_apartado; ?></span><br>
 
 								<?php } else { ?>
-
-								<span><b>Movimiento: </b> <?php echo $movimientos[0]->id_cliente_apartado; ?></span><br>
+								<!--
+								<span><b>Mov. Salida: </b> <?php echo $movimientos[0]->movi_salida; ?></span><br>
+								<span><b>Mov. Pedido: </b> <?php echo $movimientos[0]->movi_pedido; ?></span><br>
+								-->
 								<span><b>Vendedor: </b> <?php echo $movimientos[0]->vendedor; ?></span><br>
 								
 								<span><b>Fecha: </b> <?php echo $movimientos[0]->fecha_apartado; ?></span><br>

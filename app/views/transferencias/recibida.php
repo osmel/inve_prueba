@@ -119,7 +119,7 @@ if ($val_proveedor) {
 			</fieldset>			
 		</div>
 
-		<div class="col-xs-6 col-sm-3 col-md-2">
+		<div style="display:none;" class="Bueno col-xs-6 col-sm-3 col-md-2">
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
@@ -147,7 +147,7 @@ if ($val_proveedor) {
 							<select name="id_transferencia" id="id_transferencia" class="form-control">
 									<option value="0" id_tienda_origen="0">Selecciona una opción</option>
 										<?php foreach ( $transferencias as $transf ){ ?>
-													<option value="<?php echo $transf->mov_salida_unico; ?>" id_tienda_origen="<?php echo $transf->id_tienda_origen; ?>" ><?php echo $transf->nombre.' - '.$transf->mov_salida_unico.' - '.$transf->nombre_usuario; ?></option>
+													<option value="<?php echo $transf->mov_salida_unico; ?>" id_tienda_origen="<?php echo $transf->id_tienda_origen; ?>" ><?php echo $transf->nombre.' - '.$transf->movi_salida.' - '.$transf->nombre_usuario; ?></option>
 										<?php } ?>
 								</select>
 						</div>

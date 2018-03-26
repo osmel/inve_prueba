@@ -37,8 +37,8 @@ public function confirmar_proc_apartado_sino(){
 			       $data['id_almacen'] = $this->input->post('id_almacen');
 			       $data['num_mov'] = $this->input->post('num_mov');
 			       $data['dependencia'] = $this->input->post('dependencia');
-			       $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');	
+			       $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
+				   
 				   $data['id_apartado']=2;  //esta en via de ser procesado un apartado			
 
 			      $existe = $this->modelo_salida->existencia_apartado_salida($data);
@@ -94,7 +94,7 @@ public function confirmar_proc_apartado_sino(){
 }
 
 //1ra regilla(modal).Una vez confirmado los peso_real y cargador procesa la salida, mediante esta modal
-public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
+public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_operacion_pedido,$id_almacen){
 
 
 	
@@ -110,8 +110,7 @@ public function proc_apartado_pedido_definitivo($num_mov,$id_cargador,$id_tipo_p
 		       } 
 		       $data['num_mov'] 				= base64_decode($num_mov);	
 		       $data['id_cargador'] 			= base64_decode($id_cargador);	
-		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
-		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
+		       $data['id_operacion_pedido'] 	= base64_decode($id_operacion_pedido);	
 		       $data['id_almacen'] 		= base64_decode($id_almacen);	
 			   
               if ($this->session->userdata('config_salida')==0) {
@@ -147,24 +146,20 @@ public function validar_apartado_pedido(){
 	
 		$data['id_cargador'] = $this->input->post('id_cargador');
 			$data['num_mov'] = $this->input->post('num_mov');
-	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+	 $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
 	$data['id_almacen'] = $this->input->post('id_almacen');
 	$data['id_apartado']=2;  //esta en via de ser procesado un apartado	
 
+	$data['id_operacion_salida'] =93; //apartado
+
+	 //traspasa todos los productos que necesitan ser traspasados
+	$this->modelo_salida->traspaso($data);
 	
-
-	if ($data['id_tipo_factura']!=0) {
-		$this->modelo_salida->traspaso_apartado($data);
-	}
-
 	//aqui me quede
 	$parametros=( $this->modelo_salida->procesando_operacion_apartado_salida($data) );
+	//print_r($parametros);die;
 
-		//redirect('detalles_salidas/'.base64_encode($parametros->mov_salida).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
-		
-
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_operacion_salida'])  ) ;
 
 	
 }		
@@ -193,11 +188,10 @@ public function confirmar_proc_pedido_sino(){  //5252
 			       $data['id_almacen'] = $this->input->post('id_almacen');
 			       $data['num_mov'] = $this->input->post('num_mov');
 			       $data['dependencia'] = $this->input->post('dependencia');
-				   $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				   $data['id_tipo_factura'] = $this->input->post('id_tipo_factura');			       
+				   $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
 				   $data['on_off'] =  (int)$this->input->post('on_off');			       
 				   $data['id_apartado']=5;  //esta en via de ser procesado un apartado
-			      $existe = $this->modelo_salida->existencia_pedido_salida($data);  //ok
+			       $existe = $this->modelo_salida->existencia_pedido_salida($data);  //ok
 
 			      $errores='';	
 
@@ -252,7 +246,8 @@ public function confirmar_proc_pedido_sino(){  //5252
 
 
 //2da regilla(modal).una vez confirmado los peso_real y cargador procesa la salida, mediante esta modal
-public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
+//public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_pedido,$id_tipo_factura,$id_almacen){
+public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_operacion_pedido,$id_almacen){
 
 
 	
@@ -268,8 +263,7 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_ped
 
 		       $data['num_mov'] 				= base64_decode($num_mov);	
 		       $data['id_cargador'] 			= base64_decode($id_cargador);	
-		       $data['id_tipo_pedido'] 			= base64_decode($id_tipo_pedido);	
-		       $data['id_tipo_factura'] 		= base64_decode($id_tipo_factura);	
+		       $data['id_operacion_pedido'] 	= base64_decode($id_operacion_pedido);	
 		       $data['id_almacen'] 				= base64_decode($id_almacen);	
 			   
               if ($this->session->userdata('config_salida')==0) {
@@ -303,26 +297,36 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_tipo_ped
 //cuando dice "si" con la modal de confirmar el pedido
 public function validar_salida_pedido(){ 
 
-	
-	//print_r($db['remoto']['database']);die;
-	
-		$data['id_cargador'] = $this->input->post('id_cargador');
-			$data['num_mov'] = $this->input->post('num_mov');
-	 $data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-	$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+
+			 $data['id_cargador'] = $this->input->post('id_cargador');
+				 $data['num_mov'] = $this->input->post('num_mov');
+	 $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
 	$data['id_almacen'] = $this->input->post('id_almacen');
 	$data['id_apartado']=5;  //esta en via de ser procesado un apartado
 
-
-
-	if ($data['id_tipo_factura']!=0) {
-		$this->modelo_salida->traspaso_pedido($data);
+	switch ($data['id_operacion_pedido']) {
+			case 4: //normal S
+					$data['id_operacion_salida'] = 2;
+				break;
+			case 96: // Apartado(Vendedor) A
+					$data['id_operacion_salida'] = 93;
+				break;
+			case 97:  //Transferencia Externa T
+					$data['id_operacion_salida'] = 94;
+				break;
+			case 98: //Bodegas G
+					$data['id_operacion_salida'] = 95;
+				break;
+			default:
+				    $data['id_operacion_salida'] = 2;
+				break;
 	}
+	
+
+		$this->modelo_salida->traspaso($data);
 
 
-
-
-	if ($data['id_tipo_pedido']==3) { //bodega 
+	if ($data['id_operacion_salida']==95) { //bodega G
 				
 				 $data['id_tipo_pedido_new'] = 1; //venta
 				$data['id_tipo_factura_new'] = 1; //factura
@@ -339,7 +343,8 @@ public function validar_salida_pedido(){
 					  $parametros= ($parametros !=FALSE) ? $parametros : $parametros1;
 					  
 					  				
-						redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  ) ;
+						//redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido_new']).'/'.base64_encode($data['id_tipo_factura_new'])  ) ;
+						redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_operacion_salida'])  ) ;
 				} else { // se creo 2 salidas
 
 					redirect('detalles_salidas_bodegas/'.base64_encode($data['num_mov']) );	
@@ -348,17 +353,72 @@ public function validar_salida_pedido(){
 	} else {
 		$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );	
 
-		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		//redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+		redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_operacion_salida'])  ) ;
+
 	}	
 
 	
 
-
-	//print_r($parametros);die;
-
-		
-
 }	
+
+
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+	//1ra y 2da regilla(reporte) Imprimir el pdf
+/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+
+
+public function detalles_salidas($mov_salida_unico=-1,$cliente=-1,$cargador=-1,$id_operacion_salida){
+
+		 if($this->session->userdata('session') === TRUE ){
+		      $id_perfil=$this->session->userdata('id_perfil');
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
+				   $data["id_operacion_salida"]  = base64_decode($id_operacion_salida);
+		      		
+	
+	      			$data['encabezado']['num_movimiento']  = base64_decode($mov_salida_unico);
+	      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
+	      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
+					$data['retorno'] ="pedidos";	 //DETALLES DE REPORTE
+		      		$data['etiq_mov'] ="de Salida";
+		      		$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
+
+		      		
+
+					      switch ($id_perfil) {    
+					        case 1:          
+								       
+					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+					          break;
+					        case 2:
+					        case 3:
+					        case 4:
+					              
+					              if  (in_array(9, $data['coleccion_id_operaciones']))  {   //los q tienen accesos a reportes
+					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
+					              } else {
+					          		 redirect('');    	
+					              }  
+
+					          break;
+
+
+					        default:  
+					          redirect('');
+					          break;
+					      }
+			      
+		    }
+		    else{ 
+		      redirect('');
+		    }  
+	}
+
 
 
 
@@ -377,8 +437,9 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
 			            $data['coleccion_id_operaciones'] = array();
 			       } 	      			
-	      			$num_movimiento_pedido  = base64_decode($num_movimiento_pedido);
-	      			 $data['movimientos'] = $this->modelo_salida->bodegas_agrupado_tipoFactura($num_movimiento_pedido) ; 
+	      			$data['num_movimiento_pedido']  = base64_decode($num_movimiento_pedido);
+	      			$data['id_operacion_salida']  = 95; //bodega
+	      			 $data['movimientos'] = $this->modelo_salida->bodegas_agrupado_tipoFactura($data) ; 
 	      		
 
 
@@ -412,63 +473,6 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 	}
 
 
-
-
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-	//1ra y 2da regilla(reporte) Imprimir el pdf
-/////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////
-
-public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura){
-			//print_r(base64_decode($id_tipo_factura));die;
-
-		 if($this->session->userdata('session') === TRUE ){
-		      $id_perfil=$this->session->userdata('id_perfil');
-			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
-			            $data['coleccion_id_operaciones'] = array();
-			       } 
-				   $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
-		      		$data["id_tipo_factura"] = base64_decode($id_tipo_factura);
-	
-	      			$data['encabezado']['num_movimiento']  = base64_decode($id_movimiento);
-	      			$data['encabezado']['cliente']  	   = base64_decode($cliente);
-	      			$data['encabezado']['cargador'] 	   = base64_decode($cargador);
-					$data['retorno'] ="pedidos";	 //DETALLES DE REPORTE
-		      		$data['etiq_mov'] ="de Salida";
-		      		$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
-
-		      		//print_r($data['movimientos']);die;
-
-					      switch ($id_perfil) {    
-					        case 1:          
-								       
-					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-					          break;
-					        case 2:
-					        case 3:
-					        case 4:
-					              
-					              if  (in_array(9, $data['coleccion_id_operaciones']))  {   //los q tienen accesos a reportes
-					                   $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-					              } else {
-					          		 redirect('');    	
-					              }  
-
-					          break;
-
-
-					        default:  
-					          redirect('');
-					          break;
-					      }
-			      
-		    }
-		    else{ 
-		      redirect('');
-		    }  
-	}
 
 
 
@@ -909,7 +913,7 @@ public function detalles_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_
 	}
 
 
-public function validar_confirmar_salida_sino(){
+public function validar_confirmar_salida_sino_NOFUNCIONA(){
 
 		  if ( $this->session->userdata('session') !== TRUE ) {
 		      redirect('');
@@ -942,30 +946,7 @@ public function validar_confirmar_salida_sino(){
 
 			   
 			  $data['etiq_mov'] ="de Salida";
-			  /*
-				if ($this->session->userdata('config_salida')==1) {
-				      switch ($id_perfil) {    
-				        case 1:		               
-				                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-
-					        break;
-				        case 2:
-				        case 3:
-				        case 4:
-				             if  (in_array(2, $data['coleccion_id_operaciones']) )  {    
-				                  $this->load->view( 'pdfs/salidas/pdfs_view',$data );
-				              }  else  {
-				                redirect('');
-				              } 
-				          break;
-				        default:  
-				          redirect('');
-				          break;
-				      }
-				 } else {
-				 	redirect('');	
-				 } 
-				 */
+			  
 
 			redirect('detalles_salidas/'.base64_encode($data['encabezado']['num_movimiento']).'/'.base64_encode($data['encabezado']['cliente']).'/'.base64_encode($data['encabezado']['cargador']).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
 
@@ -976,15 +957,15 @@ public function validar_confirmar_salida_sino(){
 
 	
 
-	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura,$retorno,$id_estatus){
+	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_operacion_salida,$retorno,$id_estatus){
 
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
 		      $id_movimiento= base64_decode($id_movimiento);
-		      $data["id_tipo_pedido"]  = base64_decode($id_tipo_pedido);
-		      $data["id_tipo_factura"] = base64_decode($id_tipo_factura);
+		      //$data["id_operacion_pedido"]  = ;
+		      $data["id_operacion_salida"]  = base64_decode($id_operacion_salida);
 
 		      $data["retorno"] = base64_decode($retorno);
 		      $data["id_estatus"] = base64_decode($id_estatus);
@@ -999,8 +980,8 @@ public function validar_confirmar_salida_sino(){
 		      if (($existe) or ($id_movimiento!=-1) ) {
 
 		      		if (($id_movimiento)==-1)	{ //OJO no funciona ya se cambio para "procesar_salidas"
-					    $data['id_operacion'] = 2;
-		  				$data['encabezado'] = $this->modelo_salida->procesando_operacion_salida($data);
+					   	 //$data['id_operacion'] = 2;
+		  				 //$data['encabezado'] = $this->modelo_salida->procesando_operacion_salida($data);
 		      		} else { //cuando se llama desde reportes(notas)
 		      			$data['encabezado']['num_movimiento']  = $id_movimiento;
 		      			$data['encabezado']['cliente']  	   = base64_decode($cliente);

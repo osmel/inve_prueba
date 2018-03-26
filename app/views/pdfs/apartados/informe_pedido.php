@@ -10,8 +10,7 @@
 
 					<tr style="font-size: 10px; line-height: 15px; padding: 0px; margin-bottom: 0px;">
 						<th width="70%">
-									
-
+							
 							<h1> Pedido </h1>
 							<span><b>Cliente: </b> <?php echo $descripcion;  ?>  
 
@@ -25,10 +24,8 @@
 							?>
 
 							</span> <br/>
-
-							
 							<span><b>Fecha y hora: </b> <?php echo date( 'd-m-Y h:i:s A');  ?></span>
-							<p style="font-size: 10px;"><b >Apartados Informe</b></p>
+							
 						</th>
 
 
@@ -66,6 +63,7 @@
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
 							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um.' '.$movimiento->medida; ?></td>
 							<td width="15%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho.' cm'; ?></td>
+							<!-- <td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->precio; ?></td>-->
 							<td width="10%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo;  ?></td>
 
 						</tr>

@@ -115,7 +115,7 @@ if ($val_proveedor) {
 			</fieldset>			
 		</div>
 
-		<div class="col-xs-6 col-sm-3 col-md-2">
+		<div style="display:none;" class="Bueno col-xs-6 col-sm-3 col-md-2">
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>

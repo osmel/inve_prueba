@@ -14,7 +14,7 @@
 								<br>
 								<span><b>Vendedor: </b> <?php echo strtoupper($movimientos[0]->cliente); ?></span><br>
 								<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha_apartado; ?></span><br>
-								<span><b>Movimiento: </b><?php echo $movimientos[0]->id_cliente_apartado; ?></span><br>
+								<span><b>Movimiento: </b><?php echo $movimientos[0]->mov; //id_cliente_apartado ?></span><br>
 								<!-- <span><b>Dependencia: </b> <?php echo strtoupper($movimientos[0]->dependencia); ?></span><br>-->
 								<span><b>Almacén: </b> <?php echo $almacen; ?></span><br>
 								<?php

@@ -94,11 +94,8 @@ class Pdfs_model extends CI_Model
             $this->db->from($this->historico_registros_salidas.' as m');
 
 
-            $this->db->where('m.id_operacion',2);
-            $this->db->where('m.mov_salida_unico',$data['id_movimiento']);
-            $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
-            $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
-
+            $this->db->where('m.mov_salida_unico',$data['num_mov']);
+            $this->db->where('m.id_operacion_salida',$data['id_operacion_salida']);
 
             if (!(isset($data['id_estatus']))) {
                $this->db->where('m.id_estatus !=',15);
@@ -277,6 +274,46 @@ class Pdfs_model extends CI_Model
           $this->db->select("prov_apartado.nombre cliente_apartado");
 
 
+          $this->db->select("m.id_operacion_salida");
+          $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS mov",FALSE);
+
+          $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                 WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                 WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cp234   
+             )
+          AS mov_pedido",FALSE);
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
           $this->db->join($this->historico_registros_entradas.' as m1' , 'm1.codigo = m.codigo','LEFT');
@@ -295,10 +332,10 @@ class Pdfs_model extends CI_Model
 
 
           //$this->db->where('m.id_usuario',$id_session);
-          $this->db->where('m.id_operacion',2);
-          $this->db->where('m.mov_salida_unico',$data['id_movimiento']);
-          $this->db->where('m.id_tipo_pedido',$data['id_tipo_pedido']);
-          $this->db->where('m.id_tipo_factura',$data['id_tipo_factura']);
+          
+          $this->db->where('m.mov_salida_unico',$data['num_mov']);
+          $this->db->where('m.id_operacion_salida',$data['id_operacion_salida']);
+          
 
           $this->db->group_by('m.id');
 
@@ -377,11 +414,11 @@ class Pdfs_model extends CI_Model
 
     public function pedido_especifico_vendedor($data){
 
-          $num_mov = $data['num_mov'];
-          $id_almacen= $data['id_almacen'];
+          
+          
           $id_session = $this->db->escape($this->session->userdata('id'));
 
-          //$this->db->select("SQL_CALC_FOUND_ROWS *", FALSE); //
+          
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
           $this->db->select('pr.nombre dependencia,m.id_tipo_pedido,m.id_tipo_factura');  
@@ -414,7 +451,27 @@ class Pdfs_model extends CI_Model
           $this->db->select("prod.codigo_contable");  
 
           $this->db->select("tp.tipo_pedido");          
-          $this->db->select("tf.tipo_factura");          
+          $this->db->select("tf.tipo_factura");    
+
+            $this->db->select("m.id_operacion_pedido");
+            $this->db->select("
+                CONCAT('[',
+                ( CASE 
+                  WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                   WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                  else 'T' 
+                end),
+                ']',m.id_almacen,'-',  
+                  (CASE 
+                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                  else tf.tipo_factura
+                end)
+
+                ,'-',m.cp234   
+               )
+                AS mov",FALSE);      
 
 
           $this->db->from($this->registros.' as m');
@@ -431,16 +488,16 @@ class Pdfs_model extends CI_Model
           
 
           //filtro de busqueda
-          if ($id_almacen!=0) {
-              $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+          if ($data['id_almacen']!=0) {
+              $id_almacenid = ' AND ( m.id_almacen =  '.$data['id_almacen'].' ) ';  
           } else {
               $id_almacenid = '';
           } 
 
           $where = '(
-                    ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                     ( m.id_operacion_pedido =  '.$data["id_operacion_pedido"].' )  AND 
                       (
-                        (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.movimiento_unico_apartado = "'.$num_mov.'" )
+                        (( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) ) AND ( m.movimiento_unico_apartado = "'.$data['num_mov'].'" )
                       ) '.$id_almacenid.'
             )';   
 
@@ -463,11 +520,12 @@ class Pdfs_model extends CI_Model
 
 
     public function pedido_especifico_tienda($data){
-          
+          /*
           $id_usuario = $data['num_mov'];
           $id_cliente = $data['id_cliente'];
           $id_almacen = $data['id_almacen'];
           $consecutivo_venta = $data['consecutivo_venta'];
+          */
 
           $this->db->select('m.id_usuario_apartado, m.id_cliente_apartado');  //fecha falta
           $this->db->select('p.nombre comprador,m.id_tipo_pedido,m.id_tipo_factura');  
@@ -501,6 +559,26 @@ class Pdfs_model extends CI_Model
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura");  
 
+          $this->db->select("m.id_operacion_pedido");
+          $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                 WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                 WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cp234   
+             )
+              AS mov",FALSE);          
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
@@ -513,19 +591,27 @@ class Pdfs_model extends CI_Model
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
 
-          if ($id_almacen!=0) {
-              $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+          if ($data['id_almacen']!=0) {
+              $id_almacenid = ' AND ( m.id_almacen =  '.$data['id_almacen'].' ) ';  
           } else {
               $id_almacenid = '';
           } 
  
-
+          /*
           $where = '(
-                      ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                      ( m.id_operacion_pedido =  '.$data["id_operacion_pedido"].' )  AND 
                       ( 
                         ( (m.id_apartado = 2) OR (m.id_apartado = 3) ) AND ( m.id_usuario_apartado = "'.$id_usuario.'" ) AND ( m.id_cliente_apartado = "'.$id_cliente.'" ) AND ( m.consecutivo_venta = '.$data['consecutivo_venta'].' ) '.$id_almacenid.'
                       ) 
-            )';   
+            )';   */
+
+
+            $where = '(
+                     ( m.id_operacion_pedido =  '.$data["id_operacion_pedido"].' )  AND 
+                      (
+                        (( m.id_apartado = 2 ) or ( m.id_apartado = 3 ) ) AND ( m.movimiento_unico_apartado = "'.$data['num_mov'].'" )
+                      ) '.$id_almacenid.'
+            )';  
 
 
           $this->db->where($where);
@@ -551,9 +637,7 @@ class Pdfs_model extends CI_Model
 
     public function pedido_especifico_completo($data){
 
-          $mov_salida = $data['num_mov'];
-          $id_apartado = $data['id_cliente'];  
-          $id_almacen= $data['id_almacen'];        
+          
           
 
           $id_session = $this->db->escape($this->session->userdata('id'));
@@ -605,6 +689,51 @@ class Pdfs_model extends CI_Model
 
           $this->db->select("tp.tipo_pedido");          
           $this->db->select("tf.tipo_factura"); 
+
+
+          $this->db->select("m.id_operacion_salida");
+
+             $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS movi_salida",FALSE);
+
+
+
+            $this->db->select("m.id_operacion_pedido");
+            $this->db->select("
+                CONCAT('[',
+                ( CASE 
+                  WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                   WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                  else 'T' 
+                end),
+                ']',m.id_almacen,'-',  
+                  (CASE 
+                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                  else tf.tipo_factura
+                end)
+
+                ,'-',m.cp234   
+               )
+                AS movi_pedido",FALSE);
+
           
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
@@ -621,16 +750,16 @@ class Pdfs_model extends CI_Model
           
 
           //filtro de busqueda
-          if ($id_almacen!=0) {
-              $id_almacenid = ' AND ( m.id_almacen =  '.$id_almacen.' ) ';  
+          if ($data['id_almacen']!=0) {
+              $id_almacenid = ' AND ( m.id_almacen =  '.$data['id_almacen'].' ) ';  
           } else {
               $id_almacenid = '';
           } 
 
           $where = '(
-                    ( m.id_tipo_pedido =  '.$data["id_tipo_pedido"].' )  AND ( m.id_tipo_factura =  '.$data["id_tipo_factura"].' )  AND 
+                    ( m.id_operacion_salida =  '.$data["id_operacion_pedido"].' )  AND 
                       (
-                        ( m.id_apartado =  '.$id_apartado.' )  AND ( m.mov_salida_unico = '.$mov_salida.' )
+                         ( m.mov_salida_unico = '.$data['num_mov'].' )
                       )'.$id_almacenid.'
             )';   
 

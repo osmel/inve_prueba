@@ -10,7 +10,7 @@
 
 								<span><b>Vendedor: </b> <?php echo $movimientos[0]->vendedor; ?></span><br>
 								<!--<span><b>Dependencia: </b> <?php echo $movimientos[0]->cliente; ?> <b>Nro.</b><?php echo $consecutivo_venta; ?></span><br>-->
-								<span><b>Movimiento: </b> <?php echo $movimientos[0]->comprador; ?></span><br>
+								<span><b>Movimiento: </b> <?php echo $movimientos[0]->mov; //comprador; ?></span><br>
 								<span><b>Fecha: </b> <?php echo $movimientos[0]->fecha_apartado; ?></span><br>
 								<span><b>Almacén: </b> <?php echo $almacen; ?></span><br>
 								<?php

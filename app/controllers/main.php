@@ -597,7 +597,7 @@ class Main extends CI_Controller {
 
 	
 	
-	//Inicio de vendedores 
+//Inicio de vendedores 
 	/////////////presentacion, filtro y paginador////////////	
 	function dashboard() { 
     if($this->session->userdata('session') === TRUE ){
@@ -607,14 +607,15 @@ class Main extends CI_Controller {
           $this->modelo_pedido->cancelar_traspaso_pedido_horario();
 
           $data['nodefinido_todavia']        = '';
-          $data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,-1);
-          $data['productos'] = $this->catalogo->listado_productos_unico();
-          $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
-          $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
-
-          $data['medidas']  = $this->catalogo->listado_medidas();
+          $data['estatuss']  	 = $this->catalogo->listado_estatus(-1,-1,-1);
+          //$data['estatuss']    = $this->catalogo->listado_estatus(-1,-1,'1');
+          $data['productos'] 	 = $this->catalogo->listado_productos_unico();
+          $data['almacenes']     = $this->modelo->coger_catalogo_almacenes(2);
+          $data['facturas']   	 = $this->catalogo->catalogo_tipos_facturas();
+          $data['medidas']  	 = $this->catalogo->listado_medidas();
+          $data['colores'] 		 =  $this->catalogo->listado_colores(  );
           
-		  $dato['id'] = 7;
+		  $dato['id'] = 7;  //Mostrar factura Entrada
 		  $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 		    	$id_perfil = $this->session->userdata('id_perfil');
@@ -625,8 +626,6 @@ class Main extends CI_Controller {
 		                $this->load->view( 'principal/dashboard',$data );
 		              break;
 		            case 3: //vendedor
-		                $data['colores'] =  $this->catalogo->listado_colores(  );
-		            	$data['estatuss']  = $this->catalogo->listado_estatus(-1,-1,'1');
 		                $this->load->view( 'principal/inicio',$data );
 		              break;
 		            default:  
@@ -641,14 +640,14 @@ class Main extends CI_Controller {
 	}
 
 
-	/////////////////////////////Presentacion de la regilla de INICIO ///////////////////////////////////////
-		//devolucion y defecto
+	//Tabla de INICIO para vendedores (presentación completa)
 	public function procesando_inicio(){
 		$data=$_POST;
 		$busqueda = $this->modelo_inicio->agrupando_inicio($data);
 		echo $busqueda;
 	}
 
+	//Cada grupo(cada celda) vendedores
 	function detalles_grupo($grupo = '',$id_almacen){
 
  		$id_perfil=$this->session->userdata('id_perfil');
@@ -670,12 +669,14 @@ class Main extends CI_Controller {
 	}	
  
 
+	//cuando abre el grupo, la 1ra regilla
  	public function procesando_producto_color(){
 		$data=$_POST;
 		$busqueda = $this->modelo_inicio->productos_colores($data);
 		echo $busqueda;
 	} 
 
+	//cuando abre el grupo, la 2da regilla
  	public function procesando_producto_color2(){
 		$data=$_POST;
 		$busqueda = $this->modelo_inicio->productos_colores2($data);
@@ -684,10 +685,8 @@ class Main extends CI_Controller {
 
 
 
-	           //////Marcar o desmarcar Apartado//// (INICIO)
-
+    //Marcar o desmarcar un producto
 	function marcando_apartado(){
-
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
@@ -702,29 +701,22 @@ class Main extends CI_Controller {
    }
 
 
-
-				//////Marcar o desmarcar Apartado/// (INICIO)
-
-	public function tabla_apartado_vendedores(){
-		$data=$_POST;
-		$busqueda = $this->modelo_inicio->buscador_apartado_vendedores($data);
-		echo $busqueda;
-
-	}
-
-
-	public function procesar_apartados(){
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////PROCESAR== A PASAR A LA PAGINA DE Productos apartados (nos muestra una tabla de todos los productos apartado)/////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function procesar_apartados(){  //aqui entra al modulo de productos apartados
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
-		      $data['consecutivo']  = $this->catalogo->listado_consecutivo(16);
-	          $data['facturas']   = $this->catalogo->listado_tipos_facturas_especifico(1);
+		      $data['id_operacion_pedido'] = 96;
+		      $data['consecutivo']  = $this->catalogo->listado_consecutivo($data['id_operacion_pedido']);//new
+	          $data['facturas']   = $this->catalogo->catalogo_tipos_facturas(); 
 	          $data['pedidos']   = $this->catalogo->listado_tipos_pedidos_especifico(3);
-
 	
 			      switch ($id_perfil) {    
 			        case 3:
-						       $data['val_proveedor']  = $this->modelo_inicio->valores_movimientos_temporal();
+						       $data['val_proveedor']  = $this->modelo_inicio->valores_movimientos_temporal();  //new id_operacion(modelo) no funciona
+			                    //print_r( $data['val_proveedor'] ); die;
 			                   $this->load->view( 'pdfs/apartados/pdfs_view',$data );
 			          break;
 			        default:  
@@ -736,14 +728,14 @@ class Main extends CI_Controller {
 			  }  
 	}
 
+	public function tabla_apartado_vendedores(){
+		$data=$_POST;
+		$busqueda = $this->modelo_inicio->buscador_apartado_vendedores($data);
+		echo $busqueda;
 
+	}
 
-
-
-
-
-
-
+	//en la regilla de apartado, puede eliminar por productos. Esta es la modal
   function eliminar_apartado_vendedores($id = '', $nombrecompleto=''){
     if($this->session->userdata('session') === TRUE ){
       $id_perfil=$this->session->userdata('id_perfil');
@@ -772,11 +764,10 @@ class Main extends CI_Controller {
 
   }
 
-
+  //Confirmación para elimninar el producto
   function validar_eliminar_apartado_vendedores(){
 
     $data['id'] = $this->input->post('id');
-    //print_r($data['id']);
     $eliminado = $this->modelo_inicio->eliminar_apartado_vendedor($data );
     if ( $eliminado !== FALSE ){
       echo TRUE;
@@ -790,61 +781,51 @@ class Main extends CI_Controller {
 
 
 
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////Confirmar e Imprimir apartado definitivamente///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 				////////Apartar definitivamente para un proveedor/// (INICIO)
 
 	public function apartado_definitivo() {
-
-		
-
 		 if($this->session->userdata('session') === TRUE ){
-	
+
+		 	$data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido'); //pedido vendedor Apartado =96
+		 	$data['factor_salida'] = $this->input->post('factor_salida');
+
 			      $id_perfil=$this->session->userdata('id_perfil');
-
-
-			      if ($this->input->post('id_cliente')) {
-
-							$data['descripcion'] = $this->input->post('id_cliente');
+			      if ($this->input->post('cliente')) {
+							$data['descripcion'] = $this->input->post('cliente');
 							$data['idproveedor'] = "3";
-
 							$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
-	
-
-							//$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
 
 							if (!($data['id_cliente'])){
 								$datos['mensaje'] = "El cliente no existe";
 							}
+
 				  } else {
 				  	$data['id_cliente']=null;
 				  	$datos['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
-
 				  }
-
-				  $datos['exito'] =false;
+ 			    $datos['exito'] =false;
 		 		if  ($data['id_cliente'])  {
 
 		 					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 		 					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
 
-		 					$data['tipo_pedido'] = $this->input->post('tipo_pedido');
-		 					$data['tipo_factura'] = $this->input->post('tipo_factura');
+							$data['consecutivo_unico'] = $this->modelo_inicio->apartar_definitivamente($data);
 
-		 					$datos['consecutivo'] = $this->modelo_inicio->consecutivo_operacion(16,$data['id_tipo_pedido'],$data['id_tipo_factura']);
-		 					
-		 					$datos['descripcion'] = $data['descripcion'];
-						    $datos['movimientos'] = $this->modelo_inicio->imprimir_apartar_definitivamente($data);
-			                $datos['totales'] = $this->modelo_inicio->imprimir_total_campos($data);        
 
-			                $data['consecutivo'] = $datos['consecutivo'];
-							$actualizar = $this->modelo_inicio->apartar_definitivamente($data);
+							if ( $data['consecutivo_unico'] !== FALSE ){
 
-							if ( $actualizar !== FALSE ){
+								$datos['almacenes'] = $this->modelo_inicio->actualizar_consecutivo_pedido_multiples_almacenes($data);
+
+								$datos['descripcion'] = $data['descripcion'];
+							    $datos['movimientos'] = $this->modelo_inicio->imprimir_apartar_definitivamente($data);
+				                $datos['totales'] = $this->modelo_inicio->imprimir_total_campos($data);        
+
+
 								$datos['exito'] =true;	
 							} else {
 								$datos['exito'] = '<span class="error">No se han podido apartar los productos</span>';
@@ -874,11 +855,13 @@ class Main extends CI_Controller {
 		 		
 			    $misdatos = json_decode($this->input->post('datos'));
 			    
-		 		$data['consecutivo'] =$misdatos->consecutivo;			    
-                $data['descripcion'] =$misdatos->descripcion;
+                	 				    
+                $data['almacenes'] 	 = json_decode($misdatos->almacenes,true);
 			    $data['movimientos'] = ($misdatos->movimientos);
+                $data['totales'] 	 = ($misdatos->totales);
+                $data['descripcion'] = $misdatos->descripcion;
 
-                $data['totales'] = ($misdatos->totales);
+                
 			    $dato['id'] = 7;
                 $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 

@@ -1,13 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/*
-print_r( $this->session->userdata('id_perfil')==2 );
-echo '<br>';
-print_r( (in_array(84, $coleccion_id_operaciones)) ) ; 
-echo '<br>';
-echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 6 : 7;
 
-die;
-*/
  ?>
 
 <html lang="es_MX">
@@ -31,7 +23,7 @@ die;
 										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
 										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
-										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov_salida_unico; ?></span><br>
+										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov; ?></span><br>
 										<span><b>Mov Pedido: </b><?php echo $movimientos[0]->mov_pedido; ?></span><br>
 										<?php if (($configuracion->activo==1)) {  ?>
 											<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>

@@ -53,6 +53,7 @@
       $this->catalogo_estatus                         = $this->db->dbprefix('catalogo_estatus');
 
       $this->catalogo_tiendas                         = $this->db->dbprefix('catalogo_tiendas');
+      $this->tipos_facturas                         = $this->db->dbprefix('catalogo_tipos_facturas');
       
       /*
       $this->remoto_calidad  = $this->db->dbprefix('remoto_calidad');
@@ -70,13 +71,58 @@
     //Para el selector de transferencia
     public function listado_transferencias() {
 
+  $this->db->select("m.id_operacion_salida");
+
+             $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS movi_salida",FALSE);
+
+
+
+            $this->db->select("m.id_operacion_pedido");
+            $this->db->select("
+                CONCAT('[',
+                ( CASE 
+                  WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+                   WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                  else 'T' 
+                end),
+                ']',m.id_almacen,'-',  
+                  (CASE 
+                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                  else tf.tipo_factura
+                end)
+
+                ,'-',m.cp234   
+               )
+                AS movi_pedido",FALSE);
+                    
+
          $this->db->select("m.id_tienda_origen,t.nombre, m.mov_salida, mov_salida_unico, m.nombre_usuario");
   
          $this->db->from($this->remoto_registros_transferencia.' as m');
          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.id_tienda_origen');
+         $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
 
-        $this->db->group_by('m.id_tienda_origen, m.mov_salida_unico'); 
+        $this->db->group_by('m.id_tienda_origen, m.mov_salida_unico,m.id_operacion_salida'); 
         //,m.id_tipo_pedido,m.id_tipo_factura,m.id_almacen,m.id_cliente,m.id_estatus
 
         $result = $this->db->get();
