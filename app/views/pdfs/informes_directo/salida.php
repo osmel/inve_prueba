@@ -53,7 +53,7 @@
 								
 							</tr>
 						</thead>
-						<tbody >
+						<tbody  style="font-size: 12px;">
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr>
@@ -63,7 +63,7 @@
 									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um.' '.$movimiento->medida; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho.' cm'; ?></td>
-									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->mov_salida; ?></td>
+									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movi_salida; ?></td>
 									
 									<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->id_lote.'-'.$movimiento->consecutivo;  ?></td>

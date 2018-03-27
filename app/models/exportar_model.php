@@ -32,6 +32,7 @@ class Exportar_model extends CI_Model
 
                     //usuarios
                   $this->usuarios    = $this->db->dbprefix('usuarios');
+                   $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');
 
 
     }
@@ -1356,10 +1357,18 @@ class Exportar_model extends CI_Model
           $this->db->select('c.color');
           $this->db->select('CONCAT(m.cantidad_um, u.medida) cantidad', false);
           $this->db->select('CONCAT(m.ancho, " cm") ancho', false);
-          $this->db->select('m.mov_salida');
+          //$this->db->select('m.mov_salida');
           //$this->db->select('p.nombre Cliente');
-          $this->db->select('us.nombre as Cliente', FALSE);  
+          //$this->db->select('us.nombre as Cliente', FALSE);  
 
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  us.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  p.nombre
+                          END AS cliente
+           ',False);
           $this->db->select('CONCAT(m.id_lote,"-",m.consecutivo) lote', false);
           $this->db->select('DATE_FORMAT((m.fecha_salida),"%d-%m-%Y") egreso', false); //'d-m-Y'
           
@@ -1371,13 +1380,60 @@ class Exportar_model extends CI_Model
               
           $this->db->select("a.almacen");
 
+
+          
+        //$this->db->select("m.id_operacion_pedido");
+        $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+               WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+               WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+              else 'T' 
+            end),
+            ']',m.id_almacen,'-',  
+              (CASE 
+               WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+               WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+              else tf.tipo_factura
+            end)
+
+            ,'-',m.cp234   
+           )
+            AS mov_pedido",FALSE);
+
+         // $this->db->select("m.id_operacion_salida");
+          $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS mov_salida",FALSE);
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); //
+
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
+
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
+          $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');
 
 
                                

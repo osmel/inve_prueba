@@ -40,6 +40,8 @@ class Informes_model extends CI_Model
                     //usuarios
                   $this->usuarios    = $this->db->dbprefix('usuarios');
 
+                 $this->catalogo_tiendas  = $this->db->dbprefix('catalogo_tiendas');
+
 
     }
 
@@ -177,6 +179,22 @@ class Informes_model extends CI_Model
           $this->db->select('p.nombre');
           $this->db->select('DATE_FORMAT(m.fecha_entrada,"%d/%m/%Y") as fecha',false);
           $this->db->select("prod.codigo_contable");  
+
+
+           $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tff.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
+               
 
 
           $this->db->from($this->registros.' as m');
@@ -1188,12 +1206,26 @@ class Informes_model extends CI_Model
 
           $this->db->select("prod.codigo_contable");  
 
+           $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
           $this->db->from($this->historico_registros_entradas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+           $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura');  
 
           $cond= ' (p.nombre LIKE  "%'.$cadena.'%") OR  (CONCAT(m.id_lote,"-",m.consecutivo) LIKE  "%'.$cadena.'%") ';//' OR (m.consecutivo LIKE  "%'.$cadena.'%") ';
 
@@ -1664,12 +1696,26 @@ class Informes_model extends CI_Model
           $this->db->select("a.almacen");
           $this->db->select("prod.codigo_contable");  
 
+          $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion=72)  THEN 'B' 
+               WHEN (m.id_operacion=71)  THEN 'C'  
+               WHEN (m.devolucion<>0)  THEN 'D' 
+              WHEN (m.id_operacion=70)  THEN 'T' 
+              else 'E' 
+            end),
+            ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
+           )
+            AS mov",FALSE);
+
           $this->db->from($this->registros.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+            $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
                                
 
 
@@ -2062,7 +2108,7 @@ class Informes_model extends CI_Model
           $this->db->select('c.hexadecimal_color, c.color ');
           $this->db->select('m.cliente, m.cargador, m.fecha_salida'); //, p.nombre
 
-          $this->db->select('us.nombre as nombre', FALSE);    //
+         // $this->db->select('us.nombre as nombre', FALSE);    //
           
           if ($estatus=="apartado") {
               $this->db->select('pr.nombre as dependencia', FALSE);
@@ -2091,12 +2137,70 @@ class Informes_model extends CI_Model
           $this->db->select("tf.tipo_factura");          
           $this->db->select('m.id_tipo_pedido,m.id_tipo_factura', FALSE);
 
+          
+        //$this->db->select("m.id_operacion_pedido");
+        $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+               WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+               WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+              else 'T' 
+            end),
+            ']',m.id_almacen,'-',  
+              (CASE 
+               WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+               WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+              else tf.tipo_factura
+            end)
+
+            ,'-',m.cp234   
+           )
+            AS movi_pedido",FALSE);
+
+         // $this->db->select("m.id_operacion_salida");
+          $this->db->select("
+              CONCAT('[',
+              ( CASE 
+                WHEN (m.id_operacion_salida=2)  THEN 'S' 
+                 WHEN (m.id_operacion_salida=95)  THEN 'B'  
+                 WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                else 'T' 
+              end),
+              ']',m.id_almacen,'-',  
+                (CASE 
+                 WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                 WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+                else tf.tipo_factura
+              end)
+
+              ,'-',m.cs234   
+             )
+              AS movi_salida",FALSE);
+
+
+              //us.nombre as nombre
+
+            $this->db->select('
+                          CASE m.on_off
+                            WHEN 0 THEN  us.nombre
+                            WHEN 1 THEN  t.nombre
+                            WHEN 2 THEN  al.almacen 
+                             ELSE  p.nombre
+                          END AS nombre
+           ',False);
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
           $this->db->join($this->productos.' As prod' , 'prod.referencia = m.referencia','LEFT');
           $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+
           $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); //
+          $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
+
           $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido','LEFT');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');

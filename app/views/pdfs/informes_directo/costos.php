@@ -57,7 +57,7 @@
 								
 							</tr>
 						</thead>
-						<tbody>
+						<tbody  style="font-size: 12px;">
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr>
@@ -77,7 +77,7 @@
 									<td width="5%" style="border-top: 1px solid #222222;"><?php echo number_format($movimiento->sum_iva, 2, '.', ','); ?></td>				
 
 									<td width="6%" style="border-top: 1px solid #222222;"><?php echo $movimiento->t_factura; ?></td>		
-									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>
+									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->mov; ?></td>
 
 									<td width="16%" style="border-top: 1px solid #222222;"><?php echo $movimiento->nombre; ?></td>
 									<td width="8%" style="border-top: 1px solid #222222;"><?php echo date( 'd-m-Y', strtotime($movimiento->fecha)); ?></td>

@@ -86,7 +86,7 @@
 								
 							</tr>
 						</thead>
-						<tbody >
+						<tbody  style="font-size: 12px;">
 						<?php if ( isset($movimientos) && !empty($movimientos) ): ?>
 							<?php foreach( $movimientos as $movimiento ): ?>
 								<tr style="font-weight:normal;" >
@@ -96,7 +96,7 @@
 									<td width="8%" style="border-top: 1px solid #222222;"><?php echo $movimiento->color.'<div style="background-color:#'.$movimiento->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>'; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->cantidad_um.' '.$movimiento->medida; ?></td>
 									<td width="9%" style="border-top: 1px solid #222222;"><?php echo $movimiento->ancho.' cm'; ?></td>
-									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->movimiento; ?></td>
+									<td width="5%" style="border-top: 1px solid #222222;"><?php echo $movimiento->mov; ?></td>
 									
 									<?php
 		                              if (($movimiento->id_apartado) >=4) {
