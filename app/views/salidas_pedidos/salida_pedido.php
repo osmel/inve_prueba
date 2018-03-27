@@ -68,7 +68,7 @@
 	</div>
 
 
-			<?php //echo (($val_proveedor) ? (($val_proveedor->on_off==2) ? 'block' : 'none') :'none' ); ?>"
+			
 		   <div class="col-xs-12 col-sm-6 col-md-2 id_almacen_generar_pedido" <?php echo 'style="display:'.(($val_proveedor) ? (($val_proveedor->on_off==2) ? 'block' : 'none') :'none' ).'"'; ?> >
 
 				<input type="hidden" id="mi_perfil" name="mi_perfil" value="<?php echo $this->session->userdata( 'id_perfil' ); ?>">

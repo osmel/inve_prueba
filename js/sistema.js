@@ -7532,6 +7532,8 @@ jQuery('body').on('click','#limpiar_filtro', function (e) {
 
 
 jQuery('#id_almacen_generar_pedido').change(function(e) {
+	//alert('aa');
+	jQuery('.buscar_proveedor').typeahead('val','');
 	comienzo=true; //para indicar que start comience en 0;
 	var oTable =jQuery('#pedido_entrada').dataTable();
 	oTable._fnAjaxUpdate();		
@@ -8123,6 +8125,7 @@ jQuery('#id_tipo_pedido[pantalla="generar_pedidos"], #id_tipo_factura[pantalla="
 	//activar almacen 
 	if (jQuery("#id_tipo_pedido").val()==3) {
 		jQuery('.id_almacen_generar_pedido').css('display','block');
+
 	} else {
 		jQuery('.id_almacen_generar_pedido').css('display','none');
 	}
@@ -9490,6 +9493,7 @@ jQuery('body').on('click','#impresion', function (e) {
 	            var q = 'catalogos/buscador?key='+encodeURIComponent(jQuery('.buscar_proveedor').typeahead("val"));
 					q += '&nombre='+encodeURIComponent(jQuery('.buscar_proveedor.tt-input').attr("name"));
 				    q += '&idproveedor='+encodeURIComponent(jQuery('.buscar_proveedor.tt-input').attr("idproveedor"));
+				    q += '&id_almacen='+ (jQuery('#id_almacen_generar_pedido').val() ? jQuery('#id_almacen_generar_pedido').val() : '0');
 	            
 	            return  q;
 	        }

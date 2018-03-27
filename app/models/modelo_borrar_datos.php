@@ -54,23 +54,23 @@
 
 public function eliminar_remoto(){
   
-  /*$bd_transferencia = $this->load->database('remoto2', TRUE);
+  /*
+      $bd_transferencia = $this->load->database('remoto2', TRUE);
 
-  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("remoto_registros_transferencia")); 
-  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_productos")); 
-  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_composicion")); 
-  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_calidad")); 
-  $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_colores")); 
-  $this->db = $this->load->database('default', TRUE);
-          return "remoto fue eliminado";*/
+      $bd_transferencia->empty_table( $bd_transferencia->dbprefix("remoto_registros_transferencia")); 
+      $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_productos")); 
+      $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_composicion")); 
+      $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_calidad")); 
+      $bd_transferencia->empty_table( $bd_transferencia->dbprefix("catalogo_colores")); 
+      $this->db = $this->load->database('default', TRUE);
+              return "remoto fue eliminado";
+  */
 
 
 }  
 
     public function eliminar_todos(){
        
-      
-
           $this->db->set( 'consecutivo', 0 );  
           $this->db->set( 'conse_factura', 0 );  
           $this->db->set( 'conse_remision', 0 );  
@@ -127,14 +127,11 @@ public function eliminar_remoto(){
 
           $this->db->update('inven_consecutivos' );
 
-         /*$this->db->empty_table( 'inven_remoto_colores');
-         $this->db->empty_table( 'inven_remoto_composicion');
-         $this->db->empty_table( 'inven_remoto_productos');
+         /*
+           $this->db->empty_table( 'inven_remoto_colores');
+           $this->db->empty_table( 'inven_remoto_composicion');
+           $this->db->empty_table( 'inven_remoto_productos');
          */
-
-
-         
-
 
         return "todo fue eliminado";
 

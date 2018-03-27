@@ -4660,7 +4660,7 @@ public function consecutivo_general_salida($data){
             $this->db->from($this->catalogo_tiendas);
 
           $where = '(  (activo<>1) AND (id='.$this->session->userdata("id_tienda_cliente").') AND 
-                        ( id LIKE  "%'.$data['key'].'%" ) OR (nombre LIKE  "%'.$data['key'].'%") 
+                        (( id LIKE  "%'.$data['key'].'%" ) OR (nombre LIKE  "%'.$data['key'].'%")) 
 
             )';   
   
@@ -4693,8 +4693,8 @@ public function consecutivo_general_salida($data){
             $this->db->from($this->almacenes);
 
             //AND (id='.$this->session->userdata("id_tienda_cliente").')
-          $where = '(  (activo=1)  AND 
-                        ( id LIKE  "%'.$data['key'].'%" ) OR (almacen LIKE  "%'.$data['key'].'%") 
+          $where = '(  (id <>  '.$data['id_almacen'].') AND  (activo=1)  AND 
+                        (( id LIKE  "%'.$data['key'].'%" ) OR (almacen LIKE  "%'.$data['key'].'%")) 
 
             )';   
   
