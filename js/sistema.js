@@ -2095,9 +2095,9 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 	    	var arr_pedido_detalle = ['Código', 'Producto', 'Color', 'Cantidad',   'No. Movimiento','Ancho', 'Precio', 'IVA','Lote','No. de Partida','Almacén','Tipo factura','Precio'];
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'Subtotal', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 			
-			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
-			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
-			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén','Precio'];
+			var apartado_pendiente = ['Vendedor', 'Núm. Pedido','Cliente',  'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Núm. Pedido','Cliente',  'Fecha','Tipo Apartado','Vencimiento','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Núm. Pedido','Cliente', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén','Precio'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Precio','Subtotal','IVA','Total', 'Quitar']; 
 
@@ -2118,9 +2118,9 @@ if ( jQuery('#config_salida_activo').val() == 1 ) { //si tiene factura salida
 	    	var arr_completo_detalle = ['Código', 'Producto', 'Color', 'Cantidad', 'Ancho', 'SubTotal', 'IVA', 'Lote','No. de Partida','Almacén','Tipo factura'];
 
 			
-			var apartado_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
-			var pedido_pendiente = ['Vendedor', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
-			var pedido_completo = ['Pedido realizado por:', 'Sucursal','Cliente/Núm. Pedido', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén','Precio'];
+			var apartado_pendiente = ['Vendedor', 'Núm. Pedido','Cliente',  'Fecha','Tipo Apartado','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
+			var pedido_pendiente = ['Vendedor', 'Núm. Pedido','Cliente',  'Fecha','Tipo pedido','Tipo factura','Detalles','Cancelar','Almacén','Importe' ];  //'Prorrogar',
+			var pedido_completo = ['Pedido realizado por:', 'Núm. Pedido','Cliente', 'Fecha','Tipo Apartado','Núm. Salida','Tipo pedido','Tipo factura','Detalles','Almacén','Precio'];
 
 			var productos_temporales = ['Código', 'Descripción','Color', 'Medida','Ancho','Peso Real','Proveedor','Lote - No. consecutivo', 'No. de Partida','Precio','Subtotal','IVA','Total', 'Quitar']; 
 
@@ -5016,24 +5016,30 @@ jQuery('#tabla_apartado').dataTable({
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,3,4,5]
+	                "targets": [0,3,4,5] //0=vendedor, 3=fecha_apartado
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[2]+' <br/><b>Nro.</b>'+row[19];	  //11
+						return row[19]; // num mov
+	                },
+	                "targets": [1]
+	            },		            
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[2]; //cliente o comprador
 	                },
 	                "targets": [2]
 	            },	   
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[12];	
+						return row[12];	 //tipo_pedido
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[13];	
+						return row[13];	 //tipo_factura
 	                },
 	                "targets": [7]
 	            }, 	
@@ -5084,13 +5090,13 @@ jQuery('#tabla_apartado').dataTable({
 
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[10];	
+						return row[10];	 //almacen
 	                },
 	                "targets": [10]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[18];	
+						return row[18];	//importe
 	                },
 	                "targets": [11]
 	            },
@@ -6641,24 +6647,25 @@ jQuery('#tabla_pedido_completado').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,3,4]
+	                "targets": [0,3,4]  //0=vendedor,  3= fecha_apartado, 4= $row->tipo_apartado.' '.$row->tipo_pedido
+	            },
+				{ 
+	                "render": function ( data, type, row ) {
+							return row[8];	//movi_pedido	
+	                },
+	                "targets": [1]
 	            },
 
 				{ 
 	                "render": function ( data, type, row ) {
-						if ((row[2]!=0) &&  (row[2]!=null) ) {
-							return row[2]+' <br/><b>Nro.</b>'+row[8];		
-						} else {
-							return row[8];	
-						}
-						
+						return row[2];		//cliente_pedido
 	                },
 	                "targets": [2]
 	            },
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[15];	
+						return row[15];	 //movi_salida
 	                },
 	                "targets": [5]
 	            },
@@ -6666,13 +6673,13 @@ jQuery('#tabla_pedido_completado').dataTable( {
 
 				{ 
 	                "render": function ( data, type, row ) {
-						return row[9];	
+						return row[9];	//tip_pedido
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[10];	
+						return row[10];	 //tipo_factura
 	                },
 	                "targets": [7]
 	            }, 		            
@@ -6691,7 +6698,7 @@ jQuery('#tabla_pedido_completado').dataTable( {
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[7];	
+						return row[7];	//almacen
 	                },
 	                "targets": [9]
 	            },	
@@ -7164,18 +7171,26 @@ jQuery('#tabla_pedido').dataTable( {
 	                "render": function ( data, type, row ) {
 						return data;	
 	                },
-	                "targets": [0,1,2,3,4,5]
+	                "targets": [0,2,3,4,5]  //0=vendedor, 2= cliente, 3=fecha, 	4=, 5=
 	            },
+
 
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[9];	
+						return row[17];	
+	                },
+	                "targets": [1] //num pedido
+	            },	            
+
+    			{ 
+	                "render": function ( data, type, row ) {
+						return row[9];	 //tipo_pedido
 	                },
 	                "targets": [6]
 	            },
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[10];	
+						return row[10];	 //tipo_factura
 	                },
 	                "targets": [7]
 	            }, 	            
@@ -7216,13 +7231,13 @@ jQuery('#tabla_pedido').dataTable( {
     			
     			{ 
 	                "render": function ( data, type, row ) {
-						return row[8];	
+						return row[8];	 //almacen
 	                },
 	                "targets": [10]
 	            },
 	            { 
 			        "render": function ( data, type, row ) {
-						return row[15];	
+						return row[15];	 //importe
 	                },
 	                "targets": [11]
 	            },
@@ -7230,7 +7245,7 @@ jQuery('#tabla_pedido').dataTable( {
 
 	            { 
 		                 "visible": false,
-		                "targets": [12,13,14,15,16]
+		                "targets": [12,13,14,15,16,17]
 		         }
 
 

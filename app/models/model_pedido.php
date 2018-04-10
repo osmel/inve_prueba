@@ -1194,29 +1194,40 @@
                  $order = $data['order'][0]['dir'];
 
           switch ($columa_order) {
+
+
                    case '0':
-                        $columna = 'u.nombre, u.apellidos';
+                        $columna = 'vendedor';  //u.nombre, u.apellidos
                      break;
                    case '1':
-                        $columna = 'pr.nombre';
+                        $columna = 'mov'; //pr.nombre
                      break;
                    case '2':
-                        $columna = 'p.nombre';
+                        $columna = 'comprador'; //p.nombre
                      break;
                    case '3':
                         $columna = 'm.fecha_apartado';
                      break;
-                   case '4':
-                        $columna = 'm.id_apartado';
+                   case '6':
+                        $columna = 'tp.tipo_pedido'; //,m.id_apartado
                      break;
-                   case '5':
-                          $columna = 'm.fecha_vencimiento';
-                     break;
+                    case '7':
+                        $columna = 'tf.tipo_factura'; //,m.id_apartado
+                     break;                     
+                    case '10':
+                        $columna = 'a.almacen'; //,m.id_apartado
+                     break;  
+                    case '11':
+                        $columna = 'importe'; //,m.id_apartado
+                     break;                                          
+
+
                    
                    default:
-                       $columna = 'u.nombre, u.apellidos';
+                       $columna = 'vendedor';
                      break;
                  }                 
+
 
           
           $fecha_hoy =  date("Y-m-d h:ia"); 
@@ -1306,17 +1317,47 @@
                       (
                         ( m.id_apartado = 2 ) or ( m.id_apartado = 3 ) 
                       )'.$id_almacenid.' 
-                       AND
+                        AND
                       (
-                        ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR
-                        ( pr.nombre LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR
+                          ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR 
+
+                       (
+                           (
+                           CONCAT("[",
+                                ( CASE 
+                                  WHEN (m.id_operacion_pedido=4)  THEN "S" 
+                                   WHEN (m.id_operacion_pedido=98)  THEN "B"  
+                                   WHEN (m.id_operacion_pedido=96)  THEN "A" 
+                                  else "T" 
+                                end),
+                                "]",m.id_almacen,"-",  
+                                  (CASE 
+                                   WHEN (m.id_tipo_pedido=3)  THEN "G"
+                                   WHEN (m.id_tipo_pedido=2)  THEN "S"  
+                                  else tf.tipo_factura
+                                end)
+
+                                ,"-",m.cp234   
+                               )
+
+                               ) LIKE  "%'.$cadena.'%" 
+                        ) OR
+
+
+                        ( p.nombre LIKE  "%'.$cadena.'%") OR
+
                         ((DATE_FORMAT((m.fecha_apartado),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR
-                        ( "Apartado Individual" LIKE  "%'.$cadena.'%" ) OR
-                        ( "Apartado Confirmado" LIKE  "%'.$cadena.'%" ) OR
-                        ( "Disponibilidad Salida" LIKE  "%'.$cadena.'%" ) OR
-                        ( "En proceso" LIKE  "%'.$cadena.'%" ) 
+                        (m.codigo LIKE  "%'.$cadena.'%") OR 
+
+                        (tp.tipo_pedido LIKE  "%'.$cadena.'%") OR 
+                        (tf.tipo_factura LIKE  "%'.$cadena.'%") OR 
+                        (a.almacen LIKE  "%'.$cadena.'%") 
+                        
+
                        )
-            )';   
+
+            )';    
+  
 
           $where_total = '( m.id_apartado = 2 ) or ( m.id_apartado = 3 ) '.$id_almacenid;
 
@@ -1448,26 +1489,32 @@
 
           switch ($columa_order) {
                    case '0':
-                        $columna = 'u.nombre, u.apellidos';
+                        $columna = 'vendedor';  //u.nombre, u.apellidos
                      break;
                    case '1':
-                        $columna = 'pr.nombre';
+                        $columna = 'mov'; //pr.nombre
                      break;
                    case '2':
-                        $columna = 'm.movimiento_unico_apartado'; //m.id_cliente_apartado
+                        $columna = 'cliente_pedido'; //m.movimiento_unico_apartado m.id_cliente_apartado
                      break;
                    case '3':
                         $columna = 'm.fecha_apartado';
                      break;
-                   case '4':
-                        $columna = 'm.id_apartado';
+                   case '6':
+                        $columna = 'tp.tipo_pedido'; //,m.id_apartado
                      break;
-                   case '5':
-                          $columna = 'm.fecha_vencimiento';
-                     break;
-                   
+                    case '7':
+                        $columna = 'tf.tipo_factura'; //,m.id_apartado
+                     break;                     
+                    case '10':
+                        $columna = 'a.almacen'; //,m.id_apartado
+                     break;  
+                    case '11':
+                        $columna = 'importe'; //,m.id_apartado
+                     break;                                          
+
                    default:
-                       $columna = 'u.nombre, u.apellidos';
+                       $columna = 'vendedor';
                      break;
                  }                    
 
@@ -1570,24 +1617,58 @@
 
 
           $where = '(
-                      (
+                       (
                         ( m.id_apartado = 5 ) or ( m.id_apartado = 6 ) 
                       )'.$id_almacenid .' 
-                    AND
+                        AND
                       (
-                        ( prov.nombre LIKE  "%'.$cadena.'%" ) OR
-                        ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR
-                        ( pr.nombre LIKE  "%'.$cadena.'%" ) OR (m.movimiento_unico_apartado LIKE  "%'.$cadena.'%") OR
+                          ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR 
+
+                       (
+                           (
+                           CONCAT("[",
+                                ( CASE 
+                                  WHEN (m.id_operacion_pedido=4)  THEN "S" 
+                                   WHEN (m.id_operacion_pedido=98)  THEN "B"  
+                                   WHEN (m.id_operacion_pedido=96)  THEN "A" 
+                                  else "T" 
+                                end),
+                                "]",m.id_almacen,"-",  
+                                  (CASE 
+                                   WHEN (m.id_tipo_pedido=3)  THEN "G"
+                                   WHEN (m.id_tipo_pedido=2)  THEN "S"  
+                                  else tf.tipo_factura
+                                end)
+
+                                ,"-",m.cp234   
+                               )
+
+                               ) LIKE  "%'.$cadena.'%" 
+                        ) OR
+
+
+                        (
+                            (  CASE m.on_off
+                                  WHEN 0 THEN  prov.nombre
+                                  WHEN 1 THEN  t.nombre
+                                  WHEN 2 THEN  al.almacen 
+                               ELSE  prov.nombre
+                               END) LIKE  "%'.$cadena.'%" 
+                        ) OR
+
                         ((DATE_FORMAT((m.fecha_apartado),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR
-                        ( "Pedido Individual" LIKE  "%'.$cadena.'%" ) OR
-                        ( "Pedido Confirmado" LIKE  "%'.$cadena.'%" ) OR
-                        ( "Disponibilidad Salida" LIKE  "%'.$cadena.'%" ) OR
-                        ( "En proceso" LIKE  "%'.$cadena.'%" ) 
+                        (m.codigo LIKE  "%'.$cadena.'%") OR 
 
+                        (tp.tipo_pedido LIKE  "%'.$cadena.'%") OR 
+                        (tf.tipo_factura LIKE  "%'.$cadena.'%") OR 
+                        (a.almacen LIKE  "%'.$cadena.'%") 
                         
-                       )                     
 
-            )';   
+                       )
+
+            )';      
+
+
 
           $where_total = '( m.id_apartado = 5 ) or ( m.id_apartado = 6 )'.$id_almacenid;
 
@@ -1663,7 +1744,7 @@
                             $dato[]= array(
                                       0=>$row->vendedor,
                                       1=>$row->dependencia,
-                                      2=>$row->cliente_pedido.'<br/><b>Nro.'.$row->mov.'</b>', //$row->movimiento_unico_apartado
+                                      2=>$row->cliente_pedido, //.'<br/><b>Nro.'.$row->mov.'</b>', //$row->movimiento_unico_apartado
                                       3=>date( 'd-m-Y', strtotime($row->fecha_apartado)),
                                       4=>$apartar,
                                       5=>$mi_vencimiento, //hora vencimiento
@@ -1679,6 +1760,7 @@
                                       15=>  ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(80, $data['coleccion_id_operaciones'])) || (in_array(81, $data['coleccion_id_operaciones'])) )  ) ? number_format($row->importe, 2, '.', ',') : '-'),
 
                                       16=> $row->id_operacion_pedido,
+                                      17=> $row->mov,
                                     );
                       }
 
@@ -1723,13 +1805,13 @@
 
           switch ($columa_order) {
                    case '0':
-                        $columna = 'u.nombre, u.apellidos';
+                        $columna = 'vendedor'; //u.nombre, u.apellidos
                      break;
                    case '1':
-                        $columna = 'pr.nombre';
+                        $columna = 'movi_pedido'; //pr.nombre
                      break;
                    case '2':
-                        $columna = 'p.nombre';  //,m.id_cliente_apartado,
+                        $columna = 'cliente_pedido';  //p.nombre
                      break;
                    case '3':
                         $columna = 'm.fecha_apartado';
@@ -1738,11 +1820,27 @@
                         $columna = 'm.tipo_salida,m.id_apartado';
                      break;
                    case '5':
-                          $columna = 'm.mov_salida_unico';
+                          $columna = 'movi_salida'; //m.mov_salida_unico
                      break;
+                   case '6':
+                          $columna = 'tip_pedido'; //m.mov_salida_unico
+                     break;
+                   case '7':
+                          $columna = 'tipo_factura'; //m.mov_salida_unico
+                     break;            
+
+                   case '9':
+                          $columna = 'almacen'; //m.mov_salida_unico
+                     break; 
+
+                   case '10':
+                          $columna = 'importe'; //m.mov_salida_unico
+                     break; 
+                                                   
+                   
                    
                    default:
-                       $columna = 'u.nombre, u.apellidos';
+                       $columna = 'vendedor';
                      break;
                  }            
           
@@ -1802,7 +1900,8 @@
            ',False);
 
           $this->db->select("m.id_tienda_origen");    
-          $this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
+          //$this->db->select("(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
+          $this->db->select("sum(m.precio*m.cantidad_um)+(((m.precio*m.cantidad_um*m.iva))/100) as importe");
           
           $this->db->select("m.id_operacion_salida");
 
@@ -1838,7 +1937,7 @@
                 end),
                 ']',m.id_almacen,'-',  
                   (CASE 
-                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'G' 
                    WHEN (m.id_tipo_pedido=2)  THEN 'S'  
                   else tf.tipo_factura
                 end)
@@ -1879,19 +1978,67 @@
                       )'.$id_almacenid .' 
                        AND
                       (
-                        ( prov.nombre LIKE  "%'.$cadena.'%" ) OR
-                        ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR
-                        ( pr.nombre LIKE  "%'.$cadena.'%" ) OR (p.nombre LIKE  "%'.$cadena.'%") OR
-                        (m.id_cliente_apartado LIKE  "%'.$cadena.'%") OR 
+                          ( CONCAT(u.nombre," ",u.apellidos) LIKE  "%'.$cadena.'%" ) OR 
+
+                       (
+                           (
+                           CONCAT("[",
+                                ( CASE 
+                                  WHEN (m.id_operacion_pedido=4)  THEN "S" 
+                                   WHEN (m.id_operacion_pedido=98)  THEN "B"  
+                                   WHEN (m.id_operacion_pedido=96)  THEN "A" 
+                                  else "T" 
+                                end),
+                                "]",m.id_almacen,"-",  
+                                  (CASE 
+                                   WHEN (m.id_operacion_pedido=98)  THEN "G" 
+                                   WHEN (m.id_tipo_pedido=2)  THEN "S"  
+                                  else tf.tipo_factura
+                                end)
+
+                                ,"-",m.cp234   
+                               )
+
+                               ) LIKE  "%'.$cadena.'%" 
+                        ) OR
+
+
+                        (
+                            (CASE m.on_off
+                                WHEN 0 THEN  prov.nombre
+                                WHEN 1 THEN  t.nombre
+                                WHEN 2 THEN  al.almacen 
+                                 ELSE  prov.nombre
+                             end) LIKE  "%'.$cadena.'%" 
+                        ) OR
+
                         ((DATE_FORMAT((m.fecha_apartado),"%d-%m-%Y") ) LIKE  "%'.$cadena.'%") OR
-                        (m.mov_salida_unico LIKE  "%'.$cadena.'%") OR 
-                        ( "Salida Parcial" LIKE  "%'.$cadena.'%" ) OR
-                        ( "Salida Total" LIKE  "%'.$cadena.'%" ) OR
-                        ( "(Vendedor)" LIKE  "%'.$cadena.'%" ) OR
-                        ( "(Tienda)" LIKE  "%'.$cadena.'%" ) 
+                        (m.codigo LIKE  "%'.$cadena.'%") OR 
+
+                       (CONCAT("[",
+                                ( CASE 
+                                  WHEN (m.id_operacion_salida=2)  THEN "S" 
+                                   WHEN (m.id_operacion_salida=95)  THEN "B"  
+                                   WHEN (m.id_operacion_salida=93)  THEN "A" 
+                                  else "T" 
+                                end),
+                                "]",m.id_almacen,"-",  
+                                  (CASE 
+                                   WHEN (m.id_tipo_pedido=3)  THEN "G" 
+                                   WHEN (m.id_tipo_pedido=2)  THEN "S"  
+                                  else tf.tipo_factura
+                                end)
+
+                                ,"-",m.cs234   
+                         ) LIKE  "%'.$cadena.'%" )  
+
+
                        )
 
             )';   
+
+
+
 
 
           
@@ -2774,7 +2921,7 @@
                 end),
                 ']',m.id_almacen,'-',  
                   (CASE 
-                   WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+                   WHEN (m.id_operacion_pedido=98)  THEN 'G' 
                    WHEN (m.id_tipo_pedido=2)  THEN 'S'  
                   else tf.tipo_factura
                 end)

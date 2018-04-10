@@ -70,7 +70,28 @@
           //$this->db->select("m.id_tienda_origen,t.nombre, m.mov_salida, mov_salida_unico, m.nombre_usuario");
           $this->db->select("m.on_off, mov_salida_unico, m.id_almacen, m.id_factura");
           $this->db->select("m.consecutivo_venta id_almacen_destino"); // bodega destino
-          $this->db->select("CONCAT('[B] ',m.id_almacen,'-',tf.tipo_factura,'-',mov_salida_unico) movimiento", FALSE);
+         // $this->db->select("CONCAT('[B] ',m.id_almacen,'-',tf.tipo_factura,'-',m.cs234) movimiento", FALSE);
+
+          $this->db->select("
+            CONCAT('[',
+            ( CASE 
+              WHEN (m.id_operacion_pedido=4)  THEN 'S' 
+               WHEN (m.id_operacion_pedido=98)  THEN 'B'  
+               WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+              else 'T' 
+            end),
+            ']',m.id_almacen,'-',  
+              (CASE 
+               WHEN (m.id_tipo_pedido=3)  THEN 'G' 
+               WHEN (m.id_tipo_pedido=2)  THEN 'S'  
+              else tf.tipo_factura
+            end)
+
+            ,'-',m.cp234   
+           )
+            AS movimiento",FALSE);
+
+
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_factura','LEFT'); //
           //$this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT'); //
