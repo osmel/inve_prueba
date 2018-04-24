@@ -1052,12 +1052,17 @@ public function totales_importes($where){
           } 
 
           if ($data['tipo_entrada']=='C') {
-              //$nomb_usuario = ' and ( m.id_compra <>  0) ';  //compra
               $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  //compra
           } 
 
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 )) ';
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          } 
+
+
+
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 )  OR ( m.id_operacion =  73 )) ';
 
           $where = '(
                       (

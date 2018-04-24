@@ -2005,8 +2005,8 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 	         		"type": "POST",
 	         		 "data": function ( d ) {
 
-					     d.id_almacen = jQuery("#id_almacen_historicos").val(); 						
-					     d.id_factura = jQuery("#id_factura_historicos").val();
+					         d.id_almacen = jQuery("#id_almacen_historicos").val(); 						
+					         d.id_factura = jQuery("#id_factura_historicos").val();
 						      d.proveedor = jQuery("#editar_proveedor_historico").val(); 	
 
 						      var fecha = (jQuery('.fecha_historicos[vista="tabla_historico_conteo"]').val()).split(' / ');
@@ -2057,16 +2057,16 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 		                "render": function ( data, type, row ) {
 		                		return data;
 		                },
-		                "targets": [0] //
+		                "targets": [0] //numero de mov de ajuste
 		        },
 				{
 	                "render": function ( data, type, row ) {
-						return row[8];	
+						return row[8];	//filtro
 
 	                },
 	                "targets": 1
 	            },		        
-				{
+				{ //conteo1
 	                "render": function ( data, type, row ) {
 							texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
@@ -2081,7 +2081,7 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 	                },
 	                "targets": 2
 	            },
-				{
+				{  //conteo2
 	                "render": function ( data, type, row ) {
 							texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
@@ -2095,7 +2095,7 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 	                },
 	                "targets": 3
 	            },
-				{
+				{  //conteo3
 	                "render": function ( data, type, row ) {
 							texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
@@ -2110,19 +2110,19 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 	                },
 	                "targets": 4
 	            },
-				{
+				{  //Status faltante
 	                "render": function ( data, type, row ) {
 						return row[1];	
 	                },
 	                "targets": 5
 	            },
-				{
+				{  //Realizado faltante
 	                "render": function ( data, type, row ) {
 						return row[2];	
 	                },
 	                "targets": 6
 	            },
-				{
+				{  //MOV faltante
 	                "render": function ( data, type, row ) {				
 
 						if (row[3]=='-') {
@@ -2134,9 +2134,14 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 							$otro_retorno="historico_conteo";
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode("historico_conteo")+'/'+jQuery.base64.encode(row[10])+'"'; //
+								//texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(row[7])+'/'+jQuery.base64.encode('no')+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode("historico_conteo")+'/'+jQuery.base64.encode(row[10])+'"'; //
+								
+									//public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_operacion_salida,$retorno,$id_estatus){
+
+								texto+=' href="detalle_salidas/'+jQuery.base64.encode(row[3])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(row[12])+'/'+jQuery.base64.encode("historico_conteo")+'/'+jQuery.base64.encode(row[10])+'"'; //
 								texto+='type="button" class="btn btn-success btn-block">';
-								texto+=row[3];
+								//texto+=row[3]; 
+								texto+= row[14]; //+'Detalles';
 								texto+='</a>';
 							texto+='</td>';
 			            }
@@ -2144,23 +2149,22 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 	                	return texto;	
 	                	//detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_tipo_pedido,$id_tipo_factura)
 
-
 	                },
 	                "targets": 7
 	            },
-				{
+				{  //Status sobrante
 	                "render": function ( data, type, row ) {
 						return row[4];	
 	                },
 	                "targets": 8
 	            },
-				{
+				{  //Realizado sobrante
 	                "render": function ( data, type, row ) {
 						return row[5];	
 	                },
 	                "targets": 9
 	            },
-				{
+				{   //MOV sobrante
 	                "render": function ( data, type, row ) {
 	                	if (row[6]=='-') {
 							texto='<fieldset disabled><td><button'; 
@@ -2172,9 +2176,9 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 							$otro_retorno="historico_conteo";
 			        		texto='<td>';
 								texto+='<a style="padding: 1px 0px 1px 0px;"';
-								texto+=' href="procesar_entradas/'+jQuery.base64.encode(row[6])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
+								texto+=' href="procesar_entradas/'+jQuery.base64.encode('A-'+row[6])+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode($otro_retorno)+'/'+jQuery.base64.encode(row[9])+'/'+jQuery.base64.encode(row[10])+'"';
 								texto+='type="button" class="btn btn-success btn-block">';
-								texto+=row[6];
+								texto+= row[15]; //+'Detalles';
 								texto+='</a>';
 							texto+='</td>';							
 
@@ -2183,7 +2187,12 @@ jQuery('body').on('click','#imprimir_historico_conteo', function (e) {
 						return texto;	
 	                },
 	                "targets": 10
-	            },				   		            
+	            },			
+
+	            { 
+                     "visible": false,
+                    "targets": [11]
+                }	   		            
 		        ],
 	});	
 
@@ -2587,7 +2596,7 @@ jQuery('table').on('click','.agregar_ajuste', function (e) {
 
  
 	jQuery.ajax({
-		        url : '/agregar_prod_salida',
+		        url : '/agregar_salida_faltante',
 		        data : { 
 		        	identificador: identificador,
 		        	id_cliente:proveedor,
@@ -3219,7 +3228,10 @@ jQuery('#tabla_ajustes').dataTable( {
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_faltante').css('display','block');
 										//  public function generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura,$id_estatus){
-										jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );   
+										//generar_salida_rapida($num_mov,$id_operacion_salida,$id_estatus)
+										jQuery('#imp_nota_faltante').attr('href','/generar_salida_rapida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(99)+'/'+jQuery.base64.encode(0) );   
+
+										//jQuery('#imp_nota_faltante').attr('href','/generar_salida/'+jQuery.base64.encode(settings.json.generales.mov_faltante)+'/'+jQuery.base64.encode(1)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );   
 										//generar_salida($id_movimiento,$id_tipo_pedido,$id_tipo_factura)
 									} else {
 										jQuery("#hab_proceso").attr('disabled', false);					
@@ -3233,10 +3245,10 @@ jQuery('#tabla_ajustes').dataTable( {
 										jQuery("#hab_proceso").attr('disabled', true);					
 										jQuery('#imp_sobrante').css('display','block');
 										
-										jQuery('#imp_etiq_rapida').attr('href','/generar_etiquetas_rapida/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
+										jQuery('#imp_etiq_rapida').attr('href','/generar_etiquetas_rapida/'+jQuery.base64.encode('A-'+settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
 										jQuery('#imp_etiq').attr('href','/generar_etiquetas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );
-
-										jQuery('#imp_nota_rapida').attr('href','/generar_notas_rapida/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
+										//generar_notas_rapida($id_movimiento,$dev,$id_factura,$id_estatus)
+										jQuery('#imp_nota_rapida').attr('href','/generar_notas_rapida/'+jQuery.base64.encode('A-'+settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
 										jQuery('#imp_nota').attr('href','/generar_notas/'+jQuery.base64.encode(settings.json.generales.mov_sobrante)+'/'+jQuery.base64.encode(0)+'/'+jQuery.base64.encode(settings.aoData[0]['_aData'][14])+'/'+jQuery.base64.encode(15) );  
 
 									} else {
@@ -6566,8 +6578,8 @@ jQuery('body').on('click','#proc_pedido_compra', function (e) {
 
     	 			{
 		                "render": function ( data, type, row ) {
-							if (row[13]==null) {
-								return '<b/> Nro.'+row[18];												
+							if (row[19]=='J-') {
+								return '-';												
 							} else {
 								return row[13]+'<b/> Nro.'+row[18];		
 							}

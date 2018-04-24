@@ -16,8 +16,7 @@
   $fecha_hoy = date('j-m-Y');
 
   
- $id_almacen=$this->session->userdata('id_almacen');
-
+$id_almacen=$this->session->userdata('id_almacen');
 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
 echo form_open('validar_agregar_producto', $attr);
@@ -39,17 +38,11 @@ if ($val_proveedor) {
 <input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_ajuste_remision+1; ?>">
 
 <div class="container">
-
 	<br>
 
-
-
 	<div class="row">
-
 		<h4 class="col-xs-12 col-sm-6 col-md-8">Registro de Entradas</h4>
-
 		<input type="hidden" id="oculto_producto" name="oculto_producto" value="" color="" composicion="" calidad="">
-
 		<div class="col-xs-6 col-sm-3 col-md-2">
 			<fieldset disabled>
 				<div class="form-group">
@@ -61,8 +54,7 @@ if ($val_proveedor) {
 				</div>
 			</fieldset>	
 		</div>
-
-		<div class="col-xs-6 col-sm-3 col-md-2">
+		<div class="col-xs-6 col-sm-3 col-md-2" style="display:none;">
 			<fieldset disabled>
 				<div class="form-group">
 					<label for="movimiento" class="col-sm-12 col-md-12 ttip" title="Campo informativo, no editable.">No. Movimiento</label>
@@ -73,7 +65,6 @@ if ($val_proveedor) {
 			</fieldset>			
 		</div>
 	</div>
-	
 	<div class="row">
 		<div class="col-xs-12 col-sm-6 col-md-4">
 			<?php if ($val_proveedor) { ?>

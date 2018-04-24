@@ -218,6 +218,9 @@ class Pdfs_model extends CI_Model
               $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  71 ) ';  //compra
           } 
 
+          if ($data['tipo_entrada']=='A') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  73 ) ';  
+          } 
            
           
 
@@ -281,6 +284,7 @@ class Pdfs_model extends CI_Model
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -300,6 +304,7 @@ class Pdfs_model extends CI_Model
                 WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                  WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                  WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                 WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -460,6 +465,7 @@ class Pdfs_model extends CI_Model
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  
@@ -566,6 +572,7 @@ class Pdfs_model extends CI_Model
                 WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                  WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                  WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                 WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -699,6 +706,7 @@ class Pdfs_model extends CI_Model
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -721,6 +729,7 @@ class Pdfs_model extends CI_Model
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  

@@ -52,7 +52,7 @@
 		</div>
 		</fieldset>	
 	</div>
-	<div class="col-xs-12 col-sm-6 col-md-2">
+	<div class="col-xs-12 col-sm-6 col-md-2" style="display:none;">
 		<fieldset disabled>
 			<div class="form-group">
 				<label for="movimiento" class="ttip" title="Campo informativo, no editable.">No. Movimiento</label>

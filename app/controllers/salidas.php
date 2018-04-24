@@ -298,6 +298,7 @@ public function proc_salida_pedido_definitivo($num_mov,$id_cargador,$id_operacio
 public function validar_salida_pedido(){ 
 
 
+
 			 $data['id_cargador'] = $this->input->post('id_cargador');
 				 $data['num_mov'] = $this->input->post('num_mov');
 	 $data['id_operacion_pedido'] = $this->input->post('id_operacion_pedido');
@@ -351,6 +352,7 @@ public function validar_salida_pedido(){
 				}
 
 	} else {
+		//Print_r('a'); DIE;
 		$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );	
 
 		//redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
@@ -372,6 +374,8 @@ public function validar_salida_pedido(){
 
 public function detalles_salidas($mov_salida_unico=-1,$cliente=-1,$cargador=-1,$id_operacion_salida){
 
+
+
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
@@ -379,6 +383,8 @@ public function detalles_salidas($mov_salida_unico=-1,$cliente=-1,$cargador=-1,$
 			            $data['coleccion_id_operaciones'] = array();
 			       } 
 				   $data["id_operacion_salida"]  = base64_decode($id_operacion_salida);
+
+				  // print_r( base64_decode($mov_salida_unico) ); DIE;
 		      		
 	
 	      			$data['encabezado']['num_movimiento']  = base64_decode($mov_salida_unico);
@@ -387,7 +393,7 @@ public function detalles_salidas($mov_salida_unico=-1,$cliente=-1,$cargador=-1,$
 					$data['retorno'] ="pedidos";	 //DETALLES DE REPORTE
 		      		$data['etiq_mov'] ="de Salida";
 		      		$data['movimientos']  = $this->modelo_salida->listado_movimientos_registros($data);
-
+		      		//print_r( $data['movimientos']  ); DIE;
 		      		
 
 					      switch ($id_perfil) {    
@@ -959,6 +965,7 @@ public function validar_confirmar_salida_sino_NOFUNCIONA(){
 
 	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_operacion_salida,$retorno,$id_estatus){
 
+		
 
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');

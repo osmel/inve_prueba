@@ -866,8 +866,8 @@
                                           3=>$row->cantidad_um.' '.$row->medida,
                                           4=>$row->ancho.' cm',
                                           5=>
-                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
+                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                           6=>$columna7,//id_lote
                                           7=>$row->metros, // 9
                                           8=>$row->kilogramos,  //10
@@ -1208,6 +1208,7 @@ public function detalle_entrada_home($data){
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -1230,6 +1231,7 @@ public function detalle_entrada_home($data){
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  
@@ -1250,7 +1252,7 @@ public function detalle_entrada_home($data){
           $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida'); 
           $this->db->join($this->proveedores.' As us' , 'us.id = m.consecutivo_venta','LEFT'); 
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente');  //,'LEFT'
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT');  //
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');                
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT');  
 
@@ -1353,7 +1355,7 @@ public function detalle_entrada_home($data){
                                           3=>$row->cantidad_um.' '.$row->medida,
                                           4=>$row->ancho.' cm',
                                           5=> //
-                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida_unico).'/'.base64_encode($row->cliente).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_operacion_salida).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
+                                          '<a style="padding: 1px 0px 1px 0px;" href="'.base_url().'detalle_salidas/'.base64_encode($row->mov_salida_unico).'/'.base64_encode( ($row->cliente=='') ? '0': $row->cliente   ).'/'.base64_encode($row->cargador."r*").'/'.base64_encode($row->id_operacion_salida).'/'.base64_encode("reportes").'/'.base64_encode($row->id_estatus).'" 
                                           type="button" class="btn btn-success btn-block">'.$row->movi_salida.'</a>',
                                           6=>$columna7,//id_lote
                                           7=>$row->metros, // 9
@@ -1795,8 +1797,8 @@ public function detalle_salida_home($data){
                                           3=>$row->cantidad_um.' '.$row->medida,
                                           4=>$row->ancho.' cm',
                                           5=>
-                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
+                                               '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                           6=>$columna7,//id_lote
                                           7=>$row->metros, // 9
                                           8=>$row->kilogramos,  //10
@@ -3019,7 +3021,7 @@ public function detalle_salida_home($data){
            $fechas .= ' ';
           }           
 
-           $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+           $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
           $where = '(
                       (
@@ -3080,7 +3082,7 @@ public function detalle_salida_home($data){
                                       10=>$row->id_factura,
                                       11=>$row->id_estatus,
                                       //12=>($row->id_factura==3) ? 'B-' : (($row->id_compra!=0) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->nombre_usuario!='') ? 'T-' :'E-') )),
-                                      12=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))),
+                                      12=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))),
                                       13=>$row->c234,
                                       14=>$row->id_almacen,
                                       15=>$row->tipo_factura
@@ -3294,7 +3296,7 @@ public function buscador_historico_devolucion($data){
                                       8=>$row->devolucion,
                                       9=>$row->id_factura,
                                       10=>$row->id_estatus,
-                                      11=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))),
+                                      11=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))),
 
                                       12=>$row->id_almacen,
                                       13=>$row->tipo_factura                                      
@@ -3466,6 +3468,7 @@ public function buscador_historico_salida($data){
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -3504,12 +3507,12 @@ public function buscador_historico_salida($data){
           
           $this->db->from($this->historico_registros_salidas.' as m');
           $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen AND a.activo=1');
-          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado'); 
-          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente'); 
+          $this->db->join($this->usuarios.' As u' , 'u.id = m.id_usuario_apartado','LEFT'); 
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_cliente','LEFT'); 
           $this->db->join($this->cargadores.' As ca' , 'ca.id = m.id_cargador');  
           $this->db->join($this->tipos_pedidos.' As tp' , 'tp.id = m.id_tipo_pedido');
           $this->db->join($this->tipos_facturas.' As tf' , 'tf.id = m.id_tipo_factura','LEFT'); //
-          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT');
+          $this->db->join($this->proveedores.' As prov_pedido' , 'prov_pedido.id = m.consecutivo_venta','LEFT'); //
           $this->db->join($this->catalogo_tiendas.' As t' , 't.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->almacenes.' As al' , 'al.id = m.consecutivo_venta','LEFT');
           $this->db->join($this->proveedores.' As prov_apartado' , 'prov_apartado.id = m.id_cliente_apartado','LEFT'); //
@@ -3570,7 +3573,7 @@ public function buscador_historico_salida($data){
 
             //( m.on_off = '.$data["on_off"].' )
 
-          $id_operacion = ' (( m.id_operacion_salida =  2 ) OR ( m.id_operacion_salida =  93 )  OR ( m.id_operacion_salida =  94 ) OR ( m.id_operacion_salida =  95 )) ';
+          $id_operacion = ' (( m.id_operacion_salida =  2 ) OR ( m.id_operacion_salida =  93 )  OR ( m.id_operacion_salida =  94 ) OR ( m.id_operacion_salida =  95 ) OR ( m.id_operacion_salida =  99 ) ) ';
 
           $where = '(
                      (
@@ -3658,7 +3661,7 @@ public function buscador_historico_salida($data){
                                       16=>$row->movimiento_unico_apartado,
                                       17=>$row->movi_salida,
                                       18=>$row->movi_pedido,
-                                      19=>(($row->id_operacion_salida==2) ? 'S-' : (($row->id_operacion_salida==93) ? 'A-' :  ( ($row->id_operacion_salida == 94) ? 'T-' :  'B-' ) )),
+                                      19=>(($row->id_operacion_salida==2) ? 'S-' : (($row->id_operacion_salida==93) ? 'A-' :  ( ($row->id_operacion_salida == 94) ? 'T-' :  ( ($row->id_operacion_salida == 99) ? 'J-' :  'B-' ) ) )),
                                       20=>$row->id_operacion_salida,
                                       21=>$row->id_operacion_pedido,
 

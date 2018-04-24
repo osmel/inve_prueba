@@ -1436,6 +1436,11 @@ public function totales_importes($where){
           } 
 
 
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          } 
+
+
           $where = '(
                       (
                         (( m.id_factura = '.$data['id_factura'].' ) OR ('.$data['dev'].'=1) )  AND

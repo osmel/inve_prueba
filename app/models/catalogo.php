@@ -2045,8 +2045,8 @@
 
 
                      ///////////
-                     if ( ($data["id_operacion"] ==1 ) || ($data["id_operacion"] ==70 )  || ($data["id_operacion"] ==71 ) || ($data["id_operacion"] ==72 )) {
-                          $id_operacion = '(( g.id_operacion =  1 ) OR ( g.id_operacion =  70 )  OR ( g.id_operacion =  71 ) OR ( g.id_operacion =  72 ) )';
+                     if ( ($data["id_operacion"] ==1 ) || ($data["id_operacion"] ==70 )  || ($data["id_operacion"] ==71 ) || ($data["id_operacion"] ==72 ) || ($data["id_operacion"] ==73 ) ) {
+                          $id_operacion = '(( g.id_operacion =  1 ) OR ( g.id_operacion =  70 )  OR ( g.id_operacion =  71 ) OR ( g.id_operacion =  72 ) OR ( g.id_operacion =  73 ) )';
                      }
 
                   $this->db->select('max(g.c1* ( ('.$id_operacion.')  )  ) as c1',false);
@@ -2139,8 +2139,8 @@
 
 
                 ///////////
-               if ( ($data["id_operacion"] ==1 ) || ($data["id_operacion"] ==70 )  || ($data["id_operacion"] ==71 ) || ($data["id_operacion"] ==72 )) {
-                    $id_operacion = '(( g.id_operacion =  1 ) OR ( g.id_operacion =  70 )  OR ( g.id_operacion =  71 ) OR ( g.id_operacion =  72 ) )';
+               if ( ($data["id_operacion"] ==1 ) || ($data["id_operacion"] ==70 )  || ($data["id_operacion"] ==71 ) || ($data["id_operacion"] ==72 ) || ($data["id_operacion"] ==73 ) ) {
+                    $id_operacion = '(( g.id_operacion =  1 ) OR ( g.id_operacion =  70 )  OR ( g.id_operacion =  71 ) OR ( g.id_operacion =  72 ) OR ( g.id_operacion =  73 ) )';
                }
 
                 ///////////
@@ -2424,8 +2424,8 @@ public function consecutivo_general_salida($data){
             } else {  //en caso de no existir el registro, pues entonces, construira uno apartir de los que ya existen
                   //obtener c1, c2, c234, c34
                      ///////////
-                     if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 )) {
-                          $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95 ) )';
+                     if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 ) || ($data["id_operacion_salida"] ==99 ) ) {
+                          $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95 ) OR ( g.id_operacion =  99) )';
                      }
 
 
@@ -2522,8 +2522,8 @@ public function consecutivo_general_salida($data){
 
 
                 ///////////
-               if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 )) {
-                    $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95) )';
+               if ( ($data["id_operacion_salida"] ==2 ) || ($data["id_operacion_salida"] ==93 )  || ($data["id_operacion_salida"] ==94 ) || ($data["id_operacion_salida"] ==95 ) || ($data["id_operacion_salida"] ==99 )) {
+                    $id_operacion = '(( g.id_operacion =  2 ) OR ( g.id_operacion =  93 )  OR ( g.id_operacion =  94 ) OR ( g.id_operacion =  95) OR ( g.id_operacion =  99) )';
                }
 
                 ///////////

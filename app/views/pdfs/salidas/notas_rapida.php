@@ -21,10 +21,10 @@
 							<tr>
 								<td colspan="<?php echo (($this->session->userdata('id_perfil')==1) || ( (in_array(84, $coleccion_id_operaciones)) ) ) ? 7 : 6; ?>" style="border-top: 1px solid #222222; ">
 										<span><b>Vendedor: </b> <?php echo $movimientos[0]->nom_vendedor; ?></span><br>
-										<span><b>Cargador: </b> <?php echo $movimientos[0]->cargador; ?></span><br>
+										<span><b>Cargador: </b> <?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov; ?></span><br>
-										<span><b>Mov Pedido: </b><?php echo $movimientos[0]->mov_pedido; ?></span><br>
+										<span><b>Mov Pedido: </b><?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->mov_pedido; ?></span><br>
 										<?php if (($configuracion->activo==1)) {  ?>
 											<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>
 										<?php } ?>

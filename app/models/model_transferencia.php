@@ -79,6 +79,7 @@
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -101,6 +102,7 @@
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  

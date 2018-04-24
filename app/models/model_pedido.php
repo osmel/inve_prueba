@@ -227,7 +227,7 @@
           $id_estatus = ( ( ($this->session->userdata('id_perfil')==1) || ( (in_array(86, $data['coleccion_id_operaciones'])) )  ) ?  ' ' : ' AND ( m.id_estatus <> 14 ) ' );
 
           
-           $id_operacion = '(( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) )';
+           $id_operacion = '(( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) )';
 
           $where = '(
                       (
@@ -312,7 +312,7 @@
                   foreach ($result->result() as $row) {
 
                          
-                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>';  
+                               $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>';  
                           
 
 
@@ -530,7 +530,7 @@
                   foreach ($result->result() as $row) {
 
 
-                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>'; 
+                                $mov_entrada='<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'" type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>'; 
 
 
 
@@ -1279,6 +1279,7 @@
               WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+               WHEN (m.id_operacion_pedido=99)  THEN 'J' 
               else 'T' 
             end),
             ']',m.id_almacen,'-',  
@@ -1580,6 +1581,7 @@
             WHEN (m.id_operacion_pedido=4)  THEN 'S' 
              WHEN (m.id_operacion_pedido=98)  THEN 'B'  
              WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+             WHEN (m.id_operacion_pedido=99)  THEN 'J' 
             else 'T' 
           end),
           ']',m.id_almacen,'-',  
@@ -1911,6 +1913,7 @@
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -1933,6 +1936,7 @@
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  
@@ -2020,6 +2024,7 @@
                                   WHEN (m.id_operacion_salida=2)  THEN "S" 
                                    WHEN (m.id_operacion_salida=95)  THEN "B"  
                                    WHEN (m.id_operacion_salida=93)  THEN "A" 
+                                   WHEN (m.id_operacion_salida=99)  THEN "J"
                                   else "T" 
                                 end),
                                 "]",m.id_almacen,"-",  
@@ -2271,6 +2276,7 @@
                 WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                  WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                  WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                 WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -2365,8 +2371,8 @@
                                       3=>$row->cantidad_um.' '.$row->medida,
                                    
                                       4=>
-                                             '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
-                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
+                                             '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_fac_orig).'/'.base64_encode($row->id_estatus).'"
+                                                   type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
 
 
 
@@ -2579,6 +2585,7 @@
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  
@@ -2678,8 +2685,8 @@
                                        '<div style="background-color:#'.$row->hexadecimal_color.';display:block;width:15px;height:15px;margin:0 auto;"></div>',
                                       3=>$row->cantidad_um.' '.$row->medida,
                                       4=>
-                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' :'E-') ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
-                                               type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' :'E') ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
+                                           '<a style="  padding: 1px 0px 1px 0px;" href="'.base_url().'procesar_entradas/'.base64_encode((($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' : (($row->devolucion<>0) ? 'D-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) ))).$row->movimiento_unico).'/'.base64_encode($row->devolucion).'/'.base64_encode($retorno).'/'.base64_encode($row->id_factura).'/'.base64_encode($row->id_estatus).'"
+                                               type="button" class="btn btn-success btn-block">'.'['.(($row->id_operacion==72) ? 'B' : (($row->id_operacion==71) ? 'C' : (($row->devolucion<>0) ? 'D' :  (($row->id_operacion==70) ? 'T' : (($row->id_operacion==73) ? 'A' :'E') ) ))).'] '.$row->id_almacen.'-'.$row->tipo_factura.'-'.$row->c234.'</a>', 
                                       5=>$row->ancho.' cm',
                                       6=>$row->precio,
                                       7=>$row->iva,
@@ -2895,6 +2902,7 @@
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  
@@ -2917,6 +2925,7 @@
                   WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                    WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                    WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+                   WHEN (m.id_operacion_pedido=99)  THEN 'J' 
                   else 'T' 
                 end),
                 ']',m.id_almacen,'-',  

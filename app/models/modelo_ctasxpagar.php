@@ -205,7 +205,7 @@ public function buscador_ctasxpagar($data){
 
           
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
           $where = '(
                       (
 
@@ -282,7 +282,7 @@ public function buscador_ctasxpagar($data){
                                       14=>$row->id_factura,
                                       15=>$row->id_estatus,
                                             //16=>(($row->id_compra!=0) ? 'C-' : (($row->transferencia==1) ? 'T-' :'E-') ),
-                                      16=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' :'E-') )),
+                                      16=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) )),
                                       17=>$row->c234,
                                       18=>$row->id_almacen,
                                       19=>$row->tipo_factura,
@@ -524,6 +524,7 @@ public function buscador_pagosrealizados($data){
               WHEN (m.id_operacion=72)  THEN 'B' 
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.id_operacion=70)  THEN 'T' 
+               WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -560,6 +561,10 @@ public function buscador_pagosrealizados($data){
             if ($data['tipo_entrada']=='C') {
                 $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
             }           
+
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          }             
 
           $where = '(
                       (
@@ -638,7 +643,7 @@ public function buscador_pagosrealizados($data){
                                       9=>$row->id_factura,
                                       10=>$activar_modificar,  
                                       11=>$activar_eliminar,   
-                                      12=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' :'E-') )),
+                                      12=>(($row->id_operacion==72) ? 'B-' : (($row->id_operacion==71) ? 'C-' :  (($row->id_operacion==70) ? 'T-' : (($row->id_operacion==73) ? 'A-' :'E-') ) )),
                                       13=>$row->c234,
                                       14=>$row->id_almacen,
                                       15=>$row->tipo_factura
@@ -796,6 +801,11 @@ public function encabezado_pagosrealizados($data){
             }   
 
 
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          }            
+
+
           $where = '(
                       (
                          ( m.movimiento_unico = '.$data["movimiento"].' ) AND ( m.id_factura = '.$data["id_factura"].' )'.$nomb_usuario.'
@@ -865,6 +875,11 @@ public function encabezado_pagosrealizados($data){
             if ($data['tipo_entrada']=='C') {
                 $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
             }   
+
+
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          }            
 
           $where = '(
                           ( m.movimiento_unico =  '.$data["movimiento"].' ) 
@@ -1043,6 +1058,7 @@ public function impresion_pagosrealizados($data){
               WHEN (m.id_operacion=72)  THEN 'B' 
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.id_operacion=70)  THEN 'T' 
+               WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -1077,6 +1093,11 @@ public function impresion_pagosrealizados($data){
             if ($data['tipo_entrada']=='C') {
                 $nomb_usuario = ' and  ( m.id_operacion =  71 ) ';  
             }           
+
+
+          if ($data['tipo_entrada']=='A') {
+              $nomb_usuario = ' and  ( m.id_operacion =  73 ) ';  //compra
+          }            
 
 
           $where = '(
@@ -1160,6 +1181,7 @@ public function impresion_ctasxpagar($data){
               WHEN (m.id_operacion=72)  THEN 'B' 
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.id_operacion=70)  THEN 'T' 
+               WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -1206,7 +1228,7 @@ public function impresion_ctasxpagar($data){
           }
 
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
           $where = '(
                       (
                          '.$id_operacion.$data["condicion"].$fechas.$id_almacenid.$id_facturaid.$proveedorid.' 
@@ -1317,7 +1339,7 @@ public function impresion_ctasxpagar($data){
           }
 
 
-$id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+$id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
 
 
@@ -1460,7 +1482,7 @@ public function impresion_ctas_especificas($data){
             $proveedorid = '';
           }
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
           $where = '(
                       (
@@ -1576,7 +1598,7 @@ public function impresion_ctas_detalladas($data){
           } else {
             $proveedorid = '';
           }
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
 
           $where = '(
@@ -1702,7 +1724,7 @@ public function impresion_ctas_antiguedad($data){
             $proveedorid = '';
           }
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
 
           $where = '(
@@ -1777,6 +1799,7 @@ public function exportar_ctasxpagar($data){
               WHEN (m.id_operacion=72)  THEN 'B' 
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.id_operacion=70)  THEN 'T' 
+               WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -1852,7 +1875,7 @@ public function exportar_ctasxpagar($data){
             $proveedorid = '';
           }
 
-          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) ) ';
+          $id_operacion = ' (( m.id_operacion =  1 ) OR ( m.id_operacion =  70 )  OR ( m.id_operacion =  71 ) OR ( m.id_operacion =  72 ) OR ( m.id_operacion =  73 ) ) ';
 
 
           $where = '(

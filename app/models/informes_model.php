@@ -188,6 +188,7 @@ class Informes_model extends CI_Model
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.devolucion<>0)  THEN 'D' 
               WHEN (m.id_operacion=70)  THEN 'T' 
+              WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tff.tipo_factura,'-',m.c234   
@@ -1213,6 +1214,7 @@ class Informes_model extends CI_Model
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.devolucion<>0)  THEN 'D' 
               WHEN (m.id_operacion=70)  THEN 'T' 
+              WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -1703,6 +1705,7 @@ class Informes_model extends CI_Model
                WHEN (m.id_operacion=71)  THEN 'C'  
                WHEN (m.devolucion<>0)  THEN 'D' 
               WHEN (m.id_operacion=70)  THEN 'T' 
+              WHEN (m.id_operacion=73)  THEN 'A' 
               else 'E' 
             end),
             ']',m.id_almacen,'-',tipfac.tipo_factura,'-',m.c234   
@@ -2145,6 +2148,7 @@ class Informes_model extends CI_Model
               WHEN (m.id_operacion_pedido=4)  THEN 'S' 
                WHEN (m.id_operacion_pedido=98)  THEN 'B'  
                WHEN (m.id_operacion_pedido=96)  THEN 'A' 
+               WHEN (m.id_operacion_pedido=99)  THEN 'J' 
               else 'T' 
             end),
             ']',m.id_almacen,'-',  
@@ -2165,6 +2169,7 @@ class Informes_model extends CI_Model
                 WHEN (m.id_operacion_salida=2)  THEN 'S' 
                  WHEN (m.id_operacion_salida=95)  THEN 'B'  
                  WHEN (m.id_operacion_salida=93)  THEN 'A' 
+                 WHEN (m.id_operacion_salida=99)  THEN 'J' 
                 else 'T' 
               end),
               ']',m.id_almacen,'-',  

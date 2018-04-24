@@ -116,7 +116,7 @@ class Entrada_bodega extends CI_Controller {
 		      $existe_factura = $this->model_entrada_bodega->existencia_factura($data);
 		    
 
-   		       $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');	
+   		      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');	
 
 
 		      
@@ -159,7 +159,7 @@ class Entrada_bodega extends CI_Controller {
 
 			$data['dev'] = 0;
 
- 			$porciones = explode("-", base64_decode($num_mov));
+ 			$porciones = explode("-", base64_decode($num_mov)); 
 		    $data['tipo_entrada'] = $porciones[0];
 		    $data['num_mov'] = $porciones[1];
 			$data['id_factura'] = base64_decode($id_factura);
@@ -192,6 +192,7 @@ class Entrada_bodega extends CI_Controller {
 			                $this->load->view( 'pdfs/pdfs_view',$data );
 			             }   
 			          break;
+
 
 
 			        default:  

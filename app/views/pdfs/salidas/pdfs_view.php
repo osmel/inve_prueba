@@ -28,6 +28,10 @@
 $hidden = array('id_movimiento'=>$encabezado['num_movimiento']); 
 $attr = array('class' => 'form-horizontal', 'id'=>'form_entradas1','name'=>$retorno,'method'=>'POST','autocomplete'=>'off','role'=>'form');
 echo form_open('pdfs/generar', $attr,$hidden );
+
+//http://inventarios.dev.com/detalle_salidas/MQ==/YW5hIGFuYQ==/UGVkcm8gTWFydGluZXogSU5U/Mg==/bGlzdGFkb19zYWxpZGFz/MTU=
+//http://inventarios.dev.com/detalles_salidas/MQ==/YW5hIGFuYQ==/UGVkcm8gTWFydGluZXogSU5U/Mg==
+
 ?>		
 <div class="container margenes">
 			<div class="panel panel-primary">
@@ -41,15 +45,15 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 
 				<div class="col-sm-2 col-md-2">
-						<h4>Mov. de pedido: <?php echo $movimientos[0]->mov_pedido; ?></h4>
+						<h4>Mov. de pedido: <?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->mov_pedido; ?></h4>
 				</div>
 				 
 
 				<div class="col-sm-3 col-md-3">		
-						<h4>Vendedor: <?php echo $encabezado['cliente']; ?></h4>
+						<h4>Vendedor: <?php echo $movimientos[0]->nom_vendedor; ?></h4>
 				</div>
 				<div class="col-sm-3 col-md-3">
-						<h4>Cargador: <?php echo $encabezado['cargador']; ?></h4>
+						<h4>Cargador: <?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' :  $encabezado['cargador']; ?></h4>
 				</div>
 
 
