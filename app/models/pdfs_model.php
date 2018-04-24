@@ -56,19 +56,74 @@ class Pdfs_model extends CI_Model
           $this->db->select("sum(m.precio*m.cantidad_um)+((sum(m.precio*m.cantidad_um*m.iva))/100) as sum_total", FALSE);
 
           
-          $this->db->from($this->historico_registros_entradas.' as m');
+          //$this->db->from($this->historico_registros_entradas.' as m');
 
-          $this->db->where('m.movimiento_unico',$data['id_movimiento']);
-          $this->db->where('m.devolucion',$data['dev']);
+          $this->db->from($this->historico_registros_entradas.' as m');
+          $this->db->join($this->almacenes.' As a' , 'a.id = m.id_almacen'); //AND a.activo=1
+          $this->db->join($this->colores.' As c' , 'c.id = m.id_color','LEFT');
+          $this->db->join($this->unidades_medidas.' As u' , 'u.id = m.id_medida','LEFT');
+          $this->db->join($this->proveedores.' As p' , 'p.id = m.id_empresa','LEFT');
+          $this->db->join($this->composiciones.' As co' , 'co.id = m.id_composicion','LEFT');          
+          $this->db->join($this->productos.' as prod', 'prod.referencia = m.referencia','LEFT');
+          $this->db->join($this->tipos_facturas.' As tipfac' , 'tipfac.id = m.id_factura'); 
+
+
+
+         $where='';
           
+          
+          
+
+          $where.= (($where!='') ? ' and ' : '') . '  m.movimiento_unico = '.$data["id_movimiento"];
+          
+           $where.= (($where!='') ? ' and ' : '') .' m.devolucion = '.$data["dev"];
+
           if ($data['id_estatus']!=0) {
-            $this->db->where('m.id_estatus',$data['id_estatus']);
-          }
+            // $id_estatusid = ' and ( m.id_estatus =  '.$data['id_estatus'].' ) ';  
+            //$this->db->where('m.id_estatus',$data['id_estatus']);
+             $where.= (($where!="") ? " and " : "") . ' m.id_estatus = '.$data["id_estatus"];
+          } else {
+             //$id_estatusid = '';
+          }            
 
           if  ($data['dev'] == 0) { //si es una entrada porq la devolucion puede tener multiples
-            $this->db->where('m.id_factura',$data['id_factura']);
+            //$this->db->where('m.id_factura',$data['id_factura']);
+            $where.= (($where!="") ? " and " : "") . ' m.id_factura = '.$data["id_factura"];
           }  
 
+
+          if ($data['tipo_entrada']=='E') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  1 ) and ( m.devolucion =  0) and ( m.id_compra =  0)  '; 
+          } 
+
+          if ($data['tipo_entrada']=='B') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  72 ) ';  //compra
+          } 
+
+          if ($data['tipo_entrada']=='T') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  70 ) ';  //compra
+          } 
+
+
+          if ($data['tipo_entrada']=='D') {
+              $where.= (($where!="") ? " and " : "") . ' ( m.devolucion <>  0) ';  //devoluciones
+          } 
+
+          if ($data['tipo_entrada']=='C') {
+              //$nomb_usuario = ' and ( m.id_compra <>  0) ';  //compra
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  71 ) ';  //compra
+          } 
+
+          if ($data['tipo_entrada']=='A') {
+              $where.= (($where!="") ? " and " : "") . '  ( m.id_operacion =  73 ) ';  
+          } 
+           
+          
+
+          $this->db->where('('.$where.')');          
+
+
+         
 
           $result = $this->db->get();
 
