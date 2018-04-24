@@ -3302,28 +3302,28 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
    		jQuery("#tabla_entrada_sobrante tbody tr td input.cantidad_um").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador');  
-	   		arreglo['cantidad_um'] = jQuery(this).val();
+	   		arreglo['cantidad_um'] = isNaN(parseInt(jQuery(this).val())) ? 0 : parseInt(jQuery(this).val()); 
 	   		arreglo_cantidad_um.push( arreglo);
 	   });
 
    		jQuery("#tabla_entrada_sobrante tbody tr td input.ancho").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador');  
-	   		arreglo['ancho'] = jQuery(this).val();
+	   		arreglo['ancho'] = isNaN(parseInt(jQuery(this).val())) ? 0 : parseInt(jQuery(this).val()); 
 	   		arreglo_ancho.push( arreglo);
 	   });
 
 	   jQuery("#tabla_entrada_sobrante tbody tr td input.precio").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador');  
-	   		arreglo['precio'] = jQuery(this).val();
+	   		arreglo['precio'] = isNaN(parseInt(jQuery(this).val())) ? 0 : parseInt(jQuery(this).val()); 
 	   		arreglo_precio.push( arreglo);
 	   });
 
 	   jQuery("#tabla_entrada_sobrante tbody tr td input.peso_real").each(function(e) {
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador');  
-	   		arreglo['peso_real'] = jQuery(this).val();
+	   		arreglo['peso_real'] = isNaN(parseInt(jQuery(this).val())) ? 0 : parseInt(jQuery(this).val()); 
 	   		arreglo_peso.push( arreglo);
 	   });
 
@@ -3341,6 +3341,7 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 		        type : 'POST',
 		        dataType : 'json',
 		        success : function(data) {	
+		        	
 					if(data.exito != true){
 						spinner.stop();
 						jQuery('#foo').css('display','none');
@@ -3382,6 +3383,16 @@ jQuery('body').on('click','#conf_entrada_sobrante', function (e) {
 		});	
 
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
