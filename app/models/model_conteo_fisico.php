@@ -2199,7 +2199,8 @@ public function anadir_producto_temporal( $data ){
           $this->db->where('id',$data["id_operacion"]);
           $this->db->update($this->operaciones);
 
-
+         //sino esta creado, lo crea primero q nada, para q no lo ponga en cero
+          $this->catalogo->consecutivo_general($data);
 
           //actualizando nuevos consecutivos
            $this->catalogo->actualizando_nuevos_consecutivos($data);

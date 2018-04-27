@@ -1244,6 +1244,9 @@ public function totales_importes($where){
           $this->db->where('id',71);
           $this->db->update($this->operaciones);
 
+          //sino esta creado, lo crea primero q nada, para q no lo ponga en cero
+          $this->catalogo->consecutivo_general($data);
+
           //actualizando nuevos consecutivos
            $this->catalogo->actualizando_nuevos_consecutivos($data);
            

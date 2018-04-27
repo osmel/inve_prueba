@@ -445,8 +445,6 @@ public function totales_importes($where){
 
 
 
-          
-
           //actualizar (consecutivo) en tabla "operacion" 
   
           if ($data['id_factura']==1) {
@@ -459,6 +457,14 @@ public function totales_importes($where){
           $this->db->where('id',$data['id_operacion']);
           $this->db->update($this->operaciones);
 
+
+           //actualizar id_almacen al destino
+            $id_almacen_temporal = $data['id_almacen'];
+            $data['id_almacen'] = $data['id_almacen_destino'];
+
+
+          //sino esta creado, lo crea primero q nada, para q no lo ponga en cero
+          $this->catalogo->consecutivo_general($data);
 
           //actualizando nuevos consecutivos
            $this->catalogo->actualizando_nuevos_consecutivos($data);
@@ -474,6 +480,11 @@ public function totales_importes($where){
                     //$this->db->select('id_tienda_origen AS id_empresa');  //                
                   //$this->db->select('id_tienda_origen');    
                   //$this->db->select('mov_salida_unico AS mov_transferencia_enviada');   //este es quien indica q hay una transferencia 
+
+
+           //restablecer el id_almacen origgen
+           $data['id_almacen'] = $id_almacen_temporal;
+            
 
           $this->db->select('referencia,id_calidad,id_composicion,id_color,precio,cantidad_royo,id_factura,id_fac_orig,id_empresa',false);     //precio_viejo,
           $this->db->select('"p-trans" AS num_partida',false);                      

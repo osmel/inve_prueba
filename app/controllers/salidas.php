@@ -574,7 +574,7 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 
      		   $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
 		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
-
+ 
 			   $dato['id'] = 10;
                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
