@@ -851,7 +851,7 @@ public function totales_importes($where){
         }    
 
 
-
+ 
 
          //procesando operaciones
         public function procesando_operacion( $data ){

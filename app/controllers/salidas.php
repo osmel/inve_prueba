@@ -547,6 +547,40 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 	}
 	
 
+////////////////////////////////////////////////////////////////////////////////	
+////////////////////////////////////////////////////////////////////////////////	
+////////////////////////////////////////////////////////////////////////////////		
+
+
+  //cuando selecciona los filtros  de producto, composicion, ancho, color, proveedor de salida
+ function cargar_dependencia_salida() {
+    
+    $data['campo']        = $this->input->post('campo');
+
+    $data['val_prod']        = $this->input->post('val_prod');
+    $data['val_prod_id']        = $this->input->post('val_prod_id');
+
+    $data['val_comp']        = $this->input->post('val_comp');
+    $data['val_ancho']        = (float)$this->input->post('val_ancho');
+    $data['val_ancho_cad']        = $this->input->post('val_ancho');
+    $data['val_color']        = $this->input->post('val_color');
+    $data['val_proveedor']        = $this->input->post('val_proveedor');
+
+    $data['dependencia']        = $this->input->post('dependencia');
+
+
+			$elementos['producto_salida']  = $this->modelo_pedido->listado_productos_completa($data);
+        	$elementos['composicion_salida']  = $this->modelo_pedido->lista_composiciones_completa($data);
+            $elementos['ancho_salida']  = $this->modelo_pedido->lista_ancho_completa($data);
+            $elementos['color_salida']  = $this->modelo_pedido->lista_colores_completa($data);
+            $elementos['proveedor_salida']  = $this->modelo_pedido->lista_proveedores_completa($data);
+
+    echo json_encode($elementos); 
+
+
+  }
+
+
 //***********************Todos los catalogos**********************************//
 	public function listado_salidas(){
 
@@ -555,27 +589,26 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 		 if($this->session->userdata('session') === TRUE ){
 		      $id_perfil=$this->session->userdata('id_perfil');
 
-		  	   $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
-		            $data['coleccion_id_operaciones'] = array();
-		       } 
+		     $data['id_operacion_salida'] = 2; 
+		  	 $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	          if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	                $data['coleccion_id_operaciones'] = array();
+	           } 
 
 		       //no. movimiento
-		       $data['consecutivo']  = $this->catalogo->listado_consecutivo(2);
+		       $data['consecutivo']  = $this->catalogo->listado_consecutivo($data['id_operacion_salida']);
+
 		       //valor del cliente, cargador, factura, 
-		       $data['val_proveedor']  = $this->modelo_salida->valores_movimientos_temporal();
-		       //print_r($data['val_proveedor']);
-		       //die;
-		       $data['productos'] = $this->catalogo->listado_productos_unico();
-		       $data['colores'] = $this->catalogo->listado_colores_unico();
-		       $data['destinos'] = $this->catalogo->lista_destino();
+		       $data['val_proveedor']  = $this->modelo_salida->valores_movimientos_temporal_salida();
+
+		       $data['productos']   = $this->modelo_pedido->listado_productos_unico();
 		       $data['almacenes']   = $this->modelo->coger_catalogo_almacenes(2);
 
 
      		   $data['facturas']   	= $this->catalogo->catalogo_tipos_facturas();
-		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos(-1,-1,'1');
- 
-			   $dato['id'] = 10;
+		       $data['pedidos']   = $this->catalogo->listado_tipos_pedidos_especifico(3);
+
+ 			   $dato['id'] = 10;  //para mostrar la "factura"
                $data['configuracion'] = $this->catalogo->coger_configuracion($dato); 
 
 			   
@@ -608,122 +641,91 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 		
 	}
 
-
-
-	public function procesando_servidor(){
+//regilla1 de salida
+public function procesando_servidor(){
 		
 		$data=$_POST;
-		$data['id_cliente']=0;
-  	    if ($this->input->post('id_cliente')) {
-
-		 	 	     $data['descripcion'] = $this->input->post('id_cliente');
-		 	 	     $data['idproveedor'] = "2";
-
-					$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
-
-			 //$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
-		}	 
-
-		if (!($data['id_cliente'])) {
-			$data['id_cliente'] =0;
-		}
-
+		$data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+	      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+	            $data['coleccion_id_operaciones'] = array();
+	       } 
 		$busqueda = $this->modelo_salida->buscador_entrada($data);
 		echo $busqueda;
+
+
+
 	}
 
+//regilla2 de salida
 	public function procesando_servidor_salida(){
-		$data=$_GET;
+		$data=$_POST;
 		$busqueda = $this->modelo_salida->buscador_salida($data);
 		echo $busqueda;
 	}
+
+
+	
 	
 
-	function agregar_prod_salida(){
 
+//agregar al pedido
+
+	function agregar_prod_salida(){
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
-
-
-
-			 if ($this->input->post('id_cliente')) {
-
-		 	 	     $data['descripcion'] = $this->input->post('id_cliente');
-		 	 	     $data['idproveedor'] = "2";
-
-					$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
-
-
-						//$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
+			  if ($this->input->post('id_cliente')) {
+						$data['descripcion'] = $this->input->post('id_cliente');
+						$data['idproveedor'] = "3";
+					      switch ($this->input->post('on_off')) {    
+					        case 0:  	//cliente normal        
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
+					          break;
+					        case 1:  	//tienda
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_tienda($data);
+					          break;
+					        case 2: 	//bodega
+					              $data['id_cliente'] =  $this->catalogo->checar_existente_bodega($data);
+					          break;
+					      } //fin del case
 						if (!($data['id_cliente'])){
-							print "El cliente no existe";
+							$dato['mensaje'] = "El cliente no existe";
 						}
 			  } else {
-			  	$data['id_cliente']=null;
-			  	print "Campo <b>cliente</b> obligatorio. ";
-			  }
-			     	
+				  	$data['id_cliente']=null;
+				  	$dato['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
+			  }	 		
 
 			 if ($this->input->post('id_cargador')) {
 						$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
 						if (!($data['id_cargador'])){
-							print "El cargador no existe";
+							$dato['mensaje'] = "El cargador no existe";
 						}
 			 } else {
 			  	$data['id_cargador']=null;
-			  	print "Campo <b>cargador</b> obligatorio. ";
+			  	$dato['mensaje'] =  "Campo <b>cargador</b> obligatorio. ";
 
 			  }
 
 
-		      		$d_conf['id'] = 10;
-			$d_conf['configuracion'] = $this->catalogo->coger_configuracion($d_conf); 
 
-			if (($d_conf['configuracion']->activo==1)) {  
-		      $this->form_validation->set_rules( 'factura', 'Factura', 'trim|required|min_length[2]|max_lenght[180]|xss_clean');
-		    }  
-
-
-	 		if ( ( ($this->form_validation->run() === TRUE) || ($d_conf['configuracion']->activo==0)) and ($data['id_cliente']) and ($data['id_cargador']) ) {
-
-				 		$data['id'] = $this->input->post('identificador');
-				 		if (($d_conf['configuracion']->activo==1)) {  
-				 			$data['factura'] = $this->input->post('factura');
-				 		}	
-				 		$data['id_movimiento'] = $this->input->post('movimiento');
-				 		//$data['id_destino'] = $this->input->post('id_destino');
-				 		$data['id_almacen'] = $this->input->post('id_almacen');
-
-				 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-				 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-				 		
-
-				 		
-						$existe=$this->modelo_salida->checar_prod_salida($data);
-
-						if ($existe==false) {
-							$this->modelo_salida->enviar_prod_salida($data);	
-						}	
-						
-									 //die;
-						$actualizar = $this->modelo_salida->quitar_prod_entrada($data );
-
-						$actualizar = true;
-						if ( $actualizar !== FALSE ){
-							echo TRUE;
-						} else {
-							echo '<span class="error">No se ha podido añadir el producto</span>';
-						}
-	
+			if (($data['id_cliente']) and ($data['id_cargador']) )  {
+		 		$data['id'] = $this->input->post('identificador');
+		 		$data['id_movimiento'] = $this->input->post('movimiento');
+		 		$data['movimiento_unico'] = $this->input->post('movimiento_unico');
+		 		$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
+		 		$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
+		 		$data['on_off'] = $this->input->post('on_off');
+		 		$data['id_operacion_salida'] = 2; 
+		 		
+				$actualizar = $this->modelo_salida->actualizar_salida($data);
+				$dato['exito']  = true;
 			} else {      
-				
-       			 echo validation_errors('<span class="error">','</span>');
-
-      		}			
-
+	       		$dato['exito'] = validation_errors('<span class="error">','</span>');
+	      	}		
+			echo json_encode($dato);
 		}	
-   }
+    }
 
 
 	//quitar_prod_salida
@@ -732,31 +734,17 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 	    if ($this->session->userdata('session') !== TRUE) {
 	      redirect('');
 	    } else {
-	 		
+	    		$data['id_operacion_salida'] = 2; 
 	 		$data['id'] = $this->input->post('identificador');
-			$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-			$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-			
-
-				$this->modelo_salida->enviar_prod_entrada( $data );
-					  
-			$actualizar = $this->modelo_salida->quitar_prod_salidas($data );
-			$dato['total'] = $this->modelo_salida->total_registros_salida();
-		
-				 		
-
-		
-			if ( $actualizar !== FALSE ){
-				$dato['exito']  = true;
-				echo json_encode($dato);
+			$actualizar = $this->modelo_salida->quitar_salida($data);
+			$dato['exito']  = true;
+			echo json_encode($dato);
 				
-			} else {
-				$dato['exito']  = false;
-				$dato['error'] = '<span class="error">No se ha podido actualizar el producto</span>';
-				echo json_encode($dato);
-			}
 		}	
    }
+
+
+ 
 
 
 
@@ -779,38 +767,35 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 
 			 if($this->session->userdata('session') === TRUE ){
 			      $id_perfil=$this->session->userdata('id_perfil');
-
-
-					$data['id_almacen'] = $this->input->post('id_almacen');
-					$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
-					$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');
-								      
-
+			  	 
 			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
 			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
 			            $data['coleccion_id_operaciones'] = array();
 			       } 
-			      $existe = $this->modelo_salida->existencia_temporales();
+
+					$data['id_almacen'] 		= $this->input->post('id_almacen');
+					$data['id_tipo_pedido'] 	= $this->input->post('id_tipo_pedido');
+					$data['id_tipo_factura'] 	= $this->input->post('id_tipo_factura');
+
+				    $data['id_operacion_salida'] = 2;
+				    $existe = $this->modelo_salida->existencia_temporales_salida($data);
 
 			      $errores='';
-
+			   
+				
 				 if ($this->input->post('id_cliente')) {
-		
-				 	 	     $data['descripcion'] = $this->input->post('id_cliente');
-				 	 	     $data['idproveedor'] = "2";
-
+							$data['descripcion'] = $this->input->post('id_cliente');
+							$data['idproveedor'] = "3";
 							$data['id_cliente'] =  $this->catalogo->checar_existente_proveedor($data);
-
-
-							//$data['id_cliente'] =  $this->catalogo->check_existente_proveedor_entrada($this->input->post('id_cliente'));
 							if (!($data['id_cliente'])){
-								$errores= "El cliente no existe";
+								$dato['mensaje'] = "El cliente no existe";
 							}
 				  } else {
-				  	$data['id_cliente']=null;
-				  	$errores= "Campo <b>cliente</b> obligatorio. ";
-				  }
-				
+					  	$data['id_cliente']=null;
+					  	$dato['mensaje'] =  "Campo <b>cliente</b> obligatorio. ";
+				  }	 		
+
+
 				 if ($this->input->post('id_cargador')) {
 							$data['id_cargador'] =  $this->catalogo->check_existente_cargador_entrada($this->input->post('id_cargador'));
 							if (!($data['id_cargador'])){
@@ -841,7 +826,7 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 					 		$this->modelo_salida->actualizar_peso_real($data);
 
 					 		//verificar si hay pesos reales en cero	
-					 		$existe = $this->modelo_salida->existencia_temporales_peso_real();
+					 		$existe = $this->modelo_salida->existencia_temporales_peso_real($data);
 					 		if  (!($existe)) {
 					 			$errores= "Existen productos sin especificar Peso real";
 					 		}	
@@ -919,42 +904,46 @@ public function detalles_salidas_bodegas($num_movimiento_pedido){
 	}
 
 
-public function validar_confirmar_salida_sino_NOFUNCIONA(){
+public function validar_confirmar_salida_sino(){
 
 		  if ( $this->session->userdata('session') !== TRUE ) {
 		      redirect('');
 		    } else {
-		      $id_perfil=$this->session->userdata('id_perfil');
+		       $id_perfil=$this->session->userdata('id_perfil');
 
-		  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
-		      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
-		            $data['coleccion_id_operaciones'] = array();
-		       } 
+
+
+ 				$data['id_operacion_salida'] = 2;
+          		//$data['id_cargador'] = 1;  //este no tiene cargador deberia ser 0
+          		//$data['id_empresa'] = 1;  //este no tiene cargador deberia ser 0
+          		
+
+
+			  	  $data['coleccion_id_operaciones']= json_decode($this->session->userdata('coleccion_id_operaciones')); 
+			      if ( (count($data['coleccion_id_operaciones'])==0) || (!($data['coleccion_id_operaciones'])) ) {
+			            $data['coleccion_id_operaciones'] = array();
+			       } 
+
 
 		       	$data['id_tipo_pedido'] = $this->input->post('id_tipo_pedido');
 				$data['id_tipo_factura'] = $this->input->post('id_tipo_factura');	
+				$data['id_almacen'] 		= $this->input->post('id_almacen');
 		       
-		       $data['id_cliente'] 			= $this->input->post('id_cliente');
-		       //$data['id_destino'] 			= $this->input->post('id_destino');
-		       $data['valor'] 				= $this->input->post('valor');
-		       $data['id_operacion'] 		= 2;
-  				$data['encabezado'] 		= $this->modelo_salida->procesando_operacion_salida($data); //871
-		        $data['movimientos']  		= $this->modelo_salida->listado_movimientos_registros($data); //1013
-		        $data['id_almacen'] 		= $this->input->post('id_almacen');
+		       $data['id_cliente'] 			= $this->input->post('id_cliente'); //no
+		       $data['valor'] 				= $this->input->post('valor');  //no
+		       //$data['id_operacion'] 		= 2;  ////no
 
-		        
 
-		       if (($data['valor']==1) || ($data['valor']==2) ) {
-		       		$this->modelo_salida->traspaso_quitar_apartados($data);
-					$this->modelo_salida->quitar_apartados($data);		       		
-		       }
-		       
+  				$parametros 	= $this->modelo_salida->procesando_operacion_salida($data); //871
+  				//print_r($parametros); die;
 
-			   
-			  $data['etiq_mov'] ="de Salida";
-			  
+				redirect('detalles_salidas/'.base64_encode($parametros->mov_salida_unico).'/'.base64_encode($parametros->cliente).'/'.base64_encode($parametros->cargador).'/'.base64_encode($data['id_operacion_salida'])  ) ;
 
-			redirect('detalles_salidas/'.base64_encode($data['encabezado']['num_movimiento']).'/'.base64_encode($data['encabezado']['cliente']).'/'.base64_encode($data['encabezado']['cargador']).'/'.base64_encode($data['id_tipo_pedido']).'/'.base64_encode($data['id_tipo_factura'])  ) ;
+				//public function detalles_salidas($mov_salida_unico=-1,$cliente=-1,$cargador=-1,$id_operacion_salida){
+		        //$data['movimientos']  		= $this->modelo_salida->listado_movimientos_registros($data); //no
+				//$parametros=( $this->modelo_salida->procesando_operacion_pedido_salida($data) );	
+
+
 
  
 		   }   	
@@ -962,6 +951,11 @@ public function validar_confirmar_salida_sino_NOFUNCIONA(){
 }	
 
 	
+
+
+
+
+
 
 	public function detalle_salidas($id_movimiento=-1,$cliente=-1,$cargador=-1,$id_operacion_salida,$retorno,$id_estatus){
 
@@ -988,7 +982,7 @@ public function validar_confirmar_salida_sino_NOFUNCIONA(){
 
 		      		if (($id_movimiento)==-1)	{ //OJO no funciona ya se cambio para "procesar_salidas"
 					   	 //$data['id_operacion'] = 2;
-		  				 //$data['encabezado'] = $this->modelo_salida->procesando_operacion_salida($data);
+		  				 
 		      		} else { //cuando se llama desde reportes(notas)
 		      			$data['encabezado']['num_movimiento']  = $id_movimiento;
 		      			$data['encabezado']['cliente']  	   = base64_decode($cliente);

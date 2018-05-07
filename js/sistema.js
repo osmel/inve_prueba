@@ -5819,8 +5819,8 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	id_cliente = jQuery('.buscar_proveedor').typeahead("val");
 	id_cargador = jQuery('.buscar_cargador').typeahead("val");
 	factura = jQuery("#factura").val();
-	id_destino = jQuery("#id_destino").val();
-	id_almacen = jQuery('#id_almacen').val();
+	//id_destino = jQuery("#id_destino").val(); //??
+	id_almacen = jQuery('#id_almacen_salida').val();
 
 	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
 	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
@@ -5831,7 +5831,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 	    var arreglo_peso = [];
 	    var arreglo = {};
 
-	   jQuery("#tabla_salida tbody tr td input.peso_real").each(function(e) {
+	   jQuery("#tabla_salida tbody tr td input.peso_real").each(function(e) {  //??
 	   		arreglo = {};
 	   		arreglo["id"] = jQuery(this).attr('identificador') ;  
 	   		arreglo['peso_real'] = jQuery(this).val();
@@ -5846,7 +5846,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 		        	id_cargador: id_cargador,
 		        	factura: factura,
 		        	arreglo_peso:arreglo_peso,
-		        	id_destino:id_destino,
+		        	//id_destino:id_destino,
 		        	id_almacen:id_almacen,
 		        	id_tipo_pedido:id_tipo_pedido,
 		        	id_tipo_factura:id_tipo_factura
@@ -5864,7 +5864,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 									'scrollTop': jQuery('#messages').offset().top
 								}, 1000);
 						}else{
-
+							
 							spinner.stop();
 							jQuery('#foo').css('display','none');
 
@@ -5890,7 +5890,7 @@ jQuery('body').on('click','#proc_salida', function (e) {
 												}); 									        	
 									        }
 								});	
-
+							
 
 						}
 		        }
@@ -6005,6 +6005,124 @@ jQuery("#id_tipo_factura_salida").on('change', function(e) {
 });
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////SALIDAS////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ //cuando entre por vez primera, q actualice todas las dependencia
+	var hash_url = window.location.pathname;
+	if  ( (hash_url=="/salidas") )   {  
+		jQuery("#producto_salida").trigger('change');
+	}	
+
+
+
+//,  #proveedor_salida
+    jQuery("#producto_salida, #composicion_salida, #ancho_salida, #color_salida, #proveedor_salida").on('change', function(e) {
+		 var campo = jQuery(this).attr("name");   
+ 		 var val_prod = jQuery('#producto_salida option:selected').text();  		  //elemento** id
+ 		 var val_comp = jQuery('#composicion_salida').val();  		  //elemento** id
+ 		 var val_ancho = jQuery('#ancho_salida').val();  		  //elemento** id
+ 		 var val_color = jQuery('#color_salida').val();  		  //elemento** id
+ 		 var val_proveedor = jQuery('#proveedor_salida').val();  		  //elemento** id
+
+         var dependencia = jQuery(this).attr("name"); //color composicion
+         var nombre = jQuery(this).attr("nombre");           //color composicion
+        
+        cargarDependencia_salida(campo,val_prod,val_comp, val_ancho, val_color,val_proveedor,dependencia,nombre);
+		var hash_url = window.location.pathname;
+
+		if  ( (hash_url=="/salidas") )   {  
+				comienzo=true; //para indicar que start comience en 0;
+				var oTable =jQuery('#tabla_entrada').dataTable();
+				oTable._fnAjaxUpdate();
+    	}	
+
+     });
+
+
+
+
+	function cargarDependencia_salida(campo,val_prod,val_comp, val_ancho, val_color,val_proveedor,dependencia,nombre) {
+		
+		jQuery.ajax({
+		        url : 'cargar_dependencia_salida',
+		        data:{
+		        	campo:campo,
+		        	val_prod_id : jQuery('#producto_salida option:selected').val(),  		  //elemento** id
+		        	val_prod:val_prod,
+		        	val_comp:val_comp,
+		        	val_ancho: val_ancho,
+		        	val_color:val_color,		        	
+		        	val_proveedor:val_proveedor,
+		        	dependencia:dependencia
+		        },
+
+
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {
+
+		        			var $elArray = new Array();
+							$elArray['producto_salida']  = 'un producto';
+				        	$elArray['composicion_salida']  = 'una composición';
+				            $elArray['ancho_salida']  = 'un ancho';
+				            $elArray['color_salida']  = 'un color';
+				            $elArray['proveedor_salida']  = 'un proveedor';
+
+		        		jQuery.each(data, function (dep, valor) {
+		        			
+		        			jQuery("#"+dep).html(''); 
+
+		        			jQuery("#"+dep).append('<option value="0" >Seleccione '+$elArray[dep]+' </option>'); //+valor.nombre+
+
+		        				jQuery.each(valor, function (i, value) {
+		        					
+		        					hexadecimal_color = (value.hexadecimal_color)  ? (value.hexadecimal_color) : 'ffff';
+
+		        					if (dep=="producto_salida") { //caso de producto
+		        					 jQuery("#"+dep).append('<option '+ ( (value.nombre==value.activo) ? 'selected' : '') +' value="' + value.nombre + '" style="background-color:#'+hexadecimal_color+' !important;" >' + value.nombre + '</option>');     	
+		        					} else {
+		        						jQuery("#"+dep).append('<option '+ ( (parseInt(value.id)==parseInt(value.activo)) ? 'selected' : '') +' value="' + value.id + '" style="background-color:#'+hexadecimal_color+' !important;" >' + value.nombre + '</option>');     	
+		        					}
+		        					
+
+		        					
+		        				});
+		        		});
+
+
+                    return false;
+		        },
+		        error : function(jqXHR, status, error) {
+		        },
+		        complete : function(jqXHR, status) {
+		            
+		        }
+		    }); 
+	}
+
+
+jQuery('body').on('click','#limpiar_filtro_salida', function (e) {
+	jQuery('#producto_salida option:eq(0)').prop('selected', 'selected');
+	jQuery('#composicion_salida option:eq(0)').prop('selected', 'selected');
+	jQuery('#ancho_salida option:eq(0)').prop('selected', 'selected');
+	jQuery('#color_salida option:eq(0)').prop('selected', 'selected');
+	jQuery('#proveedor_salida option:eq(0)').prop('selected', 'selected');
+	jQuery("#producto_salida").trigger('change');
+});	
+
+
+
+jQuery('#id_almacen_salida').change(function(e) {
+	jQuery('.buscar_proveedor').typeahead('val','');
+	comienzo=true; //para indicar que start comience en 0;
+	var oTable =jQuery('#tabla_entrada').dataTable();
+	oTable._fnAjaxUpdate();		
+});
+
 
 jQuery('#tabla_entrada').dataTable( {
  	"processing": true, //	//tratamiento con base de datos
@@ -6012,35 +6130,36 @@ jQuery('#tabla_entrada').dataTable( {
 	"ajax": {
             	"url" : "procesando_servidor",
          		"type": "POST",
-         		 "data": function ( d ) {
-     				   if  (jQuery('.buscar_proveedor').typeahead("val")) {
-     				   		d.id_cliente = jQuery('.buscar_proveedor').typeahead("val");
-     				   	} else {
-     				   		d.id_cliente = jQuery('#id_proveedor').val();	
-     				   	}	
+ 				"data": function ( d ) {
+         		 	   if (comienzo) {
+         		 	   	 //d.start=0;	 //comienza en cero siempre q cambia de botones
+         		 	   	 d.draw =0;
+         		 	   }
 
 
-						    d.producto_filtro = jQuery('#producto_filtro').val();	
-						    
+		 			    d.id_descripcion = jQuery("#producto_salida").val();
+	 				  if (d.id_descripcion !='') {
+   				   	    d.id_descripcion = jQuery('#producto_salida option:selected').text();
+	 				  }
+
+	 				  d. val_prod_id = jQuery('#producto_salida option:selected').val();
 
 
-						    d.color_filtro = jQuery('#color_filtro').val();	
-
-						    d.ancho_filtro = jQuery('#ancho_filtro').val();	
-						    //alert(d.ancho_filtro);
-						    d.factura_filtro = jQuery('#factura_filtro').val();	
-
-						    d.proveedor_filtro = jQuery('#editar_proveedor_filtro').val();	
-
-						    d.id_almacen = jQuery('#id_almacen').val();	
+ 		 				d.id_composicion = jQuery('#composicion_salida').val();  		  
+ 		 				   	     d.ancho = jQuery('#ancho_salida').val();  		  
+ 		 					  d.id_color = jQuery('#color_salida').val();  		  
+ 		 				  d.id_proveedor = jQuery('#proveedor_salida').val();  
+ 		 				    d.id_almacen = jQuery('#id_almacen_salida').val();
 
 							d.id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
 							d.id_tipo_factura = (d.id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
 
+							d.id_cliente = jQuery('.buscar_proveedor').typeahead('val');
 
+    			 }
 
-    				    
-    			 } 
+         		
+
      }, 
 	"language": {  //tratamiento de lenguaje
 		"lengthMenu": "Mostrar _MENU_ registros por página",
@@ -6065,19 +6184,9 @@ jQuery('#tabla_entrada').dataTable( {
 			"sortDescending": ": Activando para ordenar columnas descendentes"
 		},
 	},
-		 "rowCallback": function( row, data ) {
-		    // Bold the grade for all 'A' grade browsers
-		    if ( data[9] == 3 ) {
-		      jQuery('td', row).addClass( "danger" );
-		    }
-
-		    if ( data[9] == 6 ) {
-		      jQuery('td', row).addClass( "success" );
-		    }
-
-		  },
-
-	"infoCallback": function( settings, start, end, max, total, pre ) {
+	
+	
+"infoCallback": function( settings, start, end, max, total, pre ) {
 	    if (settings.json.totales) {
 		    jQuery('#total_pieza').html( 'Total de piezas:'+ settings.json.totales.pieza);
 		  
@@ -6100,7 +6209,7 @@ jQuery('#tabla_entrada').dataTable( {
 			}
 
 	    return pre
-  	} ,  	
+  	} ,    
 
 
 	"footerCallback": function( tfoot, data, start, end, display ) {
@@ -6115,13 +6224,13 @@ jQuery('#tabla_entrada').dataTable( {
 		if  (data.length>0) {   
 				
 				total_metro = api
-					.column( 11 )
+					.column( 12 )
 					.data()
 					.reduce( function (a, b) {
 						return intVal(a) + intVal(b);
 					} );
 				total_kilogramo = api
-					.column( 12)
+					.column( 13)
 					.data()
 					.reduce( function (a, b) {
 						return intVal(a) + intVal(b);
@@ -6137,66 +6246,198 @@ jQuery('#tabla_entrada').dataTable( {
 			        jQuery('#metro').html('Total de mts: 0.00');
 					jQuery('#kg').html('Total de kgs: 0.00');	
 
-		}	
-    },  		  
-	"columnDefs": [
+		}
+	
+    },	  
+
+
+"columnDefs": [
+
+				{ 
+		                "render": function ( data, type, row ) {
+
+  								var color;
+		                		switch (row[17]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
+
+
+		                		if (row[16]!='') {
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[16];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
 	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7]
+	                "targets": [0,3,4,5,6,7,8]
 	            },
-    			{ 
+
+
+
+				{ 
 	                "render": function ( data, type, row ) {
-						return row[10];	
+                            //prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[14])+'" data-toggle="modal" data-target="#myModaldashboard">';
+                            prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[14])+'/'+jQuery.base64.encode(row[1])+'" data-toggle="modal" data-target="#myModaldashboard">';
+                               prod+= row[2];
+                            prod+='</a>';
+                            
+                            return prod; 
 	                },
-	                "targets": [8]
+	                "targets": [2] //,11
+	            },	 
+
+
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return row[11];
+	                },
+	                "targets": [9]
 	            },
 
 	            {
 	                "render": function ( data, type, row ) {
-						texto='<td><button '; 
-							texto+='type="button" class="btn btn-success btn-block agregar '+row[8]+'" identificador="'+row[8]+'" >';
+						texto='<td><button'; 
+							texto+='type="button" identificador="'+row[9]+'" class="btn btn-success btn-block agregar_salida '+row[9]+'">';
 							texto+='<span  class="">Agregar</span>';
 						texto+='</button></td>';
+
 						return texto;	
 	                },
-	                "targets": 9
+	                "targets": 10
 	            },
-				{ 
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return row[15];
+	                },
+	                "targets": [11]
+	            },	
+
+	            { 
+	             "render": function ( data, type, row ) {
+	                		return row[18];
+	                },
+	                "targets": [12]
+	            },	
+
+
+    			{ 
 	                 "visible": false,
-	                 "targets": [10,11,12]
-	            }		            
+	                "targets": [13,14,15,16,17,18,19]
+	            }	            
 	        ],
+
+	         "fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+	    			var api = this.api();
+	    			api.column(12).visible(true);	
+	     			
+		
+				if (aData.length >0){
+      				if (aData[0][18]=="-") {
+                		api.column(12).visible(false);	
+                		
+                	} else {
+                		api.column(12).visible(true);	
+		    			
+		     			
+                	}
+                } else {
+	                	api.column(12).visible(false);	
+                }
+		         
+                //mostrar codigo en función del rol
+                api.column(0).visible(true);	
+				if (aData.length >0){
+      				if (aData[0][19]==2) {
+                		api.column(0).visible(false);	
+                		
+                	} else {
+                		api.column(0).visible(true);	
+		    			
+		     			
+                	}
+                } else {
+	                	api.column(0).visible(false);	
+                }		          
+
+	                
+			},
+
 });	
  
-//Quitar las salidas y retornarlas a estradas "modulo de salida"
-jQuery('table').on('click','.quitar', function (e) {
 
-	jQuery(this).attr('disabled', true);				        
-	
+//Agregar las estradas a salidas
+jQuery('table').on('click','.agregar_salida', function (e) {
+
+	//console.log(jQuery('button.activo').attr('data'));
+	jQuery(this).attr('disabled', true);
+
 	identificador = (jQuery(this).attr('identificador'));
+	movimiento = jQuery("#movimiento").val();
 	id_tipo_pedido = jQuery("#id_tipo_pedido_salida").val();
-	id_tipo_factura = (id_tipo_pedido==2) ? 0:jQuery("#id_tipo_factura_salida").val();
+	id_tipo_factura = ((id_tipo_pedido==2) || (id_tipo_pedido==3)) ? 0 : jQuery("#id_tipo_pedido_salida").val();
+	id_cliente = jQuery('.buscar_proveedor').typeahead('val');
+	id_cargador = jQuery('.buscar_cargador').typeahead("val");
+     on_off  = 0; //jQuery('button.activo').attr('data'); //jQuery('.on-off[class!="btn-outline"]').attr('data');    //jQuery('#on-off').prop('checked');
+
+	jQuery('#foo').css('display','block');
+	var spinner = new Spinner(opts).spin(target);
+
 
 	jQuery.ajax({
-		        url : 'quitar_prod_salida', //
+		        url : '/agregar_prod_salida',
 		        data : { 
 		        	identificador: identificador,
+		        	movimiento: movimiento,
+		        	movimiento_unico : jQuery("#movimiento_unico").val(),
 		        	id_tipo_pedido: id_tipo_pedido,
 		        	id_tipo_factura: id_tipo_factura,
+		        	id_cliente: id_cliente,
+		        	id_cargador: id_cargador,
+		        	on_off : 0, //((on_off=='editar_tienda') ? 1 : ((on_off=='editar_bodega') ? 2 : 0) ),
+
+
 		        },
 		        type : 'POST',
 		        dataType : 'json',
 		        success : function(data) {	
 						if(data.exito != true){
-							//aqui es donde va el mensaje q no se ha copiado
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+								jQuery('#messages').css('display','block');
+								jQuery('#messages').addClass('alert-danger');
+								jQuery('#messages').html(data.mensaje);
+								jQuery('html,body').animate({
+									'scrollTop': jQuery('#messages').offset().top
+								}, 1000);
+
 						}else{
-							if(data.total == 0){
-								jQuery("fieldset.disabledme").attr('disabled', false);
-							}	
-							jQuery('#tabla_entrada').dataTable().fnDraw();
+
 							jQuery('#tabla_salida').dataTable().fnDraw();
+							jQuery('#tabla_entrada').dataTable().fnDraw();
+
+								spinner.stop();
+								jQuery('#foo').css('display','none');
+
 
 								jQuery.ajax({
 									        url : 'conteo_tienda',
@@ -6206,33 +6447,74 @@ jQuery('table').on('click','.quitar', function (e) {
 									        type : 'POST',
 									        dataType : 'json',
 									        success : function(data) {	
-									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar');
-									     		return false;
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'agregar_salida');
+												return false;
 									        }
-								});	
-
-							//return false;
+								});								
+							 
 						}
 		        }
-	});	
+	});			
 
-       	jQuery(this).attr('disabled', false);				        
+   jQuery(this).attr('disabled', false);				        
+});
+
+ 
+//Quitar las salidas y retornarlas a estradas 
+jQuery('table').on('click','.quitar_salida', function (e) {
+	jQuery(this).attr('disabled', true);				        
+
+	identificador = (jQuery(this).attr('identificador'));
+	jQuery.ajax({
+		        url : 'quitar_prod_salida', //
+		        data : { 
+		        	identificador: identificador
+		        },
+		        type : 'POST',
+		        dataType : 'json',
+		        success : function(data) {	
+						if(data.exito != true){
+							//aqui es donde va el mensaje q no se ha copiado
+						}else{
+								jQuery('#tabla_salida').dataTable().fnDraw();
+								jQuery('#tabla_entrada').dataTable().fnDraw();
+
+								jQuery.ajax({
+									        url : 'conteo_tienda',
+									        data : { 
+									        	tipo: 'tienda',
+									        },
+									        type : 'POST',
+									        dataType : 'json',
+									        success : function(data) {	
+									        	MY_Socket.sendNewPost(data.vendedor+' - '+data.tienda,'quitar_salida');
+									        	return false;
+	
+									        }
+								});								
+							 
+						}
+
+
+		        }
+	});			
+	jQuery(this).attr('disabled', false);				        			        
 
 });
 
+
+
+
 //"modulo salida"
 jQuery('#tabla_salida').dataTable( {
+		"processing": true,
+		"serverSide": true,
+		"ajax": {
+	            	"url" : "procesando_servidor_salida",
+	         		"type": "POST",
+	      }, 
 
-	"scrollY": "200px",
-	"paging": false,
-	"ordering": false,
-	//"info":     false,  
-	"searching": false,
-
-	"processing": true, 	//tratamiento con base de datos
-	"serverSide": true,
-	"ajax": "procesando_servidor_salida",  //
-	"language": {  //tratamiento de lenguaje
+	"language": {  
 		"lengthMenu": "Mostrar _MENU_ registros por página",
 		"zeroRecords": "No hay registros",
 		"info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
@@ -6255,34 +6537,25 @@ jQuery('#tabla_salida').dataTable( {
 			"sortDescending": ": Activando para ordenar columnas descendentes"
 		},
 	},
-
-
-	 "rowCallback": function( row, data ) {
-	    // Bold the grade for all 'A' grade browsers
-	    if ( data[9] == 3 ) {
-	      jQuery('td', row).addClass( "danger" );
-	    }
-
-	    if ( data[9] == 6 ) {
-	      jQuery('td', row).addClass( "success" );
-	    }
-
-	  },
-
-
 "infoCallback": function( settings, start, end, max, total, pre ) {
-	    jQuery('#total_pieza2').html( 'Total de piezas: 0');
 	    if (settings.json.totales) {
-	    	
+		    
+		    if (settings.json.totales.pieza==0) {
+		    	jQuery(".disabledme").prop('disabled', false);	
+		    } else {
+		    	jQuery(".disabledme").prop('disabled', true);	
+		    }		    
 
 		    jQuery('#total_pieza2').html( 'Total de piezas:'+ settings.json.totales.pieza);
 			jQuery('#total_kg2').html( 'Total de kgs:'+number_format(settings.json.totales.kilogramo, 2, '.', ','));
 			jQuery('#total_metro2').html('Total de mts:'+ number_format(settings.json.totales.metro, 2, '.', ','));
-			
+
 		} else {
+			jQuery(".disabledme").prop('disabled', false);	
 		    jQuery('#total_pieza2').html( 'Total de piezas: 0');
 			jQuery('#total_kg2').html( 'Total de kgs: 0.00');
 			jQuery('#total_metro2').html('Total de mts: 0.00');
+
 
 		}	
 
@@ -6325,52 +6598,146 @@ jQuery('#tabla_salida').dataTable( {
 					jQuery('#kg2').html('Total de kgs: 0.00');	
 
 		}	
-    },	  	
-	  
+	
+    },
 	"columnDefs": [
-		    	
-		    	{ 
+				{ 
+		                "render": function ( data, type, row ) {
+
+								var color;
+		                		switch (row[16]){
+		                			case "12": //normal rojo
+		                				color = 'red';
+		                			   break;	
+		                			case "13": //devolucion verde
+		                				color = 'green';
+		                			   break;
+		                			case "14": //defecto azul
+		                				color = 'blue';
+		                			   break;
+		                			case "15": //ajuste naranja
+		                				color = 'orange';
+		                			   break;
+		                			default: 
+		                				color = 'red';            
+		                		} 
+
+
+		                		if (row[15]!='') {
+		                			return row[1]+'<br/><b style="color:'+color+';">Cód: </b>'+row[15];	
+		                		} else {
+		                			return row[1];
+		                		}
+		                		
+		                },
+		                "targets": [1]   //el 3 es la imagen q ya viene formada desde el modelo
+		        },   	
+
+	    		{ 
 	                "render": function ( data, type, row ) {
 	                		return data;
 	                },
-	                "targets": [0,1,2,3,4,5,6,7]
-	            },
+	                "targets": [0,3,4,5,6,7,8]
+	            },	
 
-    			{ 
+				{ 
 	                "render": function ( data, type, row ) {
-						return row[10];	
+                            prod= '<a href="detalles_imagen/'+jQuery.base64.encode(row[13])+'/'+jQuery.base64.encode(row[1])+'" data-toggle="modal" data-target="#myModaldashboard">';
+                               prod+= row[2];
+                            prod+='</a>';
+                            
+                            return prod; 
 	                },
-	                "targets": [8]
-	            },
+	                "targets": [2] //,11
+	            },	 
 
+	    		{ 
+	                "render": function ( data, type, row ) {
+	                		return row[10];
+	                },
+	                "targets": [9]
+	            },	            
 	            {
 	                "render": function ( data, type, row ) {
+						
+						texto='<td><button'; 
+							texto+='type="button" identificador="'+row[9]+'" class="btn btn-danger btn-block quitar_salida">';
+							texto+='<span class="letra_quitar">Quitar</span>';
+						texto+='</button></td>';
+						return texto;	
+	                },
+	                "targets": 10
+	            },
+
+				{
+	                "render": function ( data, type, row ) {
+						
+						//modulo= jQuery("#modulo").val(); 
+
 						texto='<td>'; 
-							texto+='<input restriccion="decimal" value="'+row[13]+'" identificador="'+row[8]+'" type="text" class="form-control ttip peso_real" title="Números y puntos decimales."  placeholder="0.00">';							
+							texto+='<input restriccion="decimal" value="'+row[19]+'" identificador="'+row[9]+'" type="text" class="form-control ttip peso_real" title="Números y puntos decimales."  placeholder="0.00">';							
 						texto+='</td>';
 						return texto;	
 
 	                },
-	                "targets": 9
-	            },
+	                "targets": 11
+	            },	            
 
-	            
 	            {
 	                "render": function ( data, type, row ) {
-						texto='<td><button'; 
-							texto+='type="button" identificador="'+row[8]+'" class="btn btn-danger btn-block quitar">'; 
-							 texto+='Quitar';
-						texto+='</button></td>';
-						return texto;	
-
+						
+						return row[14];	
 	                },
-	                "targets": 10
+	                "targets": 12
 	            },
+	            {
+	                "render": function ( data, type, row ) {
+						
+						return row[17];	
+	                },
+	                "targets": 13
+	            },	            	            
 				{ 
 	                 "visible": false,
-	                "targets": [11,12]
+	                "targets": [14,15,16,17,18,19]
 	            }		            
 	        ],
+ 		"fnHeaderCallback": function( nHead, aData, iStart, iEnd, aiDisplay ) {
+	    			var api = this.api();
+	    			api.column(13).visible(true);	
+	     			
+		
+				if (aData.length >0){
+      				if (aData[0][17]=="-") {
+                		api.column(13).visible(false);	
+                		
+                	} else {
+                		api.column(13).visible(true);	
+		    			
+		     			
+                	}
+                } else {
+	                	api.column(13).visible(false);	
+                }
+
+		  //mostrar codigo en función del rol
+               api.column(0).visible(true);  
+	        	if (aData.length >0){
+	              if (aData[0][18]==2) {
+	                    api.column(0).visible(false); 
+	                    
+	                  } else {
+	                    api.column(0).visible(true);  
+	              
+	              
+	                  }
+	                } else {
+	                    api.column(0).visible(false); 
+	                } 
+			          
+
+		                
+				},
 });	
 
 

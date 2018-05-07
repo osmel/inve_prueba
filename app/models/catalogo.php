@@ -1940,18 +1940,13 @@
     public function check_existente_cargador_entrada($descripcion){
             $this->db->select("id", FALSE);         
             $this->db->from($this->cargadores);
-
             $where = '(
                         (
                           ( nombre =  "'.addslashes($descripcion).'" ) 
-                          
                          )
-
               )';   
   
             $this->db->where($where);
-
-           
             
             $login = $this->db->get();
             if ($login->num_rows() > 0) {

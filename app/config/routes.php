@@ -383,6 +383,9 @@ $route['refencia_producto_compra']   		 = 'entrada_compra/refencia_producto_comp
 
 
 ///////////////////salidas///////////////////////
+
+
+$route['cargar_dependencia_salida']    		= 'salidas/cargar_dependencia_salida';
 $route['procesando_servidor']    		= 'salidas/procesando_servidor';
 $route['agregar_prod_salida']    		= 'salidas/agregar_prod_salida';
 

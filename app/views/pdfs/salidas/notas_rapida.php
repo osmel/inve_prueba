@@ -24,7 +24,7 @@
 										<span><b>Cargador: </b> <?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->cargador; ?></span><br>
 										<span><b>Fecha y hora: </b> <?php echo $movimientos[0]->fecha; ?></span><br>
 										<span><b>Movimiento: </b><?php echo $movimientos[0]->mov; ?></span><br>
-										<span><b>Mov Pedido: </b><?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->mov_pedido; ?></span><br>
+										<span><b>Mov Pedido: </b><?php echo (($movimientos[0]->id_operacion_salida==99) || ($movimientos[0]->id_operacion_pedido==0) ) ? '-' : $movimientos[0]->mov_pedido; ?></span><br>
 										<?php if (($configuracion->activo==1)) {  ?>
 											<span><b>Factura: </b> <?php echo $movimientos[0]->factura; ?></span><br>
 										<?php } ?>

@@ -332,7 +332,7 @@ class Pdfs_model extends CI_Model
           $this->db->select("prov_apartado.nombre cliente_apartado");
 
 
-          $this->db->select("m.id_operacion_salida");
+          $this->db->select("m.id_operacion_salida, m.id_operacion_pedido");
           $this->db->select("
               CONCAT('[',
               ( CASE 

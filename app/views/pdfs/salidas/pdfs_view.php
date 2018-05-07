@@ -45,7 +45,7 @@ echo form_open('pdfs/generar', $attr,$hidden );
 
 
 				<div class="col-sm-2 col-md-2">
-						<h4>Mov. de pedido: <?php echo ($movimientos[0]->id_operacion_salida==99) ? '-' : $movimientos[0]->mov_pedido; ?></h4>
+						<h4>Mov. de pedido: <?php echo (($movimientos[0]->id_operacion_salida==99) || ($movimientos[0]->id_operacion_pedido==0) ) ? '-' : $movimientos[0]->mov_pedido; ?></h4>
 				</div>
 				 
 

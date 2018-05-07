@@ -25,22 +25,24 @@
 	$config_almacen = $this->session->userdata( 'config_almacen' );
 	$el_perfil = $this->session->userdata( 'id_perfil' );
 
-    if ($val_proveedor) {
+
+
+	if ($val_proveedor) {
 
 		$consecutivo_actual = (( ($val_proveedor->id_tipo_pedido == 1) && ($val_proveedor->id_tipo_factura==1) ) ? $consecutivo->conse_factura : $consecutivo->conse_remision );
 		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==2) ? $consecutivo->conse_surtido : $consecutivo_actual);
+		$consecutivo_actual = ( ($val_proveedor->id_tipo_pedido==3) ? $consecutivo->conse_bodega : $consecutivo_actual);
 	} else {
 		$consecutivo_actual = $consecutivo->conse_factura;
 	}	
 
 
-
 ?>
-
 
 <input type="hidden" id="conse_factura" name="conse_factura" value="<?php echo $consecutivo->conse_factura+1; ?>">
 <input type="hidden" id="conse_remision" name="conse_remision" value="<?php echo $consecutivo->conse_remision+1; ?>">
 <input type="hidden" id="conse_surtido" name="conse_surtido" value="<?php echo $consecutivo->conse_surtido+1; ?>">
+<input type="hidden" id="conse_bodega" name="conse_bodega" value="<?php echo $consecutivo->conse_bodega+1; ?>">
 
 <input type="hidden" id="id_proveedor" value="<?php echo $mi_proveedor; ?>">
 
@@ -59,16 +61,25 @@
 		</div>
 		</fieldset>	
 	</div>
-	<div class="col-xs-12 col-sm-6 col-md-2">
+
+	<div style="display:none;" class="Bueno col-xs-12 col-sm-6 col-md-2">
+		<label for="movimiento" >No. Movimiento</label>	
+
 		<fieldset disabled>
 			<div class="form-group">
-				<label for="movimiento" class="ttip" title="Campo informativo, no editable.">No. Movimiento</label>
-				<div>
+				
+				<div class="col-xs-12 col-sm-6 col-md-12" style="margin-top:0px;">
 					<input type="text" value="<?php echo $consecutivo_actual+1; ?>" class="form-control" id="movimiento" name="movimiento" placeholder="No. Movimiento">
 				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6" style="margin-top:0px; display:none;">
+					<input type="text" value="<?php echo $consecutivo->consecutivo+1; ?>	" class="form-control" id="movimiento_unico" name="movimiento_unico" placeholder="No. Movimiento">
+				</div>
+
 			</div>
 		</fieldset>			
 	</div>
+
+
 	<div class="col-xs-12 col-sm-4 col-md-3">
 		<?php if ($val_proveedor) { ?>
 		<fieldset class="disabledme" disabled>							
@@ -79,14 +90,17 @@
 				<label for="descripcion">Cliente</label>
 				<div class="input-group col-md-12 col-sm-12 col-xs-12">
 					<?php if ($val_proveedor) { ?>
-					<input identificador="" id="editar_proveedor" value="<?php echo htmlspecialchars($val_proveedor->nombre); ?>" type="text" name="editar_proveedor" idproveedor="2" class="buscar_proveedor form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cliente y seleccione una opción para mostrar los pedidos." autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+					<input identificador="" id="editar_proveedor" value="<?php echo htmlspecialchars($val_proveedor->nombre); ?>" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cliente y seleccione una opción para mostrar los pedidos." autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 					<?php } else { ?>
-					<input identificador="" id="editar_proveedor" type="text" name="editar_proveedor" idproveedor="2" class="buscar_proveedor form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cliente y seleccione una opción para mostrar los pedidos." autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
+					<input identificador="" id="editar_proveedor" type="text" name="editar_proveedor" idproveedor="3" class="buscar_proveedor form-control typeahead tt-query ttip" title="Campo predictivo. Comience a escribir el nombre de un cliente y seleccione una opción para mostrar los pedidos." autocomplete="off" spellcheck="false" placeholder="Buscar Cliente...">
 					<?php } ?>
 				</div>
 			</div>
 		</fieldset>	
 	</div>
+
+
+
 	<div class="col-xs-12 col-sm-4 col-md-3">
 		<?php if ($val_proveedor) { ?>
 		<fieldset class="disabledme" disabled>							
@@ -105,8 +119,10 @@
 			</div>
 		</fieldset>	
 	</div>
-	<?php if (($configuracion->activo==1)) {  ?> 
-		<div class="col-xs-12 col-sm-4 col-md-2">
+
+
+	<?php if (($configuracion->activo=1)) {  ?> 
+		<div class="col-xs-12 col-sm-4 col-md-2" style="display:none;" >
 			<?php if ($val_proveedor) { ?>
 			<fieldset class="disabledme" disabled>							
 			<?php } else { ?>
@@ -127,91 +143,98 @@
 	<?php }  ?> 	
 </div>
 
+
 <div class="row">					
 
 
 		<div class="notif-bot-pedidos"></div>
-		
-		<fieldset style="display:none;">
-			<label for="factura" style="font-size:18px; color:red;">Filtros de Búsqueda</label>
-		</fieldset>
-
-		<fieldset style="display:none;">
-              <div class="col-md-3">
-                 <div class="form-group">
-					
-					<div >
-
-                          <select class="col-sm-12 col-md-12 form-control ttip" title="Seleccione un producto para mostrar las salidas de ese producto." name="producto_filtro" id="producto_filtro" >
-                            <option value="">Selecciona un producto</option>
-                            <?php if($productos){ ?>
-                              <?php foreach($productos as $producto){ ?>
-                                <option value="<?php echo htmlspecialchars($producto->descripcion); ?>" ><?php echo htmlspecialchars($producto->descripcion); ?></option>
-                              <?php } ?>
-                            <?php } ?>
-                          </select>
-                    </div>  
-                      
-                 </div>
-              </div>
 
 
-             <div class="col-md-2">
-                 <div class="form-group">
-					<div >
-                          <select class="col-sm-12 col-md-12 form-control ttip" title="Seleccione un color para agregar un filtro por color." name="color_filtro" id="color_filtro">
-                            <option value="">Selecciona un color</option>
-                            <?php if($colores){ ?>
-                              <?php foreach($colores as $color){ ?>
-                                <option style="background-color:#<?php echo $color->hexadecimal_color; ?>" value="<?php echo $color->id; ?>" ><?php echo $color->color; ?></option>
-                              <?php } ?>
-                            <?php } ?>
-                          </select>
-                    </div>  
-                      
-                 </div>
-              </div>              
+		<div class="col-xs-12 col-sm-12 col-md-12">
+			<h4>Filtros: </h4>
+
+		                  <div class="col-xs-12 col-sm-6 col-md-3">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Producto</label>
+			                          <select class="form-control" name="producto_salida" id="producto_salida" dependencia="composicion_salida" nombre="una composición"  style="font-size:12px;">
+
+			                            <option value="">Seleccione un producto</option>
+			                            <?php if($productos){ ?>
+			                              <?php foreach($productos as $producto){ ?>
+			                                <option value="<?php echo htmlspecialchars($producto->descripcion); ?>"><?php echo htmlspecialchars($producto->descripcion); ?></option>
+			                              <?php } ?>
+			                            <?php } ?>
+			                          </select>
+		                     </div>
+		                  </div>
+
+
+		                  <div class="col-xs-12 col-sm-6 col-md-3">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Composición</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un PRODUCTO." name="composicion_salida" id="composicion_salida" dependencia="ancho_salida" nombre="un ancho" style="padding-right:0px;font-size:12px;">
+			                            <option value="0">Seleccione una composición</option>
+			                          </select>
+		                     </div>
+		                  </div>		                  
+
+
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Ancho</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione una COMPOSICIÓN." name="ancho_salida" id="ancho_salida"  dependencia="color_salida" nombre="un color" style="padding-right:0px; font-size:12px;">
+			                            <option value="0">Seleccione un ancho</option>
+			                          </select>
+		                     </div>
+		                  </div>
+
+
+		                  
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcion" class="col-sm-12 col-md-12">Color</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un ANCHO." name="color_salida" id="color_salida"  dependencia="proveedor_salida" nombre="un proveedor" style="padding-right:0px; font-size:12px;">
+			                            <option value="0">Seleccione un color</option>
+			                          </select>
+		                     </div>
+		                  </div>
+		                  
+		                  
 
 
 
-				<div class="col-md-3">
-							<div class="form-group">
-								<div>
-									<input  type="text" name="editar_proveedor_filtro" id="editar_proveedor_filtro" idproveedor="1" class="form-control buscar_proveedor_filtra ttip" title="Campo predictivo. Comience a escribir el nombre de un proveedor y seleccione una opción para mostrar sus salidas." autocomplete="off" spellcheck="false" placeholder="Buscar Proveedor...">
-								</div>
-							</div>
-					
-				</div>
 
+		                  <div class="col-xs-12 col-sm-4 col-md-2">
+		                     <div class="form-group">
+								<label for="descripcioon" class="col-sm-12 col-md-12">Proveedor</label>
+			                          <select class="form-control ttip" title="Campo dependiente. Primero seleccione un COLOR." name="proveedor_salida" id="proveedor_salida" dependencia="" nombre="" style="padding-right:0px; font-size:10px;">
+			                            <option value="0">Seleccione un proveedor</option>
+			                          </select>
+		                     </div>
+		                  </div>
 
-				<div class="col-md-2">
-						<div class="form-group">
-							<div>
-								<input type="text" class="form-control" id="ancho_filtro" name="ancho_filtro" placeholder="Ancho">
-							</div>
-						</div>
-				</div>
+		         
 
+		    <div class="row">
+		    	<div class="col-md-12">
+					<button id="limpiar_filtro_salida" type="button" class="btn btn-success">
+						Limpiar filtros
+					</button>
+				</div> 
+			</div> 
 
-				<div class="col-md-2">
-						<div class="form-group">
-							<div>
-								<input type="text" class="form-control" id="factura_filtro" name="factura_filtro" placeholder="Factura/Rem">
-							</div>
-						</div>
-				</div>
-			</fieldset>		
-
+	</div>   		
+<!--  -->	
 
 	
 
 	
 
 
-	<!--almacen Asociado -->
+	<!--almacen  -->
 	<div class="col-xs-12 col-sm-6 col-md-3"  <?php echo 'style="display:'.( (($config_almacen->activo==0) && ($el_perfil==2) ) ? 'none':'block').'"'; ?>>
 	    
-			<label for="id_almacen" class="col-sm-3 col-md-3 control-label">Almacén</label>
+			<label for="id_almacen_salida" class="col-sm-3 col-md-3 control-label">Almacén</label>
 			<div class="col-sm-9 col-md-10">
 			    <!--Los administradores o con permisos de salida 
 			    	Y que no este inhabilitado y 
@@ -222,7 +245,7 @@
 				<?php } else { ?>	
 					 <fieldset class="disabledme" disabled>
 				<?php } ?>	
-							<select name="id_almacen" id="id_almacen" class="form-control">
+							<select name="id_almacen_salida" id="id_almacen_salida" class="form-control">
 								<!--<option value="0">Selecciona una opción</option>-->
 									<?php foreach ( $almacenes as $almacen ){ ?>
 											<?php 
@@ -344,6 +367,15 @@
 
 
 
+		
+	
+
+
+
+
+					
+	
+
 
 
 
@@ -373,16 +405,21 @@
 					<thead>
 
 					<tr>
-						<th style="width:25%;">Código</th>
-						<th style="width:15%;">Producto</th>
-						<th style="width:15%;">Color</th>
+						<th style="width:20%;">Código</th>
+						<th style="width:10%;">Producto</th>
+						<th style="width:10%;">Imagen</th>
+						<th style="width:10%;">Color</th>
 						<th style="width:5%;">Cantidad</th>
 						<th style="width:5%;">Ancho</th>
-						<th style="width:5%;">No. Movimiento Entrada</th>			
-						<th style="width:15%;">Proveedor</th>
+						<th style="width:5%;">Num. Mov.</th>			
+						<th style="width:10%;">Proveedor</th>
 						<th style="width:5%;">Lote</th>
 						<th style="width:5%;">No. de Partida</th>
-						<th style="width:15%;">Agregar</th>
+						<th style="width:10%;">Agregar</th>
+						<th style="width:5%;">Almacén</th>
+						<th style="width:5%;">Precio</th>
+
+
 					</tr>
 					</thead>
 					</table>
@@ -442,17 +479,20 @@
 					<thead>
 						<tr>
 							<th style="width:20%;">Código</th>
-							<th style="width:15%;">Producto</th>
-							<th style="width:15%;">Color</th>
+							<th style="width:10%;">Producto</th>
+							<th style="width:10%;">Imagen</th>
+							<th style="width:10%;">Color</th>
 							<th style="width:5%;">Cantidad</th>
 							<th style="width:5%;">Ancho</th>
-							<th style="width:5%;">No. Movimiento Entrada</th>			
-							<th style="width:15%;">Proveedor</th>
+							<th style="width:5%;">Num. Mov.</th>			
+							<th style="width:10%;">Proveedor</th>
 							<th style="width:5%;">Lote</th>
 							<th style="width:5%;">No. de Partida</th>
-							<th style="width:5%;">Peso Real</th>
-							
-							<th style="width:15%;">Quitar</th>
+							<th style="width:10%;">Quitar</th>
+							<th style="width:5%;">Peso</th>	
+							<th style="width:5%;">Almacén</th>		
+							<th style="width:5%;">Precio</th>				
+
 						</tr>
 					</thead>
 				</table>
